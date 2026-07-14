@@ -13,7 +13,8 @@
 const SHEETS = {
   OBSERVATIONS:   'observations',
   SCHEDULES:      'schedules',
-  GUEST_COMMENTS: 'guest_comments'
+  GUEST_COMMENTS: 'guest_comments',
+  ASSESSMENTS:    'assessments'
 };
 
 // ---- CORS Headers ----
@@ -34,6 +35,7 @@ function doGet(e) {
     else if (action === 'getSchedules')        result = getSchedulesForTrainee(e.parameter.traineeId);
     else if (action === 'getAllGuestComments') result = getAllGuestComments();
     else if (action === 'getGuestComments')    result = getGuestComments(e.parameter.traineeId);
+    else if (action === 'getAssessments')      result = getAssessments();
     else result = { error: 'Unknown action: ' + action };
     return corsResponse(result);
   } catch (err) {
@@ -51,6 +53,7 @@ function doPost(e) {
     else if (action === 'submitFeedback')      result = submitFeedback(data);
     else if (action === 'submitGuestComment')  result = submitGuestComment(data);
     else if (action === 'updateSchedule')      result = updateSchedule(data);
+    else if (action === 'submitAssessment')    result = submitAssessment(data);
     else result = { error: 'Unknown action: ' + action };
     return corsResponse(result);
   } catch (err) {
@@ -189,5 +192,25 @@ function submitGuestComment(data) {
   const sheet = getOrCreateSheet(SHEETS.GUEST_COMMENTS, GC_HEADERS);
   const id    = 'gc-' + new Date().getTime();
   sheet.appendRow([id, data.obsId, data.comment, new Date().toISOString()]);
+  return { success: true, id };
+}
+
+// ---- Assessments ----
+
+const ASSESS_HEADERS = ['id','traineeId','department','grade','competency1','competency2','competency3','competency4','comments','assessor','assessedAt'];
+
+function getAssessments() {
+  const sheet = getOrCreateSheet(SHEETS.ASSESSMENTS, ASSESS_HEADERS);
+  return sheetToArray(sheet);
+}
+
+function submitAssessment(data) {
+  const sheet = getOrCreateSheet(SHEETS.ASSESSMENTS, ASSESS_HEADERS);
+  const id = 'asm-' + new Date().getTime();
+  sheet.appendRow([
+    id, data.traineeId, data.department, data.grade,
+    data.competency1, data.competency2, data.competency3, data.competency4,
+    data.comments, data.assessor, new Date().toISOString()
+  ]);
   return { success: true, id };
 }
