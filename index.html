@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training Program Tracker</title>
+  <meta name="description" content="國際生學習歷程與里程碑追蹤系統 - Chimei x Vikings Buffet Philippines Project">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css?v=1.3">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     LOGIN SCREEN
+     Target: Remove VIMEI and set MA to 國際生
+════://======================================== -->
+<div id="loginScreen" class="login-screen">
+
+  <div class="login-card">
+    <!-- Brand -->
+    <div class="login-brand">
+      <div>
+        <h1>Training Program Tracker</h1>
+        <p>國際生學習歷程 &amp; Milestone System</p>
+      </div>
+    </div>
+
+    <!-- Inspirational Slogans Banner -->
+    <div class="login-slogan-card">
+      <div id="loginSloganText" class="login-slogan-text"></div>
+    </div>
+
+    <!-- Step 1: Role selector -->
+    <div id="loginStepRole" class="login-step">
+      <p class="login-step-label">請選擇您的身份 / Select Your Role</p>
+      <div class="role-selector-grid">
+        <button class="role-btn" onclick="selectLoginRole('admin')">
+          <strong>計畫導師</strong>
+          <small>Program Mentor</small>
+        </button>
+        <button class="role-btn" onclick="selectLoginRole('trainee')">
+          <strong>國際生</strong>
+          <small>Trainee</small>
+        </button>
+        <button class="role-btn" onclick="selectLoginRole('guest')">
+          <strong>輪調單位考核</strong>
+          <small>Station Assessor</small>
+        </button>
+        <button class="role-btn" onclick="selectLoginRole('executive')">
+          <strong>高階主管</strong>
+          <small>Executive</small>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2a: Admin PIN -->
+    <div id="loginStepAdmin" class="login-step" style="display:none;">
+      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
+        <i class="fas fa-arrow-left"></i> 返回 / Back
+      </button>
+      <div class="login-user-preview">
+        <div><strong>計畫導師 / Program Mentor</strong><p>請輸入導師密碼</p></div>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <input type="password" id="adminPinInput" class="form-control pin-input"
+               maxlength="20" placeholder="••••"
+               onkeyup="if(event.key==='Enter') handleLogin()">
+      </div>
+      <div id="loginError1" class="login-error" style="display:none;">密碼錯誤，請再試一次。</div>
+      <button class="btn btn-primary" onclick="handleLogin()">
+        <i class="fas fa-sign-in-alt"></i> 登入 / Login
+      </button>
+    </div>
+
+    <!-- Step 2b: Trainee name selection -->
+    <div id="loginStepTraineeName" class="login-step" style="display:none;">
+      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
+        <i class="fas fa-arrow-left"></i> 返回 / Back
+      </button>
+      <p class="login-step-label">請選擇您的名字 / Select Your Name</p>
+      <div class="trainee-name-grid" id="traineeNameGrid"></div>
+    </div>
+
+    <!-- Step 2c: Trainee PIN -->
+    <div id="loginStepTraineePin" class="login-step" style="display:none;">
+      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToTraineeName()">
+        <i class="fas fa-arrow-left"></i> 返回 / Back
+      </button>
+      <div class="login-user-preview" id="loginUserPreview"></div>
+      <div class="form-group" style="margin-bottom:0;">
+        <input type="password" id="traineePinInput" class="form-control pin-input"
+               maxlength="20" placeholder="••••"
+               onkeyup="if(event.key==='Enter') handleLogin()">
+      </div>
+      <div id="loginError2" class="login-error" style="display:none;">密碼錯誤，請再試一次。</div>
+      <button class="btn btn-primary" onclick="handleLogin()">
+        <i class="fas fa-sign-in-alt"></i> 登入 / Login
+      </button>
+    </div>
+
+    <!-- Step 2d: Guest code -->
+    <div id="loginStepGuest" class="login-step" style="display:none;">
+      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
+        <i class="fas fa-arrow-left"></i> 返回 / Back
+      </button>
+      <div class="login-user-preview">
+        <div><strong>輪調單位考核 / Station Assessor</strong><p>請輸入授權代碼 / Enter Access Code</p></div>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <input type="text" id="guestCodeInput" class="form-control pin-input"
+               placeholder="授權代碼 / Access Code"
+               onkeyup="if(event.key==='Enter') handleLogin()">
+      </div>
+      <div id="loginError3" class="login-error" style="display:none;">代碼錯誤，請再試一次。</div>
+      <button class="btn btn-primary" onclick="handleLogin()">
+        <i class="fas fa-door-open"></i> 進入 / Enter
+      </button>
+    </div>
+
+    <!-- Step 2e: Executive code -->
+    <div id="loginStepExecutive" class="login-step" style="display:none;">
+      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
+        <i class="fas fa-arrow-left"></i> 返回 / Back
+      </button>
+      <div class="login-user-preview">
+        <div><strong>高階主管 / Executive</strong><p>請輸入授權代碼 / Enter Executive Code</p></div>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <input type="text" id="executiveCodeInput" class="form-control pin-input"
+               placeholder="授權代碼 / Executive Code"
+               onkeyup="if(event.key==='Enter') handleLogin()">
+      </div>
+      <div id="loginError4" class="login-error" style="display:none;">代碼錯誤，請再試一次。</div>
+      <button class="btn btn-primary" onclick="handleLogin()">
+        <i class="fas fa-door-open"></i> 進入 / Enter
+      </button>
+    </div>
+  </div>
+
+  <!-- Language selector -->
+  <select class="login-lang-select" onchange="changeLanguageLogin(this.value)">
+    <option value="en">English</option>
+    <option value="zh">繁體中文</option>
+  </select>
+
+</div><!-- /loginScreen -->
+
+
+<!-- ══════════════════════════════════════════════
+     LOADING OVERLAY
+══════════════════════════════════════════════ -->
+<div id="loadingOverlay" class="loading-overlay" style="display:none;">
+  <div class="loading-spinner"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════════ -->
+<div id="mainApp" class="app-container" style="display:none;">
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay"></div>
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-text">
+        <h1>Training Tracker</h1>
+        <p>Program System</p>
+      </div>
+    </div>
+
+    <ul class="nav-menu">
+      <li class="nav-item" id="liDashboard">
+        <a class="nav-link" id="navDashboard">
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item" id="liForm">
+        <a class="nav-link" id="navForm">
+          <span>Observation Log</span>
+        </a>
+      </li>
+      <li class="nav-item" id="liMilestones">
+        <a class="nav-link" id="navMilestones">
+          <span>Milestones</span>
+        </a>
+      </li>
+      <li class="nav-item" id="liReview">
+        <a class="nav-link" id="navReview">
+          <span>Review</span>
+        </a>
+      </li>
+      <li class="nav-item" id="liAnalytics">
+        <a class="nav-link" id="navAnalytics">
+          <span>Analytics</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- User Profile Card -->
+    <div class="user-profile-card">
+      <div class="user-profile-header">
+        <div class="user-avatar" id="sidebarAvatar">👤</div>
+        <div>
+          <div class="user-name" id="sidebarName">—</div>
+          <div class="user-role-badge" id="sidebarRole">—</div>
+        </div>
+      </div>
+      <p class="user-bio" id="sidebarBio"></p>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ── -->
+  <main class="main-content">
+
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
+        <div class="page-title">
+          <h2>Training Program Tracker</h2>
+          <p>國際生學習歷程 &amp; Milestone System</p>
+        </div>
+      </div>
+
+      <div class="controls-group">
+        <!-- Current user chip -->
+        <div class="current-user-chip">
+          <span id="currentUserAvatar">👤</span>
+          <span id="currentUserName">—</span>
+        </div>
+
+        <!-- Language selector -->
+        <div class="simulator-select-wrapper">
+          <label for="langSelector">Lang</label>
+          <select class="simulator-select" id="langSelector">
+            <option value="en">EN</option>
+            <option value="zh">中文</option>
+          </select>
+        </div>
+
+        <!-- Theme toggle -->
+        <button class="icon-btn" id="themeToggle" title="Toggle theme">
+          <i class="fas fa-sun"></i>
+        </button>
+
+        <!-- Logout -->
+        <button class="icon-btn" id="logoutBtn" style="color:var(--danger);" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Demo Mode Banner -->
+    <div id="demoBanner" class="alert-info alert-demo" style="display:none;">
+      <i class="fas fa-bolt"></i>
+      <span>⚡ Demo Mode：資料儲存在此瀏覽器，尚未連接 Google Sheets。完成 <strong>SETUP_GUIDE.md</strong> 後即可升級為正式模式。</span>
+    </div>
+
+    <!-- ── View Sections ── -->
+    <section class="view-section active" id="sectionDashboard"></section>
+    <section class="view-section" id="sectionForm"></section>
+    <section class="view-section" id="sectionMilestones"></section>
+    <section class="view-section" id="sectionReview"></section>
+    <section class="view-section" id="sectionAnalytics"></section>
+
+  </main>
+</div><!-- /mainApp -->
+
+
+<!-- Toast Notification -->
+<div class="toast" id="toastNotification">
+  <i class="fas fa-info-circle"></i>
+  <span class="toast-text">Notice</span>
+</div>
+
+
+<!-- ── Scripts (order matters) ── -->
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script src="js/data.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

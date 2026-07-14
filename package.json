@@ -1,0 +1,11 @@
+{
+  "name": "vimei-knowledge-tracker",
+  "version": "1.0.0",
+  "description": "VIMEI MA Rotation Learning & Milestone System",
+  "scripts": {
+    "dev": "npx http-server -p 3000"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
