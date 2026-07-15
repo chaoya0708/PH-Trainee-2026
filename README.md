@@ -1,4 +1,4 @@
-# VIMEI Knowledge Tracker (MA Program Milestone System)
+# Knowledge Tracker (Trainee Program Milestone System)
 
 **Project Code:** VIMEI Knowledge Tracker  
 **Development Team:** Antigravity  
