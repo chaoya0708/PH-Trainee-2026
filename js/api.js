@@ -147,8 +147,10 @@ const Api = (() => {
           guestComments: gcomments.filter(g => g.obsId === o.id)
         }));
       }
-      const obs      = await callScriptGet('getAllObservations');
-      const gcomments = await callScriptGet('getAllGuestComments');
+      const [obs, gcomments] = await Promise.all([
+        callScriptGet('getAllObservations'),
+        callScriptGet('getAllGuestComments')
+      ]);
       return obs.map(o => ({
         ...o,
         guestComments: (gcomments || []).filter(g => g.obsId === o.id)
@@ -163,8 +165,10 @@ const Api = (() => {
           .filter(o => o.traineeId === traineeId)
           .map(o => ({ ...o, guestComments: gcomments.filter(g => g.obsId === o.id) }));
       }
-      const obs = await callScriptGet('getObservations', { traineeId });
-      const gcomments = await callScriptGet('getGuestComments', { traineeId });
+      const [obs, gcomments] = await Promise.all([
+        callScriptGet('getObservations', { traineeId }),
+        callScriptGet('getGuestComments', { traineeId })
+      ]);
       return obs.map(o => ({ ...o, guestComments: (gcomments || []).filter(g => g.obsId === o.id) }));
     },
 

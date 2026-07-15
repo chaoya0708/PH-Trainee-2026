@@ -318,15 +318,24 @@ async function loadAllData() {
     const user = Auth.getCurrentUser();
 
     if (user.role === 'trainee') {
-      // Only load own data
-      state.observations = await Api.getObservationsForTrainee(user.id);
-      state.schedules    = { [user.id]: await Api.getScheduleForTrainee(user.id) };
+      const [obs, sched, asm] = await Promise.all([
+        Api.getObservationsForTrainee(user.id),
+        Api.getScheduleForTrainee(user.id),
+        Api.getAssessments()
+      ]);
+      state.observations = obs;
+      state.schedules = { [user.id]: sched };
+      state.assessments = asm;
     } else {
-      // Admin/guest: load everything
-      state.observations = await Api.getAllObservations();
-      state.schedules    = await Api.getAllSchedules();
+      const [obs, sched, asm] = await Promise.all([
+        Api.getAllObservations(),
+        Api.getAllSchedules(),
+        Api.getAssessments()
+      ]);
+      state.observations = obs;
+      state.schedules = sched;
+      state.assessments = asm;
     }
-    state.assessments = await Api.getAssessments();
   } catch (err) {
     console.error('Data load error:', err);
     showToast('Error loading data. Check console.', 'error');
