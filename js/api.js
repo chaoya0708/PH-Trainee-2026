@@ -229,7 +229,17 @@ const Api = (() => {
 
     async getAllSchedules() {
       if (CONFIG.DEMO_MODE) return lsGetObj(LS_SCHED);
-      return callScriptGet('getAllSchedules');
+      const res = await callScriptGet('getAllSchedules');
+      const normalized = {};
+      for (const t in res) {
+        normalized[t] = {};
+        for (const dStr in res[t]) {
+          const d = new Date(dStr);
+          const key = isNaN(d) ? dStr : d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+          normalized[t][key] = res[t][dStr];
+        }
+      }
+      return normalized;
     },
 
     async getScheduleForTrainee(traineeId) {
@@ -237,7 +247,15 @@ const Api = (() => {
         const all = lsGetObj(LS_SCHED);
         return all[traineeId] || {};
       }
-      return callScriptGet('getSchedules', { traineeId });
+      const res = await callScriptGet('getSchedules', { traineeId });
+      if (!res) return {};
+      const normalized = {};
+      for (const dStr in res) {
+        const d = new Date(dStr);
+        const key = isNaN(d) ? dStr : d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        normalized[key] = res[dStr];
+      }
+      return normalized;
     },
 
     async updateSchedule(traineeId, date, dept, objective) {
