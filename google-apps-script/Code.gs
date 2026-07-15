@@ -197,7 +197,7 @@ function submitGuestComment(data) {
 
 // ---- Assessments ----
 
-const ASSESS_HEADERS = ['id','traineeId','department','grade','competency1','competency2','competency3','competency4','comments','assessor','assessedAt'];
+const ASSESS_HEADERS = ['id','traineeId','department','grade','competency1','competency2','competency3','competency4','competency5','comments','assessor','assessedAt'];
 
 function getAssessments() {
   const sheet = getOrCreateSheet(SHEETS.ASSESSMENTS, ASSESS_HEADERS);
@@ -209,7 +209,7 @@ function submitAssessment(data) {
   const id = 'asm-' + new Date().getTime();
   sheet.appendRow([
     id, data.traineeId, data.department, data.grade,
-    data.competency1, data.competency2, data.competency3, data.competency4,
+    data.competency1, data.competency2, data.competency3, data.competency4, data.competency5,
     data.comments, data.assessor, new Date().toISOString()
   ]);
   return { success: true, id };
