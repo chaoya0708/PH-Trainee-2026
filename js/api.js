@@ -278,7 +278,7 @@ const Api = (() => {
       return callScriptGet('getAssessments');
     },
 
-    async submitAssessment(traineeId, department, grade, competency1, competency2, competency3, competency4, comments, assessor) {
+    async submitAssessment(traineeId, department, grade, competency1, competency2, competency3, competency4, competency5, comments, assessor) {
       const record = {
         id: 'asm-' + Date.now(),
         traineeId,
@@ -288,6 +288,7 @@ const Api = (() => {
         competency2: Number(competency2),
         competency3: Number(competency3),
         competency4: Number(competency4),
+        competency5: Number(competency5),
         comments,
         assessor,
         assessedAt: nowStr()
@@ -309,6 +310,7 @@ const Api = (() => {
         competency2,
         competency3,
         competency4,
+        competency5,
         comments,
         assessor
       });

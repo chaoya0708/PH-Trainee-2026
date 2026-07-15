@@ -672,98 +672,134 @@ function renderMilestones() {
   const viewId  = user.role === 'trainee' ? user.id : state.selectedTraineeId;
   const overall = calcOverallProgress(viewId);
 
-  const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(dept => {
-    const pct   = calculateMilestoneProgress(state.observations, viewId, dept.id);
-    const deptObs = state.observations.filter(o => o.traineeId === viewId && o.department === dept.id);
-    const c1 = deptObs.length > 0;
-    const c2 = deptObs.some(o => o.rating > 0);
-    const c3 = deptObs.some(o => o.rating >= 3);
-    const c4 = deptObs.some(o => o.rating >= 4 && o.status === 'reviewed');
+    const chartsToRender = [];
 
-    const ci = (done, label) => `
-      <li class="criteria-item ${done ? 'done' : ''}">
-        <i class="${done ? 'fas fa-check-circle' : 'far fa-circle'}" style="font-size:11px;"></i>
-        ${label}
-      </li>`;
+    const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(dept => {
+      const pct   = calculateMilestoneProgress(state.observations, viewId, dept.id);
+      const deptObs = state.observations.filter(o => o.traineeId === viewId && o.department === dept.id);
+      const c1 = deptObs.length > 0;
+      const c2 = deptObs.some(o => o.rating > 0);
+      const c3 = deptObs.some(o => o.rating >= 3);
+      const c4 = deptObs.some(o => o.rating >= 4 && o.status === 'reviewed');
 
-    const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === dept.id);
-    let assessmentHtml = '';
-    if (assessment) {
-      const renderStars = rating => {
-        return '★'.repeat(rating) + '☆'.repeat(5 - rating);
-      };
-      assessmentHtml = `
-        <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:1px solid rgba(234,88,12,0.15);border-radius:10px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:10px;text-transform:uppercase;font-weight:700;color:var(--primary);letter-spacing:0.5px;">${t('lblAssessGrade')}</span>
-            <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;padding:3px 8px;border-radius:6px;">${assessment.grade}</span>
+      const ci = (done, label) => `
+        <li class="criteria-item ${done ? 'done' : ''}">
+          <i class="${done ? 'fas fa-check-circle' : 'far fa-circle'}" style="font-size:11px;"></i>
+          ${label}
+        </li>`;
+
+      const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === dept.id);
+      let assessmentHtml = '';
+      if (assessment) {
+        const chartId = 'radar-' + dept.id;
+        chartsToRender.push({
+          id: chartId,
+          data: [assessment.competency1, assessment.competency2, assessment.competency3, assessment.competency4, assessment.competency5 || 3],
+          labels: [
+            t('lblCompetency1').split(' ')[0], 
+            t('lblCompetency2').split(' ')[0], 
+            t('lblCompetency3').split(' ')[0], 
+            t('lblCompetency4').split(' ')[0], 
+            t('lblCompetency5').split(' ')[0]
+          ],
+          color: dept.color
+        });
+
+        assessmentHtml = `
+          <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:1px solid rgba(234,88,12,0.15);border-radius:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-size:10px;text-transform:uppercase;font-weight:700;color:var(--primary);letter-spacing:0.5px;">${t('lblAssessGrade')}</span>
+              <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;padding:3px 8px;border-radius:6px;">${assessment.grade}</span>
+            </div>
+            
+            <div style="margin-bottom:12px;">
+              <canvas id="${chartId}" style="width:100%;max-height:180px;"></canvas>
+            </div>
+            
+            <div style="font-size:11px;line-height:1.4;border-top:1px dashed var(--card-border);padding-top:8px;">
+              <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
+              <p style="font-size:9px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
+            </div>
           </div>
-          
-          <div style="font-size:11px;color:var(--text-secondary);display:flex;flex-direction:column;gap:3px;margin-bottom:8px;border-bottom:1px dashed var(--card-border);padding-bottom:8px;">
-            <div style="display:flex;justify-content:space-between;">
-              <span style="font-size:10.5px;">1. ${t('lblCompetency1').substring(0, 18)}...</span>
-              <strong style="color:var(--warning);">${renderStars(assessment.competency1)}</strong>
-            </div>
-            <div style="display:flex;justify-content:space-between;">
-              <span style="font-size:10.5px;">2. ${t('lblCompetency2').substring(0, 18)}...</span>
-              <strong style="color:var(--warning);">${renderStars(assessment.competency2)}</strong>
-            </div>
-            <div style="display:flex;justify-content:space-between;">
-              <span style="font-size:10.5px;">3. ${t('lblCompetency3').substring(0, 18)}...</span>
-              <strong style="color:var(--warning);">${renderStars(assessment.competency3)}</strong>
-            </div>
-            <div style="display:flex;justify-content:space-between;">
-              <span style="font-size:10.5px;">4. ${t('lblCompetency4').substring(0, 18)}...</span>
-              <strong style="color:var(--warning);">${renderStars(assessment.competency4)}</strong>
-            </div>
+        `;
+      } else {
+        assessmentHtml = `
+          <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:1px dashed var(--card-border);border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
+            ${t('lblAwaitingAssessment')}
           </div>
-          
-          <div style="font-size:11px;line-height:1.4;">
-            <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
-            <p style="font-size:9px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
+        `;
+      }
+
+      return `
+        <div class="dept-milestone-card">
+          <div class="dept-milestone-header">
+            <div class="dept-milestone-title" style="color:${dept.color}">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</div>
+            <span class="dept-milestone-pct">${pct}%</span>
           </div>
+          <div class="progress-bar" style="height:6px;"><div class="progress-fill" style="width:${pct}%;background:${dept.color};"></div></div>
+          <ul class="criteria-list">
+            ${ci(c1, t('criteria1'))}
+            ${ci(c2, t('criteria2'))}
+            ${ci(c3, t('criteria3'))}
+            ${ci(c4, t('criteria4'))}
+          </ul>
+          ${assessmentHtml}
         </div>
       `;
-    } else {
-      assessmentHtml = `
-        <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:1px dashed var(--card-border);border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
-          ${t('lblAwaitingAssessment')}
-        </div>
-      `;
-    }
+    }).join('');
 
-    return `
-      <div class="dept-milestone-card">
-        <div class="dept-milestone-header">
-          <div class="dept-milestone-title" style="color:${dept.color}">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</div>
-          <span class="dept-milestone-pct">${pct}%</span>
+    container.innerHTML = `
+      ${selectorHtml}
+      <div class="glass-card">
+        <div class="card-header">
+          <h3>${t('milestoneTitle')}</h3>
+          <span style="font-size:22px;font-weight:800;color:var(--primary);">${overall}%</span>
         </div>
-        <div class="progress-bar" style="height:6px;"><div class="progress-fill" style="width:${pct}%;background:${dept.color};"></div></div>
-        <ul class="criteria-list">
-          ${ci(c1, t('criteria1'))}
-          ${ci(c2, t('criteria2'))}
-          ${ci(c3, t('criteria3'))}
-          ${ci(c4, t('criteria4'))}
-        </ul>
-        ${assessmentHtml}
+        <div class="progress-bar" style="height:18px;margin-bottom:14px;">
+          <div class="progress-fill" style="width:${overall}%;"></div>
+        </div>
+        <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">${t('milestoneSubTitle')}</p>
       </div>
+      <div class="grid-4">${deptCards}</div>
     `;
-  }).join('');
 
-  container.innerHTML = `
-    ${selectorHtml}
-    <div class="glass-card">
-      <div class="card-header">
-        <h3>${t('milestoneTitle')}</h3>
-        <span style="font-size:22px;font-weight:800;color:var(--primary);">${overall}%</span>
-      </div>
-      <div class="progress-bar" style="height:18px;margin-bottom:14px;">
-        <div class="progress-fill" style="width:${overall}%;"></div>
-      </div>
-      <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">${t('milestoneSubTitle')}</p>
-    </div>
-    <div class="grid-4">${deptCards}</div>
-  `;
+    // Render charts
+    chartsToRender.forEach(chartConfig => {
+      const ctx = document.getElementById(chartConfig.id);
+      if (ctx) {
+        new Chart(ctx, {
+          type: 'radar',
+          data: {
+            labels: chartConfig.labels,
+            datasets: [{
+              label: 'Score',
+              data: chartConfig.data,
+              backgroundColor: 'rgba(249, 115, 22, 0.2)',
+              borderColor: '#f97316',
+              pointBackgroundColor: '#ea580c',
+              borderWidth: 1.5,
+              pointRadius: 2
+            }]
+          },
+          options: {
+            scales: {
+              r: {
+                min: 0,
+                max: 5,
+                ticks: { display: false, stepSize: 1 },
+                pointLabels: { font: { size: 9 }, color: '#94a3b8' },
+                grid: { color: 'rgba(0,0,0,0.05)' },
+                angleLines: { color: 'rgba(0,0,0,0.05)' }
+              }
+            },
+            plugins: {
+              legend: { display: false }
+            },
+            maintainAspectRatio: false
+          }
+        });
+      }
+    });
 }
 
 window.renderMilestonesView = renderMilestones;
@@ -878,6 +914,12 @@ function renderReview() {
                 ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fas fa-star active' : 'far fa-star'}" onclick="window.setAssessRating('comp4',${n})"></i>`).join('')}
               </div>
             </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency5')}</label>
+              <div class="rating-stars" id="assessStars-comp5" style="margin-top:4px;font-size:18px;">
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fas fa-star active' : 'far fa-star'}" onclick="window.setAssessRating('comp5',${n})"></i>`).join('')}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -906,7 +948,7 @@ function renderReview() {
 
 window.setAssessRating = function(compKey, stars) {
   if (!state.pendingAssessRatings) {
-    state.pendingAssessRatings = { comp1: 3, comp2: 3, comp3: 3, comp4: 3 };
+    state.pendingAssessRatings = { comp1: 3, comp2: 3, comp3: 3, comp4: 3, comp5: 3 };
   }
   state.pendingAssessRatings[compKey] = stars;
   const container = $('assessStars-' + compKey);
@@ -922,11 +964,12 @@ window.submitStationAssessment = async function() {
   const grade = $('assessGrade').value;
   const comments = $('assessComments').value;
 
-  const ratings = state.pendingAssessRatings || { comp1: 3, comp2: 3, comp3: 3, comp4: 3 };
+  const ratings = state.pendingAssessRatings || { comp1: 3, comp2: 3, comp3: 3, comp4: 3, comp5: 3 };
   const comp1 = ratings.comp1 || 3;
   const comp2 = ratings.comp2 || 3;
   const comp3 = ratings.comp3 || 3;
   const comp4 = ratings.comp4 || 3;
+  const comp5 = ratings.comp5 || 3;
 
   const user = Auth.getCurrentUser();
   const assessor = user.name;
@@ -938,7 +981,7 @@ window.submitStationAssessment = async function() {
 
   showLoading();
   try {
-    const res = await Api.submitAssessment(traineeId, dept, grade, comp1, comp2, comp3, comp4, comments, assessor);
+    const res = await Api.submitAssessment(traineeId, dept, grade, comp1, comp2, comp3, comp4, comp5, comments, assessor);
     if (res.success) {
       showToast(t('assessSuccess'), 'success');
       $('assessComments').value = '';
