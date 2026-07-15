@@ -569,7 +569,7 @@ function renderForm() {
   const sched     = (state.schedules[user.id] || {})[state.selectedDate];
   const presetDept = sched ? sched.dept : 'yushan_prep';
 
-  const deptOptions = Object.values(CONFIG.DEPARTMENTS).map(d =>
+  const deptOptions = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
     `<option value="${d.id}" ${d.id === presetDept ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
   ).join('');
 
@@ -672,7 +672,7 @@ function renderMilestones() {
   const viewId  = user.role === 'trainee' ? user.id : state.selectedTraineeId;
   const overall = calcOverallProgress(viewId);
 
-  const deptCards = Object.values(CONFIG.DEPARTMENTS).map(dept => {
+  const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(dept => {
     const pct   = calculateMilestoneProgress(state.observations, viewId, dept.id);
     const deptObs = state.observations.filter(o => o.traineeId === viewId && o.department === dept.id);
     const c1 = deptObs.length > 0;
@@ -794,7 +794,7 @@ function renderReview() {
 
   // Dept filter
   const deptOpts = `<option value="all">${t('allDepts')}</option>` +
-    Object.values(CONFIG.DEPARTMENTS).map(d =>
+    Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
       `<option value="${d.id}" ${_filterDept === d.id ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
     ).join('');
   filterHtml += `
@@ -815,7 +815,7 @@ function renderReview() {
   let assessFormHtml = '';
   if (user.role === 'admin' || user.role === 'guest') {
     const traineeAssessOpts = CONFIG.TRAINEES.map(tr => `<option value="${tr.id}">${tr.name}</option>`).join('');
-    const deptAssessOpts = Object.values(CONFIG.DEPARTMENTS).map(d =>
+    const deptAssessOpts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
       `<option value="${d.id}">${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
     ).join('');
 
@@ -1178,7 +1178,7 @@ function renderAnalytics() {
   if (!container) return;
 
   const trainees = CONFIG.TRAINEES;
-  const depts = Object.values(CONFIG.DEPARTMENTS);
+  const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday');
 
   // 1. KPI Calculations
   const totalObs = state.observations.length;
@@ -1304,7 +1304,7 @@ function downloadCSV(csvContent, fileName) {
 
 window.exportTraineeSummary = function() {
   const trainees = CONFIG.TRAINEES;
-  const depts = Object.values(CONFIG.DEPARTMENTS);
+  const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday');
   
   // CSV Headers
   let csv = "Trainee Name,Milestone Completion %,Average Star Rating,Total Logs Submitted";
