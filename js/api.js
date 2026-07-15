@@ -234,7 +234,8 @@ const Api = (() => {
       for (const t in res) {
         normalized[t] = {};
         for (const dStr in res[t]) {
-          const d = new Date(dStr);
+          const cleanStr = dStr.replace(/\(.*?\)/g, '').trim();
+          const d = new Date(cleanStr);
           const key = isNaN(d) ? dStr : d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
           normalized[t][key] = res[t][dStr];
         }
@@ -251,7 +252,8 @@ const Api = (() => {
       if (!res) return {};
       const normalized = {};
       for (const dStr in res) {
-        const d = new Date(dStr);
+        const cleanStr = dStr.replace(/\(.*?\)/g, '').trim();
+        const d = new Date(cleanStr);
         const key = isNaN(d) ? dStr : d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
         normalized[key] = res[dStr];
       }
