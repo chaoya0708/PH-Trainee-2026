@@ -5,57 +5,57 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-color: #0b0f19;
-  --bg-gradient: radial-gradient(circle at 50% 0%, #152035 0%, #0b0f19 100%);
-  --panel-bg: rgba(17, 25, 40, 0.75);
-  --panel-border: rgba(255, 255, 255, 0.09);
-  --card-bg: rgba(22, 33, 54, 0.5);
-  --card-border: rgba(255, 255, 255, 0.06);
-  --text-primary: #f3f4f6;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
-
-  --primary: #ea580c; /* 溫和耐看的橘色 / Premium Orange */
-  --primary-hover: #c2410c;
-  --primary-glow: rgba(234, 88, 12, 0.15);
-  --secondary: #eab308;
-  --secondary-hover: #ca8a04;
-  --secondary-glow: rgba(234, 179, 8, 0.15);
+  /* 灰色背景 / Light Gray Background */
+  --bg-color: #fafaf9; 
+  --bg-gradient: radial-gradient(circle at 50% 0%, #ffffff 0%, #fafaf9 100%); 
+  --panel-bg: rgba(255, 255, 255, 0.95); /* Pure white panels */
+  --panel-border: rgba(0, 0, 0, 0.06); /* Subtle border */
+  --card-bg: rgba(255, 255, 255, 1); /* Solid white cards */
+  --card-border: rgba(0, 0, 0, 0.04); /* Very subtle card border */
+  --text-primary: #1c1917; /* Slate dark text */
+  --text-secondary: #57534e; /* Medium gray text */
+  --text-muted: #a8a29e; /* Light gray text */
+  --primary: #f97316; /* 溫和質感的橘色 / Elegant Orange */
+  --primary-hover: #ea580c;
+  --primary-glow: rgba(249, 115, 22, 0.08);
+  --secondary: #78716c; /* Warm gray secondary */
+  --secondary-hover: #57534e;
+  --secondary-glow: rgba(120, 113, 108, 0.1);
   --success: #10b981;
-  --success-glow: rgba(16, 185, 129, 0.15);
-  --warning: #ea580c;
+  --success-glow: rgba(16, 185, 129, 0.1);
+  --warning: #f59e0b;
   --danger: #ef4444;
 
   --font-title: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
-  --backdrop-blur: blur(12px);
-  --shadow-sm: 0 2px 8px -1px rgba(0,0,0,0.2);
-  --shadow-md: 0 4px 20px -2px rgba(0,0,0,0.3);
-  --shadow-lg: 0 10px 30px -5px rgba(0,0,0,0.4);
+  --backdrop-blur: blur(16px);
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.06);
   --transition-fast: 0.2s cubic-bezier(0.4,0,0.2,1);
   --transition-normal: 0.3s cubic-bezier(0.4,0,0.2,1);
   --sidebar-width: 260px;
 }
 
-[data-theme="light"] {
-  --bg-color: #f3f4f6; /* 灰色背景 / Light Gray Background */
-  --bg-gradient: radial-gradient(circle at 50% 0%, #ffffff 0%, #f3f4f6 100%); /* 白色漸變到灰色 / White fading to light gray */
-  --panel-bg: rgba(255, 255, 255, 0.85); /* 白色面板 / Pure white glassmorphic panels */
-  --panel-border: rgba(0, 0, 0, 0.08); /* 灰色邊框 */
-  --card-bg: rgba(255, 255, 255, 0.55); /* 白色卡片背景 */
-  --card-border: rgba(0, 0, 0, 0.05); /* 卡片細邊框 */
-  --text-primary: #1f2937; /* 深灰文字 / Slate primary text */
-  --text-secondary: #4b5563; /* 中灰文字 */
-  --text-muted: #9ca3af; /* 淺灰文字 */
-  --primary: #ea580c; /* 耐看的橘色 / Premium Orange */
-  --primary-hover: #c2410c;
-  --primary-glow: rgba(234, 88, 12, 0.08);
-  --secondary: #6b7280; /* 以灰色為主的次要色 */
-  --secondary-hover: #4b5563;
-  --secondary-glow: rgba(107, 114, 128, 0.1);
-  --shadow-sm: 0 2px 6px rgba(0,0,0,0.03);
-  --shadow-md: 0 4px 15px rgba(0,0,0,0.04);
-  --shadow-lg: 0 8px 25px rgba(0,0,0,0.06);
+[data-theme="dark"] {
+  --bg-color: #0f172a;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+  --panel-bg: rgba(30, 41, 59, 0.7);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --card-bg: rgba(30, 41, 59, 0.5);
+  --card-border: rgba(255, 255, 255, 0.05);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --primary: #fb923c;
+  --primary-hover: #f97316;
+  --primary-glow: rgba(251, 146, 60, 0.15);
+  --secondary: #94a3b8;
+  --secondary-hover: #e2e8f0;
+  --secondary-glow: rgba(148, 163, 184, 0.15);
+  --shadow-sm: 0 2px 8px -1px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px -2px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 30px -5px rgba(0,0,0,0.5);
 }
 
 /* ── Reset ── */
@@ -96,7 +96,7 @@ body {
   background: var(--panel-bg);
   backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--panel-border);
-  border-radius: 24px;
+  border-radius: 16px;
   padding: 36px 32px;
   box-shadow: var(--shadow-lg);
   display: flex; flex-direction: column; gap: 24px;
@@ -309,7 +309,7 @@ body {
   display: flex; justify-content: space-between; align-items: center;
   background: var(--panel-bg); backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--panel-border);
-  padding: 14px 22px; border-radius: 18px; box-shadow: var(--shadow-md);
+  padding: 14px 22px; border-radius: 14px; box-shadow: var(--shadow-sm);
 }
 
 .page-title h2 { font-family: var(--font-title); font-size: 20px; font-weight: 700; }
@@ -357,8 +357,8 @@ body {
 /* Glass Card */
 .glass-card {
   background: var(--panel-bg); backdrop-filter: var(--backdrop-blur);
-  border: 1px solid var(--panel-border); border-radius: 20px;
-  padding: 22px; box-shadow: var(--shadow-md); position: relative; overflow: hidden;
+  border: 1px solid var(--panel-border); border-radius: 16px;
+  padding: 24px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
 }
 
 .card-header {
@@ -373,7 +373,7 @@ body {
 /* Buttons */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 10px 20px; border-radius: 12px; font-weight: 600; font-size: 13.5px;
+  padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 13.5px;
   cursor: pointer; transition: all var(--transition-fast); border: 1px solid transparent;
 }
 .btn-primary { background: var(--primary); color: #fff; }
@@ -428,28 +428,32 @@ select.form-control {
 .alert-demo i { color: var(--secondary); }
 
 /* Calendar */
-.calendar-view { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; overflow: hidden; }
+.calendar-view { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; }
 
-.calendar-header { display: grid; grid-template-columns: repeat(7,1fr); background: rgba(0,0,0,0.15); border-bottom: 1px solid var(--card-border); }
-.cal-head-day { padding: 10px; text-align: center; font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-right: 1px solid var(--card-border); }
+.calendar-header { display: grid; grid-template-columns: repeat(7,1fr); background: rgba(0,0,0,0.02); border-bottom: 1px solid var(--card-border); }
+.cal-head-day { padding: 12px 10px; text-align: center; font-weight: 600; font-size: 11px; text-transform: uppercase; color: var(--text-secondary); border-right: 1px solid var(--card-border); }
 .cal-head-day:last-child { border-right: none; }
 
 .calendar-body { display: grid; grid-template-columns: repeat(7,1fr); }
 .cal-cell {
-  padding: 14px 10px; border-right: 1px solid var(--card-border);
-  display: flex; flex-direction: column; gap: 6px;
-  cursor: pointer; min-height: 90px;
+  padding: 12px 10px; border-right: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border);
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer; min-height: 110px;
   transition: background-color var(--transition-fast);
 }
-.cal-cell:last-child { border-right: none; }
+.cal-cell:nth-child(7n) { border-right: none; }
 .cal-cell:hover { background: rgba(255,255,255,0.03); }
 .cal-cell.active { border-bottom: 3px solid var(--primary); }
-.cal-cell.weekend { background: rgba(239, 68, 68, 0.02); }
-.cal-cell.weekend:hover { background: rgba(239, 68, 68, 0.06); }
-.cal-cell.weekend.active { background: rgba(239, 68, 68, 0.08); }
-.cal-head-day.weekend { color: #ef4444; background: rgba(239, 68, 68, 0.04); }
-.cal-date { font-size: 10px; color: var(--text-muted); font-weight: 600; }
-.cal-dept-tag { font-size: 9px; padding: 2px 5px; border-radius: 5px; font-weight: 700; text-transform: uppercase; color: #fff; align-self: flex-start; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.cal-cell.weekend { background: rgba(0, 0, 0, 0.01); }
+.cal-cell.weekend:hover { background: rgba(0, 0, 0, 0.03); }
+.cal-cell.weekend.active { background: rgba(0, 0, 0, 0.04); border-bottom: 3px solid var(--primary); }
+.cal-head-day.weekend { color: var(--text-muted); background: rgba(0, 0, 0, 0.01); }
+.cal-date { font-size: 11px; color: var(--text-secondary); font-weight: 500; }
+.cal-dept-tag { 
+  font-size: 10px; padding: 4px 6px; border-radius: 6px; font-weight: 600; 
+  color: #fff; align-self: stretch; text-align: center; 
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+}
 
 .schedule-detail {
   display: flex; gap: 14px; align-items: flex-start;
