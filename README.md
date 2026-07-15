@@ -1,9 +1,9 @@
 # Knowledge Tracker (Trainee Program Milestone System)
 
-**Project Code:** VIMEI Knowledge Tracker  
+**Project Code:** Knowledge Tracker  
 **Development Team:** Antigravity  
 
-A knowledge management and training tracker single-page web application designed for **Chimei x Vikings Buffet** joint venture (VIMEI) in the Philippines. It tracks the training rotation learning objectives, field observation logs, and milestone accomplishments for Management Trainees (MAs).
+A knowledge management and training tracker single-page web application designed. It tracks the training rotation learning objectives, field observation logs, and milestone accomplishments for Management Trainees (MAs).
 
 ---
 
