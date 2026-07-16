@@ -426,6 +426,12 @@ function getCalendarMonthDays(dateStr) {
   for (let i = 0; i < 42; i++) {
     const temp = new Date(startDate);
     temp.setDate(startDate.getDate() + i);
+    
+    // Stop at 5 weeks (35 days) if the entire 6th week is in the next month
+    if (i === 35 && temp.getMonth() !== month) {
+      break;
+    }
+    
     const yyyy = temp.getFullYear();
     const mm = String(temp.getMonth() + 1).padStart(2, '0');
     const dd = String(temp.getDate()).padStart(2, '0');
