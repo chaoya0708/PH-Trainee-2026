@@ -1411,14 +1411,12 @@ function buildFeedItem(obs, user) {
   // Existing mentor feedback block
   let feedbackBlock = '';
   if (obs.mentorComment) {
-    const stars = '★'.repeat(obs.rating) + '☆'.repeat(5 - obs.rating);
     feedbackBlock = `
       <div class="comment-bubble">
         <div class="comment-bubble-header">
           <span>👑 ${obs.mentorName}</span>
           <span class="comment-bubble-time">${obs.feedbackAt}</span>
         </div>
-        <div style="color:var(--secondary);margin-bottom:3px;">${stars}</div>
         <p class="comment-bubble-text">${obs.mentorComment}</p>
       </div>
     `;
@@ -1445,13 +1443,7 @@ function buildFeedItem(obs, user) {
     actionHtml = `
       <div class="review-box">
         <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">${t('submitFeedbackBtn')}</p>
-        <div>
-          <label style="font-size:11px;font-weight:700;color:var(--text-secondary);">${t('ratingLabel')}</label>
-          <div class="rating-stars" id="stars-${obs.id}">
-            ${[1,2,3,4,5].map(n => `<i class="far fa-star" onclick="window.setRating('${obs.id}',${n})"></i>`).join('')}
-          </div>
-        </div>
-        <div class="form-group" style="margin-bottom:8px;">
+        <div class="form-group" style="margin-bottom:8px; margin-top:8px;">
           <textarea class="form-control" id="feedback-${obs.id}" rows="2" placeholder="${t('feedbackLabel')}..."></textarea>
         </div>
         <button class="btn btn-primary btn-sm" onclick="window.submitFeedback('${obs.id}')">
@@ -1517,14 +1509,13 @@ window.setRating = function(obsId, stars) {
 };
 
 window.submitFeedback = async function(obsId) {
-  const rating  = state.pendingRatings[obsId] || 0;
   const comment = ($('feedback-' + obsId) || {}).value || '';
-  if (!rating) { showToast(t('ratingRequired'), 'error'); return; }
+  if (!comment.trim()) { showToast(t('feedbackLabel') + ' is required', 'error'); return; }
 
   const user = Auth.getCurrentUser();
   showLoading();
   try {
-    await Api.submitFeedback(obsId, comment, user.name, rating);
+    await Api.submitFeedback(obsId, comment, user.name, 0);
     state.observations = await Api.getAllObservations();
     showToast(t('feedbackSuccess'), 'success');
     renderReview();
