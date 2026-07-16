@@ -1283,7 +1283,7 @@ function renderMilestones() {
         </div>
         <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">${t('milestoneSubTitle')}</p>
       </div>
-      <div class="grid-4">${deptCards}</div>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">${deptCards.join('')}</div>
     `;
 
     // Render charts

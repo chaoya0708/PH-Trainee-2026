@@ -82,6 +82,7 @@ const CONFIG = {
     yushan_qc: { id: 'yushan_qc', name: 'YUSHAN - QA/QC', nameZh: '玉膳 - 品管', shortZh: '玉膳品管', shortEn: 'YS QA', color: '#ea580c', icon: '', pin: '2001' },
     yushan_prep: { id: 'yushan_prep', name: 'YUSHAN - Pre-processing', nameZh: '玉膳 - 前處理段', shortZh: '前處理', shortEn: 'Prep', color: '#ea580c', icon: '', pin: '2002' },
     yushan_cooking: { id: 'yushan_cooking', name: 'YUSHAN - Cooking', nameZh: '玉膳 - 烹煮段', shortZh: '烹煮段', shortEn: 'Cook', color: '#ea580c', icon: '', pin: '2003' },
+    yushan_packaging: { id: 'yushan_packaging', name: 'YUSHAN - Packaging', nameZh: '玉膳 - 包裝段', shortZh: '包裝段', shortEn: 'Pkg', color: '#ea580c', icon: '', pin: '2004' },
     yushan_warehouse: { id: 'yushan_warehouse', name: 'YUSHAN - Warehouse & Cold Storage', nameZh: '玉膳 - 倉儲物流與凍庫管理', shortZh: '倉儲', shortEn: 'Whse', color: '#ea580c', icon: '', pin: '2005' },
     // Other (Records)
     holiday: { id: 'holiday', name: 'Day Off / Company Trip', nameZh: '休假日 / 員工旅遊', shortZh: '休假', shortEn: 'Off', color: '#10b981', icon: '', isRecordOnly: true }
