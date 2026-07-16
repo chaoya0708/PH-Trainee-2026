@@ -1013,6 +1013,9 @@ function renderForm() {
       </div>
       <p style="color:var(--text-secondary);font-size:13px;margin-bottom:18px;">${t('formSubTitle')}</p>
       <div class="alert-info"><span>${t('privateNotice')}</span></div>
+      <div class="alert-warning" style="margin-bottom:18px;background:rgba(234,88,12,0.1);color:#ea580c;padding:12px 16px;border-radius:8px;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600;">
+        <span>⚠️ ${state.activeLanguage === 'zh' ? '提醒：本週心得請於本週日 23:59 前送出，逾期將被標記為遲交。' : 'Reminder: Please submit your weekly journal by Sunday 23:59. Late submissions will be flagged.'}</span>
+      </div>
 
       <form id="obsForm" onsubmit="window.submitObsForm(event)">
         <div class="grid-2">
@@ -1501,10 +1504,28 @@ window.toggleAssessmentVisibility = async function(id, visible) {
 function buildFeedItem(obs, user) {
   const traineeConf = CONFIG.TRAINEES.find(t => t.id === obs.traineeId) || {};
   const dept        = CONFIG.DEPARTMENTS[obs.department] || {};
+  
+  let isLateStr = '';
+  if (obs.date && obs.submittedAt) {
+    const obsDate = new Date(obs.date);
+    if (!isNaN(obsDate.getTime())) {
+      const day = obsDate.getDay();
+      const daysToAdd = day === 0 ? 0 : 7 - day;
+      const deadline = new Date(obsDate);
+      deadline.setDate(obsDate.getDate() + daysToAdd);
+      deadline.setHours(23, 59, 59, 999);
+      
+      const submitted = new Date(obs.submittedAt);
+      if (!isNaN(submitted.getTime()) && submitted > deadline) {
+        isLateStr = `<span class="badge" style="background-color:#ef4444;margin-left:8px;">${state.activeLanguage === 'zh' ? '遲交 (Late)' : 'Late'}</span>`;
+      }
+    }
+  }
+
   const isReviewed  = obs.status === 'reviewed';
-  const badge       = isReviewed
+  const badge       = (isReviewed
     ? `<span class="badge badge-reviewed">✓ ${t('statusReviewed')}</span>`
-    : `<span class="badge badge-pending">⏳ ${t('statusPending')}</span>`;
+    : `<span class="badge badge-pending">⏳ ${t('statusPending')}</span>`) + isLateStr;
 
   // Existing mentor feedback block
   let feedbackBlock = '';
