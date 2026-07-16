@@ -650,7 +650,6 @@ textarea.form-control {
     -webkit-overflow-scrolling: touch;
   }
   .calendar-header, .calendar-body {
-    min-width: 680px;
   }
   .calendar-body { font-size: 10px; }
   .cal-cell { padding: 6px 4px; min-height: 55px; }

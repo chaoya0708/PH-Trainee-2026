@@ -516,7 +516,7 @@ function renderDashboard() {
         dateStr = state.activeLanguage === 'zh' ? `${monthName}${dateNum}日` : `${dateNum} ${monthName}`;
     }
 
-    let cellContent = `<span class="cal-date">${dateStr}</span>`;
+    let cellContent = isOutOfMonth ? '' : `<span class="cal-date">${dateStr}</span>`;
     
     if (dept) {
         cellContent += `<span class="cal-dept-tag" style="background:${dept.color}">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span>`;
