@@ -198,9 +198,14 @@ body {
 }
 
 .login-lang-select {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
   background: var(--card-bg); border: 1px solid var(--card-border);
-  color: var(--text-secondary); padding: 6px 12px; border-radius: 0;
+  color: var(--text-secondary); padding: 6px 12px; border-radius: 20px;
   font-size: 12px; cursor: pointer; outline: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 /* ══════════════════════════════════════
@@ -493,7 +498,7 @@ textarea.form-control {
   margin-top: 14px; background: rgba(14,165,233,0.05);
   border: 1px solid rgba(14,165,233,0.15); border-radius: 0; padding: 16px;
 }
-.sched-icon { font-size: 28px; width: 52px; height: 52px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sched-icon { font-size: 28px; width: 52px; height: 52px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .sched-content h4 { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
 .sched-content p  { font-size: 14px; font-weight: 500; color: var(--text-primary); }
 
@@ -540,7 +545,7 @@ textarea.form-control {
 .obs-block p  { font-size: 13px; color: var(--text-primary); }
 .obs-block p.idea { color: var(--secondary); font-weight: 500; }
 
-.obs-photo { max-width: 100%; max-height: 220px; object-fit: cover; border-radius: 0; border: 1px solid var(--card-border); }
+.obs-photo { max-width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border); }
 
 .review-box { background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
 
