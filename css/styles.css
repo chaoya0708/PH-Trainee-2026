@@ -858,3 +858,40 @@ select.form-control {
 .role-btn { border: 1px solid var(--card-border); }
 .role-btn:hover { background: var(--text-primary); color: var(--bg-color); border-color: var(--text-primary); }
 .role-btn:hover strong, .role-btn:hover small { color: var(--bg-color); }
+
+/* Siteinspire Mobile Overrides */
+@media (max-width: 768px) {
+  .brand-logo-large {
+    max-width: 180px !important;
+  }
+  .dashboard-logo {
+    max-width: 120px !important;
+  }
+  .login-card {
+    border: none;
+    border-top: 1px solid var(--text-primary);
+    border-bottom: 1px solid var(--text-primary);
+    padding: 30px 20px;
+    margin: 0;
+  }
+  .login-brand {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  .top-bar {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+  }
+  .main-content {
+    padding: 10px;
+  }
+  .glass-card {
+    border-left: none !important;
+    border-right: none !important;
+  }
+  .mobile-menu-toggle {
+    border: 1px solid var(--text-primary) !important;
+    border-radius: 0 !important;
+  }
+}
