@@ -1625,7 +1625,15 @@ function buildFeedItem(obs, user) {
             <p>${obs.date} · <span style="color:${dept.color}">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span></p>
           </div>
         </div>
-        ${badge}
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+          <div>${badge}</div>
+          ${user.role === 'admin' ? `
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:10px;" onclick="window.openEditObservation('${obs.id}')">✏️ Edit</button>
+              <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:10px; color:#ef4444; border-color:rgba(239,68,68,0.3);" onclick="window.deleteObservation('${obs.id}')">🗑️ Delete</button>
+            </div>
+          ` : ''}
+        </div>
       </div>
 
       <div style="margin-bottom:12px;">
@@ -1648,6 +1656,66 @@ function buildFeedItem(obs, user) {
 }
 
 window.setFilterTrainee = function(val) { _filterTrainee = val; renderReview(); };
+
+window.openEditObservation = function(id) {
+  const obs = state.observations.find(o => o.id === id);
+  if (!obs) return;
+  $('editObsId').value = obs.id;
+  $('editObsDate').value = obs.date;
+  $('editObsKey').value = obs.keyObservation;
+  $('editObsIdea').value = obs.actionableIdea || '';
+  $('editObsPhoto').value = obs.attachmentUrl || '';
+  $('editObsModal').style.display = 'flex';
+};
+
+window.saveEditedObservation = async function() {
+  const id = $('editObsId').value;
+  const data = {
+    date: $('editObsDate').value,
+    keyObservation: $('editObsKey').value.trim(),
+    actionableIdea: $('editObsIdea').value.trim(),
+    attachmentUrl: $('editObsPhoto').value.trim()
+  };
+  
+  showLoading();
+  $('editObsModal').style.display = 'none';
+  try {
+    const res = await Api.updateObservation(id, data);
+    if (res.success) {
+      showToast(state.activeLanguage === 'zh' ? '更新成功' : 'Update successful', 'success');
+      state.observations = await Api.getAllObservations();
+      renderReview();
+    } else {
+      showToast('Update failed.', 'error');
+    }
+  } catch(err) {
+    showToast('Error: ' + err.message, 'error');
+  } finally {
+    hideLoading();
+  }
+};
+
+window.deleteObservation = async function(id) {
+  if (!confirm(state.activeLanguage === 'zh' ? '確定要刪除這筆週記嗎？此操作無法復原。' : 'Are you sure you want to delete this observation? This cannot be undone.')) {
+    return;
+  }
+  showLoading();
+  try {
+    const res = await Api.deleteObservation(id);
+    if (res.success) {
+      showToast(state.activeLanguage === 'zh' ? '刪除成功' : 'Deleted successfully', 'success');
+      state.observations = await Api.getAllObservations();
+      renderReview();
+    } else {
+      showToast('Delete failed.', 'error');
+    }
+  } catch(err) {
+    showToast('Error: ' + err.message, 'error');
+  } finally {
+    hideLoading();
+  }
+};
+
 window.setFilterDept    = function(val) { _filterDept    = val; renderReview(); };
 
 window.setRating = function(obsId, stars) {

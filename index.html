@@ -289,6 +289,33 @@
   </main>
 </div><!-- /mainApp -->
 
+<!-- Edit Observation Modal -->
+<div id="editObsModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div class="glass-card" style="width:100%;max-width:500px;max-height:90vh;overflow-y:auto;background:var(--card-bg);padding:24px;">
+    <h3 style="margin-bottom:16px;">編輯週記 (Edit Observation)</h3>
+    <input type="hidden" id="editObsId">
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" class="form-control" id="editObsDate">
+    </div>
+    <div class="form-group">
+      <label>Key Observation</label>
+      <textarea class="form-control" id="editObsKey" rows="4"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Actionable Idea</label>
+      <textarea class="form-control" id="editObsIdea" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Attachment URL</label>
+      <input type="url" class="form-control" id="editObsPhoto">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:20px;">
+      <button class="btn btn-secondary" onclick="document.getElementById('editObsModal').style.display='none'">取消 Cancel</button>
+      <button class="btn btn-primary" onclick="window.saveEditedObservation()">儲存 Save</button>
+    </div>
+  </div>
+</div>
 
 <!-- Toast Notification -->
 <div class="toast" id="toastNotification">

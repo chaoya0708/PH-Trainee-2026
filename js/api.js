@@ -199,6 +199,29 @@ const Api = (() => {
       return callScript({ action: 'submitObservation', ...data });
     },
 
+    async updateObservation(id, data) {
+      if (CONFIG.DEMO_MODE) {
+        const obs = lsGet(LS_OBS);
+        const idx = obs.findIndex(o => o.id === id);
+        if (idx !== -1) {
+          obs[idx] = { ...obs[idx], ...data };
+          lsSave(LS_OBS, obs);
+        }
+        return { success: true };
+      }
+      return callScript({ action: 'updateObservation', id, data });
+    },
+
+    async deleteObservation(id) {
+      if (CONFIG.DEMO_MODE) {
+        let obs = lsGet(LS_OBS);
+        obs = obs.filter(o => o.id !== id);
+        lsSave(LS_OBS, obs);
+        return { success: true };
+      }
+      return callScript({ action: 'deleteObservation', id });
+    },
+
     async submitFeedback(obsId, mentorComment, mentorName, rating) {
       if (CONFIG.DEMO_MODE) {
         const obs = lsGet(LS_OBS);
