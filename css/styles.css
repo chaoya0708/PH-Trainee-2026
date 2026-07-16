@@ -430,30 +430,49 @@ select.form-control {
 /* Calendar */
 .calendar-view { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; }
 
+.calendar-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+.calendar-nav { display: flex; align-items: center; gap: 12px; }
+.calendar-nav-btn { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-primary); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition-fast); }
+.calendar-nav-btn:hover { background: var(--panel-border); }
+.calendar-title { font-size: 16px; font-weight: 700; color: var(--text-primary); min-width: 120px; text-align: center; }
+
+.calendar-toggle { display: flex; background: rgba(0,0,0,0.03); border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden; padding: 2px; }
+.cal-toggle-btn { padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 8px; color: var(--text-secondary); transition: all var(--transition-fast); border: none; background: transparent; }
+.cal-toggle-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
 .calendar-header { display: grid; grid-template-columns: repeat(7,1fr); background: rgba(0,0,0,0.02); border-bottom: 1px solid var(--card-border); }
 .cal-head-day { padding: 12px 10px; text-align: center; font-weight: 600; font-size: 11px; text-transform: uppercase; color: var(--text-secondary); border-right: 1px solid var(--card-border); }
 .cal-head-day:last-child { border-right: none; }
+.cal-head-day.weekend { color: var(--text-muted); background: rgba(0, 0, 0, 0.01); }
 
-.calendar-body { display: grid; grid-template-columns: repeat(7,1fr); }
+.calendar-body { display: grid; grid-template-columns: repeat(7,1fr); border-bottom: 1px solid var(--card-border); }
 .cal-cell {
-  padding: 12px 10px; border-right: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border);
-  display: flex; flex-direction: column; gap: 8px;
-  cursor: pointer; min-height: 110px;
+  padding: 8px 6px; border-right: 1px solid var(--card-border); border-top: 1px solid var(--card-border);
+  display: flex; flex-direction: column; gap: 4px;
+  cursor: pointer; min-height: 80px; position: relative;
   transition: background-color var(--transition-fast);
 }
+.cal-cell.month-cell { min-height: 70px; }
+.cal-cell.week-cell { min-height: 110px; padding: 12px 10px; gap: 8px; }
+.cal-cell.out-of-month { opacity: 0.4; background: rgba(0,0,0,0.01); }
+
 .cal-cell:nth-child(7n) { border-right: none; }
 .cal-cell:hover { background: rgba(255,255,255,0.03); }
-.cal-cell.active { border-bottom: 3px solid var(--primary); }
+.cal-cell.active { background: rgba(249,115,22,0.05); border-bottom: 3px solid var(--primary); }
 .cal-cell.weekend { background: rgba(0, 0, 0, 0.01); }
 .cal-cell.weekend:hover { background: rgba(0, 0, 0, 0.03); }
-.cal-cell.weekend.active { background: rgba(0, 0, 0, 0.04); border-bottom: 3px solid var(--primary); }
-.cal-head-day.weekend { color: var(--text-muted); background: rgba(0, 0, 0, 0.01); }
-.cal-date { font-size: 11px; color: var(--text-secondary); font-weight: 500; }
+
+.cal-date { font-size: 11px; color: var(--text-secondary); font-weight: 600; text-align: left; }
+.cal-cell.active .cal-date { color: var(--primary); font-weight: 700; }
+
 .cal-dept-tag { 
   font-size: 10px; padding: 4px 6px; border-radius: 6px; font-weight: 600; 
   color: #fff; align-self: stretch; text-align: center; 
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
 }
+
+.cal-dot-container { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 4px; justify-content: flex-start; }
+.cal-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
 .schedule-detail {
   display: flex; gap: 14px; align-items: flex-start;
@@ -615,8 +634,10 @@ select.form-control {
     min-width: 680px;
   }
   .calendar-body { font-size: 10px; }
-  .cal-cell { padding: 8px 4px; min-height: 70px; }
-  .cal-dept-tag { font-size: 8px; }
+  .cal-cell { padding: 6px 4px; min-height: 55px; }
+  .cal-cell.week-cell { min-height: 80px; }
+  .cal-dept-tag { font-size: 8px; padding: 2px 4px; }
+  .cal-dot { width: 6px; height: 6px; }
   .login-card { padding: 24px 16px; border-radius: 16px; margin: 10px; box-sizing: border-box; }
   .role-selector-grid { grid-template-columns: 1fr; gap: 10px; }
   .login-brand h1 { font-size: 22px !important; }
