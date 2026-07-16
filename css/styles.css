@@ -82,13 +82,9 @@ body {
 ══════════════════════════════════════ */
 .login-screen {
   position: fixed; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  display: flex; flex-direction: row;
   background: var(--bg-color);
-  background-image: var(--bg-gradient);
   z-index: 200;
-  padding: 20px;
-  gap: 16px;
 }
 
 .login-card {
@@ -893,5 +889,42 @@ select.form-control {
   .mobile-menu-toggle {
     border: 1px solid var(--text-primary) !important;
     border-radius: 0 !important;
+  }
+}
+
+/* Split Login Layout */
+.login-image-side {
+  flex: 1.2;
+  background-image: url('../assets/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  border-right: 1px solid var(--panel-border);
+}
+
+.login-form-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  overflow-y: auto;
+  background: var(--bg-color);
+}
+
+@media (max-width: 768px) {
+  .login-screen {
+    flex-direction: column;
+  }
+  .login-image-side {
+    flex: none;
+    height: 30vh;
+    border-right: none;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .login-form-side {
+    flex: none;
+    height: 70vh;
+    padding: 20px;
   }
 }
