@@ -228,6 +228,15 @@ async function enterApp() {
   await window.autoSyncSchedules();
   const user = Auth.getCurrentUser();
 
+  // Determine default language based on role
+  if (user.role === 'trainee') {
+    state.activeLanguage = 'en';
+  } else {
+    state.activeLanguage = 'zh';
+  }
+  document.documentElement.lang = state.activeLanguage === 'zh' ? 'zh-TW' : 'en';
+  if ($('langSelector')) $('langSelector').value = state.activeLanguage;
+
   // For trainees, always view their own data
   if (user.role === 'trainee') {
     state.selectedTraineeId = user.id;
@@ -261,7 +270,7 @@ async function enterApp() {
 
 // ── Top bar ───────────────────────────────────────────────────────
 function updateTopBar(user) {
-  $('currentUserAvatar').textContent = user.avatar;
+  $('currentUserAvatar').innerHTML = user.avatar || '<i class="fas fa-user"></i>';
   $('currentUserName').textContent   = user.name;
 
   // Show/hide nav items based on role
@@ -279,7 +288,7 @@ function updateTopBar(user) {
 
 // ── Sidebar profile ───────────────────────────────────────────────
 function updateSidebarProfile(user) {
-  $('sidebarAvatar').textContent = user.avatar;
+  $('sidebarAvatar').innerHTML = user.avatar || '<i class="fas fa-user"></i>';
   $('sidebarName').textContent   = user.name;
   $('sidebarBio').textContent    = user.bio;
 

@@ -49,21 +49,21 @@ const CONFIG = {
     {
       id: 'diane',
       name: '白妙儀 (Diane Solomon Barcelenia)',
-      avatar: '',
+      avatar: '<i class="fas fa-user-circle"></i>',
       pin: '1111',
       bio: ''
     },
     {
       id: 'mark',
       name: '段亦林 (Mark Jayzon Comon Dagala)',
-      avatar: '',
+      avatar: '<i class="fas fa-user-circle"></i>',
       pin: '2222',
       bio: ''
     },
     {
       id: 'jairuz',
       name: '侯俊材 (Jairuz Delos Reyes Nazareno)',
-      avatar: '',
+      avatar: '<i class="fas fa-user-circle"></i>',
       pin: '3333',
       bio: ''
     }
