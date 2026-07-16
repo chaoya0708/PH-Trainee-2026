@@ -474,7 +474,7 @@ window.selectViewTrainee = function(traineeId) {
     }
   }
 
-  renderAll(); // Re-render the whole view since we're switching global trainee
+  renderCurrentTab(); // Re-render the whole view since we're switching global trainee
 };
 
 window.selectCalDate = function(dateStr) {
