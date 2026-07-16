@@ -174,7 +174,41 @@ window.changeLanguageLogin = function(lang) {
 // MAIN APP ENTRY
 // ══════════════════════════════════════════════════════════════════
 
+window.autoSyncSchedules = async function() {
+  if (CONFIG.DEMO_MODE) return;
+  if (localStorage.getItem('synced_schedules_june_v3')) return;
+  const user = Auth.getCurrentUser();
+  if (user.role !== 'admin') return;
+
+  showLoading();
+  const msg = document.createElement('div');
+  msg.style.cssText = "position:fixed;bottom:20px;left:20px;background:#ea580c;color:#fff;padding:12px 24px;border-radius:12px;z-index:9999;font-weight:700;box-shadow:0 4px 12px rgba(234,88,12,0.3);";
+  msg.id = 'syncMsg';
+  document.body.appendChild(msg);
+
+  const schedules = CONFIG.DEFAULT_SCHEDULES;
+  let total = 0;
+  for (let t in schedules) total += Object.keys(schedules[t]).length;
+  let done = 0;
+
+  for (const traineeId of ['diane', 'mark', 'jairuz']) {
+    for (const [date, val] of Object.entries(schedules[traineeId])) {
+      msg.innerText = `🔄 系統正在為您自動上傳新版行事曆到資料庫... (${done}/${total})`;
+      try {
+        await Api.updateSchedule(traineeId, date, val.dept, val.objective);
+      } catch(e) {}
+      done++;
+    }
+  }
+  localStorage.setItem('synced_schedules_june_v3', 'true');
+  msg.innerText = '✅ 行事曆自動上傳完成！請重新整理網頁！';
+  setTimeout(() => msg.remove(), 6000);
+  hideLoading();
+  location.reload();
+};
+
 async function enterApp() {
+  await window.autoSyncSchedules();
   const user = Auth.getCurrentUser();
 
   // For trainees, always view their own data
