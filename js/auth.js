@@ -45,7 +45,8 @@ const Auth = {
     }
 
     else if (role === 'guest') {
-      if (credential === CONFIG.GUEST_CODE) {
+      const deptConfig = CONFIG.DEPARTMENTS[identifier];
+      if (deptConfig && credential === deptConfig.pin) {
         user = {
           role:   'guest',
           id:     'guest',
