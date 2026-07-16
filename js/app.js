@@ -8,13 +8,16 @@
  */
 
 // ── State ──────────────────────────────────────────────────────────
+const todayObj = new Date();
+const todayStr = todayObj.getFullYear() + '-' + String(todayObj.getMonth() + 1).padStart(2, '0') + '-' + String(todayObj.getDate()).padStart(2, '0');
+
 const state = {
   activeTab:          'dashboard',
   activeLanguage:     ['en', 'zh'].includes(localStorage.getItem('vimei_lang')) ? localStorage.getItem('vimei_lang') : 'en',
   activeTheme:        localStorage.getItem('vimei_theme') || 'light',
   selectedTraineeId:  'diane',
-  selectedDate:       '2026-07-27',
-  viewDate:           '2026-07-27',
+  selectedDate:       todayStr,
+  viewDate:           todayStr,
   calendarView:       'month',
   observations:       [],
   schedules:          {},
@@ -516,13 +519,7 @@ function renderDashboard() {
     let cellContent = `<span class="cal-date">${dateStr}</span>`;
     
     if (dept) {
-        if (isMonthView) {
-            cellContent += `<div class="cal-dot-container">
-                              <span class="cal-dot" style="background:${dept.color}" title="${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}"></span>
-                            </div>`;
-        } else {
-            cellContent += `<span class="cal-dept-tag" style="background:${dept.color}">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span>`;
-        }
+        cellContent += `<span class="cal-dept-tag" style="background:${dept.color}">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span>`;
     }
     
     return `
