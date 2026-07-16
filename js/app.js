@@ -1059,11 +1059,20 @@ function renderForm() {
 
         <div class="form-group">
           <label>${t('lblPhoto')}</label>
-          <input type="file" class="form-control" id="obsPhoto" accept=".pdf,.doc,.docx,.ppt,.pptx,image/*" required style="padding: 10px;">
-          <p style="font-size:12px;color:#ea580c;font-weight:600;margin-top:6px;line-height:1.4;">
+          <div style="display:flex; align-items:center; gap:12px; margin-top:4px;">
+            <input type="file" id="obsPhoto" accept=".pdf,.doc,.docx,.ppt,.pptx,image/*" required style="display:none;" 
+              onchange="document.getElementById('fileNameDisplay').textContent = this.files[0] ? this.files[0].name : (window.state.activeLanguage === 'zh' ? '尚未選取檔案' : 'No file chosen')">
+            <label for="obsPhoto" class="btn btn-secondary" style="cursor:pointer; margin:0;">
+              ${state.activeLanguage === 'zh' ? '選擇檔案' : 'Choose File'}
+            </label>
+            <span id="fileNameDisplay" style="font-size:13px; color:var(--text-secondary);">
+              ${state.activeLanguage === 'zh' ? '尚未選取檔案' : 'No file chosen'}
+            </span>
+          </div>
+          <p style="font-size:12px;color:#ea580c;font-weight:600;margin-top:8px;line-height:1.4;">
             ${state.activeLanguage === 'zh' 
-              ? '⚠️ 請上傳您的週報檔案（限 PDF, Word, PowerPoint 或圖片格式），檔案大小請勿超過 20MB。' 
-              : '⚠️ Please upload your report file (PDF, Word, PowerPoint, or image allowed). Max file size is 20MB.'}
+              ? '⚠️ 建議轉檔成 PDF 再上傳，請不要直接上傳 Word 或 PowerPoint。檔案大小請勿超過 20MB。' 
+              : '⚠️ It is recommended to convert to PDF before uploading. Please do not upload Word or PowerPoint directly. Max file size is 20MB.'}
           </p>
         </div>
 
