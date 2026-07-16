@@ -462,6 +462,18 @@ window.navigateCalendar = function(direction) {
 
 window.selectViewTrainee = function(traineeId) {
   state.selectedTraineeId = traineeId;
+  
+  // Auto-jump to the trainee's next available schedule
+  if (state.activeTab === 'dashboard' && state.schedules && state.schedules[traineeId]) {
+    const dates = Object.keys(state.schedules[traineeId]).sort();
+    if (dates.length > 0) {
+      let nextDate = dates.find(d => d >= (state.selectedDate || state.viewDate));
+      if (!nextDate) nextDate = dates[0];
+      state.selectedDate = nextDate;
+      state.viewDate = nextDate;
+    }
+  }
+
   renderAll(); // Re-render the whole view since we're switching global trainee
 };
 
@@ -962,7 +974,7 @@ function renderMilestones() {
         <div class="trainee-tabs">
           ${CONFIG.TRAINEES.map(tr => `
             <button class="trainee-tab-btn ${state.selectedTraineeId === tr.id ? 'active' : ''}"
-              onclick="window.selectViewTrainee('${tr.id}'); window.renderMilestonesView();">
+              onclick="window.selectViewTrainee('${tr.id}')">
               ${tr.avatar ? tr.avatar + ' ' : ''}${tr.name}
             </button>
           `).join('')}
