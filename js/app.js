@@ -1332,7 +1332,7 @@ function renderReview() {
         </div>
         <div class="form-group" style="margin-top:14px;">
           <label>${state.activeLanguage === 'zh' ? '考評者署名' : 'Assessor Signature'}</label>
-          <input type="text" class="form-control" id="assessSigner" placeholder="${state.activeLanguage === 'zh' ? '請輸入考評主管姓名...' : 'Enter assessor name...'}" value="${user.name}">
+          <input type="text" class="form-control" id="assessSigner" placeholder="${state.activeLanguage === 'zh' ? '請輸入考評主管姓名...' : 'Enter assessor name...'}">
         </div>
         <div style="display:flex;justify-content:flex-end;margin-top:14px;">
           <button class="btn btn-primary" onclick="window.submitStationAssessment()">${t('btnSubmitAssess')}</button>
@@ -1380,7 +1380,12 @@ window.submitStationAssessment = async function() {
   const comp5 = ratings.comp5 || 3;
 
   const user = Auth.getCurrentUser();
-  const assessor = explicitSigner || user.name;
+  const assessor = explicitSigner;
+
+  if (!assessor) {
+    showToast('請輸入考評者署名 / Please enter assessor signature.', 'error');
+    return;
+  }
 
   if (!comments.trim()) {
     showToast('請輸入考核總評語 / Please enter overall assessment comments.', 'error');
