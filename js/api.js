@@ -358,6 +358,29 @@ const Api = (() => {
       });
     },
 
+    async updateAssessment(id, data) {
+      if (CONFIG.DEMO_MODE) {
+        const list = lsGet(LS_ASSESS);
+        const idx = list.findIndex(a => a.id === id);
+        if (idx !== -1) {
+          list[idx] = { ...list[idx], ...data };
+          lsSave(LS_ASSESS, list);
+        }
+        return { success: true };
+      }
+      return callScript({ action: 'updateAssessment', id, data });
+    },
+
+    async deleteAssessment(id) {
+      if (CONFIG.DEMO_MODE) {
+        let list = lsGet(LS_ASSESS);
+        list = list.filter(a => a.id !== id);
+        lsSave(LS_ASSESS, list);
+        return { success: true };
+      }
+      return callScript({ action: 'deleteAssessment', id });
+    },
+
     async updateAssessmentVisibility(id, visibleToTrainee) {
       if (CONFIG.DEMO_MODE) {
         const list = lsGet(LS_ASSESS);

@@ -317,6 +317,68 @@
   </div>
 </div>
 
+<!-- Edit Assessment Modal -->
+<div id="editAssessModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div class="glass-card" style="width:100%;max-width:600px;max-height:90vh;overflow-y:auto;background:var(--card-bg);padding:24px;">
+    <h3 style="margin-bottom:16px;">編輯主管考核 (Edit Assessment)</h3>
+    <input type="hidden" id="editAssessId">
+    <div class="form-group">
+      <label>Department / Station</label>
+      <select class="form-control" id="editAssessDept"></select>
+    </div>
+    
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Overall Grade</label>
+        <select class="form-control" id="editAssessGrade">
+          <option value="A">A - Excellent</option>
+          <option value="B">B - Good</option>
+          <option value="C">C - Average</option>
+          <option value="D">D - Needs Improvement</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Assessor Signature</label>
+        <input type="text" class="form-control" id="editAssessSigner">
+      </div>
+    </div>
+
+    <!-- Competencies (Star Ratings) -->
+    <div style="margin-top:12px; padding:12px; background:var(--bg-color); border-radius:8px;">
+      <div class="form-group" style="margin-bottom:8px;">
+        <label style="font-size:11px;">1. Understands flow/bottlenecks (理解流程與瓶頸)</label>
+        <input type="number" min="1" max="5" class="form-control" id="editAssessComp1" style="width:80px; display:inline-block; margin-left:12px;"> / 5
+      </div>
+      <div class="form-group" style="margin-bottom:8px;">
+        <label style="font-size:11px;">2. Accurate documentation (文件記錄正確性)</label>
+        <input type="number" min="1" max="5" class="form-control" id="editAssessComp2" style="width:80px; display:inline-block; margin-left:12px;"> / 5
+      </div>
+      <div class="form-group" style="margin-bottom:8px;">
+        <label style="font-size:11px;">3. Proactive learning (主動學習態度)</label>
+        <input type="number" min="1" max="5" class="form-control" id="editAssessComp3" style="width:80px; display:inline-block; margin-left:12px;"> / 5
+      </div>
+      <div class="form-group" style="margin-bottom:8px;">
+        <label style="font-size:11px;">4. Team collaboration (團隊合作與溝通)</label>
+        <input type="number" min="1" max="5" class="form-control" id="editAssessComp4" style="width:80px; display:inline-block; margin-left:12px;"> / 5
+      </div>
+      <div class="form-group" style="margin-bottom:8px;">
+        <label style="font-size:11px;">5. Practical ideation (實務提案能力)</label>
+        <input type="number" min="1" max="5" class="form-control" id="editAssessComp5" style="width:80px; display:inline-block; margin-left:12px;"> / 5
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:12px;">
+      <label>Overall Comments</label>
+      <textarea class="form-control" id="editAssessComments" rows="3"></textarea>
+    </div>
+    
+    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:20px;">
+      <button class="btn btn-secondary" onclick="document.getElementById('editAssessModal').style.display='none'">取消 Cancel</button>
+      <button class="btn btn-primary" onclick="window.saveEditedAssessment()">儲存 Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast Notification -->
 <div class="toast" id="toastNotification">
   <i class="fas fa-info-circle"></i>

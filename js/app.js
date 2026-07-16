@@ -1200,10 +1200,14 @@ function renderMilestones() {
               
               ${user.role === 'admin' ? `
               <div style="margin-top:10px;border-top:1px solid rgba(234,88,12,0.15);padding-top:10px;">
-                <label style="font-size:11px;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-secondary);">
+                <label style="font-size:11px;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-secondary);margin-bottom:8px;">
                   <input type="checkbox" onchange="window.toggleAssessmentVisibility('${assessment.id}', this.checked)" ${assessment.visibleToTrainee ? 'checked' : ''} style="cursor:pointer;">
                   ${state.activeLanguage === 'zh' ? '允許學生查看此考核 (Allow Trainee to View)' : 'Allow Trainee to View'}
                 </label>
+                <div style="display:flex; gap:8px;">
+                  <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:10px;" onclick="window.openEditAssessment('${assessment.id}')">✏️ Edit</button>
+                  <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:10px; color:#ef4444; border-color:rgba(239,68,68,0.3);" onclick="window.deleteAssessment('${assessment.id}')">🗑️ Delete</button>
+                </div>
               </div>
               ` : ''}
             </div>
@@ -1715,6 +1719,83 @@ window.deleteObservation = async function(id) {
     hideLoading();
   }
 };
+
+window.openEditAssessment = function(id) {
+  const asm = state.assessments.find(a => a.id === id);
+  if (!asm) return;
+  $('editAssessId').value = asm.id;
+  
+  // Populate Dept dropdown
+  const deptSelect = $('editAssessDept');
+  deptSelect.innerHTML = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d => 
+    `<option value="${d.id}" ${asm.department === d.id ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
+  ).join('');
+  
+  $('editAssessGrade').value = asm.grade;
+  $('editAssessSigner').value = asm.assessor;
+  $('editAssessComp1').value = asm.competency1;
+  $('editAssessComp2').value = asm.competency2;
+  $('editAssessComp3').value = asm.competency3;
+  $('editAssessComp4').value = asm.competency4;
+  $('editAssessComp5').value = asm.competency5 || 3;
+  $('editAssessComments').value = asm.comments;
+  
+  $('editAssessModal').style.display = 'flex';
+};
+
+window.saveEditedAssessment = async function() {
+  const id = $('editAssessId').value;
+  const data = {
+    department: $('editAssessDept').value,
+    grade: $('editAssessGrade').value,
+    assessor: $('editAssessSigner').value.trim(),
+    competency1: Number($('editAssessComp1').value),
+    competency2: Number($('editAssessComp2').value),
+    competency3: Number($('editAssessComp3').value),
+    competency4: Number($('editAssessComp4').value),
+    competency5: Number($('editAssessComp5').value),
+    comments: $('editAssessComments').value.trim()
+  };
+  
+  showLoading();
+  $('editAssessModal').style.display = 'none';
+  try {
+    const res = await Api.updateAssessment(id, data);
+    if (res.success) {
+      showToast(state.activeLanguage === 'zh' ? '更新成功' : 'Update successful', 'success');
+      state.assessments = await Api.getAssessments();
+      renderMilestones();
+    } else {
+      showToast('Update failed.', 'error');
+    }
+  } catch(err) {
+    showToast('Error: ' + err.message, 'error');
+  } finally {
+    hideLoading();
+  }
+};
+
+window.deleteAssessment = async function(id) {
+  if (!confirm(state.activeLanguage === 'zh' ? '確定要刪除這筆考核嗎？此操作無法復原。' : 'Are you sure you want to delete this assessment? This cannot be undone.')) {
+    return;
+  }
+  showLoading();
+  try {
+    const res = await Api.deleteAssessment(id);
+    if (res.success) {
+      showToast(state.activeLanguage === 'zh' ? '刪除成功' : 'Deleted successfully', 'success');
+      state.assessments = await Api.getAssessments();
+      renderMilestones();
+    } else {
+      showToast('Delete failed.', 'error');
+    }
+  } catch(err) {
+    showToast('Error: ' + err.message, 'error');
+  } finally {
+    hideLoading();
+  }
+};
+
 
 window.setFilterDept    = function(val) { _filterDept    = val; renderReview(); };
 
