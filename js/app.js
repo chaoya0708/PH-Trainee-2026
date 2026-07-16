@@ -891,3 +891,10 @@ function setupMainEventListeners() {
   // Set lang selector to current language
   if (langSel) langSel.value = state.activeLanguage;
 }
+
+function calcOverallProgress(traineeId) {
+  const depts = Object.keys(CONFIG.DEPARTMENTS);
+  const sum = depts.reduce((acc, d) =>
+    acc + calculateMilestoneProgress(state.observations, traineeId, d), 0);
+  return Math.round(sum / depts.length);
+}
