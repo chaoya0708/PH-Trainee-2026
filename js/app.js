@@ -1033,9 +1033,11 @@ function renderForm() {
 
         <div class="form-group">
           <label>${t('lblPhoto')}</label>
-          <input type="url" class="form-control" id="obsPhoto" placeholder="${t('phPhoto')}">
-          <p style="font-size:11px;color:var(--warning);margin-top:6px;line-height:1.4;">
-            請用word 或powerpoint完成，轉成pdf檔案上傳到自己gmail信箱空間，並把檔案設為公開連結，再將連結貼到此欄位中。
+          <input type="url" class="form-control" id="obsPhoto" placeholder="${t('phPhoto')}" required>
+          <p style="font-size:12px;color:#ea580c;font-weight:600;margin-top:6px;line-height:1.4;">
+            ${state.activeLanguage === 'zh' 
+              ? '⚠️ 請用 Word 或 PowerPoint 完成，轉成 PDF 檔案上傳到自己 Gmail 信箱雲端空間，並把檔案設為「公開連結」，再將連結貼到此欄位中。' 
+              : '⚠️ Please use Word or PowerPoint to create your report, save it as a PDF, upload it to your personal Google Drive, set the file link to "Anyone with the link", and paste the link here.'}
           </p>
         </div>
 
