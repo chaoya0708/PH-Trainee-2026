@@ -281,7 +281,20 @@ const Api = (() => {
 
     async getAssessments() {
       if (CONFIG.DEMO_MODE) return lsGet(LS_ASSESS);
-      return callScriptGet('getAssessments');
+      const data = await callScriptGet('getAssessments');
+      // Normalize visibleToTrainee in case the Google Sheet header is empty ("") or missing
+      if (Array.isArray(data)) {
+        data.forEach(d => {
+          if (d.visibleToTrainee === undefined) {
+            // Fallbacks for the 12th column which might not have a header
+            if (d[''] !== undefined) d.visibleToTrainee = (d[''] === true || d[''] === 'true' || d[''] === 'TRUE');
+            else d.visibleToTrainee = false;
+          } else {
+            d.visibleToTrainee = (d.visibleToTrainee === true || d.visibleToTrainee === 'true' || d.visibleToTrainee === 'TRUE');
+          }
+        });
+      }
+      return data;
     },
 
     async submitAssessment(traineeId, department, grade, competency1, competency2, competency3, competency4, competency5, comments, assessor) {
