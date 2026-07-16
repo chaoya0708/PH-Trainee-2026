@@ -1034,6 +1034,9 @@ function renderForm() {
         <div class="form-group">
           <label>${t('lblPhoto')}</label>
           <input type="url" class="form-control" id="obsPhoto" placeholder="${t('phPhoto')}">
+          <p style="font-size:11px;color:var(--warning);margin-top:6px;line-height:1.4;">
+            請用word 或powerpoint完成，轉成pdf檔案上傳到自己gmail信箱空間，並把檔案設為公開連結，再將連結貼到此欄位中。
+          </p>
         </div>
 
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:4px;">
@@ -1579,7 +1582,10 @@ function buildFeedItem(obs, user) {
 
       ${obs.attachmentUrl ? `
         <div class="obs-block">
-          <img src="${obs.attachmentUrl}" class="obs-photo" alt="Attachment" onerror="this.style.display='none'">
+          <h5>${state.activeLanguage === 'zh' ? '照片或報告檔案連結' : 'Attachment Link'}</h5>
+          <a href="${obs.attachmentUrl}" target="_blank" style="color:var(--primary);text-decoration:underline;word-break:break-all;font-size:12px;display:inline-block;margin-top:4px;">
+            <i class="fas fa-external-link-alt"></i> ${obs.attachmentUrl}
+          </a>
         </div>` : ''}
 
       ${feedbackBlock}
