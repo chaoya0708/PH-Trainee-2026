@@ -1036,11 +1036,11 @@ function renderForm() {
 
         <div class="form-group">
           <label>${t('lblPhoto')}</label>
-          <input type="url" class="form-control" id="obsPhoto" placeholder="${t('phPhoto')}" required>
+          <input type="file" class="form-control" id="obsPhoto" accept=".pdf,.doc,.docx,.ppt,.pptx,image/*" required style="padding: 10px;">
           <p style="font-size:12px;color:#ea580c;font-weight:600;margin-top:6px;line-height:1.4;">
             ${state.activeLanguage === 'zh' 
-              ? '⚠️ 請用 Word 或 PowerPoint 完成，轉成 PDF 檔案上傳到自己 Gmail 信箱雲端空間，並把檔案設為「公開連結」，再將連結貼到此欄位中。' 
-              : '⚠️ Please use Word or PowerPoint to create your report, save it as a PDF, upload it to your personal Google Drive, set the file link to "Anyone with the link", and paste the link here.'}
+              ? '⚠️ 請上傳您的週報檔案（限 PDF, Word, PowerPoint 或圖片格式），檔案大小請勿超過 10MB。' 
+              : '⚠️ Please upload your report file (PDF, Word, PowerPoint, or image allowed). Max file size is 10MB.'}
           </p>
         </div>
 
@@ -1055,27 +1055,56 @@ function renderForm() {
 window.submitObsForm = async function(e) {
   e.preventDefault();
   const user = Auth.getCurrentUser();
-  const data = {
-    traineeId:      user.id,
-    traineeName:    user.name,
-    date:           $('obsDate').value,
-    department:     $('obsDept').value,
-    keyObservation: $('obsKey').value.trim(),
-    actionableIdea: '',
-    attachmentUrl:  $('obsPhoto').value.trim()
-  };
+  const fileInput = $('obsPhoto');
+  const file = fileInput.files[0];
+  
+  if (!file) {
+    showToast('Please select a file.', 'error');
+    return;
+  }
+  
+  if (file.size > 10 * 1024 * 1024) {
+    showToast(state.activeLanguage === 'zh' ? '檔案太大！請上傳小於 10MB 的檔案。' : 'File is too large! Max 10MB.', 'error');
+    return;
+  }
 
   showLoading();
-  try {
-    await Api.submitObservation(data);
-    state.observations = await Api.getObservationsForTrainee(user.id);
-    showToast(t('submitSuccess'), 'success');
-    switchTab('dashboard');
-  } catch(err) {
-    showToast('Submit failed: ' + err.message, 'error');
-  } finally {
+  
+  const reader = new FileReader();
+  reader.onload = async function(ev) {
+    try {
+      const base64Data = ev.target.result.split(',')[1];
+      const data = {
+        traineeId:      user.id,
+        traineeName:    user.name,
+        date:           $('obsDate').value,
+        department:     $('obsDept').value,
+        keyObservation: $('obsKey').value.trim(),
+        actionableIdea: '',
+        fileData: {
+          fileName: file.name,
+          mimeType: file.type,
+          base64: base64Data
+        }
+      };
+
+      await Api.submitObservation(data);
+      state.observations = await Api.getObservationsForTrainee(user.id);
+      showToast(t('submitSuccess'), 'success');
+      switchTab('dashboard');
+    } catch(err) {
+      showToast('Submit failed: ' + err.message, 'error');
+    } finally {
+      hideLoading();
+    }
+  };
+  
+  reader.onerror = function() {
+    showToast('Failed to read file.', 'error');
     hideLoading();
-  }
+  };
+  
+  reader.readAsDataURL(file);
 };
 
 // ══════════════════════════════════════════════════════════════════
