@@ -446,18 +446,58 @@ window.toggleCalendarView = function(view) {
 };
 
 window.navigateCalendar = function(direction) {
-  const d = new Date(state.viewDate || state.selectedDate);
-  if (state.calendarView === 'month') {
-    d.setMonth(d.getMonth() + direction);
+  const isMonthView = state.calendarView === 'month';
+  const targetDateObj = new Date(state.viewDate);
+  if (isMonthView) {
+    targetDateObj.setMonth(targetDateObj.getMonth() + direction);
   } else {
-    d.setDate(d.getDate() + (direction * 7));
+    targetDateObj.setDate(targetDateObj.getDate() + (direction * 7));
   }
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
+  const yyyy = targetDateObj.getFullYear();
+  const mm = String(targetDateObj.getMonth() + 1).padStart(2, '0');
+  const dd = String(targetDateObj.getDate()).padStart(2, '0');
   state.viewDate = `${yyyy}-${mm}-${dd}`;
   renderDashboard();
 };
+
+window.selectViewTrainee = function(traineeId) {
+  state.selectedTraineeId = traineeId;
+  renderAll(); // Re-render the whole view since we're switching global trainee
+};
+
+window.selectCalDate = function(dateStr) {
+  state.selectedDate = dateStr;
+  renderDashboard();
+};
+
+window.openEditSchedule = function() {
+  state.editingSchedule = true;
+  renderDashboard();
+};
+
+window.cancelEditSchedule = function() {
+  state.editingSchedule = false;
+  renderDashboard();
+};
+
+window.saveSchedule = async function(traineeId, dateStr) {
+  const dept = document.getElementById('editDept').value;
+  const objective = document.getElementById('editObj').value;
+  
+  showLoading();
+  try {
+    await Api.updateSchedule(traineeId, dateStr, dept, objective);
+    if (!state.schedules[traineeId]) state.schedules[traineeId] = {};
+    state.schedules[traineeId][dateStr] = { dept, objective };
+    state.editingSchedule = false;
+    renderDashboard();
+  } catch (err) {
+    alert(t('submitError') || 'Submit Error');
+  } finally {
+    hideLoading();
+  }
+};
+
 
 function renderDashboard() {
   const user    = Auth.getCurrentUser();

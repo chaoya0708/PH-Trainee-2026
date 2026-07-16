@@ -246,9 +246,21 @@ const Api = (() => {
       if (!res) return {};
       const normalized = {};
       for (const dStr in res) {
-        const cleanStr = dStr.replace(/\(.*?\)/g, '').trim();
-        const d = new Date(cleanStr);
-        const key = isNaN(d) ? dStr : d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        let key = dStr;
+        const parts = dStr.match(/([a-zA-Z]{3}) (\d{1,2}) (\d{4})/);
+        if (parts) {
+          const monthMap = { Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6, Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12 };
+          const yyyy = parts[3];
+          const mm = String(monthMap[parts[1]]).padStart(2, '0');
+          const dd = String(parts[2]).padStart(2, '0');
+          key = `${yyyy}-${mm}-${dd}`;
+        } else {
+          const cleanStr = dStr.replace(/\(.*?\)/g, '').trim();
+          const d = new Date(cleanStr);
+          if (!isNaN(d)) {
+            key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+          }
+        }
         normalized[key] = res[dStr];
       }
       return normalized;
