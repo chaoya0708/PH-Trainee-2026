@@ -1039,8 +1039,8 @@ function renderForm() {
           <input type="file" class="form-control" id="obsPhoto" accept=".pdf,.doc,.docx,.ppt,.pptx,image/*" required style="padding: 10px;">
           <p style="font-size:12px;color:#ea580c;font-weight:600;margin-top:6px;line-height:1.4;">
             ${state.activeLanguage === 'zh' 
-              ? '⚠️ 請上傳您的週報檔案（限 PDF, Word, PowerPoint 或圖片格式），檔案大小請勿超過 10MB。' 
-              : '⚠️ Please upload your report file (PDF, Word, PowerPoint, or image allowed). Max file size is 10MB.'}
+              ? '⚠️ 請上傳您的週報檔案（限 PDF, Word, PowerPoint 或圖片格式），檔案大小請勿超過 20MB。' 
+              : '⚠️ Please upload your report file (PDF, Word, PowerPoint, or image allowed). Max file size is 20MB.'}
           </p>
         </div>
 
@@ -1063,8 +1063,8 @@ window.submitObsForm = async function(e) {
     return;
   }
   
-  if (file.size > 10 * 1024 * 1024) {
-    showToast(state.activeLanguage === 'zh' ? '檔案太大！請上傳小於 10MB 的檔案。' : 'File is too large! Max 10MB.', 'error');
+  if (file.size > 20 * 1024 * 1024) {
+    showToast(state.activeLanguage === 'zh' ? '檔案太大！請上傳小於 20MB 的檔案。' : 'File is too large! Max 20MB.', 'error');
     return;
   }
 
