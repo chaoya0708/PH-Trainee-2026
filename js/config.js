@@ -74,7 +74,7 @@ const CONFIG = {
   // ----------------------------------------------------------------
   DEPARTMENTS: {
     // Chimei
-    cmf_production: { id: 'cmf_production', name: 'CHIMEI - Production', nameZh: '奇美 - 生產', shortZh: '生產', shortEn: 'Prod', color: '#64748b', icon: '', pin: '1001' },
+    cmf_production: { id: 'cmf_production', name: 'CHIMEI - Manufacturing', nameZh: '奇美 - 生產製造', shortZh: '生產製造', shortEn: 'Mfg', color: '#64748b', icon: '', pin: '1001' },
     cmf_qc: { id: 'cmf_qc', name: 'CHIMEI - QA/QC', nameZh: '奇美 - 品管', shortZh: '品管', shortEn: 'QA/QC', color: '#64748b', icon: '', pin: '1002' },
     cmf_rd_chinese: { id: 'cmf_rd_chinese', name: 'CHIMEI - R&D (Chinese Dim Sum)', nameZh: '奇美 - 研發 (中點)', shortZh: '研發中', shortEn: 'R&D(C)', color: '#64748b', icon: '', pin: '1003' },
     cmf_rd_western: { id: 'cmf_rd_western', name: 'CHIMEI - R&D (Western Pastry)', nameZh: '奇美 - 研發 (西點)', shortZh: '研發西', shortEn: 'R&D(W)', color: '#64748b', icon: '', pin: '1004' },
