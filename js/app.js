@@ -220,6 +220,11 @@ async function enterApp() {
   // For trainees, always view their own data
   if (user.role === 'trainee') {
     state.selectedTraineeId = user.id;
+    if ($('liReview')) $('liReview').style.display = 'none';
+    if ($('liForm')) $('liForm').style.display = 'flex';
+  } else {
+    if ($('liForm')) $('liForm').style.display = 'none';
+    if ($('liReview')) $('liReview').style.display = 'flex';
   }
 
   $('loginScreen').style.display = 'none';
