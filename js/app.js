@@ -955,6 +955,90 @@ function setupMainEventListeners() {
   if (langSel) langSel.value = state.activeLanguage;
 }
 
+// ══════════════════════════════════════════════════════════════════
+// 2. OBSERVATION FORM
+// ══════════════════════════════════════════════════════════════════
+
+function renderForm() {
+  const user      = Auth.getCurrentUser();
+  if (user.role !== 'trainee') return;
+
+  const container = $('sectionForm');
+  const sched     = (state.schedules[user.id] || {})[state.selectedDate];
+  const presetDept = sched ? sched.dept : 'yushan_prep';
+
+  const deptOptions = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
+    `<option value="${d.id}" ${d.id === presetDept ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
+  ).join('');
+
+  container.innerHTML = `
+    <div class="glass-card">
+      <div class="card-header">
+        <h3>${t('formTitle')}</h3>
+      </div>
+      <p style="color:var(--text-secondary);font-size:13px;margin-bottom:18px;">${t('formSubTitle')}</p>
+      <div class="alert-info"><span>${t('privateNotice')}</span></div>
+
+      <form id="obsForm" onsubmit="window.submitObsForm(event)">
+        <div class="grid-2">
+          <div class="form-group">
+            <label>${t('lblDept')}</label>
+            <select class="form-control" id="obsDept" required>${deptOptions}</select>
+          </div>
+          <div class="form-group">
+            <label>${t('lblDate')}</label>
+            <input type="date" class="form-control" id="obsDate" value="${state.selectedDate}" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>${t('lblKeyObs')}</label>
+          <textarea class="form-control" id="obsKey" rows="4" placeholder="${t('phKeyObs')}" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>${t('lblPhoto')}</label>
+          <input type="url" class="form-control" id="obsPhoto" placeholder="${t('phPhoto')}">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:4px;">
+          ${t('submitBtn')}
+        </button>
+      </form>
+    </div>
+  `;
+}
+
+window.submitObsForm = async function(e) {
+  e.preventDefault();
+  const user = Auth.getCurrentUser();
+  const data = {
+    traineeId:      user.id,
+    traineeName:    user.name,
+    date:           $('obsDate').value,
+    department:     $('obsDept').value,
+    keyObservation: $('obsKey').value.trim(),
+    actionableIdea: '',
+    attachmentUrl:  $('obsPhoto').value.trim()
+  };
+
+  showLoading();
+  try {
+    await Api.submitObservation(data);
+    state.observations = await Api.getObservationsForTrainee(user.id);
+    showToast(t('submitSuccess'), 'success');
+    switchTab('dashboard');
+  } catch(err) {
+    showToast('Submit failed: ' + err.message, 'error');
+  } finally {
+    hideLoading();
+  }
+};
+
+// ══════════════════════════════════════════════════════════════════
+// 3. MILESTONE TRACKER
+// ══════════════════════════════════════════════════════════════════
+
 function calcOverallProgress(traineeId) {
   const depts = Object.keys(CONFIG.DEPARTMENTS);
   const sum = depts.reduce((acc, d) =>
