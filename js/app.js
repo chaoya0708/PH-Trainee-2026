@@ -109,6 +109,15 @@ window.selectLoginRole = function(role) {
     $('loginStepGuest').style.display = 'flex';
     $('guestCodeInput').value = '';
     $('loginError3').style.display = 'none';
+
+    // Populate department select for guest
+    if ($('guestDeptSelect')) {
+      $('guestDeptSelect').innerHTML = Object.values(CONFIG.DEPARTMENTS)
+        .filter(d => d.id !== 'holiday')
+        .map(d => `<option value="${d.id}">${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`)
+        .join('');
+    }
+
     setTimeout(() => $('guestCodeInput').focus(), 50);
 
   } else if (role === 'executive') {
@@ -142,6 +151,7 @@ window.backToTraineeName  = function() {
 window.handleLogin = async function() {
   let credential = '';
   let errorEl    = null;
+  let identifier = _loginTraineeId || _loginRole; // default
 
   if (_loginRole === 'admin') {
     credential = $('adminPinInput').value;
@@ -152,12 +162,13 @@ window.handleLogin = async function() {
   } else if (_loginRole === 'guest') {
     credential = $('guestCodeInput').value.trim();
     errorEl    = $('loginError3');
+    identifier = $('guestDeptSelect').value; // Use department as identifier for guest
   } else if (_loginRole === 'executive') {
     credential = $('executiveCodeInput').value.trim();
     errorEl    = $('loginError4');
   }
 
-  const ok = Auth.login(_loginRole, _loginTraineeId || _loginRole, credential);
+  const ok = Auth.login(_loginRole, identifier, credential);
 
   if (ok) {
     await enterApp();
@@ -724,13 +735,29 @@ function renderAnalytics() {
   const container = $('sectionAnalytics');
   if (!container) return;
 
+  const user = Auth.getCurrentUser();
+  const isGuest = user.role === 'guest';
   const trainees = CONFIG.TRAINEES;
-  const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday');
+  let depts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday');
+  
+  // Restrict guest visibility to their own department
+  if (isGuest) {
+    depts = depts.filter(d => d.id === user.departmentId);
+  }
 
   // 1. KPI Calculations
-  const totalObs = state.observations.length;
+  let totalObs = 0;
+  let reviewedObs = [];
   
-  const reviewedObs = state.observations.filter(o => o.rating > 0);
+  if (isGuest) {
+    const guestObs = state.observations.filter(o => o.department === user.departmentId);
+    totalObs = guestObs.length;
+    reviewedObs = guestObs.filter(o => o.rating > 0);
+  } else {
+    totalObs = state.observations.length;
+    reviewedObs = state.observations.filter(o => o.rating > 0);
+  }
+
   const avgRating = reviewedObs.length > 0 
     ? (reviewedObs.reduce((sum, o) => sum + o.rating, 0) / reviewedObs.length).toFixed(1) 
     : '0.0';
@@ -744,7 +771,9 @@ function renderAnalytics() {
   // 2. Trainee Leaderboard Rows
   const leaderboardRows = trainees.map(tr => {
     const progress = calcOverallProgress(tr.id);
-    const traineeObs = state.observations.filter(o => o.traineeId === tr.id);
+    let traineeObs = state.observations.filter(o => o.traineeId === tr.id);
+    if (isGuest) traineeObs = traineeObs.filter(o => o.department === user.departmentId);
+    
     const ratedObs = traineeObs.filter(o => o.rating > 0);
     const trAvgRating = ratedObs.length > 0 
       ? (ratedObs.reduce((sum, o) => sum + o.rating, 0) / ratedObs.length).toFixed(1) 
@@ -792,10 +821,11 @@ function renderAnalytics() {
           <h3>${t('analyticsTitle')}</h3>
           <p style="color:var(--text-secondary);font-size:12px;margin-top:4px;">${t('analyticsSubTitle')}</p>
         </div>
+        ${!isGuest ? `
         <div class="btn-export-group">
           <button class="btn btn-export" onclick="exportTraineeSummary()">${t('btnExportSummary')}</button>
           <button class="btn btn-export btn-export-secondary" onclick="exportObservationLogs()">${t('btnExportLogs')}</button>
-        </div>
+        </div>` : ''}
       </div>
     </div>
 
@@ -1094,37 +1124,54 @@ function renderMilestones() {
       const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === dept.id);
       let assessmentHtml = '';
       if (assessment) {
-        const chartId = 'radar-' + dept.id;
-        chartsToRender.push({
-          id: chartId,
-          data: [assessment.competency1, assessment.competency2, assessment.competency3, assessment.competency4, assessment.competency5 || 3],
-          labels: [
-            t('lblCompetency1').split(' ')[0], 
-            t('lblCompetency2').split(' ')[0], 
-            t('lblCompetency3').split(' ')[0], 
-            t('lblCompetency4').split(' ')[0], 
-            t('lblCompetency5').split(' ')[0]
-          ],
-          color: dept.color
-        });
+        if (user.role === 'trainee' && !assessment.visibleToTrainee) {
+          assessmentHtml = `
+            <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:1px dashed var(--card-border);border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
+              ${state.activeLanguage === 'zh' ? '✅ 主管考核已送出 (不公開)' : '✅ Assessment Submitted (Private)'}
+            </div>
+          `;
+        } else {
+          const chartId = 'radar-' + dept.id;
+          chartsToRender.push({
+            id: chartId,
+            data: [assessment.competency1, assessment.competency2, assessment.competency3, assessment.competency4, assessment.competency5 || 3],
+            labels: [
+              t('lblCompetency1').split(' ')[0], 
+              t('lblCompetency2').split(' ')[0], 
+              t('lblCompetency3').split(' ')[0], 
+              t('lblCompetency4').split(' ')[0], 
+              t('lblCompetency5').split(' ')[0]
+            ],
+            color: dept.color
+          });
 
-        assessmentHtml = `
-          <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:1px solid rgba(234,88,12,0.15);border-radius:10px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <span style="font-size:10px;text-transform:uppercase;font-weight:700;color:var(--primary);letter-spacing:0.5px;">${t('lblAssessGrade')}</span>
-              <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;padding:3px 8px;border-radius:6px;">${assessment.grade}</span>
+          assessmentHtml = `
+            <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:1px solid rgba(234,88,12,0.15);border-radius:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="font-size:10px;text-transform:uppercase;font-weight:700;color:var(--primary);letter-spacing:0.5px;">${t('lblAssessGrade')}</span>
+                <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;padding:3px 8px;border-radius:6px;">${assessment.grade}</span>
+              </div>
+              
+              <div style="margin-bottom:12px;">
+                <canvas id="${chartId}" style="width:100%;max-height:180px;"></canvas>
+              </div>
+              
+              <div style="font-size:11px;line-height:1.4;border-top:1px dashed var(--card-border);padding-top:8px;">
+                <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
+                <p style="font-size:9px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
+              </div>
+              
+              ${user.role === 'admin' ? `
+              <div style="margin-top:10px;border-top:1px solid rgba(234,88,12,0.15);padding-top:10px;">
+                <label style="font-size:11px;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-secondary);">
+                  <input type="checkbox" onchange="window.toggleAssessmentVisibility('${assessment.id}', this.checked)" ${assessment.visibleToTrainee ? 'checked' : ''} style="cursor:pointer;">
+                  ${state.activeLanguage === 'zh' ? '允許學生查看此考核 (Allow Trainee to View)' : 'Allow Trainee to View'}
+                </label>
+              </div>
+              ` : ''}
             </div>
-            
-            <div style="margin-bottom:12px;">
-              <canvas id="${chartId}" style="width:100%;max-height:180px;"></canvas>
-            </div>
-            
-            <div style="font-size:11px;line-height:1.4;border-top:1px dashed var(--card-border);padding-top:8px;">
-              <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
-              <p style="font-size:9px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
-            </div>
-          </div>
-        `;
+          `;
+        }
       } else {
         assessmentHtml = `
           <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:1px dashed var(--card-border);border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
@@ -1218,6 +1265,12 @@ function renderReview() {
   const user      = Auth.getCurrentUser();
   const container = $('sectionReview');
 
+  // Enforce guest department filter
+  const isGuest = user.role === 'guest';
+  if (isGuest) {
+    _filterDept = user.departmentId;
+  }
+
   // Filter controls
   let filterHtml = `<div class="glass-card"><div class="filter-bar">`;
 
@@ -1232,12 +1285,18 @@ function renderReview() {
   }
 
   // Dept filter
-  const deptOpts = `<option value="all">${t('allDepts')}</option>` +
-    Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
-      `<option value="${d.id}" ${_filterDept === d.id ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
-    ).join('');
+  let deptOpts = '';
+  if (isGuest) {
+    const d = CONFIG.DEPARTMENTS[user.departmentId];
+    deptOpts = `<option value="${user.departmentId}" selected>${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`;
+  } else {
+    deptOpts = `<option value="all">${t('allDepts')}</option>` +
+      Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
+        `<option value="${d.id}" ${_filterDept === d.id ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
+      ).join('');
+  }
   filterHtml += `
-      <select class="form-control" style="width:auto;" onchange="window.setFilterDept(this.value)">${deptOpts}</select>
+      <select class="form-control" style="width:auto;" onchange="window.setFilterDept(this.value)" ${isGuest ? 'disabled' : ''}>${deptOpts}</select>
     </div></div>`;
 
   // Filter observations
@@ -1254,9 +1313,15 @@ function renderReview() {
   let assessFormHtml = '';
   if (user.role === 'admin' || user.role === 'guest') {
     const traineeAssessOpts = CONFIG.TRAINEES.map(tr => `<option value="${tr.id}">${tr.name}</option>`).join('');
-    const deptAssessOpts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
-      `<option value="${d.id}">${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
-    ).join('');
+    let deptAssessOpts = '';
+    if (isGuest) {
+      const d = CONFIG.DEPARTMENTS[user.departmentId];
+      deptAssessOpts = `<option value="${user.departmentId}" selected>${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`;
+    } else {
+      deptAssessOpts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
+        `<option value="${d.id}">${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
+      ).join('');
+    }
 
     assessFormHtml = `
       <div class="glass-card" style="margin-top:20px;margin-bottom:20px;">
@@ -1271,7 +1336,7 @@ function renderReview() {
           </div>
           <div class="form-group">
             <label>${t('lblDeptToAssess')}</label>
-            <select class="form-control" id="assessDept">${deptAssessOpts}</select>
+            <select class="form-control" id="assessDept" ${isGuest ? 'disabled' : ''}>${deptAssessOpts}</select>
           </div>
         </div>
         <div class="grid-2" style="margin-top:10px;">
@@ -1402,6 +1467,24 @@ window.submitStationAssessment = async function() {
       renderReview();
     } else {
       showToast('Submit failed.', 'error');
+    }
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+  } finally {
+    hideLoading();
+  }
+};
+
+window.toggleAssessmentVisibility = async function(id, visible) {
+  showLoading();
+  try {
+    const res = await Api.updateAssessmentVisibility(id, visible);
+    if (res.success) {
+      showToast(state.activeLanguage === 'zh' ? '設定已更新' : 'Settings updated', 'success');
+      state.assessments = await Api.getAssessments();
+      renderMilestones();
+    } else {
+      showToast('Failed to update visibility.', 'error');
     }
   } catch (err) {
     showToast('Error: ' + err.message, 'error');
@@ -1617,205 +1700,3 @@ function showToast(message, type = 'primary') {
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 // ══════════════════════════════════════════════════════════════════
-// 5. ANALYTICS & EXPORTS
-// ══════════════════════════════════════════════════════════════════
-
-function renderAnalytics() {
-  const container = $('sectionAnalytics');
-  if (!container) return;
-
-  const trainees = CONFIG.TRAINEES;
-  const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday');
-
-  // 1. KPI Calculations
-  const totalObs = state.observations.length;
-  
-  const reviewedObs = state.observations.filter(o => o.rating > 0);
-  const avgRating = reviewedObs.length > 0 
-    ? (reviewedObs.reduce((sum, o) => sum + o.rating, 0) / reviewedObs.length).toFixed(1) 
-    : '0.0';
-
-  let totalProgressSum = 0;
-  trainees.forEach(t => {
-    totalProgressSum += calcOverallProgress(t.id);
-  });
-  const programProgress = trainees.length > 0 ? Math.round(totalProgressSum / trainees.length) : 0;
-
-  // 2. Trainee Leaderboard Rows
-  const leaderboardRows = trainees.map(tr => {
-    const progress = calcOverallProgress(tr.id);
-    const traineeObs = state.observations.filter(o => o.traineeId === tr.id);
-    const ratedObs = traineeObs.filter(o => o.rating > 0);
-    const trAvgRating = ratedObs.length > 0 
-      ? (ratedObs.reduce((sum, o) => sum + o.rating, 0) / ratedObs.length).toFixed(1) 
-      : '0.0';
-
-    // Department completion detailed badges
-    const deptBadges = depts.map(d => {
-      const pct = calculateMilestoneProgress(state.observations, tr.id, d.id);
-      const assessment = (state.assessments || []).find(a => a.traineeId === tr.id && a.department === d.id);
-      
-      const deptName = state.activeLanguage === 'zh' ? (d.shortZh || d.nameZh) : (d.shortEn || d.name);
-      let badgeStyle = `background:rgba(255,255,255,0.03);color:var(--text-muted);`;
-      let text = `${deptName}: ${pct}%`;
-      if (assessment) {
-        text = `${deptName}: ${pct}% (${assessment.grade})`;
-        badgeStyle = `background:rgba(234,88,12,0.12);color:var(--primary);border:1px solid rgba(234,88,12,0.25);font-weight:700;`;
-      } else if (pct === 100) {
-        badgeStyle = `background:${d.color}20;color:${d.color};border:1px solid ${d.color}40;`;
-      } else if (pct > 0) {
-        badgeStyle = `background:rgba(249,115,22,0.1);color:#f97316;border:1px solid rgba(249,115,22,0.2);`;
-      }
-      return `<span class="analytics-dept-badge" style="${badgeStyle}" title="${state.activeLanguage === 'zh' ? d.nameZh : d.name}: ${pct}%${assessment ? ' - ' + t('lblAssessGrade') + ': ' + assessment.grade : ''}">${text}</span>`;
-    }).join(' ');
-
-    return `
-      <tr>
-        <td><strong>${tr.name}</strong></td>
-        <td>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div class="progress-bar" style="width:80px;height:8px;margin-bottom:0;"><div class="progress-fill" style="width:${progress}%;"></div></div>
-            <strong>${progress}%</strong>
-          </div>
-        </td>
-        <td><strong style="color:var(--warning);">${trAvgRating}</strong></td>
-        <td>${traineeObs.length}</td>
-        <td><div style="display:flex;flex-wrap:wrap;gap:6px;">${deptBadges}</div></td>
-      </tr>
-    `;
-  }).join('');
-
-  container.innerHTML = `
-    <div class="glass-card">
-      <div class="card-header" style="justify-content:space-between;flex-wrap:wrap;gap:14px;">
-        <div>
-          <h3>${t('analyticsTitle')}</h3>
-          <p style="color:var(--text-secondary);font-size:12px;margin-top:4px;">${t('analyticsSubTitle')}</p>
-        </div>
-        <div class="btn-export-group">
-          <button class="btn btn-export" onclick="exportTraineeSummary()">${t('btnExportSummary')}</button>
-          <button class="btn btn-export btn-export-secondary" onclick="exportObservationLogs()">${t('btnExportLogs')}</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Summary Metrics -->
-    <div class="grid-3" style="margin-top:20px;">
-      <div class="analytics-metric-card">
-        <span class="analytics-metric-label">${t('kpiTotalSubmissions')}</span>
-        <div class="analytics-metric-value">${totalObs}</div>
-      </div>
-      <div class="analytics-metric-card">
-        <span class="analytics-metric-label">${t('kpiAvgRating')}</span>
-        <div class="analytics-metric-value" style="color:var(--warning);">${avgRating}</div>
-      </div>
-      <div class="analytics-metric-card">
-        <span class="analytics-metric-label">${t('kpiProgramProgress')}</span>
-        <div class="analytics-metric-value" style="color:#10b981;">${programProgress}%</div>
-      </div>
-    </div>
-
-    <!-- Leaderboard Table -->
-    <div class="glass-card" style="margin-top:20px;">
-      <div class="table-responsive">
-        <table class="analytics-table">
-          <thead>
-            <tr>
-              <th>${t('tblHeaderName')}</th>
-              <th>${t('tblHeaderProgress')}</th>
-              <th>${t('tblHeaderAvgRating')}</th>
-              <th>${t('tblHeaderSubmissions')}</th>
-              <th>${t('rotationDept')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${leaderboardRows}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-}
-
-function downloadCSV(csvContent, fileName) {
-  const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.setAttribute("href", url);
-  link.setAttribute("download", fileName);
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-window.exportTraineeSummary = function() {
-  const trainees = CONFIG.TRAINEES;
-  const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday');
-  
-  // CSV Headers
-  let csv = "Trainee Name,Milestone Completion %,Average Star Rating,Total Logs Submitted";
-  depts.forEach(d => {
-    csv += `,${d.name} Progress %,${d.name} Grade`;
-  });
-  csv += "\n";
-
-  // Data rows
-  trainees.forEach(tr => {
-    const progress = calcOverallProgress(tr.id);
-    const traineeObs = state.observations.filter(o => o.traineeId === tr.id);
-    const ratedObs = traineeObs.filter(o => o.rating > 0);
-    const trAvgRating = ratedObs.length > 0 
-      ? (ratedObs.reduce((sum, o) => sum + o.rating, 0) / ratedObs.length).toFixed(1) 
-      : '0.0';
-    
-    csv += `"${tr.name}",${progress}%,${trAvgRating},${traineeObs.length}`;
-    
-    depts.forEach(d => {
-      const pct = calculateMilestoneProgress(state.observations, tr.id, d.id);
-      const assessment = (state.assessments || []).find(a => a.traineeId === tr.id && a.department === d.id);
-      const gradeStr = assessment ? assessment.grade : 'N/A';
-      csv += `,${pct}%,${gradeStr}`;
-    });
-    csv += "\n";
-  });
-
-  downloadCSV(csv, "Trainee_Summary_Report.csv");
-  showToast("Summary CSV Downloaded Successfully!", "success");
-};
-
-window.exportObservationLogs = function() {
-  const obsList = state.observations;
-  
-  let csv = "Observation ID,Trainee ID,Trainee Name,Date,Department Key,Department Name,Key Observation,Actionable Idea,Photo/Report URL,Submitted At,Status,Mentor Name,Mentor Feedback,Feedback At,Performance Rating\n";
-
-  obsList.forEach(obs => {
-    const dept = CONFIG.DEPARTMENTS[obs.department] || {};
-    const deptName = dept.name || obs.department;
-    
-    // Clean strings of double quotes and line breaks
-    const cleanStr = str => {
-      if (!str) return '';
-      return str.replace(/"/g, '""').replace(/\n/g, ' ');
-    };
-
-    csv += `"${cleanStr(obs.id)}",` +
-           `"${cleanStr(obs.traineeId)}",` +
-           `"${cleanStr(obs.traineeName)}",` +
-           `"${cleanStr(obs.date)}",` +
-           `"${cleanStr(obs.department)}",` +
-           `"${cleanStr(deptName)}",` +
-           `"${cleanStr(obs.keyObservation)}",` +
-           `"${cleanStr(obs.actionableIdea)}",` +
-           `"${cleanStr(obs.attachmentUrl)}",` +
-           `"${cleanStr(obs.submittedAt)}",` +
-           `"${cleanStr(obs.status)}",` +
-           `"${cleanStr(obs.mentorName)}",` +
-           `"${cleanStr(obs.mentorComment)}",` +
-           `"${cleanStr(obs.feedbackAt)}",` +
-           `${obs.rating || 0}\n`;
-  });
-
-  downloadCSV(csv, "Trainee_Field_Observation_Logs.csv");
-  showToast("Observations CSV Downloaded Successfully!", "success");
-};

@@ -320,6 +320,23 @@ const Api = (() => {
         comments,
         assessor
       });
+    },
+
+    async updateAssessmentVisibility(id, visibleToTrainee) {
+      if (CONFIG.DEMO_MODE) {
+        const list = lsGet(LS_ASSESS);
+        const idx = list.findIndex(a => a.id === id);
+        if (idx !== -1) {
+          list[idx].visibleToTrainee = visibleToTrainee;
+          lsSave(LS_ASSESS, list);
+        }
+        return { success: true };
+      }
+      return callScript({
+        action: 'updateAssessmentVisibility',
+        id,
+        visibleToTrainee
+      });
     }
 
   };
