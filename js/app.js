@@ -178,7 +178,7 @@ window.changeLanguageLogin = function(lang) {
 
 window.autoSyncSchedules = async function() {
   if (CONFIG.DEMO_MODE) return;
-  if (localStorage.getItem('synced_schedules_june_v3')) return;
+  if (localStorage.getItem('synced_schedules_diane_v1')) return;
   const user = Auth.getCurrentUser();
   if (user.role !== 'admin') return;
 
@@ -202,7 +202,7 @@ window.autoSyncSchedules = async function() {
       done++;
     }
   }
-  localStorage.setItem('synced_schedules_june_v3', 'true');
+  localStorage.setItem('synced_schedules_diane_v1', 'true');
   msg.innerText = '✅ 行事曆自動上傳完成！請重新整理網頁！';
   setTimeout(() => msg.remove(), 6000);
   hideLoading();
