@@ -631,6 +631,9 @@ function renderDashboard() {
     : selectedEntry ? `
     <div class="schedule-detail">
       <div class="sched-content" style="flex:1;">
+        <div style="font-size:12px; font-weight:700; color:var(--primary); margin-bottom:8px;">
+          ${state.selectedDate}
+        </div>
         <h4>${t('rotationDept')}: ${state.activeLanguage === 'zh' ? selectedDept.nameZh : selectedDept.name}</h4>
         <p>${selectedEntry.objective}</p>
       </div>
@@ -638,7 +641,12 @@ function renderDashboard() {
     </div>
   ` : `
     <div class="schedule-detail">
-      <div class="sched-content" style="flex:1;"><h4>${t('rotationDept')}</h4><p>${t('noSchedule')}</p></div>
+      <div class="sched-content" style="flex:1;">
+        <div style="font-size:12px; font-weight:700; color:var(--primary); margin-bottom:8px;">
+          ${state.selectedDate}
+        </div>
+        <h4>${t('rotationDept')}</h4><p>${t('noSchedule')}</p>
+      </div>
       ${user.role === 'admin' ? `<button class="btn btn-primary btn-sm" onclick="window.openEditSchedule()">${t('addScheduleBtn')}</button>` : ''}
     </div>
   `;
