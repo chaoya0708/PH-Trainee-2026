@@ -836,14 +836,14 @@ select.form-control {
 
 .brand-logo-large {
   width: 100%;
-  max-width: 240px;
+  max-width: 120px;
   height: auto;
   margin: 0 auto;
   display: block;
 }
 
 .dashboard-logo {
-  max-width: 140px;
+  max-width: 90px;
   display: block;
 }
 
@@ -858,10 +858,10 @@ select.form-control {
 /* Siteinspire Mobile Overrides */
 @media (max-width: 768px) {
   .brand-logo-large {
-    max-width: 180px !important;
+    max-width: 100px !important;
   }
   .dashboard-logo {
-    max-width: 120px !important;
+    max-width: 80px !important;
   }
   .login-card {
     border: none;
