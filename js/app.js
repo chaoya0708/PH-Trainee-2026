@@ -113,7 +113,7 @@ window.selectLoginRole = function(role) {
     // Populate department select for guest
     if ($('guestDeptSelect')) {
       $('guestDeptSelect').innerHTML = Object.values(CONFIG.DEPARTMENTS)
-        .filter(d => d.id !== 'holiday')
+        .filter(d => !d.isRecordOnly)
         .map(d => `<option value="${d.id}">${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`)
         .join('');
     }
@@ -704,7 +704,7 @@ function renderDashboard() {
         <span style="font-size:18px;font-weight:700;color:var(--primary);">${overallPct}%</span>
       </div>
       <div class="progress-row">
-        ${Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d => {
+        ${Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d => {
           const pct = calculateMilestoneProgress(state.observations, viewId, d.id);
           const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === d.id);
           const hasAssessment = !!assessment;
@@ -738,7 +738,7 @@ function renderAnalytics() {
   const user = Auth.getCurrentUser();
   const isGuest = user.role === 'guest';
   const trainees = CONFIG.TRAINEES;
-  let depts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday');
+  let depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly);
   
   // Restrict guest visibility to their own department
   if (isGuest) {
@@ -881,7 +881,7 @@ function downloadCSV(csvContent, fileName) {
 
 window.exportTraineeSummary = function() {
   const trainees = CONFIG.TRAINEES;
-  const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday');
+  const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly);
   
   // CSV Headers
   let csv = "Trainee Name,Milestone Completion %,Average Star Rating,Total Logs Submitted";
@@ -1002,7 +1002,7 @@ function renderForm() {
   const sched     = (state.schedules[user.id] || {})[state.selectedDate];
   const presetDept = sched ? sched.dept : 'yushan_prep';
 
-  const deptOptions = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
+  const deptOptions = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d =>
     `<option value="${d.id}" ${d.id === presetDept ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
   ).join('');
 
@@ -1075,7 +1075,7 @@ window.submitObsForm = async function(e) {
 // ══════════════════════════════════════════════════════════════════
 
 function calcOverallProgress(traineeId) {
-  const depts = Object.keys(CONFIG.DEPARTMENTS);
+  const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d => d.id);
   const sum = depts.reduce((acc, d) =>
     acc + calculateMilestoneProgress(state.observations, traineeId, d), 0);
   return Math.round(sum / depts.length);
@@ -1107,7 +1107,7 @@ function renderMilestones() {
 
     const chartsToRender = [];
 
-    const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(dept => {
+    const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(dept => {
       const pct   = calculateMilestoneProgress(state.observations, viewId, dept.id);
       const deptObs = state.observations.filter(o => o.traineeId === viewId && o.department === dept.id);
       const c1 = deptObs.length > 0;
@@ -1291,7 +1291,7 @@ function renderReview() {
     deptOpts = `<option value="${user.departmentId}" selected>${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`;
   } else {
     deptOpts = `<option value="all">${t('allDepts')}</option>` +
-      Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
+      Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d =>
         `<option value="${d.id}" ${_filterDept === d.id ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
       ).join('');
   }
@@ -1318,7 +1318,7 @@ function renderReview() {
       const d = CONFIG.DEPARTMENTS[user.departmentId];
       deptAssessOpts = `<option value="${user.departmentId}" selected>${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`;
     } else {
-      deptAssessOpts = Object.values(CONFIG.DEPARTMENTS).filter(d => d.id !== 'holiday').map(d =>
+      deptAssessOpts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d =>
         `<option value="${d.id}">${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
       ).join('');
     }

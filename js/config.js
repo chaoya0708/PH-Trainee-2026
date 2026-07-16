@@ -82,10 +82,9 @@ const CONFIG = {
     yushan_qc: { id: 'yushan_qc', name: 'Yushan - QA/QC', nameZh: 'Yushan - 品管', shortZh: 'Yushan品管', shortEn: 'YS QA', color: '#ea580c', icon: '', pin: '2001' },
     yushan_prep: { id: 'yushan_prep', name: 'Yushan - Pre-processing', nameZh: 'Yushan - 前處理段', shortZh: '前處理', shortEn: 'Prep', color: '#ea580c', icon: '', pin: '2002' },
     yushan_cooking: { id: 'yushan_cooking', name: 'Yushan - Cooking', nameZh: 'Yushan - 烹煮段', shortZh: '烹煮段', shortEn: 'Cook', color: '#ea580c', icon: '', pin: '2003' },
-    yushan_packaging: { id: 'yushan_packaging', name: 'Yushan - Packaging', nameZh: 'Yushan - 包裝段', shortZh: '包裝段', shortEn: 'Pack', color: '#ea580c', icon: '', pin: '2004' },
     yushan_warehouse: { id: 'yushan_warehouse', name: 'Yushan - Warehouse & Cold Storage', nameZh: 'Yushan - 倉儲物流與凍庫管理', shortZh: '倉儲', shortEn: 'Whse', color: '#ea580c', icon: '', pin: '2005' },
-    // Other
-    holiday: { id: 'holiday', name: 'Day Off / Company Trip', nameZh: '休假日 / 員工旅遊', shortZh: '休假', shortEn: 'Off', color: '#10b981', icon: '', pin: '9999' }
+    // Other (Records)
+    holiday: { id: 'holiday', name: 'Day Off / Company Trip', nameZh: '休假日 / 員工旅遊', shortZh: '休假', shortEn: 'Off', color: '#10b981', icon: '', isRecordOnly: true }
   },
 
   // ----------------------------------------------------------------
