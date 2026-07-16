@@ -1330,6 +1330,10 @@ function renderReview() {
           <label>${t('lblAssessComments')}</label>
           <textarea class="form-control" id="assessComments" rows="3" placeholder="請輸入本輪調站別之考核總評語... / Enter overall assessment comments..."></textarea>
         </div>
+        <div class="form-group" style="margin-top:14px;">
+          <label>${state.activeLanguage === 'zh' ? '考評者署名' : 'Assessor Signature'}</label>
+          <input type="text" class="form-control" id="assessSigner" placeholder="${state.activeLanguage === 'zh' ? '請輸入考評主管姓名...' : 'Enter assessor name...'}" value="${user.name}">
+        </div>
         <div style="display:flex;justify-content:flex-end;margin-top:14px;">
           <button class="btn btn-primary" onclick="window.submitStationAssessment()">${t('btnSubmitAssess')}</button>
         </div>
@@ -1366,6 +1370,7 @@ window.submitStationAssessment = async function() {
   const dept = $('assessDept').value;
   const grade = $('assessGrade').value;
   const comments = $('assessComments').value;
+  const explicitSigner = $('assessSigner') ? $('assessSigner').value.trim() : '';
 
   const ratings = state.pendingAssessRatings || { comp1: 3, comp2: 3, comp3: 3, comp4: 3, comp5: 3 };
   const comp1 = ratings.comp1 || 3;
@@ -1375,7 +1380,7 @@ window.submitStationAssessment = async function() {
   const comp5 = ratings.comp5 || 3;
 
   const user = Auth.getCurrentUser();
-  const assessor = user.name;
+  const assessor = explicitSigner || user.name;
 
   if (!comments.trim()) {
     showToast('請輸入考核總評語 / Please enter overall assessment comments.', 'error');
