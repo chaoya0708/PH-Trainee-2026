@@ -91,7 +91,7 @@ const CONFIG = {
   // ----------------------------------------------------------------
   // 初始排程（Demo 模式使用）
   // ----------------------------------------------------------------
-DEFAULT_SCHEDULES: {
+  DEFAULT_SCHEDULES: {
     diane: {
       '2026-06-15': { dept: 'cmf_production', objective: '調理單位執行燒賣調理配餡 / Siomai Filling Preparation' },
       '2026-06-16': { dept: 'cmf_production', objective: '調理單位執行燒賣調理配餡 / Siomai Filling Preparation' },
@@ -158,21 +158,7 @@ DEFAULT_SCHEDULES: {
       '2026-07-09': { dept: 'cmf_production', objective: '西點單位執行550成型篩選/封口 / Model 550 Forming / Inspection / Sealing' },
       '2026-07-10': { dept: 'cmf_production', objective: '西點單位執行550成型篩選/封口 / Model 550 Forming / Inspection / Sealing' }
     }
-  },
-    mark: {
-      '2026-07-13': { dept: 'yushan_prep', objective: 'Examine layout efficiency of vegetable dicing machines.' },
-      '2026-07-14': { dept: 'yushan_cooking', objective: 'Monitor energy consumption of high-pressure jacketed steam kettles.' },
-      '2026-07-15': { dept: 'cmf_production', objective: 'Analyze production throughput bottlenecks on the main assembly line.' },
-      '2026-07-16': { dept: 'yushan_packaging', objective: 'Analyze sealing integrity issues on Tray Sealing Machine A.' },
-      '2026-07-17': { dept: 'yushan_warehouse', objective: 'Inspect raw material cold storage room temperature controls and FIFO stack practices.' }
-    },
-    jairuz: {
-      '2026-07-13': { dept: 'cmf_qc', objective: 'Check sanitation records of workers in the sanitizing chamber.' },
-      '2026-07-14': { dept: 'yushan_qc', objective: 'Validate CCP calibration records for metal detectors.' },
-      '2026-07-15': { dept: 'cmf_qc', objective: 'Perform swab test sampling and analyze bacterial plate count procedure.' },
-      '2026-07-16': { dept: 'yushan_prep', objective: 'Inspect chemical pesticide residue detection logs.' },
-      '2026-07-17': { dept: 'yushan_packaging', objective: 'Establish leak-test SOP for gas-flush bags.' }
-    }
   }
+
 
 };
