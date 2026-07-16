@@ -75,7 +75,7 @@ body {
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 0; }
+::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 10px; }
 
 /* ══════════════════════════════════════
    LOGIN SCREEN
@@ -92,7 +92,7 @@ body {
   background: var(--panel-bg);
   backdrop-filter: var(--backdrop-blur);
   border: none;
-  border-radius: 0;
+  border-radius: 20px;
   padding: 36px 32px;
   box-shadow: none;
   display: flex; flex-direction: column; gap: 24px;
@@ -160,7 +160,7 @@ body {
   display: flex; align-items: center; gap: 14px;
   padding: 14px 16px;
   background: var(--card-bg); border: 1px solid var(--card-border);
-  border-radius: 0; cursor: pointer;
+  border-radius: 12px; cursor: pointer;
   transition: all var(--transition-fast); color: var(--text-primary);
   text-align: left;
 }
@@ -178,7 +178,7 @@ body {
 .login-user-preview {
   display: flex; align-items: center; gap: 14px;
   background: var(--card-bg); border: 1px solid var(--card-border);
-  border-radius: 0; padding: 14px 16px;
+  border-radius: 12px; padding: 14px 16px;
 }
 
 .login-user-preview span    { font-size: 28px; }
@@ -195,7 +195,7 @@ body {
 
 .login-error {
   background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
-  color: #f87171; border-radius: 0; padding: 10px 14px;
+  color: #f87171; border-radius: 12px; padding: 10px 14px;
   font-size: 13px; text-align: center;
 }
 
@@ -221,7 +221,7 @@ body {
   width: 44px; height: 44px;
   border: 3px solid var(--card-border);
   border-top-color: var(--primary);
-  border-radius: 0;
+  border-radius: 12px;
   animation: spin 0.7s linear infinite;
 }
 
@@ -265,7 +265,7 @@ body {
 .nav-link {
   display: flex; align-items: center; gap: 10px;
   padding: 11px 14px; color: var(--text-secondary);
-  border-radius: 0; border: 1px solid transparent;
+  border-radius: 12px; border: 1px solid transparent;
   cursor: pointer; font-weight: 500; font-size: 13.5px;
   transition: all var(--transition-fast);
   text-decoration: none; user-select: none;
@@ -281,13 +281,13 @@ body {
 
 .user-profile-card {
   background: var(--card-bg); border: 1px solid var(--card-border);
-  border-radius: 0; padding: 14px; margin-top: auto;
+  border-radius: 12px; padding: 14px; margin-top: auto;
   display: flex; flex-direction: column; gap: 10px;
 }
 
 .user-profile-header { display: flex; align-items: center; gap: 10px; }
 .user-avatar {
-  width: 42px; height: 42px; border-radius: 0;
+  width: 42px; height: 42px; border-radius: 12px;
   background: var(--panel-border);
   display: flex; align-items: center; justify-content: center;
   font-size: 20px;
@@ -295,7 +295,7 @@ body {
 .user-name   { font-weight: 600; font-size: 13px; color: var(--text-primary); }
 .user-role-badge {
   font-size: 10px; background: var(--primary-glow); color: var(--primary);
-  padding: 2px 8px; border-radius: 0; font-weight: 600; display: inline-block; margin-top: 2px;
+  padding: 2px 8px; border-radius: 12px; font-weight: 600; display: inline-block; margin-top: 2px;
 }
 .user-bio { font-size: 11px; color: var(--text-secondary); line-height: 1.4; border-top: 1px solid var(--card-border); padding-top: 8px; }
 
@@ -311,7 +311,7 @@ body {
   display: flex; justify-content: space-between; align-items: center;
   background: var(--panel-bg); backdrop-filter: var(--backdrop-blur);
   border: none;
-  padding: 14px 22px; border-radius: 0; box-shadow: none;
+  padding: 14px 22px; border-radius: 12px; box-shadow: none;
 }
 
 .page-title h2 { font-family: var(--font-title); font-size: 20px; font-weight: 700; }
@@ -322,13 +322,13 @@ body {
 .current-user-chip {
   display: flex; align-items: center; gap: 8px;
   background: var(--card-bg); border: 1px solid var(--card-border);
-  padding: 6px 14px; border-radius: 0; font-size: 13px; font-weight: 600;
+  padding: 6px 14px; border-radius: 12px; font-size: 13px; font-weight: 600;
 }
 
 .simulator-select-wrapper {
   display: flex; align-items: center; gap: 6px;
   background: var(--card-bg); border: 1px solid var(--card-border);
-  padding: 6px 12px; border-radius: 0;
+  padding: 6px 12px; border-radius: 12px;
 }
 
 .simulator-select-wrapper label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
@@ -342,7 +342,7 @@ body {
 .icon-btn {
   background: var(--card-bg); border: 1px solid var(--card-border);
   color: var(--text-primary); width: 36px; height: 36px;
-  border-radius: 0; display: flex; align-items: center; justify-content: center;
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
   cursor: pointer; transition: all var(--transition-fast); font-size: 15px;
 }
 .icon-btn:hover { background: var(--panel-border); border-color: var(--text-muted); }
@@ -359,7 +359,7 @@ body {
 /* Glass Card */
 .glass-card {
   background: var(--panel-bg); backdrop-filter: var(--backdrop-blur);
-  border: none; border-radius: 0;
+  border: none; border-radius: 12px;
   padding: 24px; box-shadow: none; position: relative; overflow: hidden;
 }
 
@@ -407,7 +407,7 @@ body {
   background: transparent;
   border: none;
   border-bottom: 2px solid var(--text-primary);
-  border-radius: 0;
+  border-radius: 12px;
   color: var(--text-primary);
   transition: all 0.3s ease;
 }
@@ -423,7 +423,7 @@ textarea.form-control {
   background: transparent;
   border: none;
   border-bottom: 2px solid var(--text-primary);
-  border-radius: 0;
+  border-radius: 12px;
   color: var(--text-primary);
   transition: all 0.3s ease;
 }
@@ -436,7 +436,7 @@ textarea.form-control {
 .alert-info {
   display: flex; align-items: center; gap: 10px;
   padding: 11px 15px; background: rgba(14,165,233,0.08);
-  border: 1px solid rgba(14,165,233,0.2); border-radius: 0;
+  border: 1px solid rgba(14,165,233,0.2); border-radius: 12px;
   color: var(--text-secondary); font-size: 12px; margin-bottom: 18px;
 }
 .alert-info i { color: var(--primary); font-size: 16px; flex-shrink: 0; }
@@ -485,7 +485,7 @@ textarea.form-control {
 .cal-cell.active .cal-date { color: var(--primary); font-weight: 700; }
 
 .cal-dept-tag { 
-  font-size: 10px; padding: 4px 6px; border-radius: 0; font-weight: 600; 
+  font-size: 10px; padding: 4px 6px; border-radius: 12px; font-weight: 600; 
   color: #fff; align-self: stretch; text-align: center; 
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
 }
@@ -496,7 +496,7 @@ textarea.form-control {
 .schedule-detail {
   display: flex; gap: 14px; align-items: flex-start;
   margin-top: 14px; background: rgba(14,165,233,0.05);
-  border: 1px solid rgba(14,165,233,0.15); border-radius: 0; padding: 16px;
+  border: 1px solid rgba(14,165,233,0.15); border-radius: 12px; padding: 16px;
 }
 .sched-icon { font-size: 28px; width: 52px; height: 52px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .sched-content h4 { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
@@ -506,7 +506,7 @@ textarea.form-control {
 .trainee-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 .trainee-tab-btn {
   background: var(--card-bg); border: 1px solid var(--card-border);
-  color: var(--text-secondary); padding: 7px 15px; border-radius: 0;
+  color: var(--text-secondary); padding: 7px 15px; border-radius: 50px;
   cursor: pointer; font-weight: 600; font-size: 12px;
   display: flex; align-items: center; gap: 6px;
   transition: all var(--transition-fast);
@@ -522,7 +522,7 @@ textarea.form-control {
 
 .dept-milestone-card {
   background: var(--card-bg); border: 1px solid var(--card-border);
-  border-radius: 0; padding: 16px; display: flex; flex-direction: column; gap: 10px;
+  border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px;
   transition: transform var(--transition-fast);
 }
 .dept-milestone-card:hover { transform: translateY(-2px); border-color: var(--text-muted); }
@@ -565,7 +565,7 @@ textarea.form-control {
 .toast {
   position: fixed; bottom: 24px; right: 24px;
   background: #1e293b; color: #fff; border-left: 4px solid var(--primary);
-  padding: 14px 18px; border-radius: 0; box-shadow: none;
+  padding: 14px 18px; border-radius: 12px; box-shadow: none;
   display: flex; align-items: center; gap: 10px;
   z-index: 500; font-size: 13.5px; font-weight: 500;
   transform: translateY(100px); opacity: 0;
@@ -581,7 +581,7 @@ textarea.form-control {
 /* Mobile menu toggle */
 .mobile-menu-toggle {
   display: none; background: var(--card-bg); border: 1px solid var(--card-border);
-  color: var(--text-primary); width: 36px; height: 36px; border-radius: 0;
+  color: var(--text-primary); width: 36px; height: 36px; border-radius: 12px;
   align-items: center; justify-content: center; cursor: pointer; font-size: 16px;
 }
 
@@ -593,7 +593,7 @@ textarea.form-control {
   margin-top: 14px;
   background: rgba(14,165,233,0.05);
   border: 1px solid rgba(14,165,233,0.2);
-  border-radius: 0; padding: 18px;
+  border-radius: 12px; padding: 18px;
   display: flex; flex-direction: column; gap: 2px;
   animation: fadeIn var(--transition-normal) forwards;
 }
@@ -657,7 +657,7 @@ textarea.form-control {
   .cal-cell.week-cell { min-height: 80px; }
   .cal-dept-tag { font-size: 8px; padding: 2px 4px; }
   .cal-dot { width: 6px; height: 6px; }
-  .login-card { padding: 24px 16px; border-radius: 0; margin: 10px; box-sizing: border-box; }
+  .login-card { padding: 24px 16px; border-radius: 20px; margin: 10px; box-sizing: border-box; }
   .role-selector-grid { grid-template-columns: 1fr; gap: 10px; }
   .login-brand h1 { font-size: 22px !important; }
   .login-brand p { font-size: 15px !important; letter-spacing: 1px; }
@@ -716,7 +716,7 @@ textarea.form-control {
 .analytics-metric-card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 0;
+  border-radius: 16px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -751,7 +751,7 @@ textarea.form-control {
 .table-responsive {
   width: 100%;
   overflow-x: auto;
-  border-radius: 0;
+  border-radius: 12px;
   border: 1px solid var(--card-border);
   background: rgba(255,255,255,0.01);
 }
@@ -791,7 +791,7 @@ textarea.form-control {
   align-items: center;
   gap: 4px;
   padding: 4px 8px;
-  border-radius: 0;
+  border-radius: 12px;
   font-size: 11px;
   font-weight: 600;
 }
@@ -808,7 +808,7 @@ textarea.form-control {
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  border-radius: 0;
+  border-radius: 12px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
