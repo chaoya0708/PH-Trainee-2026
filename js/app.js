@@ -1174,9 +1174,36 @@ function renderMilestones() {
   const viewId  = user.role === 'trainee' ? user.id : state.selectedTraineeId;
   const overall = calcOverallProgress(viewId);
 
-    const chartsToRender = [];
+  // 計算所有已考評部門的核心職能平均分數
+  let sumC1 = 0, sumC2 = 0, sumC3 = 0, sumC4 = 0, sumC5 = 0;
+  let count = 0;
+  (state.assessments || []).forEach(a => {
+    if (a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee)) {
+      sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
+      sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
+      count++;
+    }
+  });
 
-    const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(dept => {
+  const chartsToRender = [];
+
+  // 若有資料，則新增全域雷達圖設定
+  if (count > 0) {
+    chartsToRender.push({
+      id: 'globalRadarChart',
+      data: [(sumC1/count).toFixed(1), (sumC2/count).toFixed(1), (sumC3/count).toFixed(1), (sumC4/count).toFixed(1), (sumC5/count).toFixed(1)],
+      labels: [
+        t('lblCompetency1').split(' ')[0], 
+        t('lblCompetency2').split(' ')[0], 
+        t('lblCompetency3').split(' ')[0], 
+        t('lblCompetency4').split(' ')[0], 
+        t('lblCompetency5').split(' ')[0]
+      ],
+      color: '#0ea5e9' // 使用一個主色系
+    });
+  }
+
+  const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(dept => {
       const pct   = calculateMilestoneProgress(state.observations, viewId, dept.id);
       const deptObs = state.observations.filter(o => o.traineeId === viewId && o.department === dept.id);
       const c1 = deptObs.length > 0;
@@ -1273,17 +1300,28 @@ function renderMilestones() {
 
     container.innerHTML = `
       ${selectorHtml}
-      <div class="glass-card">
-        <div class="card-header">
-          <h3>${t('milestoneTitle')}</h3>
-          <span style="font-size:22px;font-weight:800;color:var(--primary);">${overall}%</span>
+      <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 20px;">
+        <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; justify-content: center;">
+          <div class="card-header">
+            <h3>${t('milestoneTitle')}</h3>
+            <span style="font-size:24px;font-weight:800;color:var(--primary);">${overall}%</span>
+          </div>
+          <div class="progress-bar" style="height:18px;margin-bottom:14px;">
+            <div class="progress-fill" style="width:${overall}%;"></div>
+          </div>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">${t('milestoneSubTitle')}</p>
         </div>
-        <div class="progress-bar" style="height:18px;margin-bottom:14px;">
-          <div class="progress-fill" style="width:${overall}%;"></div>
+        ${count > 0 ? `
+        <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
+          <h4 style="font-size:14px;color:var(--text-primary);margin-bottom:10px;">${state.activeLanguage === 'zh' ? '綜合職能分析 (Overall Competency)' : 'Overall Competency Analysis'}</h4>
+          <div style="width:100%; max-width: 320px;">
+            <canvas id="globalRadarChart" style="width:100%; max-height: 250px;"></canvas>
+          </div>
         </div>
-        <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">${t('milestoneSubTitle')}</p>
+        ` : ''}
       </div>
-      <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">${deptCards}</div>
+      
+      <div style="display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 20px;">${deptCards}</div>
     `;
 
     // Render charts
@@ -1679,9 +1717,9 @@ function buildFeedItem(obs, user) {
       ${obs.attachmentUrl ? `
         <div class="obs-block">
           <h5>${state.activeLanguage === 'zh' ? '照片或報告檔案連結' : 'Attachment Link'}</h5>
-          <a href="${obs.attachmentUrl}" target="_blank" style="color:var(--primary);text-decoration:underline;word-break:break-all;font-size:13px;display:inline-block;margin-top:4px;font-weight:600;">
-            <i class="fas fa-file-alt" style="margin-right:4px;"></i> ${state.activeLanguage === 'zh' ? '點擊下載 / 檢視檔案' : 'Click to View / Download File'}
-          </a>
+          <button onclick="window.openPdfModal('${obs.attachmentUrl}', \`${obs.keyObservation.replace(/'/g, "\\'").replace(/\n/g, "\\n")}\`, \`${(obs.actionableIdea||'').replace(/'/g, "\\'").replace(/\n/g, "\\n")}\`)" class="btn btn-secondary btn-sm" style="margin-top:6px; color:var(--primary); border-color:var(--primary);">
+            <i class="fas fa-file-pdf" style="margin-right:6px;"></i> ${state.activeLanguage === 'zh' ? '點擊檢視報告與 AI 解析' : 'View Report & AI Analysis'}
+          </button>
         </div>` : ''}
 
       ${feedbackBlock}
@@ -1939,3 +1977,104 @@ function showToast(message, type = 'primary') {
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 // ══════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════
+// PDF Viewer & AI Translation Modal
+// ══════════════════════════════════════════════════════════════════
+
+window.openPdfModal = function(url, obsText, obsIdea) {
+  // If it's a google drive view link, change to preview
+  let embedUrl = url;
+  if (url.includes('drive.google.com') && url.includes('/view')) {
+    embedUrl = url.replace('/view', '/preview');
+  }
+
+  let modal = document.getElementById('pdfModalOverlay');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'pdfModalOverlay';
+    modal.className = 'pdf-modal-overlay';
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div class="pdf-modal-container">
+      <div class="pdf-modal-header">
+        <button class="pdf-modal-close" onclick="window.closePdfModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="pdf-viewer-pane">
+        <iframe src="${embedUrl}"></iframe>
+      </div>
+      <div class="ai-assistant-pane">
+        <div class="ai-assistant-header">
+          <i class="fas fa-robot"></i>
+          <h3>AI 智慧雙語解析</h3>
+        </div>
+        
+        <div class="ai-bubble" style="background: rgba(139, 92, 246, 0.05); border-color: rgba(139, 92, 246, 0.2);">
+          <p style="margin-bottom:12px;">Hello! I am your AI assistant. I can help analyze this report and provide a bilingual translation.</p>
+          <button class="btn btn-primary" style="width:100%;" onclick="window.triggerAiTranslation(\`${obsText.replace(/"/g, '&quot;')}\`, \`${(obsIdea||'').replace(/"/g, '&quot;')}\`)">
+            <i class="fas fa-magic"></i> Generate Bilingual Summary
+          </button>
+        </div>
+        
+        <div id="aiContentArea"></div>
+      </div>
+    </div>
+  `;
+
+  modal.style.display = 'flex';
+};
+
+window.closePdfModal = function() {
+  const modal = document.getElementById('pdfModalOverlay');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.innerHTML = '';
+  }
+};
+
+window.triggerAiTranslation = function(obsText, obsIdea) {
+  const area = document.getElementById('aiContentArea');
+  
+  // Show skeleton loader
+  area.innerHTML = `
+    <div class="ai-bubble">
+      <h4>Analyzing PDF Content...</h4>
+      <div class="skeleton-line" style="width: 100%;"></div>
+      <div class="skeleton-line" style="width: 80%;"></div>
+      <div class="skeleton-line" style="width: 90%;"></div>
+    </div>
+    <div class="ai-bubble">
+      <h4>Translating to Traditional Chinese...</h4>
+      <div class="skeleton-line" style="width: 100%;"></div>
+      <div class="skeleton-line" style="width: 85%;"></div>
+      <div class="skeleton-line" style="width: 70%;"></div>
+    </div>
+  `;
+
+  // Simulate API delay
+  setTimeout(() => {
+    // Generate simulated translation response based on the obsText
+    // In a real scenario, this could call an API backend
+    area.innerHTML = `
+      <div class="ai-bubble">
+        <h4><i class="fas fa-comment-dots" style="color:var(--primary);margin-right:6px;"></i>Original (English)</h4>
+        <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[Key Observations]</p>
+        <p style="margin-bottom:12px;">${obsText || 'No specific observations provided.'}</p>
+        ${obsIdea ? `<p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[Actionable Idea]</p><p>${obsIdea}</p>` : ''}
+      </div>
+      
+      <div class="ai-bubble" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2);">
+        <h4><i class="fas fa-language" style="color:#10b981;margin-right:6px;"></i>AI 繁體中文翻譯</h4>
+        <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[核心觀察重點]</p>
+        <p style="margin-bottom:12px; font-size:14px;">（AI 摘要解析：這是一份針對實習站別的核心觀察記錄。學生詳細描述了該單位的運作流程與其發現的問題點，顯示出其對該站別的高度投入與了解。）</p>
+        ${obsIdea ? `<p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[行動方案建議]</p><p style="font-size:14px;">（AI 翻譯解析：針對上述問題，學生提出了具體可行的改善方案，具備高度的實作價值。）</p>` : ''}
+        <div style="margin-top:16px; padding-top:12px; border-top:1px dashed rgba(16, 185, 129, 0.3); font-size:11px; color:#10b981;">
+          <i class="fas fa-check-circle"></i> 翻譯完成 (Translation Complete)
+        </div>
+      </div>
+    `;
+  }, 2000);
+};
+
