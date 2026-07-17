@@ -2071,7 +2071,14 @@ window.openPdfModal = function(url, obsText, obsIdea) {
         <button class="pdf-modal-close" onclick="window.closePdfModal()"><i class="fas fa-times"></i></button>
       </div>
       <div class="pdf-viewer-pane">
-        <iframe src="${embedUrl}"></iframe>
+        ${url === '上傳失敗' || !url.startsWith('http') 
+          ? `<div style="display:flex; height:100%; align-items:center; justify-content:center; flex-direction:column; color:var(--text-muted);">
+               <i class="fas fa-exclamation-circle" style="font-size:48px; color:#ef4444; margin-bottom:16px;"></i>
+               <h3 style="color:#ef4444;">檔案上傳失敗或路徑無效</h3>
+               <p>The file upload failed previously, so no PDF can be displayed.</p>
+             </div>`
+          : `<iframe src="${embedUrl}"></iframe>`
+        }
       </div>
       <div class="ai-assistant-pane">
         <div class="ai-assistant-header">
