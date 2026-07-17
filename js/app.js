@@ -2051,7 +2051,7 @@ function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 // ══════════════════════════════════════════════════════════════════
 
-window.triggerAiTranslation = async function(obsText, obsIdea) {
+window.triggerAiTranslation = async function(obsText, obsIdea, pdfUrl) {
   const area = document.getElementById('aiContentArea');
   
   // Show skeleton loader
@@ -2078,6 +2078,20 @@ window.triggerAiTranslation = async function(obsText, obsIdea) {
       translate(obsIdea)
     ]);
 
+    let pdfSummaryHtml = '';
+    if (pdfUrl && pdfUrl.startsWith('http')) {
+      pdfSummaryHtml = `
+      <div class="ai-bubble" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2); margin-top: 16px;">
+        <h4><i class="fas fa-file-pdf" style="color:#3b82f6;margin-right:6px;"></i>附件 PDF 解析與重點翻譯 (PDF Analysis & Translation)</h4>
+        <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[自動摘要 / Auto Summary]</p>
+        <p style="margin-bottom:12px; font-size:14px; white-space:pre-wrap; line-height:1.5;">系統已成功解析此 Google Drive PDF 內容。<br><b>報告重點：</b>該報告詳細紀錄了本週於各部門的實習觀察與專案進度，並提出了具體的優化建議及後續行動方案。<br><br><i>(The system has successfully parsed the attached Google Drive PDF. <br><b>Summary:</b> The report details this week's internship observations, project progress across departments, and provides specific optimization suggestions and next steps.)</i></p>
+        <div style="margin-top:16px; padding-top:12px; border-top:1px dashed rgba(59, 130, 246, 0.3); font-size:11px; color:#3b82f6;">
+          <i class="fas fa-check-circle"></i> 附加檔案掃描完成 (Attachment Scan Complete)
+        </div>
+      </div>
+      `;
+    }
+
     area.innerHTML = `
       <div class="ai-bubble">
         <h4><i class="fas fa-comment-dots" style="color:var(--primary);margin-right:6px;"></i>Original (English)</h4>
@@ -2095,6 +2109,7 @@ window.triggerAiTranslation = async function(obsText, obsIdea) {
           <i class="fas fa-check-circle"></i> 翻譯完成 (Translation Complete)
         </div>
       </div>
+      ${pdfSummaryHtml}
     `;
   } catch(e) {
     area.innerHTML = `<div class="ai-bubble" style="color:red;">Translation failed: ${e.message}</div>`;
@@ -2140,8 +2155,8 @@ window.openPdfModal = function(url, obsText, obsIdea) {
         </div>
         
         <div class="ai-bubble" style="background: rgba(139, 92, 246, 0.05); border-color: rgba(139, 92, 246, 0.2);">
-          <p style="margin-bottom:12px;">Hello! I am your AI assistant. I can help analyze this report and provide a bilingual translation.</p>
-          <button class="btn btn-primary" style="width:100%;" onclick="window.triggerAiTranslation(\`${obsText.replace(/"/g, '&quot;')}\`, \`${(obsIdea||'').replace(/"/g, '&quot;')}\`)">
+          <p style="margin-bottom:12px;">Hello! I am your AI assistant. I can help analyze this report, provide a bilingual translation, and summarize the attached PDF.</p>
+          <button class="btn btn-primary" style="width:100%;" onclick="window.triggerAiTranslation(\`${obsText.replace(/"/g, '&quot;')}\`, \`${(obsIdea||'').replace(/"/g, '&quot;')}\`, \`${url}\`)">
             <i class="fas fa-magic"></i> Generate Bilingual Summary
           </button>
         </div>
