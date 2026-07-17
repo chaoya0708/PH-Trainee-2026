@@ -1019,17 +1019,17 @@ function renderForm() {
     `<option value="${d.id}" ${d.id === presetDept ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
   ).join('');
 
-  let sundayStrZh = '';
-  let sundayStrEn = '';
+  let nextWedStrZh = '';
+  let nextWedStrEn = '';
   if (state.selectedDate) {
     const d = new Date(state.selectedDate);
     if (!isNaN(d.getTime())) {
       const day = d.getDay();
-      const daysToAdd = day === 0 ? 0 : 7 - day;
+      const daysToAdd = (day === 0 ? 0 : 7 - day) + 3;
       d.setDate(d.getDate() + daysToAdd);
-      sundayStrZh = ` (${d.getMonth() + 1}/${d.getDate()})`;
+      nextWedStrZh = ` (${d.getMonth() + 1}/${d.getDate()})`;
       const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      sundayStrEn = ` (${monthNames[d.getMonth()]} ${d.getDate()})`;
+      nextWedStrEn = ` (${monthNames[d.getMonth()]} ${d.getDate()})`;
     }
   }
 
@@ -1041,7 +1041,7 @@ function renderForm() {
       <p style="color:var(--text-secondary);font-size:13px;margin-bottom:18px;">${t('formSubTitle')}</p>
       <div class="alert-info"><span>${t('privateNotice')}</span></div>
       <div class="alert-warning" style="margin-bottom:18px;background:rgba(234,88,12,0.1);color:#ea580c;padding:12px 16px;border-radius:8px;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600;">
-        <span>⚠️ ${state.activeLanguage === 'zh' ? '提醒：本週心得請於本週日' + sundayStrZh + ' 23:59 前送出，逾期將被標記為遲交。' : 'Reminder: Please submit your weekly journal by Sunday' + sundayStrEn + ' 23:59. Late submissions will be flagged.'}</span>
+        <span>⚠️ ${state.activeLanguage === 'zh' ? '提醒：本週心得請於下週三' + nextWedStrZh + ' 23:59 前送出，逾期將被標記為遲交。' : 'Reminder: Please submit your weekly journal by next Wednesday' + nextWedStrEn + ' 23:59. Late submissions will be flagged.'}</span>
       </div>
 
       <form id="obsForm" onsubmit="window.submitObsForm(event)">
