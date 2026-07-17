@@ -2043,6 +2043,62 @@ function showToast(message, type = 'primary') {
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 // ══════════════════════════════════════════════════════════════════
+window.handlePdfFallbackUpload = async function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const container = document.getElementById('pdfSummaryHtmlInner');
+  if (!container) return;
+  
+  container.innerHTML = `
+    <div class="ai-bubble" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2); margin-top: 16px;">
+      <h4><i class="fas fa-spinner fa-spin" style="color:#3b82f6;margin-right:6px;"></i>正在處理上傳的 PDF... (Parsing uploaded PDF...)</h4>
+    </div>
+  `;
+
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await window.pdfjsLib.getDocument({data: arrayBuffer}).promise;
+    let fullText = '';
+    const maxPages = Math.min(pdf.numPages, 3);
+    for (let i = 1; i <= maxPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map(item => item.str).join(' ');
+      fullText += pageText + '\\n';
+    }
+    
+    const textToTranslate = fullText.substring(0, 1500);
+    const translateUrl = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t&q=' + encodeURIComponent(textToTranslate);
+    
+    const transRes = await fetch(translateUrl);
+    const transData = await transRes.json();
+    const transPdf = transData[0].map(x => x[0]).join('');
+    
+    container.innerHTML = `
+      <div class="ai-bubble" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2); margin-top: 16px;">
+        <h4><i class="fas fa-file-pdf" style="color:#3b82f6;margin-right:6px;"></i>附件 PDF 實際內容擷取與翻譯 (Actual PDF Translation)</h4>
+        <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[擷取內容中譯 / Translated Excerpt]</p>
+        <p style="margin-bottom:12px; font-size:14px; white-space:pre-wrap; line-height:1.5;">${transPdf}</p>
+        <div style="margin-top:16px; padding-top:12px; border-top:1px dashed rgba(59, 130, 246, 0.3); font-size:11px; color:#3b82f6;">
+          <i class="fas fa-check-circle"></i> 成功手動讀取並翻譯上傳的 PDF (Successfully parsed uploaded PDF)
+        </div>
+      </div>
+    `;
+  } catch(err) {
+    console.error("Manual PDF parse error:", err);
+    container.innerHTML = `
+      <div class="ai-bubble" style="background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2); margin-top: 16px;">
+        <h4><i class="fas fa-file-pdf" style="color:#ef4444;margin-right:6px;"></i>附件 PDF 翻譯 (PDF Translation)</h4>
+        <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[處理失敗 / Processing Failed]</p>
+        <p style="margin-bottom:12px; font-size:14px; white-space:pre-wrap; line-height:1.5;">上傳的檔案無法解析文字，請確保它是包含純文字的 PDF。</p>
+        <div id="pdfFallbackContainer" style="margin-top: 16px; padding-top:12px; border-top:1px dashed rgba(239, 68, 68, 0.3);">
+          <input type="file" id="pdfFallbackInput" accept="application/pdf" onchange="window.handlePdfFallbackUpload(event)" style="font-size: 13px;" />
+        </div>
+      </div>
+    `;
+  }
+};
 
 window.triggerAiTranslation = async function(obsText, obsIdea, pdfUrl) {
   const area = document.getElementById('aiContentArea');
@@ -2115,10 +2171,16 @@ window.triggerAiTranslation = async function(obsText, obsIdea, pdfUrl) {
         `;
       } else {
         pdfSummaryHtml = `
-        <div class="ai-bubble" style="background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2); margin-top: 16px;">
-          <h4><i class="fas fa-file-pdf" style="color:#ef4444;margin-right:6px;"></i>附件 PDF 翻譯 (PDF Translation)</h4>
-          <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[解析失敗 / Parse Failed]</p>
-          <p style="margin-bottom:12px; font-size:14px; white-space:pre-wrap; line-height:1.5;">無法自動擷取此 Google Drive 檔案內容（可能是權限未完全公開，或檔案格式不支援）。<br>(Unable to extract text from this Google Drive link. Please ensure it is set to "Anyone with the link can view".)</p>
+        <div id="pdfSummaryHtmlInner">
+          <div class="ai-bubble" style="background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2); margin-top: 16px;">
+            <h4><i class="fas fa-file-pdf" style="color:#ef4444;margin-right:6px;"></i>附件 PDF 翻譯 (PDF Translation)</h4>
+            <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[自動解析失敗 / Auto-Parse Failed]</p>
+            <p style="margin-bottom:12px; font-size:14px; white-space:pre-wrap; line-height:1.5;">由於 Google Drive 阻擋跨網域連線，系統無法自動下載此檔案。<br>(Google Drive blocked the automated download.)</p>
+            <div id="pdfFallbackContainer" style="margin-top: 16px; padding-top:12px; border-top:1px dashed rgba(239, 68, 68, 0.3);">
+              <p style="color:#ef4444; font-size:13px; font-weight: bold; margin-bottom: 8px;">請您將 PDF 下載後在此手動上傳，即可為您翻譯：<br>(Please download the PDF and upload it here manually to translate:)</p>
+              <input type="file" id="pdfFallbackInput" accept="application/pdf" onchange="window.handlePdfFallbackUpload(event)" style="font-size: 13px;" />
+            </div>
+          </div>
         </div>
         `;
       }
