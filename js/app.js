@@ -1186,8 +1186,10 @@ function renderMilestones() {
   });
 
   const chartsToRender = [];
+  let trendLabels = [];
+  let trendData = [];
 
-  // 若有資料，則新增全域雷達圖設定
+  // 若有資料，則新增全域雷達圖設定與趨勢圖資料
   if (count > 0) {
     chartsToRender.push({
       id: 'globalRadarChart',
@@ -1200,6 +1202,18 @@ function renderMilestones() {
         t('lblCompetency5').split(' ')[0]
       ],
       color: '#0ea5e9' // 使用一個主色系
+    });
+
+    // 計算各站別平均成績供趨勢圖使用
+    const sortedAssessments = (state.assessments || [])
+      .filter(a => a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee))
+      .sort((a, b) => new Date(a.assessedAt || 0) - new Date(b.assessedAt || 0));
+
+    sortedAssessments.forEach(a => {
+      const avg = (a.competency1 + a.competency2 + a.competency3 + a.competency4 + (a.competency5 || 3)) / 5;
+      const deptName = state.activeLanguage === 'zh' ? CONFIG.DEPARTMENTS[a.department]?.name_zh : CONFIG.DEPARTMENTS[a.department]?.name_en;
+      trendLabels.push(deptName || a.department);
+      trendData.push(avg.toFixed(1));
     });
   }
 
@@ -1312,10 +1326,16 @@ function renderMilestones() {
           <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">${t('milestoneSubTitle')}</p>
         </div>
         ${count > 0 ? `
-        <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
-          <h4 style="font-size:14px;color:var(--text-primary);margin-bottom:10px;">${state.activeLanguage === 'zh' ? '綜合職能分析 (Overall Competency)' : 'Overall Competency Analysis'}</h4>
-          <div style="width:100%; max-width: 320px;">
-            <canvas id="globalRadarChart" style="width:100%; max-height: 250px;"></canvas>
+        <div style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
+          <h4 style="font-size:14px;color:var(--text-primary);margin-bottom:10px;">${state.activeLanguage === 'zh' ? '綜合職能分析 (Overall)' : 'Overall Competency'}</h4>
+          <div style="width:100%; max-width: 280px;">
+            <canvas id="globalRadarChart" style="width:100%; max-height: 220px;"></canvas>
+          </div>
+        </div>
+        <div style="flex: 1.5; min-width: 300px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
+          <h4 style="font-size:14px;color:var(--text-primary);margin-bottom:10px;">${state.activeLanguage === 'zh' ? '成長趨勢軌跡 (Growth Trend)' : 'Growth Trend Line'}</h4>
+          <div style="width:100%;">
+            <canvas id="trendLineChart" style="width:100%; max-height: 220px;"></canvas>
           </div>
         </div>
         ` : ''}
@@ -1518,7 +1538,55 @@ function renderReview() {
   }
 
 
+  // --- Smart Nudges (Action Center) ---
+  let smartNudgeHtml = '';
+  if (user.role === 'admin' || user.role === 'executive') {
+    let pendingObsCount = 0;
+    state.observations.forEach(o => {
+      if (o.status === 'pending') pendingObsCount++;
+    });
+
+    let lowScoreAssessments = [];
+    (state.assessments || []).forEach(a => {
+      const avg = (a.competency1 + a.competency2 + a.competency3 + a.competency4 + (a.competency5 || 3)) / 5;
+      if (avg < 3.0 || a.grade === 'C' || a.grade === 'D') {
+        const tr = CONFIG.TRAINEES.find(t => t.id === a.traineeId);
+        if (tr) {
+          lowScoreAssessments.push({ traineeName: tr.name, dept: a.department, avg: avg.toFixed(1) });
+        }
+      }
+    });
+
+    let nudges = [];
+    if (pendingObsCount > 0) {
+      nudges.push(`<div class="nudge-item info">
+        <i class="fas fa-bell"></i>
+        <span>${state.activeLanguage === 'zh' ? `您有 <strong>${pendingObsCount}</strong> 篇學生的週記尚未批閱，請撥空給予回饋。` : `You have <strong>${pendingObsCount}</strong> unreviewed journals.`}</span>
+      </div>`);
+    }
+    lowScoreAssessments.forEach(low => {
+      const deptName = state.activeLanguage === 'zh' ? CONFIG.DEPARTMENTS[low.dept]?.name_zh : CONFIG.DEPARTMENTS[low.dept]?.name_en;
+      nudges.push(`<div class="nudge-item warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>${state.activeLanguage === 'zh' ? `<strong>預警：</strong>學生 <strong>${low.traineeName}</strong> 在 [${deptName}] 站別的綜合職能平均僅 ${low.avg} 分，建議安排 1-on-1 關心。` : `<strong>Alert:</strong> Trainee <strong>${low.traineeName}</strong> scored an average of ${low.avg} in [${deptName}]. Consider a 1-on-1 session.`}</span>
+      </div>`);
+    });
+
+    if (nudges.length > 0) {
+      smartNudgeHtml = `
+        <div class="smart-nudge-banner">
+          <div class="smart-nudge-header"><i class="fas fa-bolt"></i> ${state.activeLanguage === 'zh' ? '智慧提醒中心 (Smart Action Center)' : 'Smart Action Center'}</div>
+          <div class="smart-nudge-list">
+            ${nudges.join('')}
+          </div>
+        </div>
+      `;
+    }
+  }
+
+
   container.innerHTML = `
+    ${smartNudgeHtml}
     <div class="card-header" style="margin:0 0 4px;">
       <div><h2 style="font-family:var(--font-title);font-size:20px;font-weight:700;">${t('reviewTitle')}</h2>
       <p style="font-size:12px;color:var(--text-secondary);">${t('reviewSubTitle')}</p></div>

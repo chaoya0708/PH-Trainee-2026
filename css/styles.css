@@ -1102,3 +1102,55 @@ textarea.form-control {
   100% { background-position: -200% 0; }
 }
 
+
+/* ── Smart Nudges Banner ── */
+.smart-nudge-banner {
+  background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(234,88,12,0.15));
+  border: 1px solid rgba(234,88,12,0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(234,88,12,0.05);
+}
+
+.smart-nudge-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-title);
+  color: #c2410c; /* text-orange-700 */
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.smart-nudge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nudge-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  background: rgba(255,255,255,0.7);
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: var(--text-primary);
+  border-left: 4px solid var(--primary);
+}
+
+.nudge-item.warning {
+  border-left-color: #ef4444; /* red */
+  background: rgba(254, 226, 226, 0.5); /* red-100 */
+}
+.nudge-item.info {
+  border-left-color: #3b82f6; /* blue */
+  background: rgba(219, 234, 254, 0.5); /* blue-100 */
+}
+
