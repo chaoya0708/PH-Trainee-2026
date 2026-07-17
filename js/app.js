@@ -2177,47 +2177,5 @@ window.closePdfModal = function() {
   }
 };
 
-window.triggerAiTranslation = function(obsText, obsIdea) {
-  const area = document.getElementById('aiContentArea');
-  
-  // Show skeleton loader
-  area.innerHTML = `
-    <div class="ai-bubble">
-      <h4>Analyzing PDF Content...</h4>
-      <div class="skeleton-line" style="width: 100%;"></div>
-      <div class="skeleton-line" style="width: 80%;"></div>
-      <div class="skeleton-line" style="width: 90%;"></div>
-    </div>
-    <div class="ai-bubble">
-      <h4>Translating to Traditional Chinese...</h4>
-      <div class="skeleton-line" style="width: 100%;"></div>
-      <div class="skeleton-line" style="width: 85%;"></div>
-      <div class="skeleton-line" style="width: 70%;"></div>
-    </div>
-  `;
 
-  // Simulate API delay
-  setTimeout(() => {
-    // Generate simulated translation response based on the obsText
-    // In a real scenario, this could call an API backend
-    area.innerHTML = `
-      <div class="ai-bubble">
-        <h4><i class="fas fa-comment-dots" style="color:var(--primary);margin-right:6px;"></i>Original (English)</h4>
-        <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[Key Observations]</p>
-        <p style="margin-bottom:12px;">${obsText || 'No specific observations provided.'}</p>
-        ${obsIdea ? `<p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[Actionable Idea]</p><p>${obsIdea}</p>` : ''}
-      </div>
-      
-      <div class="ai-bubble" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2);">
-        <h4><i class="fas fa-language" style="color:#10b981;margin-right:6px;"></i>AI 繁體中文翻譯</h4>
-        <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[核心觀察重點]</p>
-        <p style="margin-bottom:12px; font-size:14px;">（AI 摘要解析：這是一份針對實習站別的核心觀察記錄。學生詳細描述了該單位的運作流程與其發現的問題點，顯示出其對該站別的高度投入與了解。）</p>
-        ${obsIdea ? `<p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[行動方案建議]</p><p style="font-size:14px;">（AI 翻譯解析：針對上述問題，學生提出了具體可行的改善方案，具備高度的實作價值。）</p>` : ''}
-        <div style="margin-top:16px; padding-top:12px; border-top:1px dashed rgba(16, 185, 129, 0.3); font-size:11px; color:#10b981;">
-          <i class="fas fa-check-circle"></i> 翻譯完成 (Translation Complete)
-        </div>
-      </div>
-    `;
-  }, 2000);
-};
 
