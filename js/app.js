@@ -2073,7 +2073,7 @@ window.triggerAiTranslation = async function(obsText, obsIdea, pdfUrl) {
         if (match && match[1]) {
           const fileId = match[1];
           const directUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-          const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(directUrl);
+          const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(directUrl);
           
           const pdfRes = await fetch(proxyUrl);
           const pdfBuffer = await pdfRes.arrayBuffer();
