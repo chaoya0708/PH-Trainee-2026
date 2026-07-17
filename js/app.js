@@ -2097,7 +2097,7 @@ window.triggerAiTranslation = async function(obsText, obsIdea) {
       </div>
     `;
   } catch(e) {
-    area.innerHTML = \`<div class="ai-bubble" style="color:red;">Translation failed: \${e.message}</div>\`;
+    area.innerHTML = `<div class="ai-bubble" style="color:red;">Translation failed: ${e.message}</div>`;
   }
 };
 // PDF Viewer & AI Translation Modal
