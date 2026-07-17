@@ -35,10 +35,7 @@ const t = key => window.VimeiI18n.t(key);
 function initLoginSlogans() {
   const sloganEl = $('loginSloganText');
   if (!sloganEl) return;
-
-  const slogan = { zh: "以好奇心觀察，帶有目的地成長。", en: "Observe with Curiosity, Grow with Initiative." };
-  const lang = state.activeLanguage || 'en';
-  sloganEl.innerHTML = `${lang === 'zh' ? slogan.zh : slogan.en}`;
+  sloganEl.innerHTML = "Observe with Curiosity, Grow with Initiative.";
 }
 
 // ── Init ───────────────────────────────────────────────────────────
@@ -689,12 +686,8 @@ function renderDashboard() {
   `;
 
   const overallPct = calcOverallProgress(viewId);
-  const dashSlogan = state.activeLanguage === 'zh' ? "以好奇心觀察，帶有目的地成長。" : "Observe with Curiosity, Grow with Initiative.";
 
   container.innerHTML = `
-    <div class="login-slogan-card" style="margin-top: 0; margin-bottom: 24px; text-align: center;">
-      <div class="login-slogan-text">${dashSlogan}</div>
-    </div>
     ${traineeSelectorHtml}
     
     <div class="glass-card" style="width:100%;margin-bottom:20px;">
