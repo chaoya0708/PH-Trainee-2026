@@ -2043,6 +2043,34 @@ function showToast(message, type = 'primary') {
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 // ══════════════════════════════════════════════════════════════════
+window.vimeiTranslate = async function(text) {
+  if (!text) return '';
+  const apiKey = localStorage.getItem('gemini_api_key');
+  if (apiKey && apiKey.trim().length > 10) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          contents: [{parts: [{text: "Translate the following text to fluent and professional Traditional Chinese (zh-TW). Only return the translation, no extra text or markdown:\\n\\n" + text}]}]
+        })
+      });
+      const data = await res.json();
+      if (data.candidates && data.candidates[0].content.parts[0].text) {
+        return data.candidates[0].content.parts[0].text;
+      }
+    } catch(e) {
+      console.error("Gemini failed, falling back to Google Translate", e);
+    }
+  }
+  
+  const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t&q=' + encodeURIComponent(text);
+  const res = await fetch(url);
+  const data = await res.json();
+  return data[0].map(x => x[0]).join('');
+};
+
 window.handlePdfFallbackUpload = async function(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -2069,11 +2097,7 @@ window.handlePdfFallbackUpload = async function(event) {
     }
     
     const textToTranslate = fullText.substring(0, 1500);
-    const translateUrl = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t&q=' + encodeURIComponent(textToTranslate);
-    
-    const transRes = await fetch(translateUrl);
-    const transData = await transRes.json();
-    const transPdf = transData[0].map(x => x[0]).join('');
+    const transPdf = await window.vimeiTranslate(textToTranslate);
     
     container.innerHTML = `
       <div class="ai-bubble" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2); margin-top: 16px;">
@@ -2114,14 +2138,6 @@ window.triggerAiTranslation = async function(obsText, obsIdea, pdfUrl) {
   `;
 
   try {
-    const translate = async (text) => {
-      if (!text) return '';
-      const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t&q=' + encodeURIComponent(text);
-      const res = await fetch(url);
-      const data = await res.json();
-      return data[0].map(x => x[0]).join('');
-    };
-
     let pdfExtractedText = '';
     if (pdfUrl && pdfUrl.includes('drive.google.com')) {
       try {
@@ -2151,9 +2167,9 @@ window.triggerAiTranslation = async function(obsText, obsIdea, pdfUrl) {
     }
 
     const [transText, transIdea, transPdf] = await Promise.all([
-      translate(obsText),
-      translate(obsIdea),
-      pdfExtractedText ? translate(pdfExtractedText) : Promise.resolve('')
+      window.vimeiTranslate(obsText),
+      window.vimeiTranslate(obsIdea),
+      pdfExtractedText ? window.vimeiTranslate(pdfExtractedText) : Promise.resolve('')
     ]);
 
     let pdfSummaryHtml = '';
@@ -2250,6 +2266,10 @@ window.openPdfModal = function(url, obsText, obsIdea) {
         
         <div class="ai-bubble" style="background: rgba(139, 92, 246, 0.05); border-color: rgba(139, 92, 246, 0.2);">
           <p style="margin-bottom:12px;">Hello! I am your AI assistant. I can help analyze this report, provide a bilingual translation, and summarize the attached PDF.</p>
+          <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <input type="password" id="geminiApiKey" class="form-control" placeholder="Gemini API Key (選填，啟用更流暢翻譯)" style="font-size:12px; padding:4px 8px; flex:1;" value="${localStorage.getItem('gemini_api_key') || ''}" onchange="localStorage.setItem('gemini_api_key', this.value)" />
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size:11px; color:var(--primary);"><i class="fas fa-key"></i> 取得金鑰</a>
+          </div>
           <button class="btn btn-primary" style="width:100%;" onclick="window.triggerAiTranslation(\`${obsText.replace(/"/g, '&quot;')}\`, \`${(obsIdea||'').replace(/"/g, '&quot;')}\`, \`${url}\`)">
             <i class="fas fa-magic"></i> Generate Bilingual Summary
           </button>
