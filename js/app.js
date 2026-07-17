@@ -689,8 +689,12 @@ function renderDashboard() {
   `;
 
   const overallPct = calcOverallProgress(viewId);
+  const dashSlogan = state.activeLanguage === 'zh' ? "以好奇心觀察，帶有目的地成長。" : "Observe with Curiosity, Grow with Purpose.";
 
   container.innerHTML = `
+    <div class="login-slogan-card" style="margin-top: 0; margin-bottom: 24px; text-align: center;">
+      <div class="login-slogan-text">${dashSlogan}</div>
+    </div>
     ${traineeSelectorHtml}
     
     <div class="glass-card" style="width:100%;margin-bottom:20px;">
