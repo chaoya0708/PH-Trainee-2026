@@ -291,7 +291,7 @@ body {
   background: var(--panel-border);
   display: flex; align-items: center; justify-content: center;
   font-size: 24px;
-  color: var(--primary);
+  color: var(--primary) !important;
 }
 .user-name   { font-weight: 600; font-size: 13px; color: var(--text-primary); }
 .user-role-badge {
@@ -324,6 +324,11 @@ body {
   display: flex; align-items: center; gap: 8px;
   background: var(--card-bg); border: 1px solid var(--card-border);
   padding: 6px 14px; border-radius: 12px; font-size: 13px; font-weight: 600;
+}
+.current-user-chip span:first-child {
+  color: var(--primary) !important;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
 }
 
 .simulator-select-wrapper {
