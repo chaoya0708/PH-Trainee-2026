@@ -1222,12 +1222,12 @@ function renderMilestones() {
               </div>
               
               <div style="margin-bottom:12px;">
-                <canvas id="${chartId}" style="width:100%;max-height:180px;"></canvas>
+                <canvas id="${chartId}" style="width:100%;max-height:280px;"></canvas>
               </div>
               
-              <div style="font-size:11px;line-height:1.4;border-top:1px dashed var(--card-border);padding-top:8px;">
+              <div style="font-size:13px;line-height:1.5;border-top:1px dashed var(--card-border);padding-top:10px;">
                 <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
-                <p style="font-size:9px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
+                <p style="font-size:11px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
               </div>
               
               ${user.role === 'admin' ? `
