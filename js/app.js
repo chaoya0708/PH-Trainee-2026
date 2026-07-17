@@ -282,7 +282,7 @@ function updateTopBar(user) {
   $('liDashboard').style.display  = 'block'; // Show dashboard schedule to all roles
   $('liForm').style.display       = isTrainee ? 'block' : 'none';
   $('liMilestones').style.display = (isTrainee || isMentor || isExecutive) ? 'block' : 'none';
-  $('liReview').style.display     = (isMentor || isGuest || isExecutive) ? 'block' : 'none';
+  $('liReview').style.display     = (isTrainee || isMentor || isGuest || isExecutive) ? 'block' : 'none';
   $('liAnalytics').style.display  = (isMentor || isGuest || isExecutive) ? 'block' : 'none';
 }
 
@@ -1058,22 +1058,13 @@ function renderForm() {
         </div>
 
         <div class="form-group">
-          <label>${t('lblPhoto')}</label>
-          <div style="display:flex; align-items:center; gap:12px; margin-top:4px;">
-            <input type="file" id="obsPhoto" accept=".pdf,.doc,.docx,.ppt,.pptx,image/*" required style="display:none;" 
-              onchange="document.getElementById('fileNameDisplay').textContent = this.files[0] ? this.files[0].name : (window.state.activeLanguage === 'zh' ? '尚未選取檔案' : 'No file chosen')">
-            <label for="obsPhoto" class="btn btn-secondary" style="cursor:pointer; margin:0;">
-              ${state.activeLanguage === 'zh' ? '選擇檔案' : 'Choose File'}
-            </label>
-            <span id="fileNameDisplay" style="font-size:13px; color:var(--text-secondary);">
-              ${state.activeLanguage === 'zh' ? '尚未選取檔案' : 'No file chosen'}
-            </span>
-          </div>
-          <p style="font-size:12px;color:#ea580c;font-weight:600;margin-top:8px;line-height:1.4;">
+          <label>${state.activeLanguage === 'zh' ? '報告連結 (Google Drive)' : 'Report Link (Google Drive)'}</label>
+          <input type="url" class="form-control" id="obsPhoto" placeholder="https://drive.google.com/..." required>
+          <div style="font-size:12px;color:#ea580c;font-weight:600;margin-top:8px;line-height:1.5;background:var(--bg-card);padding:12px;border-radius:6px;border:1px solid #ea580c33;">
             ${state.activeLanguage === 'zh' 
-              ? '⚠️ 建議轉檔成 PDF 再上傳，請不要直接上傳 Word 或 PowerPoint。檔案大小請勿超過 20MB。' 
-              : '⚠️ It is recommended to convert to PDF before uploading. Please do not upload Word or PowerPoint directly. Max file size is 20MB.'}
-          </p>
+              ? '⚠️ <b>上傳須知：</b><br>1. 請將報告轉為 <b>PDF</b> 檔。<br>2. 上傳到您「個人的 Google 雲端硬碟」。<br>3. 將該檔案的權限設定為<b>「知道連結的任何人均可檢視」</b>。<br>4. 複製分享連結並貼在上方欄位。' 
+              : '⚠️ <b>Upload Instructions:</b><br>1. Convert your report to a <b>PDF</b>.<br>2. Upload it to your personal Google Drive.<br>3. Set the file permission to <b>"Anyone with the link can view"</b>.<br>4. Copy the link and paste it above.'}
+          </div>
         </div>
 
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:4px;">
@@ -1087,56 +1078,35 @@ function renderForm() {
 window.submitObsForm = async function(e) {
   e.preventDefault();
   const user = Auth.getCurrentUser();
-  const fileInput = $('obsPhoto');
-  const file = fileInput.files[0];
+  const fileLink = $('obsPhoto').value.trim();
   
-  if (!file) {
-    showToast('Please select a file.', 'error');
-    return;
-  }
-  
-  if (file.size > 20 * 1024 * 1024) {
-    showToast(state.activeLanguage === 'zh' ? '檔案太大！請上傳小於 20MB 的檔案。' : 'File is too large! Max 20MB.', 'error');
+  if (!fileLink || !fileLink.startsWith('http')) {
+    showToast(state.activeLanguage === 'zh' ? '請輸入有效的 Google Drive 連結' : 'Please enter a valid Google Drive link', 'error');
     return;
   }
 
   showLoading();
   
-  const reader = new FileReader();
-  reader.onload = async function(ev) {
-    try {
-      const base64Data = ev.target.result.split(',')[1];
-      const data = {
-        traineeId:      user.id,
-        traineeName:    user.name,
-        date:           $('obsDate').value,
-        department:     $('obsDept').value,
-        keyObservation: $('obsKey').value.trim(),
-        actionableIdea: '',
-        fileData: {
-          fileName: file.name,
-          mimeType: file.type,
-          base64: base64Data
-        }
-      };
+  try {
+    const data = {
+      traineeId:      user.id,
+      traineeName:    user.name,
+      date:           $('obsDate').value,
+      department:     $('obsDept').value,
+      keyObservation: $('obsKey').value.trim(),
+      actionableIdea: '',
+      attachmentUrl:  fileLink
+    };
 
-      await Api.submitObservation(data);
-      state.observations = await Api.getObservationsForTrainee(user.id);
-      showToast(t('submitSuccess'), 'success');
-      switchTab('dashboard');
-    } catch(err) {
-      showToast('Submit failed: ' + err.message, 'error');
-    } finally {
-      hideLoading();
-    }
-  };
-  
-  reader.onerror = function() {
-    showToast('Failed to read file.', 'error');
+    await Api.submitObservation(data);
+    state.observations = await Api.getObservationsForTrainee(user.id);
+    showToast(t('submitSuccess'), 'success');
+    switchTab('dashboard');
+  } catch(err) {
+    showToast('Submit failed: ' + err.message, 'error');
+  } finally {
     hideLoading();
-  };
-  
-  reader.readAsDataURL(file);
+  }
 };
 
 // ══════════════════════════════════════════════════════════════════
@@ -1432,6 +1402,7 @@ function renderReview() {
 
   // Filter observations
   let obs = [...state.observations].sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+  if (user.role === 'trainee') _filterTrainee = user.id;
   if (_filterTrainee !== 'all') obs = obs.filter(o => o.traineeId === _filterTrainee);
   if (_filterDept    !== 'all') obs = obs.filter(o => o.department === _filterDept);
 
@@ -1793,11 +1764,41 @@ function buildFeedItem(obs, user) {
       ${feedbackBlock}
       ${guestBlock}
       ${actionHtml}
+      
+      <div style="display:flex; gap:8px; margin-top:12px; border-top:1px solid var(--border-color); padding-top:12px;">
+        ${((user.role === 'trainee' && obs.traineeId === user.id && !isReviewed) || user.role === 'admin') 
+          ? `<button class="btn btn-secondary" onclick="openEditObservation('${obs.id}')" style="flex:1;"><i class="fa-solid fa-pen"></i> ${state.activeLanguage === 'zh' ? '編輯' : 'Edit'}</button>` 
+          : ''}
+        ${(user.role === 'admin' && !isReviewed) 
+          ? `<button class="btn btn-secondary" onclick="lockObservation('${obs.id}')" style="flex:1; color:#ea580c; border-color:#ea580c;"><i class="fa-solid fa-lock"></i> ${state.activeLanguage === 'zh' ? '鎖定' : 'Lock'}</button>` 
+          : ''}
+        ${(user.role === 'admin') 
+          ? `<button class="btn btn-secondary" onclick="deleteObservation('${obs.id}')" style="flex:1; color:#dc2626; border-color:#dc2626;"><i class="fa-solid fa-trash"></i> ${state.activeLanguage === 'zh' ? '刪除' : 'Delete'}</button>` 
+          : ''}
+      </div>
     </div>
   `;
 }
 
 window.setFilterTrainee = function(val) { _filterTrainee = val; renderReview(); };
+
+window.lockObservation = async function(id) {
+  if (!confirm(state.activeLanguage === 'zh' ? '確定要鎖定這篇週記嗎？鎖定後學生將無法修改。' : 'Are you sure you want to lock this? The trainee will no longer be able to edit it.')) return;
+  const obs = state.observations.find(o => o.id === id);
+  if (!obs) return;
+  
+  showLoading();
+  try {
+    await Api.submitFeedback(id, obs.mentorComment || '', obs.mentorName || Auth.getCurrentUser().name, obs.rating || 0);
+    state.observations = await Api.getAllObservations();
+    showToast(state.activeLanguage === 'zh' ? '已鎖定' : 'Locked', 'success');
+    renderReview();
+  } catch(err) {
+    showToast('Error: ' + err.message, 'error');
+  } finally {
+    hideLoading();
+  }
+};
 
 window.openEditObservation = function(id) {
   const obs = state.observations.find(o => o.id === id);
@@ -2046,7 +2047,55 @@ function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 // ══════════════════════════════════════════════════════════════════
 
-// ══════════════════════════════════════════════════════════════════
+window.triggerAiTranslation = async function(obsText, obsIdea) {
+  const area = document.getElementById('aiContentArea');
+  
+  // Show skeleton loader
+  area.innerHTML = `
+    <div class="ai-bubble">
+      <h4><i class="fas fa-language" style="color:#10b981;margin-right:6px;"></i>Translating...</h4>
+      <div class="skeleton-line" style="width: 100%;"></div>
+      <div class="skeleton-line" style="width: 85%;"></div>
+      <div class="skeleton-line" style="width: 70%;"></div>
+    </div>
+  `;
+
+  try {
+    const translate = async (text) => {
+      if (!text) return '';
+      const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t&q=' + encodeURIComponent(text);
+      const res = await fetch(url);
+      const data = await res.json();
+      return data[0].map(x => x[0]).join('');
+    };
+
+    const [transText, transIdea] = await Promise.all([
+      translate(obsText),
+      translate(obsIdea)
+    ]);
+
+    area.innerHTML = `
+      <div class="ai-bubble">
+        <h4><i class="fas fa-comment-dots" style="color:var(--primary);margin-right:6px;"></i>Original (English)</h4>
+        <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[Key Observations]</p>
+        <p style="margin-bottom:12px; white-space:pre-wrap; line-height:1.5;">${obsText || 'No specific observations provided.'}</p>
+        ${obsIdea ? `<p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[Actionable Idea]</p><p style="white-space:pre-wrap; line-height:1.5;">${obsIdea}</p>` : ''}
+      </div>
+      
+      <div class="ai-bubble" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2);">
+        <h4><i class="fas fa-language" style="color:#10b981;margin-right:6px;"></i>AI 繁體中文全篇翻譯</h4>
+        <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[核心觀察重點]</p>
+        <p style="margin-bottom:12px; font-size:14px; white-space:pre-wrap; line-height:1.5;">${transText || '無內容'}</p>
+        ${transIdea ? `<p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[行動方案建議]</p><p style="font-size:14px; white-space:pre-wrap; line-height:1.5;">${transIdea}</p>` : ''}
+        <div style="margin-top:16px; padding-top:12px; border-top:1px dashed rgba(16, 185, 129, 0.3); font-size:11px; color:#10b981;">
+          <i class="fas fa-check-circle"></i> 翻譯完成 (Translation Complete)
+        </div>
+      </div>
+    `;
+  } catch(e) {
+    area.innerHTML = \`<div class="ai-bubble" style="color:red;">Translation failed: \${e.message}</div>\`;
+  }
+};
 // PDF Viewer & AI Translation Modal
 // ══════════════════════════════════════════════════════════════════
 
