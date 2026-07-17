@@ -89,8 +89,22 @@ const Api = (() => {
   function lsGetObj(key)    { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; } }
   function lsSave(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
-  function nowIso() { return new Date().toISOString(); }
-  function nowStr() { return new Date().toISOString().replace('T', ' ').substring(0, 16); }
+  function nowIso() {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Taipei',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour12: false
+    }).formatToParts(new Date());
+    const p = {};
+    parts.forEach(part => p[part.type] = part.value);
+    const hour = p.hour === '24' ? '00' : p.hour;
+    return `${p.year}-${p.month}-${p.day}T${hour}:${p.minute}:${p.second}+08:00`;
+  }
+
+  function nowStr() { 
+    return nowIso().replace('T', ' ').substring(0, 16);
+  }
 
   // ----- Apps Script fetch wrapper -----
   async function callScript(params) {

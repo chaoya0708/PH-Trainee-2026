@@ -232,7 +232,7 @@ function submitFeedback(data) {
   sheet.getRange(rowIdx, col('status')).setValue('reviewed');
   sheet.getRange(rowIdx, col('mentorComment')).setValue(data.mentorComment || '');
   sheet.getRange(rowIdx, col('mentorName')).setValue(data.mentorName || '');
-  sheet.getRange(rowIdx, col('feedbackAt')).setValue(new Date().toISOString());
+  sheet.getRange(rowIdx, col('feedbackAt')).setValue(getTaipeiTime());
   sheet.getRange(rowIdx, col('rating')).setValue(data.rating || 0);
   return { success: true };
 }
@@ -260,9 +260,9 @@ function updateSchedule(data) {
     const sheetRow = existing + 2;
     sheet.getRange(sheetRow, 3).setValue(data.dept);
     sheet.getRange(sheetRow, 4).setValue(data.objective);
-    sheet.getRange(sheetRow, 5).setValue(new Date().toISOString());
+    sheet.getRange(sheetRow, 5).setValue(getTaipeiTime());
   } else {
-    sheet.appendRow([data.traineeId, data.date, data.dept, data.objective, new Date().toISOString()]);
+    sheet.appendRow([data.traineeId, data.date, data.dept, data.objective, getTaipeiTime()]);
   }
   return { success: true };
 }
@@ -279,7 +279,7 @@ function getGuestComments(traineeId) {
 
 function submitGuestComment(data) {
   const id = 'gc-' + new Date().getTime();
-  getOrCreateSheet(SHEETS.GUEST_COMMENTS, GC_HEADERS).appendRow([id, data.obsId, data.comment, new Date().toISOString()]);
+  getOrCreateSheet(SHEETS.GUEST_COMMENTS, GC_HEADERS).appendRow([id, data.obsId, data.comment, getTaipeiTime()]);
   return { success: true, id };
 }
 
@@ -294,7 +294,7 @@ function submitAssessment(data) {
   getOrCreateSheet(SHEETS.ASSESSMENTS, ASSESS_HEADERS).appendRow([
     id, data.traineeId, data.department, data.grade,
     data.competency1, data.competency2, data.competency3, data.competency4,
-    data.comments, data.assessor, new Date().toISOString(), false
+    data.comments, data.assessor, getTaipeiTime(), false
   ]);
   return { success: true, id };
 }

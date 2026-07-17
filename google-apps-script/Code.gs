@@ -17,6 +17,11 @@ const SHEETS = {
   ASSESSMENTS:    'assessments'
 };
 
+// ---- Time Helper ----
+function getTaipeiTime() {
+  return Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy-MM-dd'T'HH:mm:ss+08:00");
+}
+
 // ---- CORS Headers ----
 function corsResponse(data) {
   return ContentService
@@ -114,7 +119,7 @@ function getObservations(traineeId) {
 function submitObservation(data) {
   const sheet = getOrCreateSheet(SHEETS.OBSERVATIONS, OBS_HEADERS);
   const id    = 'obs-' + new Date().getTime();
-  const now   = new Date().toISOString();
+  const now   = getTaipeiTime();
   sheet.appendRow([
     id, data.traineeId, data.traineeName, data.date, data.department,
     data.keyObservation, data.actionableIdea, data.attachmentUrl || '',
@@ -132,7 +137,7 @@ function submitFeedback(data) {
   sheet.getRange(rowIdx, col('status')).setValue('reviewed');
   sheet.getRange(rowIdx, col('mentorComment')).setValue(data.mentorComment || '');
   sheet.getRange(rowIdx, col('mentorName')).setValue(data.mentorName || '');
-  sheet.getRange(rowIdx, col('feedbackAt')).setValue(new Date().toISOString());
+  sheet.getRange(rowIdx, col('feedbackAt')).setValue(getTaipeiTime());
   sheet.getRange(rowIdx, col('rating')).setValue(data.rating || 0);
   return { success: true };
 }
@@ -167,9 +172,9 @@ function updateSchedule(data) {
     const sheetRow = existing + 2; // +1 for header, +1 for 1-index
     sheet.getRange(sheetRow, 3).setValue(data.dept);
     sheet.getRange(sheetRow, 4).setValue(data.objective);
-    sheet.getRange(sheetRow, 5).setValue(new Date().toISOString());
+    sheet.getRange(sheetRow, 5).setValue(getTaipeiTime());
   } else {
-    sheet.appendRow([data.traineeId, data.date, data.dept, data.objective, new Date().toISOString()]);
+    sheet.appendRow([data.traineeId, data.date, data.dept, data.objective, getTaipeiTime()]);
   }
   return { success: true };
 }
@@ -191,7 +196,7 @@ function getGuestComments(traineeId) {
 function submitGuestComment(data) {
   const sheet = getOrCreateSheet(SHEETS.GUEST_COMMENTS, GC_HEADERS);
   const id    = 'gc-' + new Date().getTime();
-  sheet.appendRow([id, data.obsId, data.comment, new Date().toISOString()]);
+  sheet.appendRow([id, data.obsId, data.comment, getTaipeiTime()]);
   return { success: true, id };
 }
 
@@ -210,7 +215,7 @@ function submitAssessment(data) {
   sheet.appendRow([
     id, data.traineeId, data.department, data.grade,
     data.competency1, data.competency2, data.competency3, data.competency4, data.competency5,
-    data.comments, data.assessor, new Date().toISOString()
+    data.comments, data.assessor, getTaipeiTime()
   ]);
   return { success: true, id };
 }
