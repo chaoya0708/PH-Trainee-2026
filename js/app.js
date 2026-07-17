@@ -2057,7 +2057,7 @@ window.triggerAiTranslation = async function(obsText, obsIdea, pdfUrl) {
   // Show skeleton loader
   area.innerHTML = `
     <div class="ai-bubble">
-      <h4><i class="fas fa-language" style="color:#10b981;margin-right:6px;"></i>Translating...</h4>
+      <h4><i class="fas fa-language" style="color:#10b981;margin-right:6px;"></i>Translating & Parsing PDF...</h4>
       <div class="skeleton-line" style="width: 100%;"></div>
       <div class="skeleton-line" style="width: 85%;"></div>
       <div class="skeleton-line" style="width: 70%;"></div>
@@ -2073,23 +2073,62 @@ window.triggerAiTranslation = async function(obsText, obsIdea, pdfUrl) {
       return data[0].map(x => x[0]).join('');
     };
 
-    const [transText, transIdea] = await Promise.all([
+    let pdfExtractedText = '';
+    if (pdfUrl && pdfUrl.includes('drive.google.com')) {
+      try {
+        const match = pdfUrl.match(/file\/d\/([a-zA-Z0-9_-]+)/) || pdfUrl.match(/id=([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) {
+          const fileId = match[1];
+          const directUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+          const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(directUrl);
+          
+          const pdfRes = await fetch(proxyUrl);
+          const pdfBuffer = await pdfRes.arrayBuffer();
+          
+          const pdf = await window.pdfjsLib.getDocument({data: pdfBuffer}).promise;
+          let fullText = "";
+          const maxPages = Math.min(pdf.numPages, 3);
+          for (let i = 1; i <= maxPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map(item => item.str).join(" ");
+            fullText += pageText + "\\n";
+          }
+          pdfExtractedText = fullText.substring(0, 1500); 
+        }
+      } catch(err) {
+        console.error("PDF parsing failed:", err);
+      }
+    }
+
+    const [transText, transIdea, transPdf] = await Promise.all([
       translate(obsText),
-      translate(obsIdea)
+      translate(obsIdea),
+      pdfExtractedText ? translate(pdfExtractedText) : Promise.resolve('')
     ]);
 
     let pdfSummaryHtml = '';
     if (pdfUrl && pdfUrl.startsWith('http')) {
-      pdfSummaryHtml = `
-      <div class="ai-bubble" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2); margin-top: 16px;">
-        <h4><i class="fas fa-file-pdf" style="color:#3b82f6;margin-right:6px;"></i>附件 PDF 解析與重點翻譯 (PDF Analysis & Translation)</h4>
-        <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[自動摘要 / Auto Summary]</p>
-        <p style="margin-bottom:12px; font-size:14px; white-space:pre-wrap; line-height:1.5;">系統已成功解析此 Google Drive PDF 內容。<br><b>報告重點：</b>該報告詳細紀錄了本週於各部門的實習觀察與專案進度，並提出了具體的優化建議及後續行動方案。<br><br><i>(The system has successfully parsed the attached Google Drive PDF. <br><b>Summary:</b> The report details this week's internship observations, project progress across departments, and provides specific optimization suggestions and next steps.)</i></p>
-        <div style="margin-top:16px; padding-top:12px; border-top:1px dashed rgba(59, 130, 246, 0.3); font-size:11px; color:#3b82f6;">
-          <i class="fas fa-check-circle"></i> 附加檔案掃描完成 (Attachment Scan Complete)
+      if (transPdf) {
+        pdfSummaryHtml = `
+        <div class="ai-bubble" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2); margin-top: 16px;">
+          <h4><i class="fas fa-file-pdf" style="color:#3b82f6;margin-right:6px;"></i>附件 PDF 實際內容擷取與翻譯 (Actual PDF Translation)</h4>
+          <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[擷取內容中譯 / Translated Excerpt]</p>
+          <p style="margin-bottom:12px; font-size:14px; white-space:pre-wrap; line-height:1.5;">${transPdf}</p>
+          <div style="margin-top:16px; padding-top:12px; border-top:1px dashed rgba(59, 130, 246, 0.3); font-size:11px; color:#3b82f6;">
+            <i class="fas fa-check-circle"></i> 成功讀取並翻譯 Google Drive 連結 (Successfully fetched and translated PDF)
+          </div>
         </div>
-      </div>
-      `;
+        `;
+      } else {
+        pdfSummaryHtml = `
+        <div class="ai-bubble" style="background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2); margin-top: 16px;">
+          <h4><i class="fas fa-file-pdf" style="color:#ef4444;margin-right:6px;"></i>附件 PDF 翻譯 (PDF Translation)</h4>
+          <p style="font-weight:600; color:var(--text-primary); margin-bottom:8px;">[解析失敗 / Parse Failed]</p>
+          <p style="margin-bottom:12px; font-size:14px; white-space:pre-wrap; line-height:1.5;">無法自動擷取此 Google Drive 檔案內容（可能是權限未完全公開，或檔案格式不支援）。<br>(Unable to extract text from this Google Drive link. Please ensure it is set to "Anyone with the link can view".)</p>
+        </div>
+        `;
+      }
     }
 
     area.innerHTML = `
