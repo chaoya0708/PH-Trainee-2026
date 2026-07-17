@@ -1679,8 +1679,8 @@ function buildFeedItem(obs, user) {
       ${obs.attachmentUrl ? `
         <div class="obs-block">
           <h5>${state.activeLanguage === 'zh' ? '照片或報告檔案連結' : 'Attachment Link'}</h5>
-          <a href="${obs.attachmentUrl}" target="_blank" style="color:var(--primary);text-decoration:underline;word-break:break-all;font-size:12px;display:inline-block;margin-top:4px;">
-            <i class="fas fa-external-link-alt"></i> ${obs.attachmentUrl}
+          <a href="${obs.attachmentUrl}" target="_blank" style="color:var(--primary);text-decoration:underline;word-break:break-all;font-size:13px;display:inline-block;margin-top:4px;font-weight:600;">
+            <i class="fas fa-file-alt" style="margin-right:4px;"></i> ${state.activeLanguage === 'zh' ? '點擊下載 / 檢視檔案' : 'Click to View / Download File'}
           </a>
         </div>` : ''}
 

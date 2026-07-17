@@ -183,7 +183,7 @@ const Api = (() => {
           department:     data.department,
           keyObservation: data.keyObservation,
           actionableIdea: data.actionableIdea,
-          attachmentUrl:  data.attachmentUrl || '',
+          attachmentUrl:  data.attachmentUrl || (data.fileData ? data.fileData.base64 : ''),
           submittedAt:    nowIso(),
           status:         'pending',
           mentorComment:  '',
