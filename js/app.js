@@ -1870,7 +1870,6 @@ window.openEditObservation = function(id) {
   $('editObsId').value = obs.id;
   $('editObsDate').value = formatTaipeiDateOnly(obs.date);
   $('editObsKey').value = obs.keyObservation;
-  $('editObsIdea').value = obs.actionableIdea || '';
   $('editObsPhoto').value = obs.attachmentUrl || '';
   $('editObsModal').style.display = 'flex';
 };
@@ -1880,7 +1879,6 @@ window.saveEditedObservation = async function() {
   const data = {
     date: $('editObsDate').value,
     keyObservation: $('editObsKey').value.trim(),
-    actionableIdea: $('editObsIdea').value.trim(),
     attachmentUrl: $('editObsPhoto').value.trim()
   };
   
