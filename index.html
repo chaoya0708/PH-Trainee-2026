@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW" data-theme="light">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,391 +13,409 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="css/styles.css?v=46">
 </head>
+
 <body>
 
-<!-- ══════════════════════════════════════════════
+  <!-- ══════════════════════════════════════════════
      LOGIN SCREEN
      Target: Remove VIMEI and set MA to 國際生
 ════://======================================== -->
-<div id="loginScreen" class="login-screen">
-  <div class="login-image-side">
-    <img src="assets/logo.png?v=2" alt="Logo" class="hero-corner-logo"></div>
-  <div class="login-form-side">
-
-
-  <div class="login-card">
-    <!-- Brand -->
-    <div class="login-brand">
-      <div>
-        <h1>Training Program Tracker</h1>
-        <p>國際生學習歷程 ｜ Milestone System</p>
-      </div>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-image-side">
+      <img src="assets/logo.png?v=2" alt="Logo" class="hero-corner-logo">
     </div>
-
-    <!-- Inspirational Slogans Banner -->
-    <div class="login-slogan-card">
-      <div id="loginSloganText" class="login-slogan-text"></div>
-    </div>
-
-    <!-- Step 1: Role selector -->
-    <div id="loginStepRole" class="login-step">
-      <p class="login-step-label">請選擇您的身份 / Select Your Role</p>
-      <div class="role-selector-grid">
-        <button class="role-btn" onclick="selectLoginRole('trainee')">
-          <strong>國際生</strong>
-          <small>Trainee</small>
-        </button>
-        <button class="role-btn" onclick="selectLoginRole('guest')">
-          <strong>現場指導與評核</strong>
-          <small>Station Feedback</small>
-        </button>
-        <button class="role-btn" onclick="selectLoginRole('executive')">
-          <strong data-i18n="roleExecutiveName">管理團隊</strong>
-          <small>Management Team</small>
-        </button>
-        <button class="role-btn" onclick="selectLoginRole('admin')">
-          <strong>計畫導師</strong>
-          <small>Program Mentor</small>
-        </button>
-      </div>
-    </div>
-
-    <!-- Step 2a: Admin PIN -->
-    <div id="loginStepAdmin" class="login-step" style="display:none;">
-      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
-        <i class="fas fa-arrow-left"></i> 返回 / Back
-      </button>
-      <div class="login-user-preview">
-        <div><strong>計畫導師 / Program Mentor</strong><p>請輸入導師密碼</p></div>
-      </div>
-      <div class="form-group" style="margin-bottom:0;">
-        <input type="password" id="adminPinInput" class="form-control pin-input"
-               maxlength="20" placeholder="••••"
-               onkeyup="if(event.key==='Enter') handleLogin()">
-      </div>
-      <div id="loginError1" class="login-error" style="display:none;">密碼錯誤，請再試一次。</div>
-      <button class="btn btn-primary" onclick="handleLogin()">
-        <i class="fas fa-sign-in-alt"></i> 登入 / Login
-      </button>
-    </div>
-
-    <!-- Step 2b: Trainee name selection -->
-    <div id="loginStepTraineeName" class="login-step" style="display:none;">
-      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
-        <i class="fas fa-arrow-left"></i> 返回 / Back
-      </button>
-      <p class="login-step-label">請選擇您的名字 / Select Your Name</p>
-      <div class="trainee-name-grid" id="traineeNameGrid"></div>
-    </div>
-
-    <!-- Step 2c: Trainee PIN -->
-    <div id="loginStepTraineePin" class="login-step" style="display:none;">
-      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToTraineeName()">
-        <i class="fas fa-arrow-left"></i> 返回 / Back
-      </button>
-      <div class="login-user-preview" id="loginUserPreview"></div>
-      <div class="form-group" style="margin-bottom:0;">
-        <input type="password" id="traineePinInput" class="form-control pin-input"
-               maxlength="20" placeholder="••••"
-               onkeyup="if(event.key==='Enter') handleLogin()">
-      </div>
-      <div id="loginError2" class="login-error" style="display:none;">密碼錯誤，請再試一次。</div>
-      <button class="btn btn-primary" onclick="handleLogin()">
-        <i class="fas fa-sign-in-alt"></i> 登入 / Login
-      </button>
-    </div>
-
-    <!-- Step 2d: Guest code -->
-    <div id="loginStepGuest" class="login-step" style="display:none;">
-      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
-        <i class="fas fa-arrow-left"></i> 返回 / Back
-      </button>
-      <div class="login-user-preview">
-        <div><strong>輪調單位考核 / Station Assessor</strong><p>請選擇部門並輸入密碼 / Select Department & Enter PIN</p></div>
-      </div>
-      <div class="form-group" style="margin-bottom:12px;">
-        <label style="font-size:12px;font-weight:700;color:var(--text-secondary);display:block;margin-bottom:6px;">請選擇您的所屬部門 / Select Your Department</label>
-        <select id="guestDeptSelect" class="form-control" style="width:100%;padding:10px;border-radius:8px;">
-          <!-- Populated dynamically in app.js -->
-        </select>
-      </div>
-      <div class="form-group" style="margin-bottom:0;">
-        <input type="text" id="guestCodeInput" class="form-control pin-input"
-               placeholder="部門專屬密碼 / Department PIN"
-               onkeyup="if(event.key==='Enter') handleLogin()">
-      </div>
-      <div id="loginError3" class="login-error" style="display:none;">代碼錯誤，請再試一次。</div>
-      <button class="btn btn-primary" onclick="handleLogin()">
-        <i class="fas fa-door-open"></i> 進入 / Enter
-      </button>
-    </div>
-
-    <!-- Step 2e: Executive code -->
-    <div id="loginStepExecutive" class="login-step" style="display:none;">
-      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
-        <i class="fas fa-arrow-left"></i> 返回 / Back
-      </button>
-      <div class="login-user-preview">
-        <div><strong>管理團隊 / Management Team</strong><p>請輸入授權代碼 / Enter Executive Code</p></div>
-      </div>
-      <div class="form-group" style="margin-bottom:0;">
-        <input type="text" id="executiveCodeInput" class="form-control pin-input"
-               placeholder="授權代碼 / Executive Code"
-               onkeyup="if(event.key==='Enter') handleLogin()">
-      </div>
-      <div id="loginError4" class="login-error" style="display:none;">代碼錯誤，請再試一次。</div>
-      <button class="btn btn-primary" onclick="handleLogin()">
-        <i class="fas fa-door-open"></i> 進入 / Enter
-      </button>
-    </div>
-
-    <div style="margin-top: 30px; display: flex; justify-content: center; width: 100%;">
-      <select class="login-lang-select" onchange="changeLanguageLogin(this.value)">
-    <option value="en">English</option>
-    <option value="zh">繁體中文</option>
-  </select>
-    </div>
-  </div>
-  
+    <div class="login-form-side">
 
 
-  </div>
-  </div>
-</div><!-- /loginScreen -->
-
-
-<!-- ══════════════════════════════════════════════
-     LOADING OVERLAY
-══════════════════════════════════════════════ -->
-<div id="loadingOverlay" class="loading-overlay" style="display:none;">
-  <div class="loading-spinner"></div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════
-     MAIN APP
-══════════════════════════════════════════════ -->
-<div id="mainApp" class="app-container" style="display:none;">
-
-  <!-- Sidebar Overlay (mobile) -->
-  <div class="sidebar-overlay"></div>
-
-  <!-- ── Sidebar ── -->
-  <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <div class="brand-text">
-        <h1>Training Tracker</h1>
-        <p>Program System</p>
-      </div>
-    </div>
-
-    <ul class="nav-menu">
-      <li class="nav-item" id="liDashboard">
-        <a class="nav-link" id="navDashboard">
-          <span>Dashboard</span>
-        </a>
-      </li>
-      <li class="nav-item" id="liForm">
-        <a class="nav-link" id="navForm">
-          <span>Observation Log</span>
-        </a>
-      </li>
-      <li class="nav-item" id="liMilestones">
-        <a class="nav-link" id="navMilestones">
-          <span>Milestones</span>
-        </a>
-      </li>
-      <li class="nav-item" id="liReview">
-        <a class="nav-link" id="navReview">
-          <span>Review</span>
-        </a>
-      </li>
-      <li class="nav-item" id="liAnalytics">
-        <a class="nav-link" id="navAnalytics">
-          <span>Analytics</span>
-        </a>
-      </li>
-    </ul>
-
-    <!-- User Profile Card -->
-    <div class="user-profile-card">
-      <div class="user-profile-header">
-        <div class="user-avatar" id="sidebarAvatar">👤</div>
-        <div>
-          <div class="user-name" id="sidebarName">—</div>
-          <div class="user-role-badge" id="sidebarRole">—</div>
-        </div>
-      </div>
-      <p class="user-bio" id="sidebarBio"></p>
-    </div>
-  </aside>
-
-  <!-- ── Main Content ── -->
-  <main class="main-content">
-
-    <!-- Top Bar -->
-    <header class="top-bar">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
-        <img src="assets/logo.png?v=2" alt="Logo" class="top-bar-logo">
-        <div class="page-title">
-          <h2>Training Program Tracker</h2>
-          <p>國際生學習歷程 ｜ Milestone System</p>
-        </div>
-      </div>
-
-      <div class="controls-group">
-        <!-- Current user chip -->
-        <div class="current-user-chip">
-          <span id="currentUserAvatar">👤</span>
-          <span id="currentUserName">—</span>
+      <div class="login-card">
+        <!-- Brand -->
+        <div class="login-brand">
+          <div>
+            <h1>Training Program Tracker</h1>
+            <p>國際生學習歷程 ｜ Milestone System</p>
+          </div>
         </div>
 
-        <!-- Language selector -->
-        <div class="simulator-select-wrapper">
-          <label for="langSelector"><i class="fas fa-globe"></i></label>
-          <select class="simulator-select" id="langSelector">
-            <option value="en">EN</option>
-            <option value="zh">中文</option>
+        <!-- Inspirational Slogans Banner -->
+        <div class="login-slogan-card">
+          <div id="loginSloganText" class="login-slogan-text"></div>
+        </div>
+
+        <!-- Step 1: Role selector -->
+        <div id="loginStepRole" class="login-step">
+          <p class="login-step-label">請選擇您的身份 / Select Your Role</p>
+          <div class="role-selector-grid">
+            <button class="role-btn" onclick="selectLoginRole('trainee')">
+              <strong>國際生</strong>
+              <small>Trainee</small>
+            </button>
+            <button class="role-btn" onclick="selectLoginRole('guest')">
+              <strong>現場指導與評核</strong>
+              <small>Station Feedback</small>
+            </button>
+            <button class="role-btn" onclick="selectLoginRole('executive')">
+              <strong data-i18n="roleExecutiveName">管理團隊</strong>
+              <small>Management Team</small>
+            </button>
+            <button class="role-btn" onclick="selectLoginRole('admin')">
+              <strong>計畫導師</strong>
+              <small>Program Mentor</small>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2a: Admin PIN -->
+        <div id="loginStepAdmin" class="login-step" style="display:none;">
+          <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
+            <i class="fas fa-arrow-left"></i> 返回 / Back
+          </button>
+          <div class="login-user-preview">
+            <div><strong>計畫導師 / Program Mentor</strong>
+              <p>請輸入導師密碼</p>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <input type="password" id="adminPinInput" class="form-control pin-input" maxlength="20" placeholder="••••"
+              onkeyup="if(event.key==='Enter') handleLogin()">
+          </div>
+          <div id="loginError1" class="login-error" style="display:none;">密碼錯誤，請再試一次。</div>
+          <button class="btn btn-primary" onclick="handleLogin()">
+            <i class="fas fa-sign-in-alt"></i> 登入 / Login
+          </button>
+        </div>
+
+        <!-- Step 2b: Trainee name selection -->
+        <div id="loginStepTraineeName" class="login-step" style="display:none;">
+          <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
+            <i class="fas fa-arrow-left"></i> 返回 / Back
+          </button>
+          <p class="login-step-label">請選擇您的名字 / Select Your Name</p>
+          <div class="trainee-name-grid" id="traineeNameGrid"></div>
+        </div>
+
+        <!-- Step 2c: Trainee PIN -->
+        <div id="loginStepTraineePin" class="login-step" style="display:none;">
+          <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToTraineeName()">
+            <i class="fas fa-arrow-left"></i> 返回 / Back
+          </button>
+          <div class="login-user-preview" id="loginUserPreview"></div>
+          <div class="form-group" style="margin-bottom:0;">
+            <input type="password" id="traineePinInput" class="form-control pin-input" maxlength="20" placeholder="••••"
+              onkeyup="if(event.key==='Enter') handleLogin()">
+          </div>
+          <div id="loginError2" class="login-error" style="display:none;">密碼錯誤，請再試一次。</div>
+          <button class="btn btn-primary" onclick="handleLogin()">
+            <i class="fas fa-sign-in-alt"></i> 登入 / Login
+          </button>
+        </div>
+
+        <!-- Step 2d: Guest code -->
+        <div id="loginStepGuest" class="login-step" style="display:none;">
+          <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
+            <i class="fas fa-arrow-left"></i> 返回 / Back
+          </button>
+          <div class="login-user-preview">
+            <div><strong>輪調單位考核 / Station Assessor</strong>
+              <p>請選擇部門並輸入密碼 / Select Department & Enter PIN</p>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label
+              style="font-size:12px;font-weight:700;color:var(--text-secondary);display:block;margin-bottom:6px;">請選擇您的所屬部門
+              / Select Your Department</label>
+            <select id="guestDeptSelect" class="form-control" style="width:100%;padding:10px;border-radius:8px;">
+              <!-- Populated dynamically in app.js -->
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <input type="text" id="guestCodeInput" class="form-control pin-input" placeholder="部門專屬密碼 / Department PIN"
+              onkeyup="if(event.key==='Enter') handleLogin()">
+          </div>
+          <div id="loginError3" class="login-error" style="display:none;">代碼錯誤，請再試一次。</div>
+          <button class="btn btn-primary" onclick="handleLogin()">
+            <i class="fas fa-door-open"></i> 進入 / Enter
+          </button>
+        </div>
+
+        <!-- Step 2e: Executive code -->
+        <div id="loginStepExecutive" class="login-step" style="display:none;">
+          <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
+            <i class="fas fa-arrow-left"></i> 返回 / Back
+          </button>
+          <div class="login-user-preview">
+            <div><strong>管理團隊 / Management Team</strong>
+              <p>請輸入授權代碼 / Enter Executive Code</p>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <input type="text" id="executiveCodeInput" class="form-control pin-input"
+              placeholder="授權代碼 / Executive Code" onkeyup="if(event.key==='Enter') handleLogin()">
+          </div>
+          <div id="loginError4" class="login-error" style="display:none;">代碼錯誤，請再試一次。</div>
+          <button class="btn btn-primary" onclick="handleLogin()">
+            <i class="fas fa-door-open"></i> 進入 / Enter
+          </button>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; justify-content: center; width: 100%;">
+          <select class="login-lang-select" onchange="changeLanguageLogin(this.value)">
+            <option value="en">English</option>
+            <option value="zh">繁體中文</option>
           </select>
         </div>
-
-        <!-- Theme toggle -->
-        <button class="icon-btn" id="themeToggle" title="Toggle theme">
-          <i class="fas fa-sun"></i>
-        </button>
-
-        <!-- Logout -->
-        <button class="icon-btn" id="logoutBtn" style="color:var(--danger);" title="Logout">
-          <i class="fas fa-sign-out-alt"></i>
-        </button>
       </div>
-    </header>
 
-    <!-- Demo Mode Banner -->
-    <div id="demoBanner" class="alert-info alert-demo" style="display:none;">
-      <i class="fas fa-bolt"></i>
-      <span>⚡ Demo Mode：資料儲存在此瀏覽器，尚未連接 Google Sheets。完成 <strong>SETUP_GUIDE.md</strong> 後即可升級為正式模式。</span>
-    </div>
 
-    <!-- ── View Sections ── -->
-    <section class="view-section active" id="sectionDashboard"></section>
-    <section class="view-section" id="sectionForm"></section>
-    <section class="view-section" id="sectionMilestones"></section>
-    <section class="view-section" id="sectionReview"></section>
-    <section class="view-section" id="sectionAnalytics"></section>
 
-  </main>
-</div><!-- /mainApp -->
-
-<!-- Edit Observation Modal -->
-<div id="editObsModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:20px;">
-  <div class="glass-card" style="width:100%;max-width:500px;max-height:90vh;overflow-y:auto;background:var(--card-bg);padding:24px;">
-    <h3 style="margin-bottom:16px;">編輯週記 (Edit Observation)</h3>
-    <input type="hidden" id="editObsId">
-    <div class="form-group">
-      <label>Date</label>
-      <input type="date" class="form-control" id="editObsDate">
-    </div>
-    <div class="form-group">
-      <label>Key Observation</label>
-      <textarea class="form-control" id="editObsKey" rows="4"></textarea>
-    </div>
-    <div class="form-group">
-      <label>Actionable Idea</label>
-      <textarea class="form-control" id="editObsIdea" rows="3"></textarea>
-    </div>
-    <div class="form-group">
-      <label>Attachment URL</label>
-      <input type="url" class="form-control" id="editObsPhoto">
-    </div>
-    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:20px;">
-      <button class="btn btn-secondary" onclick="document.getElementById('editObsModal').style.display='none'">取消 Cancel</button>
-      <button class="btn btn-primary" onclick="window.saveEditedObservation()">儲存 Save</button>
     </div>
   </div>
-</div>
+  </div><!-- /loginScreen -->
 
-<!-- Edit Assessment Modal -->
-<div id="editAssessModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:20px;">
-  <div class="glass-card" style="width:100%;max-width:600px;max-height:90vh;overflow-y:auto;background:var(--card-bg);padding:24px;">
-    <h3 style="margin-bottom:16px;">編輯主管考核 (Edit Assessment)</h3>
-    <input type="hidden" id="editAssessId">
-    <div class="form-group">
-      <label>Department / Station</label>
-      <select class="form-control" id="editAssessDept"></select>
-    </div>
-    
-    <div class="grid-2">
+
+  <!-- ══════════════════════════════════════════════
+     LOADING OVERLAY
+══════════════════════════════════════════════ -->
+  <div id="loadingOverlay" class="loading-overlay" style="display:none;">
+    <div class="loading-spinner"></div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════════ -->
+  <div id="mainApp" class="app-container" style="display:none;">
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-text">
+          <h1>Training Tracker</h1>
+          <p>Program System</p>
+        </div>
+      </div>
+
+      <ul class="nav-menu">
+        <li class="nav-item" id="liDashboard">
+          <a class="nav-link" id="navDashboard">
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item" id="liForm">
+          <a class="nav-link" id="navForm">
+            <span>Observation Log</span>
+          </a>
+        </li>
+        <li class="nav-item" id="liMilestones">
+          <a class="nav-link" id="navMilestones">
+            <span>Milestones</span>
+          </a>
+        </li>
+        <li class="nav-item" id="liReview">
+          <a class="nav-link" id="navReview">
+            <span>Review</span>
+          </a>
+        </li>
+        <li class="nav-item" id="liAnalytics">
+          <a class="nav-link" id="navAnalytics">
+            <span>Analytics</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- User Profile Card -->
+      <div class="user-profile-card">
+        <div class="user-profile-header">
+          <div class="user-avatar" id="sidebarAvatar">👤</div>
+          <div>
+            <div class="user-name" id="sidebarName">—</div>
+            <div class="user-role-badge" id="sidebarRole">—</div>
+          </div>
+        </div>
+        <p class="user-bio" id="sidebarBio"></p>
+      </div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
+          <img src="assets/logo.png?v=2" alt="Logo" class="top-bar-logo">
+          <div class="page-title">
+            <h2>Training Program Tracker</h2>
+            <p>國際生學習歷程 ｜ Milestone System</p>
+          </div>
+        </div>
+
+        <div class="controls-group">
+          <!-- Current user chip -->
+          <div class="current-user-chip">
+            <span id="currentUserAvatar">👤</span>
+            <span id="currentUserName">—</span>
+          </div>
+
+          <!-- Language selector -->
+          <div class="simulator-select-wrapper">
+            <label for="langSelector"><i class="fas fa-globe"></i></label>
+            <select class="simulator-select" id="langSelector">
+              <option value="en">EN</option>
+              <option value="zh">中文</option>
+            </select>
+          </div>
+
+          <!-- Theme toggle -->
+          <button class="icon-btn" id="themeToggle" title="Toggle theme">
+            <i class="fas fa-sun"></i>
+          </button>
+
+          <!-- Logout -->
+          <button class="icon-btn" id="logoutBtn" style="color:var(--danger);" title="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Demo Mode Banner -->
+      <div id="demoBanner" class="alert-info alert-demo" style="display:none;">
+        <i class="fas fa-bolt"></i>
+        <span>⚡ Demo Mode：資料儲存在此瀏覽器，尚未連接 Google Sheets。完成 <strong>SETUP_GUIDE.md</strong> 後即可升級為正式模式。</span>
+      </div>
+
+      <!-- ── View Sections ── -->
+      <section class="view-section active" id="sectionDashboard"></section>
+      <section class="view-section" id="sectionForm"></section>
+      <section class="view-section" id="sectionMilestones"></section>
+      <section class="view-section" id="sectionReview"></section>
+      <section class="view-section" id="sectionAnalytics"></section>
+
+    </main>
+  </div><!-- /mainApp -->
+
+  <!-- Edit Observation Modal -->
+  <div id="editObsModal"
+    style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+    <div class="glass-card"
+      style="width:100%;max-width:500px;max-height:90vh;overflow-y:auto;background:var(--card-bg);padding:24px;">
+      <h3 style="margin-bottom:16px;">編輯週記 (Edit Observation)</h3>
+      <input type="hidden" id="editObsId">
       <div class="form-group">
-        <label>Overall Grade</label>
-        <select class="form-control" id="editAssessGrade">
-          <option value="A">A - Excellent</option>
-          <option value="B">B - Good</option>
-          <option value="C">C - Average</option>
-          <option value="D">D - Needs Improvement</option>
-        </select>
+        <label>Date</label>
+        <input type="date" class="form-control" id="editObsDate">
       </div>
       <div class="form-group">
-        <label>Assessor Signature</label>
-        <input type="text" class="form-control" id="editAssessSigner">
+        <label>Key Observation</label>
+        <textarea class="form-control" id="editObsKey" rows="4"></textarea>
       </div>
-    </div>
-
-    <!-- Competencies (Star Ratings) -->
-    <div style="margin-top:12px; padding:12px; background:var(--bg-color); border-radius:8px;">
-      <div class="form-group" style="margin-bottom:8px;">
-        <label style="font-size:11px;">1. Understands flow/bottlenecks (理解流程與瓶頸)</label>
-        <input type="number" min="1" max="5" class="form-control" id="editAssessComp1" style="width:80px; display:inline-block; margin-left:12px;"> / 5
+      <div class="form-group">
+        <label>Actionable Idea</label>
+        <textarea class="form-control" id="editObsIdea" rows="3"></textarea>
       </div>
-      <div class="form-group" style="margin-bottom:8px;">
-        <label style="font-size:11px;">2. Accurate documentation (文件記錄正確性)</label>
-        <input type="number" min="1" max="5" class="form-control" id="editAssessComp2" style="width:80px; display:inline-block; margin-left:12px;"> / 5
+      <div class="form-group">
+        <label>Attachment URL</label>
+        <input type="url" class="form-control" id="editObsPhoto">
       </div>
-      <div class="form-group" style="margin-bottom:8px;">
-        <label style="font-size:11px;">3. Proactive learning (主動學習態度)</label>
-        <input type="number" min="1" max="5" class="form-control" id="editAssessComp3" style="width:80px; display:inline-block; margin-left:12px;"> / 5
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:20px;">
+        <button class="btn btn-secondary" onclick="document.getElementById('editObsModal').style.display='none'">取消
+          Cancel</button>
+        <button class="btn btn-primary" onclick="window.saveEditedObservation()">儲存 Save</button>
       </div>
-      <div class="form-group" style="margin-bottom:8px;">
-        <label style="font-size:11px;">4. Team collaboration (團隊合作與溝通)</label>
-        <input type="number" min="1" max="5" class="form-control" id="editAssessComp4" style="width:80px; display:inline-block; margin-left:12px;"> / 5
-      </div>
-      <div class="form-group" style="margin-bottom:8px;">
-        <label style="font-size:11px;">5. Practical ideation (實務提案能力)</label>
-        <input type="number" min="1" max="5" class="form-control" id="editAssessComp5" style="width:80px; display:inline-block; margin-left:12px;"> / 5
-      </div>
-    </div>
-
-    <div class="form-group" style="margin-top:12px;">
-      <label>Overall Comments</label>
-      <textarea class="form-control" id="editAssessComments" rows="3"></textarea>
-    </div>
-    
-    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:20px;">
-      <button class="btn btn-secondary" onclick="document.getElementById('editAssessModal').style.display='none'">取消 Cancel</button>
-      <button class="btn btn-primary" onclick="window.saveEditedAssessment()">儲存 Save</button>
     </div>
   </div>
-</div>
 
-<!-- Toast Notification -->
-<div class="toast" id="toastNotification">
-  <i class="fas fa-info-circle"></i>
-  <span class="toast-text">Notice</span>
-</div>
+  <!-- Edit Assessment Modal -->
+  <div id="editAssessModal"
+    style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+    <div class="glass-card"
+      style="width:100%;max-width:600px;max-height:90vh;overflow-y:auto;background:var(--card-bg);padding:24px;">
+      <h3 style="margin-bottom:16px;">編輯主管考核 (Edit Assessment)</h3>
+      <input type="hidden" id="editAssessId">
+      <div class="form-group">
+        <label>Department / Station</label>
+        <select class="form-control" id="editAssessDept"></select>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Overall Grade</label>
+          <select class="form-control" id="editAssessGrade">
+            <option value="A">A - Excellent</option>
+            <option value="B">B - Good</option>
+            <option value="C">C - Average</option>
+            <option value="D">D - Needs Improvement</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Assessor Signature</label>
+          <input type="text" class="form-control" id="editAssessSigner">
+        </div>
+      </div>
+
+      <!-- Competencies (Star Ratings) -->
+      <div style="margin-top:12px; padding:12px; background:var(--bg-color); border-radius:8px;">
+        <div class="form-group" style="margin-bottom:8px;">
+          <label style="font-size:11px;">1. Understands flow/bottlenecks (理解流程與瓶頸)</label>
+          <input type="number" min="1" max="5" class="form-control" id="editAssessComp1"
+            style="width:80px; display:inline-block; margin-left:12px;"> / 5
+        </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <label style="font-size:11px;">2. Accurate documentation (文件記錄正確性)</label>
+          <input type="number" min="1" max="5" class="form-control" id="editAssessComp2"
+            style="width:80px; display:inline-block; margin-left:12px;"> / 5
+        </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <label style="font-size:11px;">3. Proactive learning (主動學習態度)</label>
+          <input type="number" min="1" max="5" class="form-control" id="editAssessComp3"
+            style="width:80px; display:inline-block; margin-left:12px;"> / 5
+        </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <label style="font-size:11px;">4. Team collaboration (團隊合作與溝通)</label>
+          <input type="number" min="1" max="5" class="form-control" id="editAssessComp4"
+            style="width:80px; display:inline-block; margin-left:12px;"> / 5
+        </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <label style="font-size:11px;">5. Practical ideation (實務提案能力)</label>
+          <input type="number" min="1" max="5" class="form-control" id="editAssessComp5"
+            style="width:80px; display:inline-block; margin-left:12px;"> / 5
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:12px;">
+        <label>Overall Comments</label>
+        <textarea class="form-control" id="editAssessComments" rows="3"></textarea>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:20px;">
+        <button class="btn btn-secondary" onclick="document.getElementById('editAssessModal').style.display='none'">取消
+          Cancel</button>
+        <button class="btn btn-primary" onclick="window.saveEditedAssessment()">儲存 Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastNotification">
+    <i class="fas fa-info-circle"></i>
+    <span class="toast-text">Notice</span>
+  </div>
 
 
-<!-- ── Scripts (order matters) ── -->
-<script>
-  // Set the worker source for pdf.js
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-</script>
-<script src="js/config.js?v=47"></script>
-<script src="js/auth.js?v=49"></script>
-<script src="js/api.js?v=85"></script>
-<script src="js/data.js?v=69"></script>
-<script src="js/i18n.js?v=47"></script>
-<script src="js/app.js?v=190"></script>
+  <!-- ── Scripts (order matters) ── -->
+  <script>
+    // Set the worker source for pdf.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  </script>
+  <script src="js/config.js?v=47"></script>
+  <script src="js/auth.js?v=49"></script>
+  <script src="js/api.js?v=85"></script>
+  <script src="js/data.js?v=69"></script>
+  <script src="js/i18n.js?v=48"></script>
+  <script src="js/app.js?v=196"></script>
 
 </body>
+
 </html>

@@ -253,9 +253,12 @@ async function enterApp() {
   applyTheme();
 
   // Show demo mode banner if applicable
+  // Show demo mode banner if applicable
   if (CONFIG.DEMO_MODE) {
     $('demoBanner').style.display = 'flex';
   }
+
+  updateGlobalReminder();
 
   // Everyone lands on the dashboard schedule by default
   state.activeTab = 'dashboard';
@@ -331,11 +334,41 @@ function translateSidebar() {
   }
 }
 
+function updateGlobalReminder() {
+  const banner = $('globalReminderBanner');
+  if (!banner) return;
+  const now = new Date();
+  const taipeiStr = now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' });
+  const taipeiNow = new Date(taipeiStr);
+  const day = taipeiNow.getDay(); 
+  
+  let daysToAdd = 0;
+  if (day === 3) {
+    daysToAdd = 0;
+  } else if (day < 3) {
+    daysToAdd = 3 - day;
+  } else {
+    daysToAdd = 10 - day;
+  }
+
+  taipeiNow.setDate(taipeiNow.getDate() + daysToAdd);
+  const nextWedStrZh = ` ${taipeiNow.getMonth() + 1}/${taipeiNow.getDate()}(三)`;
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const nextWedStrEn = ` ${monthNames[taipeiNow.getMonth()]} ${taipeiNow.getDate()} (Wed)`;
+  
+  if (state.activeLanguage === 'zh') {
+    banner.innerHTML = `⚠️ 提醒：請於台北時間${nextWedStrZh} 23:59 前繳交前一週的學習心得，逾期將被標記為遲交。`;
+  } else {
+    banner.innerHTML = `⚠️ Reminder: Please submit last week's journal by${nextWedStrEn} 23:59 (Taipei Time). Late submissions will be flagged.`;
+  }
+}
+
 function changeLanguage(lang) {
   state.activeLanguage = lang;
   window._appLang = lang;
   localStorage.setItem('vimei_lang', lang);
   translateSidebar();
+  updateGlobalReminder();
   renderCurrentTab();
   updateSidebarProfile(Auth.getCurrentUser());
 }
@@ -938,7 +971,7 @@ window.exportObservationLogs = function() {
     csv += `"${cleanStr(obs.id)}",` +
            `"${cleanStr(obs.traineeId)}",` +
            `"${cleanStr(obs.traineeName)}",` +
-           `"${cleanStr(obs.date)}",` +
+           `"${cleanStr(formatTaipeiDateOnly(obs.date))}",` +
            `"${cleanStr(obs.department)}",` +
            `"${cleanStr(deptName)}",` +
            `"${cleanStr(obs.keyObservation)}",` +
@@ -1012,19 +1045,24 @@ function renderForm() {
     `<option value="${d.id}" ${d.id === presetDept ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
   ).join('');
 
-  let nextWedStrZh = '';
-  let nextWedStrEn = '';
-  if (state.selectedDate) {
-    const d = new Date(state.selectedDate);
-    if (!isNaN(d.getTime())) {
-      const day = d.getDay();
-      const daysToAdd = (day === 0 ? 0 : 7 - day) + 3;
-      d.setDate(d.getDate() + daysToAdd);
-      nextWedStrZh = ` (${d.getMonth() + 1}/${d.getDate()})`;
-      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      nextWedStrEn = ` (${monthNames[d.getMonth()]} ${d.getDate()})`;
-    }
+  const now = new Date();
+  const taipeiStr = now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' });
+  const taipeiNow = new Date(taipeiStr);
+  const day = taipeiNow.getDay(); 
+  
+  let daysToAdd = 0;
+  if (day === 3) {
+    daysToAdd = 0;
+  } else if (day < 3) {
+    daysToAdd = 3 - day;
+  } else {
+    daysToAdd = 10 - day;
   }
+
+  taipeiNow.setDate(taipeiNow.getDate() + daysToAdd);
+  const nextWedStrZh = ` ${taipeiNow.getMonth() + 1}/${taipeiNow.getDate()}(三)`;
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const nextWedStrEn = ` ${monthNames[taipeiNow.getMonth()]} ${taipeiNow.getDate()} (Wed)`;
 
   container.innerHTML = `
     <div class="glass-card">
@@ -1033,20 +1071,11 @@ function renderForm() {
       </div>
       <p style="color:var(--text-secondary);font-size:13px;margin-bottom:18px;">${t('formSubTitle')}</p>
       <div class="alert-info"><span>${t('privateNotice')}</span></div>
-      <div class="alert-warning" style="margin-bottom:18px;background:rgba(234,88,12,0.1);color:#ea580c;padding:12px 16px;border-radius:8px;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600;">
-        <span>⚠️ ${state.activeLanguage === 'zh' ? '提醒：本週心得請於下週三' + nextWedStrZh + ' 23:59 前送出，逾期將被標記為遲交。' : 'Reminder: Please submit your weekly journal by next Wednesday' + nextWedStrEn + ' 23:59. Late submissions will be flagged.'}</span>
-      </div>
 
       <form id="obsForm" onsubmit="window.submitObsForm(event)">
-        <div class="grid-2">
-          <div class="form-group">
-            <label>${t('lblDept')}</label>
-            <select class="form-control" id="obsDept" required>${deptOptions}</select>
-          </div>
-          <div class="form-group">
-            <label>${t('lblDate')}</label>
-            <input type="date" class="form-control" id="obsDate" value="${state.selectedDate}" required>
-          </div>
+        <div class="form-group">
+          <label>${t('lblDept')}</label>
+          <select class="form-control" id="obsDept" required>${deptOptions}</select>
         </div>
 
         <div class="form-group">
@@ -1088,7 +1117,7 @@ window.submitObsForm = async function(e) {
     const data = {
       traineeId:      user.id,
       traineeName:    user.name,
-      date:           $('obsDate').value,
+      date:           state.selectedDate || formatTaipeiDateOnly(new Date().toISOString()),
       department:     $('obsDept').value,
       keyObservation: $('obsKey').value.trim(),
       actionableIdea: '',
@@ -1640,6 +1669,34 @@ window.toggleAssessmentVisibility = async function(id, visible) {
   }
 };
 
+function formatTaipeiTime(isoString, lang) {
+  if (!isoString) return '';
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) return isoString;
+  const options = { 
+    timeZone: 'Asia/Taipei', 
+    year: 'numeric', 
+    month: '2-digit', 
+    day: '2-digit', 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    hour12: false 
+  };
+  return date.toLocaleString(lang === 'zh' ? 'zh-TW' : 'en-US', options);
+}
+
+function formatTaipeiDateOnly(isoString) {
+  if (!isoString) return '';
+  if (!isoString.includes('T')) return isoString;
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) return isoString;
+  const options = { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(date);
+  const p = {};
+  parts.forEach(part => p[part.type] = part.value);
+  return `${p.year}-${p.month}-${p.day}`;
+}
+
 function buildFeedItem(obs, user) {
   const traineeConf = CONFIG.TRAINEES.find(t => t.id === obs.traineeId) || {};
   const dept        = CONFIG.DEPARTMENTS[obs.department] || {};
@@ -1648,11 +1705,9 @@ function buildFeedItem(obs, user) {
   if (obs.date && obs.submittedAt) {
     const obsDate = new Date(obs.date);
     if (!isNaN(obsDate.getTime())) {
-      const day = obsDate.getDay();
-      const daysToAdd = day === 0 ? 0 : 7 - day;
-      const deadline = new Date(obsDate);
-      deadline.setDate(obsDate.getDate() + daysToAdd);
-      deadline.setHours(23, 59, 59, 999);
+      const day = obsDate.getUTCDay();
+      const daysToAdd = day === 0 ? 3 : 10 - day;
+      const deadline = new Date(Date.UTC(obsDate.getUTCFullYear(), obsDate.getUTCMonth(), obsDate.getUTCDate() + daysToAdd, 15, 59, 59, 999));
       
       const submitted = new Date(obs.submittedAt);
       if (!isNaN(submitted.getTime()) && submitted > deadline) {
@@ -1673,7 +1728,7 @@ function buildFeedItem(obs, user) {
       <div class="comment-bubble">
         <div class="comment-bubble-header">
           <span>👑 ${obs.mentorName}</span>
-          <span class="comment-bubble-time">${obs.feedbackAt}</span>
+          <span class="comment-bubble-time">${formatTaipeiTime(obs.feedbackAt, state.activeLanguage)}</span>
         </div>
         <p class="comment-bubble-text">${obs.mentorComment}</p>
       </div>
@@ -1687,7 +1742,7 @@ function buildFeedItem(obs, user) {
       <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-top:6px;">${t('guestNotesTitle')}</p>
       ${obs.guestComments.map(g => `
         <div class="comment-bubble guest-bubble">
-          <div class="comment-bubble-header"><span>👀 Guest</span><span class="comment-bubble-time">${g.submittedAt}</span></div>
+          <div class="comment-bubble-header"><span>👀 Guest</span><span class="comment-bubble-time">${formatTaipeiTime(g.submittedAt, state.activeLanguage)}</span></div>
           <p class="comment-bubble-text">${g.comment}</p>
         </div>
       `).join('')}
@@ -1732,7 +1787,10 @@ function buildFeedItem(obs, user) {
           <div class="user-avatar">${traineeConf.avatar || '👤'}</div>
           <div class="feed-trainee-meta">
             <h4>${obs.traineeName}</h4>
-            <p>${obs.date} · <span style="color:${dept.color}">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span></p>
+            <p>
+              <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
+              <span style="font-size:11px;color:var(--text-muted);">${t('lblSubmittedAt')}: ${formatTaipeiTime(obs.submittedAt, state.activeLanguage)}</span>
+            </p>
           </div>
         </div>
         <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
@@ -1801,7 +1859,7 @@ window.openEditObservation = function(id) {
   const obs = state.observations.find(o => o.id === id);
   if (!obs) return;
   $('editObsId').value = obs.id;
-  $('editObsDate').value = obs.date;
+  $('editObsDate').value = formatTaipeiDateOnly(obs.date);
   $('editObsKey').value = obs.keyObservation;
   $('editObsIdea').value = obs.actionableIdea || '';
   $('editObsPhoto').value = obs.attachmentUrl || '';
