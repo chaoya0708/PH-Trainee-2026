@@ -1788,7 +1788,7 @@ function buildFeedItem(obs, user) {
           <div class="feed-trainee-meta">
             <h4>${obs.traineeName}</h4>
             <p>
-              <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
+              ${formatTaipeiDateOnly(obs.submittedAt)} · <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
               <span style="font-size:11px;color:var(--text-muted);">${t('lblSubmittedAt')}: ${formatTaipeiTime(obs.submittedAt, state.activeLanguage)}</span>
             </p>
           </div>
