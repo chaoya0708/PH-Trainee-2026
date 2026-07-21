@@ -1114,10 +1114,19 @@ window.submitObsForm = async function(e) {
   showLoading();
   
   try {
+    const nowIsoStr = new Date().toISOString();
+    
+    // If selectedDate exists, use it but append current time so we don't get 00:00
+    let finalDate = nowIsoStr;
+    if (state.selectedDate) {
+      const now = new Date();
+      finalDate = `${state.selectedDate}T${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}+08:00`;
+    }
+
     const data = {
       traineeId:      user.id,
       traineeName:    user.name,
-      date:           state.selectedDate || formatTaipeiDateOnly(new Date().toISOString()),
+      date:           finalDate,
       department:     $('obsDept').value,
       keyObservation: $('obsKey').value.trim(),
       actionableIdea: '',
