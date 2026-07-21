@@ -17,7 +17,7 @@ const CONFIG = {
   // ----------------------------------------------------------------
   // Google Apps Script 網址（完成 SETUP_GUIDE.md 步驟後貼入）
   // ----------------------------------------------------------------
-  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxRQtIUr5rYPsLrbL4SJLZt8mwJBXVF1Z1xim_aJux0IuGy72GXk9qGC7HH5JB-MNPvdA/exec',
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxGO8qhJGBMmDueIkz-lse9c3PKsr7lGDdItToojUi-zUozIl6ogt-J-KmGkxKlzbe1Eg/exec',
 
   // ----------------------------------------------------------------
   // 密碼設定 / PIN & Access Codes (請自行修改 / Please change these)
