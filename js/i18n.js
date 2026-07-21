@@ -57,7 +57,7 @@ const I18N = {
     phPhoto:        'https://drive.google.com/...',
     submitBtn:      'Submit Weekly Journal',
     submitSuccess:  'Weekly Journal submitted successfully!',
-    lblSubmittedAt: 'Submitted At (Taipei Date/Time)',
+    lblSubmittedAt: 'Submitted At',
 
     // Milestones
     milestoneTitle:    'Milestone Progress',
@@ -177,7 +177,7 @@ const I18N = {
     phPhoto:        'https://drive.google.com/...',
     submitBtn:      '送出週記',
     submitSuccess:  '週記送出成功！',
-    lblSubmittedAt: '繳交時間 (台北日期/時間)',
+    lblSubmittedAt: '繳交時間',
 
     // Milestones
     milestoneTitle:    '里程碑進度',
