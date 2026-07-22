@@ -1090,7 +1090,7 @@ function renderForm() {
 
         <div class="form-group">
           <label>${state.activeLanguage === 'zh' ? '學習心得附件 (可選，請小於20MB)' : 'Journal Attachment (Optional, <20MB)'}</label>
-          <input type="file" class="form-control" id="obsPhoto" style="padding:6px;">
+          <input type="file" multiple class="form-control" id="obsPhoto" style="padding:6px;">
           <div style="font-size:12px;color:#ea580c;font-weight:600;margin-top:8px;line-height:1.5;background:var(--bg-card);padding:12px;border-radius:6px;border:1px solid #ea580c33;">
             ${state.activeLanguage === 'zh' 
               ? '⚠️ <b>上傳須知：</b><br>1. 建議將報告轉為 <b>PDF</b> 檔。<br>2. 檔案大小請控制在 20MB 以內。<br>3. 系統將自動把檔案上傳至中央資料夾。' 
@@ -1127,25 +1127,27 @@ window.submitObsForm = async function(e) {
   showLoading();
   
   try {
-    let attachmentUrl = '';
+    let attachmentUrls = [];
     const fileInput = $('obsPhoto');
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      const base64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-      // 傳入學生專用資料夾 ID
-      const FOLDER_ID = '1urhwEFrFRipQjP6Jd0LtR1VBRbs396UE';
-      const uploadRes = await Api.uploadFile(base64, file.type, file.name, FOLDER_ID);
-      if (uploadRes.success) {
-        attachmentUrl = uploadRes.url;
-      } else {
-        throw new Error('File upload failed.');
+      for (let i = 0; i < fileInput.files.length; i++) {
+        const file = fileInput.files[i];
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const FOLDER_ID = '1urhwEFrFRipQjP6Jd0LtR1VBRbs396UE';
+        const uploadRes = await Api.uploadFile(base64, file.type, file.name, FOLDER_ID);
+        if (uploadRes.success) {
+          attachmentUrls.push(uploadRes.url);
+        } else {
+          throw new Error('File upload failed for ' + file.name);
+        }
       }
     }
+    const attachmentUrl = attachmentUrls.join(',');
 
     const nowIsoStr = new Date().toISOString();
     
@@ -1307,10 +1309,12 @@ function renderMilestones() {
               <div style="font-size:13px;line-height:1.5;border-top:1px dashed var(--card-border);padding-top:10px;">
                 <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
                 ${assessment.attachmentUrl ? `
-                <div style="margin-top:8px;">
-                  <a href="${assessment.attachmentUrl}" target="_blank" class="btn btn-secondary" style="font-size:11px; padding:4px 8px; display:inline-flex; align-items:center; gap:6px;">
-                    <i class="fa-solid fa-paperclip"></i> ${state.activeLanguage === 'zh' ? '檢視考核附件' : 'View Attachment'}
-                  </a>
+                <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;">
+                  ${assessment.attachmentUrl.split(',').map((url, idx) => `
+                    <a href="${url}" target="_blank" class="btn btn-secondary" style="font-size:14px; padding:8px 12px; display:inline-flex; align-items:center; gap:6px; background-color:var(--bg-highlight); color:var(--primary); font-weight:bold;">
+                      <i class="fa-solid fa-paperclip"></i> ${state.activeLanguage === 'zh' ? '檢視附件' : 'View Attachment'} ${assessment.attachmentUrl.split(',').length > 1 ? idx + 1 : ''}
+                    </a>
+                  `).join('')}
                 </div>
                 ` : ''}
                 <p style="font-size:11px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
@@ -1415,7 +1419,7 @@ function renderMilestones() {
                 min: 0,
                 max: 5,
                 ticks: { display: false, stepSize: 1 },
-                pointLabels: { font: { size: 9 }, color: '#94a3b8' },
+                pointLabels: { font: { size: 14, weight: 'bold' }, color: '#64748b' },
                 grid: { color: 'rgba(0,0,0,0.05)' },
                 angleLines: { color: 'rgba(0,0,0,0.05)' }
               }
@@ -1576,7 +1580,7 @@ function renderReview() {
         </div>
         <div class="form-group" style="margin-top:14px;">
           <label>${state.activeLanguage === 'zh' ? '考核附件 (可選，請小於20MB)' : 'Assessment Attachment (Optional, <20MB)'}</label>
-          <input type="file" class="form-control" id="assessFile" style="padding:6px;">
+          <input type="file" multiple class="form-control" id="assessFile" style="padding:6px;">
         </div>
         <div class="form-group" style="margin-top:14px;">
           <label>${state.activeLanguage === 'zh' ? '考評者署名' : 'Assessor Signature'}</label>
@@ -1690,25 +1694,27 @@ window.submitStationAssessment = async function() {
 
   showLoading();
   try {
-    let attachmentUrl = '';
+    let attachmentUrls = [];
     const fileInput = $('assessFile');
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      const base64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-      // 傳入主管考核專用資料夾 ID
-      const FOLDER_ID = '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT';
-      const uploadRes = await Api.uploadFile(base64, file.type, file.name, FOLDER_ID);
-      if (uploadRes.success) {
-        attachmentUrl = uploadRes.url;
-      } else {
-        throw new Error('File upload failed.');
+      for (let i = 0; i < fileInput.files.length; i++) {
+        const file = fileInput.files[i];
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const FOLDER_ID = '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT';
+        const uploadRes = await Api.uploadFile(base64, file.type, file.name, FOLDER_ID);
+        if (uploadRes.success) {
+          attachmentUrls.push(uploadRes.url);
+        } else {
+          throw new Error('File upload failed for ' + file.name);
+        }
       }
     }
+    const attachmentUrl = attachmentUrls.join(',');
 
     const res = await Api.submitAssessment(traineeId, dept, grade, comp1, comp2, comp3, comp4, comp5, comments, assessor, attachmentUrl);
     if (res.success) {
@@ -1890,9 +1896,13 @@ function buildFeedItem(obs, user) {
       ${obs.attachmentUrl ? `
         <div class="obs-block">
           <h5>${state.activeLanguage === 'zh' ? '照片或報告檔案連結' : 'Attachment Link'}</h5>
-          <button onclick="window.open('${obs.attachmentUrl}', '_blank')" class="btn btn-secondary btn-sm" style="margin-top:6px; color:var(--primary); border-color:var(--primary);">
-            <i class="fas fa-external-link-alt" style="margin-right:6px;"></i> ${state.activeLanguage === 'zh' ? '點擊檢視附件內容' : 'View Attachment'}
-          </button>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
+            ${obs.attachmentUrl.split(',').map((url, idx) => `
+              <button onclick="window.open('${url}', '_blank')" class="btn btn-secondary btn-sm" style="color:var(--primary); border-color:var(--primary);">
+                <i class="fas fa-external-link-alt" style="margin-right:6px;"></i> ${state.activeLanguage === 'zh' ? '點擊檢視附件內容' : 'View Attachment'} ${obs.attachmentUrl.split(',').length > 1 ? idx + 1 : ''}
+              </button>
+            `).join('')}
+          </div>
         </div>` : ''}
 
       ${feedbackBlock}
