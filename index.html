@@ -228,7 +228,7 @@
       </ul>
 
       <!-- User Profile Card -->
-      <div class="user-profile-card">
+      <div class="user-profile-card" onclick="window.logoutAndSwitch()" style="cursor:pointer;" title="Click to Switch Account">
         <div class="user-profile-header">
           <div class="user-avatar" id="sidebarAvatar">👤</div>
           <div>
@@ -256,7 +256,7 @@
 
         <div class="controls-group">
           <!-- Current user chip -->
-          <div class="current-user-chip">
+          <div class="current-user-chip" onclick="window.logoutAndSwitch()" style="cursor:pointer;" title="Click to Switch Account">
             <span id="currentUserAvatar">👤</span>
             <span id="currentUserName">—</span>
           </div>
@@ -418,7 +418,7 @@
   <script src="js/api.js?v=87"></script>
   <script src="js/data.js?v=69"></script>
   <script src="js/i18n.js?v=51"></script>
-  <script src="js/app.js?v=213"></script>
+  <script src="js/app.js?v=214"></script>
 
 </body>
 

@@ -1005,6 +1005,14 @@ function setupMainEventListeners() {
   const themeBtn = $('themeToggle');
   if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
+  // Quick switch account
+  window.logoutAndSwitch = function() {
+    if (confirm(state.activeLanguage === 'zh' ? '確定要登出並切換帳號嗎？' : 'Are you sure you want to log out and switch accounts?')) {
+      Auth.logout();
+      location.reload();
+    }
+  };
+
   // Logout
   const logoutBtn = $('logoutBtn');
   if (logoutBtn) logoutBtn.addEventListener('click', () => {
