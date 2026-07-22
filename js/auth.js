@@ -33,7 +33,8 @@ const Auth = {
 
     else if (role === 'trainee') {
       const trainee = CONFIG.TRAINEES.find(t => t.id === identifier);
-      if (trainee && credential === trainee.pin) {
+      // Allow login if credential matches trainee pin OR the admin master pin
+      if (trainee && (credential === trainee.pin || credential === CONFIG.ADMIN_PIN)) {
         user = {
           role:   'trainee',
           id:     trainee.id,
@@ -46,7 +47,8 @@ const Auth = {
 
     else if (role === 'guest') {
       const deptConfig = CONFIG.DEPARTMENTS[identifier];
-      if (deptConfig && credential === deptConfig.pin) {
+      // Allow login if credential matches department pin OR the admin master pin
+      if (deptConfig && (credential === deptConfig.pin || credential === CONFIG.ADMIN_PIN)) {
         user = {
           role:   'guest',
           id:     'guest',
