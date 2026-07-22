@@ -205,6 +205,7 @@ const Api = (() => {
           mentorName:     '',
           feedbackAt:     '',
           rating:         0,
+          selfRating:     data.selfRating || 0,
           guestComments:  []
         };
         obs.unshift(newObs);

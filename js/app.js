@@ -601,6 +601,48 @@ function renderDashboard() {
   const viewUser = CONFIG.TRAINEES.find(t => t.id === viewId) || CONFIG.ADMIN;
   const sched   = (state.schedules[viewId]) || {};
 
+  // Pulse Check UI (Only for trainee themselves)
+  let pulseCheckHtml = '';
+  if (user.role === 'trainee') {
+    const currentStatus = localStorage.getItem(`MA_STATUS_${user.id}`) || 'green';
+    pulseCheckHtml = `
+      <div class="glass-card" style="margin-bottom: 20px;">
+        <h3 style="margin-bottom: 12px; font-size: 14px; color: var(--text-secondary); text-transform: uppercase;">${state.activeLanguage === 'zh' ? '本週脈搏打卡 (Weekly Pulse Check)' : 'Weekly Pulse Check'}</h3>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn ${currentStatus === 'green' ? 'btn-primary' : 'btn-outline'}" onclick="window.setPulseCheck('green')" style="flex:1;">🟢 ${state.activeLanguage === 'zh' ? '順利推進' : 'On Track'}</button>
+          <button class="btn ${currentStatus === 'yellow' ? 'btn-primary' : 'btn-outline'}" onclick="window.setPulseCheck('yellow')" style="flex:1;">🟡 ${state.activeLanguage === 'zh' ? '遇到瓶頸' : 'Facing Blocks'}</button>
+          <button class="btn ${currentStatus === 'red' ? 'btn-primary' : 'btn-outline'}" onclick="window.setPulseCheck('red')" style="flex:1;">🔴 ${state.activeLanguage === 'zh' ? '需要協助' : 'Need Help'}</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // IDP Checklist UI
+  let idpHtml = '';
+  if (user.role === 'trainee' || user.role === 'admin' || user.role === 'executive') {
+    let idpGoals = [];
+    try { idpGoals = JSON.parse(localStorage.getItem(`MA_IDP_${viewId}`)) || []; } catch(e) {}
+    
+    idpHtml = `
+      <div class="glass-card" style="width:100%; margin-top:20px;">
+        <div class="card-header" style="justify-content: space-between;">
+          <h3>${state.activeLanguage === 'zh' ? 'IDP 個人發展目標 (Individual Development Plan)' : 'Individual Development Plan (IDP)'}</h3>
+          ${user.role === 'trainee' ? `<button class="btn btn-primary btn-sm" onclick="window.addIdpGoal()">+ ${state.activeLanguage === 'zh' ? '新增目標' : 'Add Goal'}</button>` : ''}
+        </div>
+        <ul style="list-style: none; padding: 0; margin-top: 10px;">
+          ${idpGoals.length === 0 ? `<li style="color:var(--text-muted); font-size:14px; padding:10px 0;">${state.activeLanguage === 'zh' ? '尚未設定發展目標...' : 'No goals set...'}</li>` : idpGoals.map((g, i) => `
+            <li style="display:flex; align-items:center; gap:10px; padding: 10px 0; border-bottom: 1px solid var(--border-color);">
+              <input type="checkbox" ${g.done ? 'checked' : ''} ${user.role !== 'trainee' ? 'disabled' : `onchange="window.toggleIdpGoal(${i})"`} style="width:18px;height:18px;accent-color:var(--primary);">
+              <span style="flex:1; font-size:14px; ${g.done ? 'text-decoration:line-through;color:var(--text-muted);' : ''}">${g.text}</span>
+              ${user.role === 'trainee' ? `<button class="btn btn-outline btn-sm" style="padding: 2px 8px; border:none; color:var(--text-muted);" onclick="window.deleteIdpGoal(${i})"><i class="fi fi-rs-trash"></i></button>` : ''}
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+
   const days = isMonthView ? getCalendarMonthDays(targetDateStr) : getWeekDays(targetDateStr);
   const dayNames = {
     en: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
@@ -726,6 +768,7 @@ function renderDashboard() {
 
   container.innerHTML = `
     ${traineeSelectorHtml}
+    ${pulseCheckHtml}
     
     <div class="glass-card" style="width:100%;margin-bottom:20px;">
       <div class="card-header" style="flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 16px; border-bottom: none; padding-bottom: 0;">
@@ -771,8 +814,54 @@ function renderDashboard() {
         }).join('')}
       </div>
     </div>
+    
+    ${idpHtml}
   `;
 }
+
+window.setPulseCheck = function(status) {
+  const user = Auth.getCurrentUser();
+  if(user.role !== 'trainee') return;
+  localStorage.setItem(`MA_STATUS_${user.id}`, status);
+  renderDashboard();
+};
+
+window.addIdpGoal = function() {
+  const user = Auth.getCurrentUser();
+  if(user.role !== 'trainee') return;
+  const goal = prompt(state.activeLanguage === 'zh' ? '請輸入新的學習目標：' : 'Enter new learning goal:');
+  if(goal && goal.trim()){
+    let goals = [];
+    try { goals = JSON.parse(localStorage.getItem(`MA_IDP_${user.id}`)) || []; } catch(e) {}
+    goals.push({ text: goal.trim(), done: false });
+    localStorage.setItem(`MA_IDP_${user.id}`, JSON.stringify(goals));
+    renderDashboard();
+  }
+};
+
+window.toggleIdpGoal = function(index) {
+  const user = Auth.getCurrentUser();
+  if(user.role !== 'trainee') return;
+  let goals = [];
+  try { goals = JSON.parse(localStorage.getItem(`MA_IDP_${user.id}`)) || []; } catch(e) {}
+  if(goals[index]) {
+    goals[index].done = !goals[index].done;
+    localStorage.setItem(`MA_IDP_${user.id}`, JSON.stringify(goals));
+    renderDashboard();
+  }
+};
+
+window.deleteIdpGoal = function(index) {
+  const user = Auth.getCurrentUser();
+  if(user.role !== 'trainee') return;
+  if(confirm(state.activeLanguage === 'zh' ? '確定要刪除這個目標嗎？' : 'Delete this goal?')) {
+    let goals = [];
+    try { goals = JSON.parse(localStorage.getItem(`MA_IDP_${user.id}`)) || []; } catch(e) {}
+    goals.splice(index, 1);
+    localStorage.setItem(`MA_IDP_${user.id}`, JSON.stringify(goals));
+    renderDashboard();
+  }
+};
 
 function renderAnalytics() {
   const container = $('sectionAnalytics');
@@ -841,9 +930,12 @@ function renderAnalytics() {
       return `<span class="analytics-dept-badge" style="${badgeStyle}" title="${state.activeLanguage === 'zh' ? d.nameZh : d.name}: ${pct}%${assessment ? ' - ' + t('lblAssessGrade') + ': ' + assessment.grade : ''}">${text}</span>`;
     }).join(' ');
 
+    const currentStatus = localStorage.getItem(`MA_STATUS_${tr.id}`) || 'green';
+    const statusEmoji = currentStatus === 'green' ? '🟢' : currentStatus === 'yellow' ? '🟡' : '🔴';
+
     return `
       <tr>
-        <td><strong>${tr.name}</strong></td>
+        <td><strong>${tr.name}</strong> <span style="font-size:12px;" title="Pulse Check">${statusEmoji}</span></td>
         <td>
           <div style="display:flex;align-items:center;gap:10px;">
             <div class="progress-bar" style="width:80px;height:8px;margin-bottom:0;"><div class="progress-fill" style="width:${progress}%;"></div></div>
@@ -1110,6 +1202,18 @@ function renderForm() {
           </div>
         </div>
 
+        <!-- 3. Self-Appraisal Feature -->
+        <div class="form-group" style="background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+          <label style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">${state.activeLanguage === 'zh' ? '本週表現自評 (Self-Appraisal)' : 'Self-Appraisal (Rating)'}</label>
+          <div style="display:flex;gap:10px;" id="selfAppraisalStars">
+            ${[1,2,3,4,5].map(v => `<i class="fi fi-rs-star star-btn" data-val="${v}" style="font-size:28px;cursor:pointer;color:#d1d5db;transition:all 0.2s;" onclick="window.setSelfRating(${v})"></i>`).join('')}
+          </div>
+          <input type="hidden" id="obsSelfRating" value="0">
+          <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">
+            ${state.activeLanguage === 'zh' ? '請為自己這週的表現打分數，幫助導師了解您的學習狀態。' : 'Rate your own performance this week to align with your mentor.'}
+          </div>
+        </div>
+
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:4px;">
           ${t('submitBtn')}
         </button>
@@ -1132,6 +1236,25 @@ function renderForm() {
     }
   });
 }
+
+window.setSelfRating = function(val) {
+  const ratingInput = document.getElementById('obsSelfRating');
+  if(ratingInput) ratingInput.value = val;
+  const stars = document.querySelectorAll('#selfAppraisalStars .star-btn');
+  stars.forEach(s => {
+    if (parseInt(s.dataset.val) <= val) {
+      s.classList.remove('fi-rs-star');
+      s.classList.add('fi-ss-star');
+      s.style.color = '#f59e0b';
+      s.style.transform = 'scale(1.1)';
+    } else {
+      s.classList.remove('fi-ss-star');
+      s.classList.add('fi-rs-star');
+      s.style.color = '#d1d5db';
+      s.style.transform = 'scale(1)';
+    }
+  });
+};
 
 window.submitObsForm = async function(e) {
   e.preventDefault();
@@ -1177,7 +1300,8 @@ window.submitObsForm = async function(e) {
       department:     $('obsDept').value,
       keyObservation: window.obsQuill.root.innerHTML,
       actionableIdea: '',
-      attachmentUrl:  attachmentUrl
+      attachmentUrl:  attachmentUrl,
+      selfRating:     parseInt($('obsSelfRating') ? $('obsSelfRating').value : 0, 10)
     };
 
     await Api.submitObservation(data);
@@ -1892,6 +2016,7 @@ function buildFeedItem(obs, user) {
             <p>
               ${formatTaipeiDateOnly(obs.submittedAt || obs.date)} · <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
               <span style="font-size:11px;color:var(--text-muted);">${t('lblSubmittedAt')}: ${formatTaipeiTime(obs.submittedAt || obs.date, state.activeLanguage)}</span>
+              ${obs.selfRating ? `<br><span style="font-size:12px;color:#f59e0b;font-weight:700;margin-top:4px;display:inline-block;">${state.activeLanguage === 'zh' ? '自我評分' : 'Self-Appraisal'}: ${obs.selfRating} / 5 <i class="fi fi-ss-star"></i></span>` : ''}
             </p>
           </div>
         </div>
