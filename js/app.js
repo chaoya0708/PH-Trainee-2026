@@ -237,6 +237,7 @@ window.changeLanguageLogin = function(lang) {
 // ══════════════════════════════════════════════════════════════════
 
 window.autoSyncSchedules = async function() {
+  return; // DISABLED: Data is already in Google Sheets
   if (CONFIG.DEMO_MODE) return;
   if (localStorage.getItem('synced_schedules_v2')) return;
   const user = Auth.getCurrentUser();
