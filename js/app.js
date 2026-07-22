@@ -1063,7 +1063,7 @@ function renderForm() {
   const nextWedStr = `${taipeiNow.getMonth() + 1}/${taipeiNow.getDate()}`;
 
   const reminderZh = `⚠️ 提醒：請於(${nextWedStr}) 11:59 PM 前繳交前一週的學習心得，逾期將被標記為遲交。`;
-  const reminderEn = `⚠️ Reminder: Please submit last week's journal by (${nextWedStr}) 11:59 PM (Taipei Time). Late submissions will be flagged.`;
+  const reminderEn = `⚠️ Reminder: Please submit last week's journal by (${nextWedStr}) 11:59 PM. Late submissions will be flagged.`;
   const bannerText = state.activeLanguage === 'zh' ? reminderZh : reminderEn;
 
   container.innerHTML = `
