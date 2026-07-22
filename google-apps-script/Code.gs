@@ -1,14 +1,11 @@
 /**
  * VIMEI Knowledge Tracker - Google Apps Script Backend
- * ======================================================
- * 部署步驟 / Deployment Steps:
- * 1. 開啟 Google Sheets → 擴充功能 → Apps Script
- * 2. 將此程式碼完整貼入
- * 3. 點擊「部署」→「新增部署作業」
- * 4. 類型選「網頁應用程式」，執行身份選「我」，存取權選「所有人」
- * 5. 複製產生的網址，貼入 js/config.js 的 APPS_SCRIPT_URL
- * 6. 將 js/config.js 的 DEMO_MODE 改為 false
  */
+
+function testAuth() {
+  DriveApp.getRootFolder();
+  console.log("授權成功！Google Drive 已經連線！");
+}
 
 const SHEETS = {
   OBSERVATIONS:   'observations',
@@ -17,19 +14,14 @@ const SHEETS = {
   ASSESSMENTS:    'assessments'
 };
 
-// ---- Time Helper ----
 function getTaipeiTime() {
   return Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy-MM-dd'T'HH:mm:ss+08:00");
 }
 
-// ---- CORS Headers ----
 function corsResponse(data) {
-  return ContentService
-    .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
 }
 
-// ---- doGet: Handle read requests ----
 function doGet(e) {
   const action = e.parameter.action;
   try {
@@ -48,26 +40,29 @@ function doGet(e) {
   }
 }
 
-// ---- doPost: Handle write requests ----
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     const action = data.action;
     let result;
-    if      (action === 'submitObservation')  result = submitObservation(data);
-    else if (action === 'submitFeedback')      result = submitFeedback(data);
-    else if (action === 'submitGuestComment')  result = submitGuestComment(data);
-    else if (action === 'updateSchedule')      result = updateSchedule(data);
-    else if (action === 'submitAssessment')    result = submitAssessment(data);
-    else if (action === 'uploadFile')          result = uploadFile(data);
+    if      (action === 'submitObservation')          result = submitObservation(data);
+    else if (action === 'submitFeedback')             result = submitFeedback(data);
+    else if (action === 'submitGuestComment')         result = submitGuestComment(data);
+    else if (action === 'updateSchedule')             result = updateSchedule(data);
+    else if (action === 'submitAssessment')           result = submitAssessment(data);
+    else if (action === 'updateAssessmentVisibility') result = updateAssessmentVisibility(data);
+    else if (action === 'updateAssessment')           result = updateAssessment(data);
+    else if (action === 'deleteAssessment')           result = deleteAssessment(data);
+    else if (action === 'updateObservation')          result = updateObservation(data);
+    else if (action === 'deleteObservation')          result = deleteObservation(data);
+    else if (action === 'uploadFile')                 result = uploadFile(data);
     else result = { error: 'Unknown action: ' + action };
+    
     return corsResponse(result);
   } catch (err) {
     return corsResponse({ error: err.message });
   }
 }
-
-// ---- Sheet Helpers ----
 
 function getOrCreateSheet(name, headers) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -78,30 +73,6 @@ function getOrCreateSheet(name, headers) {
     sheet.setFrozenRows(1);
   }
   return sheet;
-}
-
-// ---- File Upload Helper ----
-function uploadFile(data) {
-  // IMPORTANT: Replace this with your Google Drive Folder ID
-  const FOLDER_ID = '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT'; 
-  
-  if (FOLDER_ID === 'YOUR_FOLDER_ID_HERE') {
-    throw new Error('Please replace YOUR_FOLDER_ID_HERE with a real Folder ID in Code.gs');
-  }
-
-  const folder = DriveApp.getFolderById(FOLDER_ID);
-  
-  // The base64 string usually looks like "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
-  // We need to strip the prefix to get the raw base64 data
-  const base64Str = data.base64.split(',')[1] || data.base64;
-  const decoded = Utilities.base64Decode(base64Str);
-  
-  const blob = Utilities.newBlob(decoded, data.mimeType, data.filename);
-  const file = folder.createFile(blob);
-  
-  // Note: Ensure the folder itself is shared as "Anyone with the link can view", 
-  // so the file inherits the permission.
-  return { success: true, url: file.getUrl() };
 }
 
 function sheetToArray(sheet) {
@@ -120,20 +91,15 @@ function findRowIndex(sheet, colName, value) {
   const headers = data[0];
   const colIdx = headers.indexOf(colName);
   for (let i = 1; i < data.length; i++) {
-    if (String(data[i][colIdx]) === String(value)) return i + 1; // 1-indexed
+    if (String(data[i][colIdx]) === String(value)) return i + 1;
   }
   return -1;
 }
 
-// ---- Observations ----
-
-const OBS_HEADERS = ['id','traineeId','traineeName','date','department',
-  'keyObservation','actionableIdea','attachmentUrl','submittedAt',
-  'status','mentorComment','mentorName','feedbackAt','rating'];
+const OBS_HEADERS = ['id','traineeId','traineeName','date','department','keyObservation','actionableIdea','attachmentUrl','submittedAt','status','mentorComment','mentorName','feedbackAt','rating'];
 
 function getAllObservations() {
-  const sheet = getOrCreateSheet(SHEETS.OBSERVATIONS, OBS_HEADERS);
-  return sheetToArray(sheet);
+  return sheetToArray(getOrCreateSheet(SHEETS.OBSERVATIONS, OBS_HEADERS));
 }
 
 function getObservations(traineeId) {
@@ -141,16 +107,112 @@ function getObservations(traineeId) {
   return traineeId ? all.filter(r => r.traineeId === traineeId) : all;
 }
 
-function submitObservation(data) {
+// ----------------------------------------------------
+// 檔案上傳 (考核專用)
+// ----------------------------------------------------
+function uploadFile(data) {
+  const FOLDER_ID = '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT'; 
+  const folder = DriveApp.getFolderById(FOLDER_ID);
+  
+  const base64Str = data.base64.split(',')[1] || data.base64;
+  const decoded = Utilities.base64Decode(base64Str);
+  const blob = Utilities.newBlob(decoded, data.mimeType, data.filename);
+  const file = folder.createFile(blob);
+  
+  try {
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  } catch (shareErr) {
+    console.log("企業權限限制: " + shareErr);
+  }
+  return { success: true, url: file.getUrl() };
+}
+
+// ----------------------------------------------------
+// 學生週記 (Observations)
+// ----------------------------------------------------
+function submitObservation(params) {
   const sheet = getOrCreateSheet(SHEETS.OBSERVATIONS, OBS_HEADERS);
-  const id    = 'obs-' + new Date().getTime();
-  const now   = getTaipeiTime();
+  let attachmentUrl = params.attachmentUrl || "";
+  
+  if (params.fileData && params.fileData.base64) {
+    let diagnosticInfo = "開始執行;";
+    try {
+      const b64String = params.fileData.base64;
+      diagnosticInfo += "原始長度:" + (b64String ? b64String.length : "null") + ";";
+      const parts = b64String.split(',');
+      const data = parts.length > 1 ? parts[1] : parts[0];
+      diagnosticInfo += "分割後長度:" + (data ? data.length : "null") + ";";
+      
+      if (!data || data.length === 0) throw new Error("Base64 字串為空");
+
+      const decoded = Utilities.base64Decode(data);
+      diagnosticInfo += "解碼成功;";
+      const mime = params.fileData.mimeType || 'application/pdf';
+      const name = params.fileData.fileName || 'upload.pdf';
+      
+      const blob = Utilities.newBlob(decoded);
+      blob.setContentType(mime);
+      blob.setName(name);
+      diagnosticInfo += "Blob建立成功;";
+      
+      let folder;
+      const folders = DriveApp.getFoldersByName("MA_Program_Uploads");
+      if (folders.hasNext()) {
+        folder = folders.next();
+      } else {
+        folder = DriveApp.createFolder("MA_Program_Uploads");
+      }
+      
+      const file = folder.createFile(blob);
+      attachmentUrl = file.getUrl(); 
+      diagnosticInfo += "檔案儲存成功;";
+      
+      try {
+        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      } catch (shareErr) {
+        console.log("企業權限限制: " + shareErr);
+      }
+    } catch(err) {
+      attachmentUrl = "上傳失敗: [" + diagnosticInfo + "] 錯誤: " + err.message;
+    }
+  }
+
   sheet.appendRow([
-    id, data.traineeId, data.traineeName, data.date, data.department,
-    data.keyObservation, data.actionableIdea, data.attachmentUrl || '',
-    now, 'pending', '', '', '', 0
+    params.id, params.traineeId, params.traineeName, params.date,
+    params.department, params.keyObservation, params.actionableIdea || "",
+    attachmentUrl, params.submittedAt, 'pending', '', '', '', 0
   ]);
-  return { success: true, id };
+  return { success: true };
+}
+
+function deleteObservation(params) {
+  const sheet = getOrCreateSheet(SHEETS.OBSERVATIONS, OBS_HEADERS);
+  const data = sheet.getDataRange().getValues();
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][0] === params.id) {
+      sheet.deleteRow(i + 1);
+      return { success: true };
+    }
+  }
+  return { success: false, error: 'Observation not found' };
+}
+
+function updateObservation(params) {
+  const sheet = getOrCreateSheet(SHEETS.OBSERVATIONS, OBS_HEADERS);
+  const data = sheet.getDataRange().getValues();
+  const updateData = params.data;
+  
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === params.id) {
+      if (updateData.date) sheet.getRange(i + 1, 4).setValue(updateData.date);
+      if (updateData.department) sheet.getRange(i + 1, 5).setValue(updateData.department);
+      if (updateData.keyObservation !== undefined) sheet.getRange(i + 1, 6).setValue(updateData.keyObservation);
+      if (updateData.actionableIdea !== undefined) sheet.getRange(i + 1, 7).setValue(updateData.actionableIdea);
+      if (updateData.attachmentUrl !== undefined) sheet.getRange(i + 1, 8).setValue(updateData.attachmentUrl);
+      return { success: true };
+    }
+  }
+  return { success: false, error: 'Observation not found' };
 }
 
 function submitFeedback(data) {
@@ -162,18 +224,18 @@ function submitFeedback(data) {
   sheet.getRange(rowIdx, col('status')).setValue('reviewed');
   sheet.getRange(rowIdx, col('mentorComment')).setValue(data.mentorComment || '');
   sheet.getRange(rowIdx, col('mentorName')).setValue(data.mentorName || '');
-  sheet.getRange(rowIdx, col('feedbackAt')).setValue(getTaipeiTime());
+  sheet.getRange(rowIdx, col('feedbackAt')).setValue(new Date().toISOString());
   sheet.getRange(rowIdx, col('rating')).setValue(data.rating || 0);
   return { success: true };
 }
 
-// ---- Schedules ----
-
+// ----------------------------------------------------
+// 班表與留言 (Schedules & Guest Comments)
+// ----------------------------------------------------
 const SCHED_HEADERS = ['traineeId','date','dept','objective','updatedAt'];
 
 function getAllSchedules() {
-  const sheet = getOrCreateSheet(SHEETS.SCHEDULES, SCHED_HEADERS);
-  const rows  = sheetToArray(sheet);
+  const rows  = sheetToArray(getOrCreateSheet(SHEETS.SCHEDULES, SCHED_HEADERS));
   const result = {};
   rows.forEach(r => {
     if (!result[r.traineeId]) result[r.traineeId] = {};
@@ -183,55 +245,47 @@ function getAllSchedules() {
 }
 
 function getSchedulesForTrainee(traineeId) {
-  const all = getAllSchedules();
-  return all[traineeId] || {};
+  return getAllSchedules()[traineeId] || {};
 }
 
 function updateSchedule(data) {
   const sheet  = getOrCreateSheet(SHEETS.SCHEDULES, SCHED_HEADERS);
-  const rowIdx = findRowIndex(sheet, 'traineeId', data.traineeId);
-  // Check if row with matching traineeId AND date exists
-  const rows   = sheetToArray(sheet);
-  const existing = rows.findIndex(r => r.traineeId === data.traineeId && r.date === data.date);
+  const existing = sheetToArray(sheet).findIndex(r => r.traineeId === data.traineeId && r.date === data.date);
   if (existing >= 0) {
-    const sheetRow = existing + 2; // +1 for header, +1 for 1-index
+    const sheetRow = existing + 2;
     sheet.getRange(sheetRow, 3).setValue(data.dept);
     sheet.getRange(sheetRow, 4).setValue(data.objective);
-    sheet.getRange(sheetRow, 5).setValue(getTaipeiTime());
+    sheet.getRange(sheetRow, 5).setValue(new Date().toISOString());
   } else {
-    sheet.appendRow([data.traineeId, data.date, data.dept, data.objective, getTaipeiTime()]);
+    sheet.appendRow([data.traineeId, data.date, data.dept, data.objective, new Date().toISOString()]);
   }
   return { success: true };
 }
 
-// ---- Guest Comments ----
-
 const GC_HEADERS = ['id','obsId','comment','submittedAt'];
 
 function getAllGuestComments() {
-  const sheet = getOrCreateSheet(SHEETS.GUEST_COMMENTS, GC_HEADERS);
-  return sheetToArray(sheet);
+  return sheetToArray(getOrCreateSheet(SHEETS.GUEST_COMMENTS, GC_HEADERS));
 }
 
 function getGuestComments(traineeId) {
-  // For per-trainee filtering, we need obs IDs first - return all for simplicity
   return getAllGuestComments();
 }
 
 function submitGuestComment(data) {
-  const sheet = getOrCreateSheet(SHEETS.GUEST_COMMENTS, GC_HEADERS);
-  const id    = 'gc-' + new Date().getTime();
-  sheet.appendRow([id, data.obsId, data.comment, getTaipeiTime()]);
+  const id = 'gc-' + new Date().getTime();
+  getOrCreateSheet(SHEETS.GUEST_COMMENTS, GC_HEADERS).appendRow([id, data.obsId, data.comment, new Date().toISOString()]);
   return { success: true, id };
 }
 
-// ---- Assessments ----
-
-const ASSESS_HEADERS = ['id','traineeId','department','grade','competency1','competency2','competency3','competency4','competency5','comments','assessor','assessedAt'];
+// ----------------------------------------------------
+// 主管考核 (Assessments) 
+// ----------------------------------------------------
+// 統一修復 ASSESS_HEADERS (加入 competency5, visibleToTrainee, attachmentUrl)
+const ASSESS_HEADERS = ['id','traineeId','department','grade','competency1','competency2','competency3','competency4','competency5','comments','assessor','assessedAt','visibleToTrainee','attachmentUrl'];
 
 function getAssessments() {
-  const sheet = getOrCreateSheet(SHEETS.ASSESSMENTS, ASSESS_HEADERS);
-  return sheetToArray(sheet);
+  return sheetToArray(getOrCreateSheet(SHEETS.ASSESSMENTS, ASSESS_HEADERS));
 }
 
 function submitAssessment(data) {
@@ -239,8 +293,67 @@ function submitAssessment(data) {
   const id = 'asm-' + new Date().getTime();
   sheet.appendRow([
     id, data.traineeId, data.department, data.grade,
-    data.competency1, data.competency2, data.competency3, data.competency4, data.competency5,
-    data.comments, data.assessor, getTaipeiTime()
+    data.competency1, data.competency2, data.competency3, data.competency4, data.competency5 || 3,
+    data.comments, data.assessor, getTaipeiTime(), false, data.attachmentUrl || ''
   ]);
   return { success: true, id };
+}
+
+function updateAssessmentVisibility(data) {
+  try {
+    const sheet = getOrCreateSheet(SHEETS.ASSESSMENTS, ASSESS_HEADERS);
+    const id = data.id;
+    const visibleToTrainee = data.visibleToTrainee; 
+    const sheetData = sheet.getDataRange().getValues();
+    let targetRowIndex = -1;
+    for (let i = 1; i < sheetData.length; i++) {
+      if (sheetData[i][0] == id) { 
+        targetRowIndex = i + 1; 
+        break;
+      }
+    }
+    if (targetRowIndex !== -1) {
+      sheet.getRange(targetRowIndex, 13).setValue(visibleToTrainee);
+      return { success: true };
+    } else {
+      return { success: false, error: "找不到該筆考核紀錄" };
+    }
+  } catch (error) {
+    return { success: false, error: error.toString() };
+  }
+}
+
+function deleteAssessment(params) {
+  const sheet = getOrCreateSheet(SHEETS.ASSESSMENTS, ASSESS_HEADERS);
+  const data = sheet.getDataRange().getValues();
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][0] === params.id) {
+      sheet.deleteRow(i + 1);
+      return { success: true };
+    }
+  }
+  return { success: false, error: 'Assessment not found' };
+}
+
+function updateAssessment(params) {
+  const sheet = getOrCreateSheet(SHEETS.ASSESSMENTS, ASSESS_HEADERS);
+  const data = sheet.getDataRange().getValues();
+  const updateData = params.data;
+  
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === params.id) {
+      if (updateData.department) sheet.getRange(i + 1, 3).setValue(updateData.department);
+      if (updateData.grade) sheet.getRange(i + 1, 4).setValue(updateData.grade);
+      if (updateData.competency1 !== undefined) sheet.getRange(i + 1, 5).setValue(updateData.competency1);
+      if (updateData.competency2 !== undefined) sheet.getRange(i + 1, 6).setValue(updateData.competency2);
+      if (updateData.competency3 !== undefined) sheet.getRange(i + 1, 7).setValue(updateData.competency3);
+      if (updateData.competency4 !== undefined) sheet.getRange(i + 1, 8).setValue(updateData.competency4);
+      if (updateData.competency5 !== undefined) sheet.getRange(i + 1, 9).setValue(updateData.competency5);
+      if (updateData.comments !== undefined) sheet.getRange(i + 1, 10).setValue(updateData.comments);
+      if (updateData.assessor !== undefined) sheet.getRange(i + 1, 11).setValue(updateData.assessor);
+      if (updateData.attachmentUrl !== undefined) sheet.getRange(i + 1, 14).setValue(updateData.attachmentUrl);
+      return { success: true };
+    }
+  }
+  return { success: false, error: 'Assessment not found' };
 }
