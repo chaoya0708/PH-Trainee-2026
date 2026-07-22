@@ -281,7 +281,7 @@ function updateTopBar(user) {
 
   $('liDashboard').style.display  = 'block'; // Show dashboard schedule to all roles
   $('liForm').style.display       = isTrainee ? 'block' : 'none';
-  $('liMilestones').style.display = (isTrainee || isMentor || isExecutive) ? 'block' : 'none';
+  $('liMilestones').style.display = (isTrainee || isMentor || isExecutive || isGuest) ? 'block' : 'none';
   $('liReview').style.display     = (isTrainee || isMentor || isGuest || isExecutive) ? 'block' : 'none';
   $('liAnalytics').style.display  = (isMentor || isGuest || isExecutive) ? 'block' : 'none';
 }
