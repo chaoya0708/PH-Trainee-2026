@@ -1084,8 +1084,8 @@ function renderForm() {
         </div>
 
         <div class="form-group">
-          <label>${t('lblKeyObs')}</label>
-          <textarea class="form-control" id="obsKey" rows="4" placeholder="${t('phKeyObs')}" required></textarea>
+          <label style="margin-bottom:0;">${t('lblKeyObs')}</label>
+          <div id="obsKeyEditor" style="height:200px; background:var(--bg-card); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;"></div>
         </div>
 
         <div class="form-group">
@@ -1104,6 +1104,21 @@ function renderForm() {
       </form>
     </div>
   `;
+
+  if (window.obsQuill) {
+    window.obsQuill = null;
+  }
+  
+  window.obsQuill = new Quill('#obsKeyEditor', {
+    theme: 'snow',
+    placeholder: t('phKeyObs'),
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }]
+      ]
+    }
+  });
 }
 
 window.submitObsForm = async function(e) {
@@ -1133,7 +1148,7 @@ window.submitObsForm = async function(e) {
       traineeName:    user.name,
       date:           finalDate,
       department:     $('obsDept').value,
-      keyObservation: $('obsKey').value.trim(),
+      keyObservation: window.obsQuill.root.innerHTML,
       actionableIdea: '',
       attachmentUrl:  fileLink
     };
@@ -1819,7 +1834,7 @@ function buildFeedItem(obs, user) {
       </div>
 
       <div style="margin-bottom:12px;">
-        <div class="obs-block"><h5>${t('lblKeyObs')}</h5><p>${obs.keyObservation}</p></div>
+        <div class="obs-block"><h5>${t('lblKeyObs')}</h5><div class="quill-content">${obs.keyObservation}</div></div>
       </div>
 
       ${obs.attachmentUrl ? `
@@ -1874,7 +1889,24 @@ window.openEditObservation = function(id) {
   if (!obs) return;
   $('editObsId').value = obs.id;
   $('editObsDate').value = formatTaipeiDateOnly(obs.date);
-  $('editObsKey').value = obs.keyObservation;
+  if (!window.editObsQuill) {
+    window.editObsQuill = new Quill('#editObsKeyEditor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }]
+        ]
+      }
+    });
+  }
+  
+  let content = obs.keyObservation || '';
+  if (!content.includes('<p>') && !content.includes('<br>')) {
+    content = content.replace(/\n/g, '<br>');
+  }
+  window.editObsQuill.root.innerHTML = content;
+
   $('editObsPhoto').value = obs.attachmentUrl || '';
   $('editObsModal').style.display = 'flex';
 };
@@ -1883,7 +1915,7 @@ window.saveEditedObservation = async function() {
   const id = $('editObsId').value;
   const data = {
     date: $('editObsDate').value,
-    keyObservation: $('editObsKey').value.trim(),
+    keyObservation: window.editObsQuill.root.innerHTML,
     attachmentUrl: $('editObsPhoto').value.trim()
   };
   

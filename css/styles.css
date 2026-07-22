@@ -1154,3 +1154,16 @@ textarea.form-control {
   background: rgba(219, 234, 254, 0.5); /* blue-100 */
 }
 
+
+/* Quill Content Rendering */
+.quill-content p {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+.quill-content ul, .quill-content ol {
+  padding-left: 20px;
+  margin-bottom: 8px;
+}
+.quill-content li {
+  margin-bottom: 4px;
+}
