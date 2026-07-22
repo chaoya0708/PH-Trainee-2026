@@ -38,7 +38,7 @@ const CONFIG = {
   ADMIN: {
     id: 'admin',
     name: 'Mentor',
-    avatar: '🧑‍🏫',
+    avatar: '',
     bio: ''
   },
 

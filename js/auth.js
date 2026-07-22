@@ -54,7 +54,7 @@ const Auth = {
           id:     'guest',
           departmentId: identifier, // Save selected department
           name:   window.VimeiI18n ? window.VimeiI18n.t('roleAssessorName') : '輪調主管/同仁',
-          avatar: '📋',
+          avatar: '',
           bio:    ''
         };
       }
@@ -66,7 +66,7 @@ const Auth = {
           role:   'executive',
           id:     'executive',
           name:   window.VimeiI18n ? window.VimeiI18n.t('roleExecutiveName') : '高階決策主管',
-          avatar: '💼',
+          avatar: '',
           bio:    ''
         };
       }
@@ -105,11 +105,11 @@ const Auth = {
         const d = CONFIG.DEPARTMENTS[user.departmentId];
         const deptName = d ? (window.state && window.state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name) : '';
         user.name = (window.VimeiI18n ? window.VimeiI18n.t('roleAssessorName') : '輪調主管/同仁') + (deptName ? ` (${deptName})` : '');
-        user.avatar = '📋';
+        user.avatar = '';
         user.bio = '';
       } else if (user.role === 'executive') {
         user.name = window.VimeiI18n ? window.VimeiI18n.t('roleExecutiveName') : '高階決策主管';
-        user.avatar = '💼';
+        user.avatar = '';
         user.bio = '';
       }
       return user;
