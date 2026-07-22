@@ -24,7 +24,7 @@ const CONFIG = {
   // ----------------------------------------------------------------
   ADMIN_PIN: '0000',      // 計畫導師 (Mentor) 密碼
   GUEST_CODE: 'vimei2026', // 輪調主管/同仁 (Assessor) 授權代碼
-  EXECUTIVE_CODE: 'vimeivip',  // 高階決策主管 (Executive) 授權代碼
+  EXECUTIVE_CODE: 'ph2026',  // 高階決策主管 (Executive) 授權代碼
 
   // ----------------------------------------------------------------
   // UI 設定 / UI Settings
@@ -50,21 +50,21 @@ const CONFIG = {
       id: 'diane',
       name: '白妙儀 (Diane Solomon Barcelenia)',
       avatar: '<i class="fas fa-user-circle"></i>',
-      pin: '1111',
+      pin: '041202Gizmo',
       bio: ''
     },
     {
       id: 'mark',
       name: '段亦林 (Mark Jayzon Comon Dagala)',
       avatar: '<i class="fas fa-user-circle"></i>',
-      pin: '2222',
+      pin: '211312',
       bio: ''
     },
     {
       id: 'jairuz',
       name: '侯俊材 (Jairuz Delos Reyes Nazareno)',
       avatar: '<i class="fas fa-user-circle"></i>',
-      pin: '3333',
+      pin: 'mudkip',
       bio: ''
     }
   ],
@@ -74,16 +74,16 @@ const CONFIG = {
   // ----------------------------------------------------------------
   DEPARTMENTS: {
     // Chimei
-    cmf_production: { id: 'cmf_production', name: 'CHIMEI - Manufacturing', nameZh: '奇美 - 生產製造', shortZh: '生產製造', shortEn: 'Mfg', color: '#64748b', icon: '', pin: '1001' },
-    cmf_qc: { id: 'cmf_qc', name: 'CHIMEI - QA/QC', nameZh: '奇美 - 品管', shortZh: '品管', shortEn: 'QA/QC', color: '#64748b', icon: '', pin: '1002' },
-    cmf_rd_chinese: { id: 'cmf_rd_chinese', name: 'CHIMEI - R&D (Chinese Dim Sum)', nameZh: '奇美 - 研發 (中點)', shortZh: '研發中', shortEn: 'R&D(C)', color: '#64748b', icon: '', pin: '1003' },
-    cmf_rd_western: { id: 'cmf_rd_western', name: 'CHIMEI - R&D (Western Pastry)', nameZh: '奇美 - 研發 (西點)', shortZh: '研發西', shortEn: 'R&D(W)', color: '#64748b', icon: '', pin: '1004' },
+    cmf_production: { id: 'cmf_production', name: 'CHIMEI - Manufacturing', nameZh: '奇美 - 生產製造', shortZh: '生產製造', shortEn: 'Mfg', color: '#64748b', icon: '', pin: '4729' },
+    cmf_qc: { id: 'cmf_qc', name: 'CHIMEI - QA/QC', nameZh: '奇美 - 品管', shortZh: '品管', shortEn: 'QA/QC', color: '#64748b', icon: '', pin: '8153' },
+    cmf_rd_chinese: { id: 'cmf_rd_chinese', name: 'CHIMEI - R&D (Chinese Dim Sum)', nameZh: '奇美 - 研發 (中點)', shortZh: '研發中', shortEn: 'R&D(C)', color: '#64748b', icon: '', pin: '2964' },
+    cmf_rd_western: { id: 'cmf_rd_western', name: 'CHIMEI - R&D (Western Pastry)', nameZh: '奇美 - 研發 (西點)', shortZh: '研發西', shortEn: 'R&D(W)', color: '#64748b', icon: '', pin: '6081' },
     // Yushan
-    yushan_qc: { id: 'yushan_qc', name: 'YUSHAN - QA/QC', nameZh: '玉膳 - 品管', shortZh: '玉膳品管', shortEn: 'YS QA', color: '#fb923c', icon: '', pin: '2001' },
-    yushan_prep: { id: 'yushan_prep', name: 'YUSHAN - Pre-processing', nameZh: '玉膳 - 前處理段', shortZh: '前處理', shortEn: 'Prep', color: '#fb923c', icon: '', pin: '2002' },
-    yushan_cooking: { id: 'yushan_cooking', name: 'YUSHAN - Cooking', nameZh: '玉膳 - 烹煮段', shortZh: '烹煮段', shortEn: 'Cook', color: '#fb923c', icon: '', pin: '2003' },
-    yushan_packaging: { id: 'yushan_packaging', name: 'YUSHAN - Packaging', nameZh: '玉膳 - 包裝段', shortZh: '包裝段', shortEn: 'Pkg', color: '#fb923c', icon: '', pin: '2004' },
-    yushan_warehouse: { id: 'yushan_warehouse', name: 'YUSHAN - Warehouse & Cold Storage', nameZh: '玉膳 - 倉儲物流與凍庫管理', shortZh: '倉儲', shortEn: 'Whse', color: '#fb923c', icon: '', pin: '2005' },
+    yushan_qc: { id: 'yushan_qc', name: 'YUSHAN - QA/QC', nameZh: '玉膳 - 品管', shortZh: '玉膳品管', shortEn: 'YS QA', color: '#fb923c', icon: '', pin: '5392' },
+    yushan_prep: { id: 'yushan_prep', name: 'YUSHAN - Pre-processing', nameZh: '玉膳 - 前處理段', shortZh: '前處理', shortEn: 'Prep', color: '#fb923c', icon: '', pin: '1748' },
+    yushan_cooking: { id: 'yushan_cooking', name: 'YUSHAN - Cooking', nameZh: '玉膳 - 烹煮段', shortZh: '烹煮段', shortEn: 'Cook', color: '#fb923c', icon: '', pin: '9265' },
+    yushan_packaging: { id: 'yushan_packaging', name: 'YUSHAN - Packaging', nameZh: '玉膳 - 包裝段', shortZh: '包裝段', shortEn: 'Pkg', color: '#fb923c', icon: '', pin: '3817' },
+    yushan_warehouse: { id: 'yushan_warehouse', name: 'YUSHAN - Warehouse & Cold Storage', nameZh: '玉膳 - 倉儲物流與凍庫管理', shortZh: '倉儲', shortEn: 'Whse', color: '#fb923c', icon: '', pin: '7540' },
     // Other (Records)
     holiday: { id: 'holiday', name: 'Day Off / Holiday', nameZh: '休假日 / Holiday', shortZh: '休假', shortEn: 'Off', color: '#10b981', icon: '', isRecordOnly: true }
   },
