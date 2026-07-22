@@ -63,7 +63,7 @@ const I18N = {
     milestoneTitle:    'Milestone Progress',
     milestoneSubTitle: 'Trainee completion tracker per rotation unit.',
     criteria1: 'Weekly Journal Submitted',
-    criteria2: 'Mentor Confirmed Weekly Report (Rating > 0)',
+    criteria2: 'Mentor Confirmed Weekly Report',
     criteria3: 'Good Performance (Rating ≥ 3★)',
     criteria4: 'Excellent & Locked (Rating ≥ 4★)',
 
@@ -183,7 +183,7 @@ const I18N = {
     milestoneTitle:    '里程碑進度',
     milestoneSubTitle: '各輪調單位的培訓完成追蹤器。',
     criteria1: '已提交週記',
-    criteria2: '導師已確認週報（評分 > 0）',
+    criteria2: '導師已確認週報',
     criteria3: '表現良好（評分 ≥ 3★）',
     criteria4: '表現優異且已結案（評分 ≥ 4★）',
 
