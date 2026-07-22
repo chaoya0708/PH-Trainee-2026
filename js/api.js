@@ -334,7 +334,7 @@ const Api = (() => {
       return data;
     },
 
-    async submitAssessment(traineeId, department, grade, competency1, competency2, competency3, competency4, competency5, comments, assessor) {
+    async submitAssessment(traineeId, department, grade, competency1, competency2, competency3, competency4, competency5, comments, assessor, attachmentUrl = '') {
       const record = {
         id: 'asm-' + Date.now(),
         traineeId,
@@ -347,6 +347,7 @@ const Api = (() => {
         competency5: Number(competency5),
         comments,
         assessor,
+        attachmentUrl,
         assessedAt: nowStr()
       };
 
@@ -368,7 +369,21 @@ const Api = (() => {
         competency4,
         competency5,
         comments,
-        assessor
+        assessor,
+        attachmentUrl
+      });
+    },
+
+    async uploadFile(base64, mimeType, filename) {
+      if (CONFIG.DEMO_MODE) {
+        // Return a mock URL in demo mode
+        return new Promise(resolve => setTimeout(() => resolve({ success: true, url: 'https://example.com/mock-file.pdf' }), 1000));
+      }
+      return callScript({
+        action: 'uploadFile',
+        base64,
+        mimeType,
+        filename
       });
     },
 

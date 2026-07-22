@@ -59,6 +59,7 @@ function doPost(e) {
     else if (action === 'submitGuestComment')  result = submitGuestComment(data);
     else if (action === 'updateSchedule')      result = updateSchedule(data);
     else if (action === 'submitAssessment')    result = submitAssessment(data);
+    else if (action === 'uploadFile')          result = uploadFile(data);
     else result = { error: 'Unknown action: ' + action };
     return corsResponse(result);
   } catch (err) {
@@ -77,6 +78,30 @@ function getOrCreateSheet(name, headers) {
     sheet.setFrozenRows(1);
   }
   return sheet;
+}
+
+// ---- File Upload Helper ----
+function uploadFile(data) {
+  // IMPORTANT: Replace this with your Google Drive Folder ID
+  const FOLDER_ID = 'YOUR_FOLDER_ID_HERE'; 
+  
+  if (FOLDER_ID === 'YOUR_FOLDER_ID_HERE') {
+    throw new Error('Please replace YOUR_FOLDER_ID_HERE with a real Folder ID in Code.gs');
+  }
+
+  const folder = DriveApp.getFolderById(FOLDER_ID);
+  
+  // The base64 string usually looks like "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+  // We need to strip the prefix to get the raw base64 data
+  const base64Str = data.base64.split(',')[1] || data.base64;
+  const decoded = Utilities.base64Decode(base64Str);
+  
+  const blob = Utilities.newBlob(decoded, data.mimeType, data.filename);
+  const file = folder.createFile(blob);
+  
+  // Note: Ensure the folder itself is shared as "Anyone with the link can view", 
+  // so the file inherits the permission.
+  return { success: true, url: file.getUrl() };
 }
 
 function sheetToArray(sheet) {

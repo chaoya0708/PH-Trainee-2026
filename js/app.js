@@ -1293,6 +1293,13 @@ function renderMilestones() {
               
               <div style="font-size:13px;line-height:1.5;border-top:1px dashed var(--card-border);padding-top:10px;">
                 <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
+                ${assessment.attachmentUrl ? `
+                <div style="margin-top:8px;">
+                  <a href="${assessment.attachmentUrl}" target="_blank" class="btn btn-secondary" style="font-size:11px; padding:4px 8px; display:inline-flex; align-items:center; gap:6px;">
+                    <i class="fa-solid fa-paperclip"></i> ${state.activeLanguage === 'zh' ? '檢視考核附件' : 'View Attachment'}
+                  </a>
+                </div>
+                ` : ''}
                 <p style="font-size:11px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
               </div>
               
@@ -1553,6 +1560,10 @@ function renderReview() {
           <textarea class="form-control" id="assessComments" rows="3" placeholder="請輸入本輪調站別之考核總評語... / Enter overall assessment comments..."></textarea>
         </div>
         <div class="form-group" style="margin-top:14px;">
+          <label>${state.activeLanguage === 'zh' ? '考核附件 (可選)' : 'Assessment Attachment (Optional)'}</label>
+          <input type="file" class="form-control" id="assessFile" style="padding:6px;">
+        </div>
+        <div class="form-group" style="margin-top:14px;">
           <label>${state.activeLanguage === 'zh' ? '考評者署名' : 'Assessor Signature'}</label>
           <input type="text" class="form-control" id="assessSigner" placeholder="${state.activeLanguage === 'zh' ? '請輸入考評主管姓名...' : 'Enter assessor name...'}">
         </div>
@@ -1664,10 +1675,29 @@ window.submitStationAssessment = async function() {
 
   showLoading();
   try {
-    const res = await Api.submitAssessment(traineeId, dept, grade, comp1, comp2, comp3, comp4, comp5, comments, assessor);
+    let attachmentUrl = '';
+    const fileInput = $('assessFile');
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const uploadRes = await Api.uploadFile(base64, file.type, file.name);
+      if (uploadRes.success) {
+        attachmentUrl = uploadRes.url;
+      } else {
+        throw new Error('File upload failed.');
+      }
+    }
+
+    const res = await Api.submitAssessment(traineeId, dept, grade, comp1, comp2, comp3, comp4, comp5, comments, assessor, attachmentUrl);
     if (res.success) {
       showToast(t('assessSuccess'), 'success');
       $('assessComments').value = '';
+      if ($('assessFile')) $('assessFile').value = '';
       state.assessments = await Api.getAssessments();
       renderReview();
     } else {
@@ -1977,6 +2007,7 @@ window.openEditAssessment = function(id) {
   $('editAssessComp4').value = asm.competency4;
   $('editAssessComp5').value = asm.competency5 || 3;
   $('editAssessComments').value = asm.comments;
+  $('editAssessFile').value = asm.attachmentUrl || '';
   
   $('editAssessModal').style.display = 'flex';
 };
@@ -1992,7 +2023,8 @@ window.saveEditedAssessment = async function() {
     competency3: Number($('editAssessComp3').value),
     competency4: Number($('editAssessComp4').value),
     competency5: Number($('editAssessComp5').value),
-    comments: $('editAssessComments').value.trim()
+    comments: $('editAssessComments').value.trim(),
+    attachmentUrl: $('editAssessFile').value.trim()
   };
   
   showLoading();
