@@ -270,7 +270,7 @@ async function enterApp() {
 
 // ── Top bar ───────────────────────────────────────────────────────
 function updateTopBar(user) {
-  $('currentUserAvatar').innerHTML = user.avatar || '<i class="fas fa-user"></i>';
+  $('currentUserAvatar').innerHTML = user.avatar || '<i class="fi fi-rr-user"></i>';
   $('currentUserName').textContent   = user.name;
 
   // Show/hide nav items based on role
@@ -288,7 +288,7 @@ function updateTopBar(user) {
 
 // ── Sidebar profile ───────────────────────────────────────────────
 function updateSidebarProfile(user) {
-  $('sidebarAvatar').innerHTML = user.avatar || '<i class="fas fa-user"></i>';
+  $('sidebarAvatar').innerHTML = user.avatar || '<i class="fi fi-rr-user"></i>';
   $('sidebarName').textContent   = user.name;
   $('sidebarBio').textContent    = user.bio;
 
@@ -308,7 +308,7 @@ function updateSidebarProfile(user) {
 function applyTheme() {
   document.documentElement.setAttribute('data-theme', state.activeTheme);
   const icon = $('themeToggle') && $('themeToggle').querySelector('i');
-  if (icon) icon.className = state.activeTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+  if (icon) icon.className = state.activeTheme === 'light' ? 'fi fi-rr-moon' : 'fi fi-rr-sun';
 }
 
 function toggleTheme() {
@@ -649,9 +649,9 @@ function renderDashboard() {
   const calToggleHtml = `
     <div class="calendar-controls">
         <div class="calendar-nav">
-            <button class="calendar-nav-btn" onclick="window.navigateCalendar(-1)"><i class="fas fa-chevron-left"></i></button>
+            <button class="calendar-nav-btn" onclick="window.navigateCalendar(-1)"><i class="fi fi-rr-angle-left"></i></button>
             <div class="calendar-title">${calTitle}</div>
-            <button class="calendar-nav-btn" onclick="window.navigateCalendar(1)"><i class="fas fa-chevron-right"></i></button>
+            <button class="calendar-nav-btn" onclick="window.navigateCalendar(1)"><i class="fi fi-rr-angle-right"></i></button>
         </div>
         <div class="calendar-toggle">
             <button class="cal-toggle-btn ${isMonthView ? 'active' : ''}" onclick="window.toggleCalendarView('month')">${state.activeLanguage === 'zh' ? '月曆' : 'Month'}</button>
@@ -1275,7 +1275,7 @@ function renderMilestones() {
 
       const ci = (done, label) => `
         <li class="criteria-item ${done ? 'done' : ''}">
-          <i class="${done ? 'fas fa-check-circle' : 'far fa-circle'}" style="font-size:11px;"></i>
+          <i class="${done ? 'fi fi-rr-check-circle' : 'fi fi-rr-circle'}" style="font-size:11px;"></i>
           ${label}
         </li>`;
 
@@ -1320,7 +1320,7 @@ function renderMilestones() {
                 <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;">
                   ${assessment.attachmentUrl.split(',').map((url, idx) => `
                     <a href="${url}" target="_blank" class="btn btn-secondary" style="font-size:14px; padding:8px 12px; display:inline-flex; align-items:center; gap:6px; background-color:var(--bg-highlight); color:var(--primary); font-weight:bold;">
-                      <i class="fa-solid fa-paperclip"></i> ${state.activeLanguage === 'zh' ? '檢視附件' : 'View Attachment'} ${assessment.attachmentUrl.split(',').length > 1 ? idx + 1 : ''}
+                      <i class="fi fi-rr-clip"></i> ${state.activeLanguage === 'zh' ? '檢視附件' : 'View Attachment'} ${assessment.attachmentUrl.split(',').length > 1 ? idx + 1 : ''}
                     </a>
                   `).join('')}
                 </div>
@@ -1552,31 +1552,31 @@ function renderReview() {
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency1')}</label>
               <div class="rating-stars" id="assessStars-comp1" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fas fa-star active' : 'far fa-star'}" onclick="window.setAssessRating('comp1',${n})"></i>`).join('')}
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-sr-star active' : 'fi fi-rr-star'}" onclick="window.setAssessRating('comp1',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency2')}</label>
               <div class="rating-stars" id="assessStars-comp2" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fas fa-star active' : 'far fa-star'}" onclick="window.setAssessRating('comp2',${n})"></i>`).join('')}
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-sr-star active' : 'fi fi-rr-star'}" onclick="window.setAssessRating('comp2',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency3')}</label>
               <div class="rating-stars" id="assessStars-comp3" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fas fa-star active' : 'far fa-star'}" onclick="window.setAssessRating('comp3',${n})"></i>`).join('')}
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-sr-star active' : 'fi fi-rr-star'}" onclick="window.setAssessRating('comp3',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency4')}</label>
               <div class="rating-stars" id="assessStars-comp4" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fas fa-star active' : 'far fa-star'}" onclick="window.setAssessRating('comp4',${n})"></i>`).join('')}
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-sr-star active' : 'fi fi-rr-star'}" onclick="window.setAssessRating('comp4',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency5')}</label>
               <div class="rating-stars" id="assessStars-comp5" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fas fa-star active' : 'far fa-star'}" onclick="window.setAssessRating('comp5',${n})"></i>`).join('')}
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-sr-star active' : 'fi fi-rr-star'}" onclick="window.setAssessRating('comp5',${n})"></i>`).join('')}
               </div>
             </div>
           </div>
@@ -1609,39 +1609,44 @@ function renderReview() {
     state.observations.forEach(o => {
       if (o.status === 'pending') pendingObsCount++;
     });
+    
+    let pendingAssessCount = CONFIG.TRAINEES.length * Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).length - (state.assessments || []).length;
+    if (pendingAssessCount < 0) pendingAssessCount = 0;
 
-    let lowScoreAssessments = [];
-    (state.assessments || []).forEach(a => {
-      const avg = (a.competency1 + a.competency2 + a.competency3 + a.competency4 + (a.competency5 || 3)) / 5;
-      if (avg < 3.0 || a.grade === 'C' || a.grade === 'D') {
-        const tr = CONFIG.TRAINEES.find(t => t.id === a.traineeId);
-        if (tr) {
-          lowScoreAssessments.push({ traineeName: tr.name, dept: a.department, avg: avg.toFixed(1) });
-        }
-      }
-    });
-
-    let nudges = [];
     if (pendingObsCount > 0) {
-      nudges.push(`<div class="nudge-item info">
-        <i class="fas fa-bell"></i>
-        <span>${state.activeLanguage === 'zh' ? `您有 <strong>${pendingObsCount}</strong> 篇學生的週記尚未批閱，請撥空給予回饋。` : `You have <strong>${pendingObsCount}</strong> unreviewed journals.`}</span>
-      </div>`);
+      smartNudgeHtml += `
+        <div class="smart-nudge-item info" onclick="window.switchTab('review')" style="cursor:pointer;">
+          <div class="icon-circle" style="color:#2563eb;background:rgba(37,99,235,0.1);">
+            <i class="fi fi-rr-bell"></i>
+          </div>
+          <div class="nudge-text">
+            <strong>${state.activeLanguage === 'zh' ? '待評閱週記' : 'Pending Journals'}</strong>
+            <span>${state.activeLanguage === 'zh' ? `尚有 ${pendingObsCount} 筆學生週記等待評閱` : `${pendingObsCount} journals waiting for review.`}</span>
+          </div>
+        </div>
+      `;
     }
-    lowScoreAssessments.forEach(low => {
-      const deptName = state.activeLanguage === 'zh' ? CONFIG.DEPARTMENTS[low.dept]?.name_zh : CONFIG.DEPARTMENTS[low.dept]?.name_en;
-      nudges.push(`<div class="nudge-item warning">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span>${state.activeLanguage === 'zh' ? `<strong>預警：</strong>學生 <strong>${low.traineeName}</strong> 在 [${deptName}] 站別的綜合職能平均僅 ${low.avg} 分，建議安排 1-on-1 關心。` : `<strong>Alert:</strong> Trainee <strong>${low.traineeName}</strong> scored an average of ${low.avg} in [${deptName}]. Consider a 1-on-1 session.`}</span>
-      </div>`);
-    });
+    
+    if (pendingAssessCount > 0) {
+      smartNudgeHtml += `
+        <div class="smart-nudge-item alert" onclick="window.switchTab('milestones')" style="cursor:pointer;">
+          <div class="icon-circle" style="color:#dc2626;background:rgba(220,38,38,0.1);">
+            <i class="fi fi-rr-triangle-warning"></i>
+          </div>
+          <div class="nudge-text">
+            <strong>${state.activeLanguage === 'zh' ? '未填寫考核' : 'Pending Assessments'}</strong>
+            <span>${state.activeLanguage === 'zh' ? `尚有 ${pendingAssessCount} 筆輪調考核需要填寫` : `${pendingAssessCount} assessments waiting.`}</span>
+          </div>
+        </div>
+      `;
+    }
 
-    if (nudges.length > 0) {
+    if (smartNudgeHtml !== '') {
       smartNudgeHtml = `
-        <div class="smart-nudge-banner">
-          <div class="smart-nudge-header"><i class="fas fa-bolt"></i> ${state.activeLanguage === 'zh' ? '智慧提醒中心 (Smart Action Center)' : 'Smart Action Center'}</div>
-          <div class="smart-nudge-list">
-            ${nudges.join('')}
+        <div style="background:var(--bg-card);border:1px solid rgba(234,88,12,0.15);border-radius:8px;padding:12px;margin-bottom:20px;">
+          <div class="smart-nudge-header" style="font-weight:700;margin-bottom:10px;"><i class="fi fi-rr-bolt"></i> ${state.activeLanguage === 'zh' ? '智慧提醒中心' : 'Smart Action Center'}</div>
+          <div class="smart-nudge-list" style="display:flex; gap:10px;">
+            ${smartNudgeHtml}
           </div>
         </div>
       `;
@@ -1669,7 +1674,7 @@ window.setAssessRating = function(compKey, stars) {
   const container = $('assessStars-' + compKey);
   if (!container) return;
   container.querySelectorAll('i').forEach((el, i) => {
-    el.className = i < stars ? 'fas fa-star active' : 'far fa-star';
+    el.className = i < stars ? 'fi fi-sr-star active' : 'fi fi-rr-star';
   });
 };
 
@@ -1907,7 +1912,7 @@ function buildFeedItem(obs, user) {
           <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
             ${obs.attachmentUrl.split(',').map((url, idx) => `
               <button onclick="window.open('${url}', '_blank')" class="btn btn-secondary btn-sm" style="color:var(--primary); border-color:var(--primary);">
-                <i class="fas fa-external-link-alt" style="margin-right:6px;"></i> ${state.activeLanguage === 'zh' ? '點擊檢視附件內容' : 'View Attachment'} ${obs.attachmentUrl.split(',').length > 1 ? idx + 1 : ''}
+                <i class="fi fi-rr-arrow-up-right-from-square" style="margin-right:6px;"></i> ${state.activeLanguage === 'zh' ? '點擊檢視附件內容' : 'View Attachment'} ${obs.attachmentUrl.split(',').length > 1 ? idx + 1 : ''}
               </button>
             `).join('')}
           </div>
@@ -1919,13 +1924,13 @@ function buildFeedItem(obs, user) {
       
       <div style="display:flex; gap:8px; margin-top:12px; border-top:1px solid var(--border-color); padding-top:12px;">
         ${((user.role === 'trainee' && obs.traineeId === user.id && !isReviewed) || user.role === 'admin') 
-          ? `<button class="btn btn-secondary" onclick="openEditObservation('${obs.id}')" style="flex:1;"><i class="fa-solid fa-pen"></i> ${state.activeLanguage === 'zh' ? '編輯' : 'Edit'}</button>` 
+          ? `<button class="btn btn-secondary" onclick="openEditObservation('${obs.id}')" style="flex:1;"><i class="fi fi-rr-pencil"></i> ${state.activeLanguage === 'zh' ? '編輯' : 'Edit'}</button>` 
           : ''}
         ${(user.role === 'admin' && !isReviewed) 
-          ? `<button class="btn btn-secondary" onclick="lockObservation('${obs.id}')" style="flex:1; color:#ea580c; border-color:#ea580c;"><i class="fa-solid fa-lock"></i> ${state.activeLanguage === 'zh' ? '鎖定' : 'Lock'}</button>` 
+          ? `<button class="btn btn-secondary" onclick="lockObservation('${obs.id}')" style="flex:1; color:#ea580c; border-color:#ea580c;"><i class="fi fi-rr-lock"></i> ${state.activeLanguage === 'zh' ? '鎖定' : 'Lock'}</button>` 
           : ''}
         ${(user.role === 'admin') 
-          ? `<button class="btn btn-secondary" onclick="deleteObservation('${obs.id}')" style="flex:1; color:#dc2626; border-color:#dc2626;"><i class="fa-solid fa-trash"></i> ${state.activeLanguage === 'zh' ? '刪除' : 'Delete'}</button>` 
+          ? `<button class="btn btn-secondary" onclick="deleteObservation('${obs.id}')" style="flex:1; color:#dc2626; border-color:#dc2626;"><i class="fi fi-rr-trash"></i> ${state.activeLanguage === 'zh' ? '刪除' : 'Delete'}</button>` 
           : ''}
       </div>
     </div>
@@ -2122,7 +2127,7 @@ window.setRating = function(obsId, stars) {
   const container = $('stars-' + obsId);
   if (!container) return;
   container.querySelectorAll('i').forEach((el, i) => {
-    el.className = i < stars ? 'fas fa-star active' : 'far fa-star';
+    el.className = i < stars ? 'fi fi-sr-star active' : 'fi fi-rr-star';
   });
 };
 
@@ -2210,15 +2215,14 @@ function setupMainEventListeners() {
 // ══════════════════════════════════════════════════════════════════
 
 let _toastTimer;
-function showToast(message, type = 'primary') {
-  const el = $('toastNotification');
-  if (!el) return;
-  el.querySelector('.toast-text').textContent = message;
-  el.className = 'toast' + (type === 'success' ? ' toast-success' : '');
-  el.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-info-circle';
-  el.classList.add('show');
+function showToast(msg, type = 'primary') {
+  const toast = $('toastNotification');
+  if (!toast) return;
+  toast.className = 'toast show ' + type;
+  toast.querySelector('i').className = type === 'success' ? 'fi fi-rr-check-circle' : 'fi fi-rr-info';
+  toast.querySelector('.toast-text').textContent = msg;
   clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+  _toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
 // ── Utilities ──────────────────────────────────────────────────────

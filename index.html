@@ -9,7 +9,8 @@
   <meta property="og:title" content="Training Program Tracker">
   <meta property="og:description" content="國際生學習歷程與里程碑追蹤系統">
   <meta property="og:type" content="website">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.1.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
@@ -69,7 +70,7 @@
         <!-- Step 2a: Admin PIN -->
         <div id="loginStepAdmin" class="login-step" style="display:none;">
           <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
-            <i class="fas fa-arrow-left"></i> 返回 / Back
+            <i class="fi fi-rr-angle-left"></i> 返回 / Back
           </button>
           <div class="login-user-preview">
             <div><strong>計畫導師 / Program Mentor</strong>
@@ -82,14 +83,14 @@
           </div>
           <div id="loginError1" class="login-error" style="display:none;">密碼錯誤，請再試一次。</div>
           <button class="btn btn-primary" onclick="handleLogin()">
-            <i class="fas fa-sign-in-alt"></i> 登入 / Login
+            <i class="fi fi-rr-sign-in-alt"></i> 登入 / Login
           </button>
         </div>
 
         <!-- Step 2b: Trainee name selection -->
         <div id="loginStepTraineeName" class="login-step" style="display:none;">
           <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
-            <i class="fas fa-arrow-left"></i> 返回 / Back
+            <i class="fi fi-rr-angle-left"></i> 返回 / Back
           </button>
           <p class="login-step-label">請選擇您的名字 / Select Your Name</p>
           <div class="trainee-name-grid" id="traineeNameGrid"></div>
@@ -98,7 +99,7 @@
         <!-- Step 2c: Trainee PIN -->
         <div id="loginStepTraineePin" class="login-step" style="display:none;">
           <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToTraineeName()">
-            <i class="fas fa-arrow-left"></i> 返回 / Back
+            <i class="fi fi-rr-angle-left"></i> 返回 / Back
           </button>
           <div class="login-user-preview" id="loginUserPreview"></div>
           <div class="form-group" style="margin-bottom:0;">
@@ -107,14 +108,14 @@
           </div>
           <div id="loginError2" class="login-error" style="display:none;">密碼錯誤，請再試一次。</div>
           <button class="btn btn-primary" onclick="handleLogin()">
-            <i class="fas fa-sign-in-alt"></i> 登入 / Login
+            <i class="fi fi-rr-sign-in-alt"></i> 登入 / Login
           </button>
         </div>
 
         <!-- Step 2d: Guest code -->
         <div id="loginStepGuest" class="login-step" style="display:none;">
           <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
-            <i class="fas fa-arrow-left"></i> 返回 / Back
+            <i class="fi fi-rr-angle-left"></i> 返回 / Back
           </button>
           <div class="login-user-preview">
             <div><strong>輪調單位考核 / Station Assessor</strong>
@@ -135,14 +136,14 @@
           </div>
           <div id="loginError3" class="login-error" style="display:none;">代碼錯誤，請再試一次。</div>
           <button class="btn btn-primary" onclick="handleLogin()">
-            <i class="fas fa-door-open"></i> 進入 / Enter
+            <i class="fi fi-rr-door-open"></i> 進入 / Enter
           </button>
         </div>
 
         <!-- Step 2e: Executive code -->
         <div id="loginStepExecutive" class="login-step" style="display:none;">
           <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="backToRoleSelect()">
-            <i class="fas fa-arrow-left"></i> 返回 / Back
+            <i class="fi fi-rr-angle-left"></i> 返回 / Back
           </button>
           <div class="login-user-preview">
             <div><strong>管理團隊 / Management Team</strong>
@@ -155,7 +156,7 @@
           </div>
           <div id="loginError4" class="login-error" style="display:none;">代碼錯誤，請再試一次。</div>
           <button class="btn btn-primary" onclick="handleLogin()">
-            <i class="fas fa-door-open"></i> 進入 / Enter
+            <i class="fi fi-rr-door-open"></i> 進入 / Enter
           </button>
         </div>
 
@@ -246,7 +247,7 @@
       <!-- Top Bar -->
       <header class="top-bar">
         <div style="display:flex;align-items:center;gap:10px;">
-          <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
+          <button class="mobile-menu-toggle"><i class="fi fi-rr-menu-burger"></i></button>
           <img src="assets/logo.png?v=2" alt="Logo" class="top-bar-logo">
           <div class="page-title">
             <h2>Training Program Tracker</h2>
@@ -263,7 +264,7 @@
 
           <!-- Language selector -->
           <div class="simulator-select-wrapper">
-            <label for="langSelector"><i class="fas fa-globe"></i></label>
+            <label for="langSelector"><i class="fi fi-rr-globe"></i></label>
             <select class="simulator-select" id="langSelector">
               <option value="en">EN</option>
               <option value="zh">中文</option>
@@ -272,19 +273,19 @@
 
           <!-- Theme toggle -->
           <button class="icon-btn" id="themeToggle" title="Toggle theme">
-            <i class="fas fa-sun"></i>
+            <i class="fi fi-rr-sun"></i>
           </button>
 
           <!-- Logout -->
           <button class="icon-btn" id="logoutBtn" style="color:var(--danger);" title="Logout">
-            <i class="fas fa-sign-out-alt"></i>
+            <i class="fi fi-rr-sign-out-alt"></i>
           </button>
         </div>
       </header>
 
       <!-- Demo Mode Banner -->
       <div id="demoBanner" class="alert-info alert-demo" style="display:none;">
-        <i class="fas fa-bolt"></i>
+        <i class="fi fi-rr-bolt"></i>
         <span>⚡ Demo Mode：資料儲存在此瀏覽器，尚未連接 Google Sheets。完成 <strong>SETUP_GUIDE.md</strong> 後即可升級為正式模式。</span>
       </div>
 
@@ -403,7 +404,7 @@
 
   <!-- Toast Notification -->
   <div class="toast" id="toastNotification">
-    <i class="fas fa-info-circle"></i>
+    <i class="fi fi-rr-info"></i>
     <span class="toast-text">Notice</span>
   </div>
 
@@ -418,7 +419,7 @@
   <script src="js/api.js?v=87"></script>
   <script src="js/data.js?v=69"></script>
   <script src="js/i18n.js?v=51"></script>
-  <script src="js/app.js?v=214"></script>
+  <script src="js/app.js?v=215"></script>
 
 </body>
 
