@@ -357,9 +357,9 @@ function updateGlobalReminder() {
   const nextWedStrEn = ` ${monthNames[taipeiNow.getMonth()]} ${taipeiNow.getDate()} (Wed)`;
   
   if (state.activeLanguage === 'zh') {
-    banner.innerHTML = `⚠️ 提醒：請於台北時間${nextWedStrZh} 23:59 前繳交前一週的學習心得，逾期將被標記為遲交。`;
+    banner.innerHTML = `⚠️ 提醒：請於台北時間每週三 11:59 PM 前繳交前一週的學習心得，逾期將被標記為遲交。`;
   } else {
-    banner.innerHTML = `⚠️ Reminder: Please submit last week's journal by${nextWedStrEn} 23:59 (Taipei Time). Late submissions will be flagged.`;
+    banner.innerHTML = `⚠️ Reminder: Please submit last week's journal by every Wednesday 11:59 PM (Taipei Time). Late submissions will be flagged.`;
   }
 }
 
@@ -1711,15 +1711,15 @@ function buildFeedItem(obs, user) {
   const dept        = CONFIG.DEPARTMENTS[obs.department] || {};
   
   let isLateStr = '';
-  if (obs.date && obs.submittedAt) {
-    const obsDate = new Date(obs.date);
-    if (!isNaN(obsDate.getTime())) {
-      const day = obsDate.getUTCDay();
-      const daysToAdd = day === 0 ? 3 : 10 - day;
-      const deadline = new Date(Date.UTC(obsDate.getUTCFullYear(), obsDate.getUTCMonth(), obsDate.getUTCDate() + daysToAdd, 15, 59, 59, 999));
+  if (obs.date) {
+    const submitted = new Date(obs.date);
+    if (!isNaN(submitted.getTime())) {
+      // Calculate Taipei time day
+      const taipeiTime = new Date(submitted.getTime() + 8 * 60 * 60 * 1000);
+      const day = taipeiTime.getUTCDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
       
-      const submitted = new Date(obs.submittedAt);
-      if (!isNaN(submitted.getTime()) && submitted > deadline) {
+      // If submitted on Thursday (4), Friday (5), Saturday (6), or Sunday (0), mark as late.
+      if (day === 0 || day > 3) {
         isLateStr = `<span class="badge" style="background-color:#ef4444;margin-left:8px;">${state.activeLanguage === 'zh' ? '遲交 (Late)' : 'Late'}</span>`;
       }
     }
