@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Test API</title>
+  <script src="js/config.js"></script>
+  <script>
+    // Mock lsGetObj for API
+    function lsGetObj(key) { return {}; }
+    const LS_SCHED = 'vimei2_schedules';
+    
+    // Mock callScriptGet
+    async function callScriptGet(action, params = {}) {
+      const url = new URL(CONFIG.APPS_SCRIPT_URL);
+      url.searchParams.set('action', action);
+      Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+      url.searchParams.set('t', Date.now());
+      const res = await fetch(url.toString());
+      return res.json();
+    }
+    
+    window.onload = async function() {
+      try {
+        const res = await callScriptGet('getSchedules', { traineeId: 'diane' });
+        console.log("RAW RES:", res);
+        
+        const normalized = {};
+        for (const dStr in res) {
+          let key = dStr;
+          const parts = dStr.match(/([a-zA-Z]{3}) (\d{1,2}) (\d{4})/);
+          if (parts) {
+            const monthMap = { Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6, Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12 };
+            const yyyy = parts[3];
+            const mm = String(monthMap[parts[1]]).padStart(2, '0');
+            const dd = String(parts[2]).padStart(2, '0');
+            key = `${yyyy}-${mm}-${dd}`;
+          }
+          normalized[key] = res[dStr];
+        }
+        
+        document.body.innerHTML = "<pre>" + JSON.stringify(normalized, null, 2) + "</pre>";
+      } catch (e) {
+        document.body.innerHTML = "<pre style='color:red'>" + e.stack + "</pre>";
+      }
+    };
+  </script>
+</head>
+<body>
+  Loading...
+</body>
+</html>

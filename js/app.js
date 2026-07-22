@@ -39,6 +39,55 @@ function initLoginSlogans() {
 }
 
 // ── Init ───────────────────────────────────────────────────────────
+window.initApp = async function() {
+  await Auth.init();
+};
+
+window.addEventListener('DOMContentLoaded', initApp);
+
+// Multi-file Upload List Renderers
+window.updateObsFileList = function() {
+  const input = document.getElementById('obsPhoto');
+  const list = document.getElementById('obsFileList');
+  if(!input || !list) return;
+  list.innerHTML = '';
+  Array.from(input.files).forEach((file, index) => {
+    const sizeMb = (file.size / 1024 / 1024).toFixed(2);
+    list.innerHTML += `
+      <div style="display:flex; align-items:center; padding:10px 12px; background:var(--bg-body); border-radius:8px; border:1px solid var(--border-color); gap:12px;">
+        <i class="fi fi-rr-document" style="color:var(--primary); font-size:18px;"></i>
+        <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; color:var(--text-primary); font-weight:500;">
+          ${file.name}
+        </div>
+        <div style="font-size:11px; color:var(--text-muted); background:var(--bg-card); padding:2px 6px; border-radius:4px;">
+          ${sizeMb} MB
+        </div>
+      </div>
+    `;
+  });
+};
+
+window.updateAssessFileList = function() {
+  const input = document.getElementById('assessFile');
+  const list = document.getElementById('assessFileList');
+  if(!input || !list) return;
+  list.innerHTML = '';
+  Array.from(input.files).forEach((file, index) => {
+    const sizeMb = (file.size / 1024 / 1024).toFixed(2);
+    list.innerHTML += `
+      <div style="display:flex; align-items:center; padding:10px 12px; background:var(--bg-body); border-radius:8px; border:1px solid var(--border-color); gap:12px;">
+        <i class="fi fi-rr-document" style="color:var(--primary); font-size:18px;"></i>
+        <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; color:var(--text-primary); font-weight:500;">
+          ${file.name}
+        </div>
+        <div style="font-size:11px; color:var(--text-muted); background:var(--bg-card); padding:2px 6px; border-radius:4px;">
+          ${sizeMb} MB
+        </div>
+      </div>
+    `;
+  });
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   window._appLang = state.activeLanguage;
   applyTheme();
@@ -1197,9 +1246,16 @@ function renderForm() {
         </div>
 
         <div class="form-group">
-          <label>${state.activeLanguage === 'zh' ? '學習心得附件 (可選，請小於20MB)' : 'Journal Attachment (Optional, <20MB)'}</label>
-          <input type="file" multiple class="form-control" id="obsPhoto" style="padding:6px;">
-          <div style="font-size:12px;color:#ea580c;font-weight:600;margin-top:8px;line-height:1.5;background:var(--bg-card);padding:12px;border-radius:6px;border:1px solid #ea580c33;">
+          <label>${state.activeLanguage === 'zh' ? '學習心得附件 (可選，支援多檔，單檔請小於20MB)' : 'Journal Attachment (Optional, Multi-file, <20MB)'}</label>
+          <div id="obsFileDropZone" class="file-drop-zone" onclick="document.getElementById('obsPhoto').click()" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'; this.style.background='rgba(37,99,235,0.05)';" ondragleave="this.style.borderColor='var(--border-color)'; this.style.background='transparent';" ondrop="event.preventDefault(); this.style.borderColor='var(--border-color)'; this.style.background='transparent'; document.getElementById('obsPhoto').files = event.dataTransfer.files; window.updateObsFileList();" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;">
+            <i class="fi fi-rr-cloud-upload" style="font-size:32px; color:var(--primary); margin-bottom:12px; display:block;"></i>
+            <p style="margin:0; font-weight:600; color:var(--text-primary); font-size:14px;">${state.activeLanguage === 'zh' ? '點擊或拖曳多個檔案至此' : 'Click or Drag files here'}</p>
+            <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">${state.activeLanguage === 'zh' ? '支援多檔上傳 (建議 PDF)' : 'Supports multiple files (PDF recommended)'}</p>
+          </div>
+          <input type="file" multiple class="form-control" id="obsPhoto" style="display:none;" onchange="window.updateObsFileList()">
+          <div id="obsFileList" style="display:flex; flex-direction:column; gap:8px;"></div>
+          
+          <div style="font-size:12px;color:#ea580c;font-weight:600;margin-top:12px;line-height:1.5;background:var(--bg-card);padding:12px;border-radius:6px;border:1px solid #ea580c33;">
             ${state.activeLanguage === 'zh' 
               ? '⚠️ <b>上傳須知：</b><br>1. 建議將報告轉為 <b>PDF</b> 檔。<br>2. 檔案大小請控制在 20MB 以內。<br>3. 系統將自動把檔案上傳至中央資料夾。' 
               : '⚠️ <b>Upload Instructions:</b><br>1. PDF format is recommended.<br>2. File size must be under 20MB.<br>3. The file will be automatically uploaded to the central directory.'}
@@ -1559,7 +1615,7 @@ function renderMilestones() {
                 min: 0,
                 max: 5,
                 ticks: { display: false, stepSize: 1 },
-                pointLabels: { font: { size: 14, weight: 'bold' }, color: '#64748b' },
+                pointLabels: { font: { size: 16, weight: 'bold' }, color: '#64748b' },
                 grid: { color: 'rgba(0,0,0,0.05)' },
                 angleLines: { color: 'rgba(0,0,0,0.05)' }
               }
@@ -1719,8 +1775,13 @@ function renderReview() {
           <textarea class="form-control" id="assessComments" rows="3" placeholder="請輸入本輪調站別之考核總評語... / Enter overall assessment comments..."></textarea>
         </div>
         <div class="form-group" style="margin-top:14px;">
-          <label>${state.activeLanguage === 'zh' ? '考核附件 (可選，請小於20MB)' : 'Assessment Attachment (Optional, <20MB)'}</label>
-          <input type="file" multiple class="form-control" id="assessFile" style="padding:6px;">
+          <label>${state.activeLanguage === 'zh' ? '考核附件 (可選，支援多檔，單檔請小於20MB)' : 'Assessment Attachment (Optional, Multi-file, <20MB)'}</label>
+          <div id="assessFileDropZone" class="file-drop-zone" onclick="document.getElementById('assessFile').click()" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'; this.style.background='rgba(37,99,235,0.05)';" ondragleave="this.style.borderColor='var(--border-color)'; this.style.background='transparent';" ondrop="event.preventDefault(); this.style.borderColor='var(--border-color)'; this.style.background='transparent'; document.getElementById('assessFile').files = event.dataTransfer.files; window.updateAssessFileList();" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;">
+            <i class="fi fi-rr-cloud-upload" style="font-size:32px; color:var(--primary); margin-bottom:12px; display:block;"></i>
+            <p style="margin:0; font-weight:600; color:var(--text-primary); font-size:14px;">${state.activeLanguage === 'zh' ? '點擊或拖曳多個檔案至此' : 'Click or Drag files here'}</p>
+          </div>
+          <input type="file" multiple class="form-control" id="assessFile" style="display:none;" onchange="window.updateAssessFileList()">
+          <div id="assessFileList" style="display:flex; flex-direction:column; gap:8px;"></div>
         </div>
         <div class="form-group" style="margin-top:14px;">
           <label>${state.activeLanguage === 'zh' ? '考評者署名' : 'Assessor Signature'}</label>
@@ -2042,10 +2103,10 @@ function buildFeedItem(obs, user) {
       ${obs.attachmentUrl ? `
         <div class="obs-block">
           <h5>${state.activeLanguage === 'zh' ? '照片或報告檔案連結' : 'Attachment Link'}</h5>
-          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
+          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
             ${obs.attachmentUrl.split(',').map((url, idx) => `
-              <button onclick="window.open('${url}', '_blank')" class="btn btn-secondary btn-sm" style="color:var(--primary); border-color:var(--primary);">
-                <i class="fi fi-rr-arrow-up-right-from-square" style="margin-right:6px;"></i> ${state.activeLanguage === 'zh' ? '點擊檢視附件內容' : 'View Attachment'} ${obs.attachmentUrl.split(',').length > 1 ? idx + 1 : ''}
+              <button onclick="window.open('${url}', '_blank')" class="btn btn-outline" style="color:var(--primary); border-color:var(--primary); padding: 8px 16px; font-size: 14px; border-width: 2px; font-weight: 600;">
+                <i class="fi fi-rr-arrow-up-right-from-square" style="margin-right:8px; font-weight:bold;"></i> ${state.activeLanguage === 'zh' ? '點擊檢視附件內容' : 'View Attachment'} ${obs.attachmentUrl.split(',').length > 1 ? `(${idx + 1})` : ''}
               </button>
             `).join('')}
           </div>
