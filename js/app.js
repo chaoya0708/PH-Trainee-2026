@@ -1556,31 +1556,31 @@ function renderReview() {
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency1')}</label>
               <div class="rating-stars" id="assessStars-comp1" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-sr-star active' : 'fi fi-rr-star'}" onclick="window.setAssessRating('comp1',${n})"></i>`).join('')}
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp1',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency2')}</label>
               <div class="rating-stars" id="assessStars-comp2" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-sr-star active' : 'fi fi-rr-star'}" onclick="window.setAssessRating('comp2',${n})"></i>`).join('')}
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp2',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency3')}</label>
               <div class="rating-stars" id="assessStars-comp3" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-sr-star active' : 'fi fi-rr-star'}" onclick="window.setAssessRating('comp3',${n})"></i>`).join('')}
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp3',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency4')}</label>
               <div class="rating-stars" id="assessStars-comp4" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-sr-star active' : 'fi fi-rr-star'}" onclick="window.setAssessRating('comp4',${n})"></i>`).join('')}
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp4',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency5')}</label>
               <div class="rating-stars" id="assessStars-comp5" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-sr-star active' : 'fi fi-rr-star'}" onclick="window.setAssessRating('comp5',${n})"></i>`).join('')}
+                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp5',${n})"></i>`).join('')}
               </div>
             </div>
           </div>
@@ -1678,7 +1678,7 @@ window.setAssessRating = function(compKey, stars) {
   const container = $('assessStars-' + compKey);
   if (!container) return;
   container.querySelectorAll('i').forEach((el, i) => {
-    el.className = i < stars ? 'fi fi-sr-star active' : 'fi fi-rr-star';
+    el.className = i < stars ? 'fi fi-ss-star active' : 'fi fi-rs-star';
   });
 };
 
@@ -2131,7 +2131,7 @@ window.setRating = function(obsId, stars) {
   const container = $('stars-' + obsId);
   if (!container) return;
   container.querySelectorAll('i').forEach((el, i) => {
-    el.className = i < stars ? 'fi fi-sr-star active' : 'fi fi-rr-star';
+    el.className = i < stars ? 'fi fi-ss-star active' : 'fi fi-rs-star';
   });
 };
 
