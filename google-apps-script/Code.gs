@@ -83,7 +83,7 @@ function getOrCreateSheet(name, headers) {
 // ---- File Upload Helper ----
 function uploadFile(data) {
   // IMPORTANT: Replace this with your Google Drive Folder ID
-  const FOLDER_ID = 'YOUR_FOLDER_ID_HERE'; 
+  const FOLDER_ID = '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT'; 
   
   if (FOLDER_ID === 'YOUR_FOLDER_ID_HERE') {
     throw new Error('Please replace YOUR_FOLDER_ID_HERE with a real Folder ID in Code.gs');
