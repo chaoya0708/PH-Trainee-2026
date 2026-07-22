@@ -370,7 +370,11 @@ function changeLanguage(lang) {
   translateSidebar();
   updateGlobalReminder();
   renderCurrentTab();
-  updateSidebarProfile(Auth.getCurrentUser());
+  const user = Auth.getCurrentUser();
+  if (user) {
+    updateSidebarProfile(user);
+    updateTopBar(user);
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -1259,7 +1263,7 @@ function renderMilestones() {
 
     sortedAssessments.forEach(a => {
       const avg = (a.competency1 + a.competency2 + a.competency3 + a.competency4 + (a.competency5 || 3)) / 5;
-      const deptName = state.activeLanguage === 'zh' ? CONFIG.DEPARTMENTS[a.department]?.name_zh : CONFIG.DEPARTMENTS[a.department]?.name_en;
+      const deptName = state.activeLanguage === 'zh' ? CONFIG.DEPARTMENTS[a.department]?.nameZh : CONFIG.DEPARTMENTS[a.department]?.name;
       trendLabels.push(deptName || a.department);
       trendData.push(avg.toFixed(1));
     });
