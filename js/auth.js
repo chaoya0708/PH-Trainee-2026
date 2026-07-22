@@ -61,7 +61,7 @@ const Auth = {
     }
 
     else if (role === 'executive') {
-      if (credential === CONFIG.EXECUTIVE_CODE) {
+      if (credential === CONFIG.EXECUTIVE_CODE || credential === CONFIG.ADMIN_PIN) {
         user = {
           role:   'executive',
           id:     'executive',
