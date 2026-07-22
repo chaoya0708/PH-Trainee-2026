@@ -1180,7 +1180,7 @@ function renderMilestones() {
   const container = $('sectionMilestones');
 
   let selectorHtml = '';
-  if (user.role === 'admin' || user.role === 'executive') {
+  if (user.role === 'admin' || user.role === 'executive' || user.role === 'guest') {
     selectorHtml = `
       <div class="glass-card">
         <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;">${t('viewingTrainee')}</p>
@@ -1701,7 +1701,10 @@ window.submitStationAssessment = async function() {
       $('assessComments').value = '';
       if ($('assessFile')) $('assessFile').value = '';
       state.assessments = await Api.getAssessments();
-      renderReview();
+      
+      // Select the trainee that was just assessed and switch to Milestones tab
+      state.selectedTraineeId = traineeId;
+      switchTab('milestones');
     } else {
       showToast('Submit failed.', 'error');
     }
