@@ -1303,12 +1303,14 @@ function renderMilestones() {
                 <p style="font-size:11px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
               </div>
               
-              ${user.role === 'admin' ? `
+              ${(user.role === 'admin' || (user.role === 'guest' && user.departmentId === assessment.department)) ? `
               <div style="margin-top:10px;border-top:1px solid rgba(234,88,12,0.15);padding-top:10px;">
+                ${user.role === 'admin' ? `
                 <label style="font-size:11px;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-secondary);margin-bottom:8px;">
                   <input type="checkbox" onchange="window.toggleAssessmentVisibility('${assessment.id}', this.checked)" ${assessment.visibleToTrainee ? 'checked' : ''} style="cursor:pointer;">
                   ${state.activeLanguage === 'zh' ? '允許學生查看此考核 (Allow Trainee to View)' : 'Allow Trainee to View'}
                 </label>
+                ` : ''}
                 <div style="display:flex; gap:8px;">
                   <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:10px;" onclick="window.openEditAssessment('${assessment.id}')">✏️ Edit</button>
                   <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:10px; color:#ef4444; border-color:rgba(239,68,68,0.3);" onclick="window.deleteAssessment('${assessment.id}')">🗑️ Delete</button>
@@ -1993,11 +1995,21 @@ window.openEditAssessment = function(id) {
   if (!asm) return;
   $('editAssessId').value = asm.id;
   
+  const user = Auth.getCurrentUser() || {role: 'trainee'};
+  const isGuest = user.role === 'guest';
+  
   // Populate Dept dropdown
   const deptSelect = $('editAssessDept');
-  deptSelect.innerHTML = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d => 
-    `<option value="${d.id}" ${asm.department === d.id ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
-  ).join('');
+  if (isGuest) {
+    const d = CONFIG.DEPARTMENTS[user.departmentId];
+    deptSelect.innerHTML = `<option value="${user.departmentId}" selected>${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`;
+    deptSelect.disabled = true;
+  } else {
+    deptSelect.innerHTML = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d => 
+      `<option value="${d.id}" ${asm.department === d.id ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
+    ).join('');
+    deptSelect.disabled = false;
+  }
   
   $('editAssessGrade').value = asm.grade;
   $('editAssessSigner').value = asm.assessor;
