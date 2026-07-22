@@ -188,11 +188,10 @@ window.changeLanguageLogin = function(lang) {
 // ══════════════════════════════════════════════════════════════════
 
 window.autoSyncSchedules = async function() {
-  return; // DISABLED: Data is already in Google Sheets
   if (CONFIG.DEMO_MODE) return;
-  if (localStorage.getItem('synced_schedules_jairuz_v1')) return;
+  if (localStorage.getItem('synced_schedules_v2')) return;
   const user = Auth.getCurrentUser();
-  if (user.role !== 'admin') return;
+  if (user.role !== 'admin' && user.role !== 'executive') return;
 
   showLoading();
   const msg = document.createElement('div');
@@ -612,6 +611,11 @@ function renderDashboard() {
           <button class="btn ${currentStatus === 'green' ? 'btn-primary' : 'btn-outline'}" onclick="window.setPulseCheck('green')" style="flex:1;">🟢 ${state.activeLanguage === 'zh' ? '順利推進' : 'On Track'}</button>
           <button class="btn ${currentStatus === 'yellow' ? 'btn-primary' : 'btn-outline'}" onclick="window.setPulseCheck('yellow')" style="flex:1;">🟡 ${state.activeLanguage === 'zh' ? '遇到瓶頸' : 'Facing Blocks'}</button>
           <button class="btn ${currentStatus === 'red' ? 'btn-primary' : 'btn-outline'}" onclick="window.setPulseCheck('red')" style="flex:1;">🔴 ${state.activeLanguage === 'zh' ? '需要協助' : 'Need Help'}</button>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:12px;line-height:1.6;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;border:1px dashed var(--border-color);">
+          ${state.activeLanguage === 'zh' 
+            ? '💡 <b>為什麼要打卡？</b> 這是外商頂尖人才培訓常用的「敏捷脈搏打卡 (Agile Pulse Check)」。建議您於<b>每週五下班前</b>點擊上方燈號，誠實反應當下狀態。若亮起黃燈或紅燈，導師將能及時為您排除困難！' 
+            : '💡 <b>Why do a Pulse Check?</b> This is a standard practice in global top-tier MA programs. We recommend updating your status <b>every Friday before logging off</b>. This agile check-in allows your mentor to provide timely support if you face any roadblocks!'}
         </div>
       </div>
     `;
