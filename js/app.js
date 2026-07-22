@@ -1089,12 +1089,12 @@ function renderForm() {
         </div>
 
         <div class="form-group">
-          <label>${state.activeLanguage === 'zh' ? '報告連結 (Google Drive)' : 'Report Link (Google Drive)'}</label>
-          <input type="url" class="form-control" id="obsPhoto" placeholder="https://drive.google.com/..." required>
+          <label>${state.activeLanguage === 'zh' ? '學習心得附件 (可選，請小於20MB)' : 'Journal Attachment (Optional, <20MB)'}</label>
+          <input type="file" class="form-control" id="obsPhoto" style="padding:6px;">
           <div style="font-size:12px;color:#ea580c;font-weight:600;margin-top:8px;line-height:1.5;background:var(--bg-card);padding:12px;border-radius:6px;border:1px solid #ea580c33;">
             ${state.activeLanguage === 'zh' 
-              ? '⚠️ <b>上傳須知：</b><br>1. 請將報告轉為 <b>PDF</b> 檔。<br>2. 上傳到您「個人的 Google 雲端硬碟」。<br>3. 將該檔案的權限設定為<b>「知道連結的任何人均可檢視」</b>。<br>4. 複製分享連結並貼在上方欄位。' 
-              : '⚠️ <b>Upload Instructions:</b><br>1. Convert your report to a <b>PDF</b>.<br>2. Upload it to your personal Google Drive.<br>3. Set the file permission to <b>"Anyone with the link can view"</b>.<br>4. Copy the link and paste it above.'}
+              ? '⚠️ <b>上傳須知：</b><br>1. 建議將報告轉為 <b>PDF</b> 檔。<br>2. 檔案大小請控制在 20MB 以內。<br>3. 系統將自動把檔案上傳至中央資料夾。' 
+              : '⚠️ <b>Upload Instructions:</b><br>1. PDF format is recommended.<br>2. File size must be under 20MB.<br>3. The file will be automatically uploaded to the central directory.'}
           </div>
         </div>
 
@@ -1124,16 +1124,29 @@ function renderForm() {
 window.submitObsForm = async function(e) {
   e.preventDefault();
   const user = Auth.getCurrentUser();
-  const fileLink = $('obsPhoto').value.trim();
-  
-  if (!fileLink || !fileLink.startsWith('http')) {
-    showToast(state.activeLanguage === 'zh' ? '請輸入有效的 Google Drive 連結' : 'Please enter a valid Google Drive link', 'error');
-    return;
-  }
-
   showLoading();
   
   try {
+    let attachmentUrl = '';
+    const fileInput = $('obsPhoto');
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      // 傳入學生專用資料夾 ID
+      const FOLDER_ID = '1urhwEFrFRipQjP6Jd0LtR1VBRbs396UE';
+      const uploadRes = await Api.uploadFile(base64, file.type, file.name, FOLDER_ID);
+      if (uploadRes.success) {
+        attachmentUrl = uploadRes.url;
+      } else {
+        throw new Error('File upload failed.');
+      }
+    }
+
     const nowIsoStr = new Date().toISOString();
     
     // If selectedDate exists, use it but append current time so we don't get 00:00
@@ -1150,7 +1163,7 @@ window.submitObsForm = async function(e) {
       department:     $('obsDept').value,
       keyObservation: window.obsQuill.root.innerHTML,
       actionableIdea: '',
-      attachmentUrl:  fileLink
+      attachmentUrl:  attachmentUrl
     };
 
     await Api.submitObservation(data);
@@ -1562,7 +1575,7 @@ function renderReview() {
           <textarea class="form-control" id="assessComments" rows="3" placeholder="請輸入本輪調站別之考核總評語... / Enter overall assessment comments..."></textarea>
         </div>
         <div class="form-group" style="margin-top:14px;">
-          <label>${state.activeLanguage === 'zh' ? '考核附件 (可選)' : 'Assessment Attachment (Optional)'}</label>
+          <label>${state.activeLanguage === 'zh' ? '考核附件 (可選，請小於20MB)' : 'Assessment Attachment (Optional, <20MB)'}</label>
           <input type="file" class="form-control" id="assessFile" style="padding:6px;">
         </div>
         <div class="form-group" style="margin-top:14px;">
@@ -1687,7 +1700,9 @@ window.submitStationAssessment = async function() {
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
-      const uploadRes = await Api.uploadFile(base64, file.type, file.name);
+      // 傳入主管考核專用資料夾 ID
+      const FOLDER_ID = '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT';
+      const uploadRes = await Api.uploadFile(base64, file.type, file.name, FOLDER_ID);
       if (uploadRes.success) {
         attachmentUrl = uploadRes.url;
       } else {

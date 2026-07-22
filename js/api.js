@@ -124,6 +124,7 @@ const Api = (() => {
     const url = new URL(CONFIG.APPS_SCRIPT_URL);
     url.searchParams.set('action', action);
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+    url.searchParams.set('t', Date.now()); // Cache-buster
     const res = await fetch(url.toString());
     return res.json();
   }
@@ -374,7 +375,7 @@ const Api = (() => {
       });
     },
 
-    async uploadFile(base64, mimeType, filename) {
+    async uploadFile(base64, mimeType, filename, folderId) {
       if (CONFIG.DEMO_MODE) {
         // Return a mock URL in demo mode
         return new Promise(resolve => setTimeout(() => resolve({ success: true, url: 'https://example.com/mock-file.pdf' }), 1000));
@@ -383,7 +384,8 @@ const Api = (() => {
         action: 'uploadFile',
         base64,
         mimeType,
-        filename
+        filename,
+        folderId
       });
     },
 

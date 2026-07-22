@@ -111,7 +111,8 @@ function getObservations(traineeId) {
 // 檔案上傳 (考核專用)
 // ----------------------------------------------------
 function uploadFile(data) {
-  const FOLDER_ID = '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT'; 
+  // 優先使用前端傳來的 folderId，否則退回預設的考核資料夾
+  const FOLDER_ID = data.folderId || '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT'; 
   const folder = DriveApp.getFolderById(FOLDER_ID);
   
   const base64Str = data.base64.split(',')[1] || data.base64;
