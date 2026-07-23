@@ -1155,10 +1155,79 @@ function setupMainEventListeners() {
   const themeBtn = $('themeToggle');
   if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
-  // Quick switch account
-  window.logoutAndSwitch = function() {
-    const modal = document.getElementById('roleSwitchModal');
-    if (modal) modal.style.display = 'flex';
+  // Quick switch account (Admin Only)
+  window.logoutAndSwitch = function(event) {
+    const user = Auth.getCurrentUser();
+    if (!user || user.role !== 'admin') return;
+
+    let existing = document.getElementById('fastSwitchPopup');
+    if (existing) {
+      existing.remove();
+      return;
+    }
+
+    const popup = document.createElement('div');
+    popup.id = 'fastSwitchPopup';
+    popup.style.position = 'absolute';
+    popup.style.background = 'var(--bg-card)';
+    popup.style.border = '1px solid var(--border-color)';
+    popup.style.borderRadius = '8px';
+    popup.style.padding = '8px';
+    popup.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+    popup.style.zIndex = '9999';
+    popup.style.display = 'flex';
+    popup.style.flexDirection = 'column';
+    popup.style.gap = '4px';
+    popup.style.minWidth = '160px';
+
+    const options = [
+      { r: 'admin', i: 'admin', l: '👑 Mentor (Admin)' },
+      { r: 'executive', i: 'executive', l: '🏢 Management' },
+      { r: 'guest', i: 'cmf_production', l: '👥 Guest' },
+      { r: 'trainee', i: 'diane', l: '🎓 Diane' },
+      { r: 'trainee', i: 'mark', l: '🎓 Mark' },
+      { r: 'trainee', i: 'jairuz', l: '🎓 Jairuz' }
+    ];
+
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-secondary btn-sm';
+      btn.textContent = opt.l;
+      btn.style.textAlign = 'left';
+      btn.style.width = '100%';
+      btn.style.justifyContent = 'flex-start';
+      btn.onclick = () => {
+        Auth.login(opt.r, opt.i, '0000');
+        location.reload();
+      };
+      popup.appendChild(btn);
+    });
+
+    document.body.appendChild(popup);
+    
+    // Position
+    const rect = (event && event.currentTarget) ? event.currentTarget.getBoundingClientRect() : null;
+    if (rect) {
+      if (rect.top > window.innerHeight / 2) {
+         popup.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+         popup.style.left = rect.left + 'px';
+      } else {
+         popup.style.top = (rect.bottom + 8) + 'px';
+         popup.style.right = (window.innerWidth - rect.right) + 'px';
+      }
+    } else {
+      popup.style.top = '60px';
+      popup.style.right = '20px';
+    }
+
+    setTimeout(() => {
+       document.addEventListener('click', function closePopup(e) {
+         if (popup && document.body.contains(popup) && !popup.contains(e.target)) {
+           popup.remove();
+           document.removeEventListener('click', closePopup);
+         }
+       });
+    }, 50);
   };
 
   window.fastSwitchRole = function(role, id) {
