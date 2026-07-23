@@ -2368,45 +2368,6 @@ window.submitGuestComment = async function(obsId) {
 // EVENT LISTENERS
 // ══════════════════════════════════════════════════════════════════
 
-function setupMainEventListeners() {
-  // Nav links
-  [['navDashboard','dashboard'],['navForm','form'],['navMilestones','milestones'],['navReview','review'],['navAnalytics','analytics']]
-    .forEach(([id, tab]) => {
-      const el = $(id);
-      if (el) el.addEventListener('click', e => { e.preventDefault(); switchTab(tab); });
-    });
-
-  // Language
-  const langSel = $('langSelector');
-  if (langSel) langSel.addEventListener('change', e => changeLanguage(e.target.value));
-
-  // Theme
-  const themeBtn = $('themeToggle');
-  if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
-
-  // Logout
-  const logoutBtn = $('logoutBtn');
-  if (logoutBtn) logoutBtn.addEventListener('click', () => {
-    Auth.logout();
-    location.reload();
-  });
-
-  // Mobile sidebar
-  const mobileToggle = document.querySelector('.mobile-menu-toggle');
-  const sidebar      = document.querySelector('.sidebar');
-  const overlay      = document.querySelector('.sidebar-overlay');
-  if (mobileToggle) mobileToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('mobile-open');
-    overlay.classList.toggle('active');
-  });
-  if (overlay) overlay.addEventListener('click', () => {
-    sidebar.classList.remove('mobile-open');
-    overlay.classList.remove('active');
-  });
-
-  // Set lang selector to current language
-  if (langSel) langSel.value = state.activeLanguage;
-}
 
 // ══════════════════════════════════════════════════════════════════
 // TOAST
