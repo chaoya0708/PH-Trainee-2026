@@ -136,15 +136,19 @@ window.selectLoginRole = function(role) {
   } else if (role === 'trainee') {
     // Populate trainee name grid
     const grid = $('traineeNameGrid');
-    grid.innerHTML = CONFIG.TRAINEES.map(tr => `
+    grid.innerHTML = CONFIG.TRAINEES.map(tr => {
+      const parts = tr.name.split(' / ');
+      const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:12px; font-weight:400; opacity:0.8;">/ ${parts[1]}</span>` : tr.name;
+      return `
       <button class="trainee-name-btn" onclick="selectLoginTrainee('${tr.id}')">
         ${tr.avatar ? `<span class="tnb-avatar">${tr.avatar}</span>` : ''}
         <div>
-          <div class="tnb-name">${tr.name}</div>
+          <div class="tnb-name">${nameHtml}</div>
           ${tr.bio ? `<div class="tnb-bio">${tr.bio}</div>` : ''}
         </div>
       </button>
-    `).join('');
+      `;
+    }).join('');
     $('loginStepTraineeName').style.display = 'flex';
 
   } else if (role === 'guest') {
@@ -174,9 +178,11 @@ window.selectLoginTrainee = function(traineeId) {
   _loginTraineeId = traineeId;
   const tr = CONFIG.TRAINEES.find(t => t.id === traineeId);
   $('loginStepTraineeName').style.display = 'none';
+  const parts = tr.name.split(' / ');
+  const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:12px; font-weight:400; opacity:0.8;">/ ${parts[1]}</span>` : tr.name;
   $('loginUserPreview').innerHTML = `
     ${tr.avatar ? `<span>${tr.avatar}</span>` : ''}
-    <div><strong>${tr.name}</strong><p>${t('loginTraineePin')}</p></div>
+    <div><strong>${nameHtml}</strong><p>${t('loginTraineePin')}</p></div>
   `;
   $('traineePinInput').value = '';
   $('loginError2').style.display = 'none';
@@ -640,12 +646,16 @@ function renderDashboard() {
       <div class="glass-card">
         <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;">${t('viewingTrainee')}</p>
         <div class="trainee-tabs">
-          ${CONFIG.TRAINEES.map(tr => `
+          ${CONFIG.TRAINEES.map(tr => {
+            const parts = tr.name.split(' / ');
+            const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:11px; opacity:0.8; margin-left:4px;">/ ${parts[1]}</span>` : tr.name;
+            return `
             <button class="trainee-tab-btn ${state.selectedTraineeId === tr.id ? 'active' : ''}"
-              onclick="window.selectViewTrainee('${tr.id}')">
-              ${tr.name}
+              onclick="window.selectViewTrainee('${tr.id}')" style="display:flex; align-items:center;">
+              ${tr.avatar ? `<span style="margin-right:6px;">${tr.avatar}</span>` : ''} ${nameHtml}
             </button>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       </div>
     `;
@@ -1543,12 +1553,16 @@ function renderMilestones() {
       <div class="glass-card">
         <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;">${t('viewingTrainee')}</p>
         <div class="trainee-tabs">
-          ${CONFIG.TRAINEES.map(tr => `
+          ${CONFIG.TRAINEES.map(tr => {
+            const parts = tr.name.split(' / ');
+            const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:11px; opacity:0.8; margin-left:4px;">/ ${parts[1]}</span>` : tr.name;
+            return `
             <button class="trainee-tab-btn ${state.selectedTraineeId === tr.id ? 'active' : ''}"
-              onclick="window.selectViewTrainee('${tr.id}')">
-              ${tr.avatar ? tr.avatar + ' ' : ''}${tr.name}
+              onclick="window.selectViewTrainee('${tr.id}')" style="display:flex; align-items:center;">
+              ${tr.avatar ? `<span style="margin-right:6px;">${tr.avatar}</span>` : ''} ${nameHtml}
             </button>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       </div>
     `;
@@ -2009,13 +2023,20 @@ function renderJournals() {
   if (user.role === 'admin' || user.role === 'executive') {
     tabsHtml = `
       <div style="display:flex; gap:10px; margin-bottom:20px; overflow-x:auto;">
-        ${CONFIG.TRAINEES.map(tr => `
+        ${CONFIG.TRAINEES.map(tr => {
+          const parts = tr.name.split(' / ');
+          const nameHtml = parts.length > 1 
+            ? `<span>${parts[0]}</span><span style="font-size:11px; font-weight:400; opacity:0.85; margin-top:4px;">${parts[1]}</span>`
+            : `<span>${tr.name}</span>`;
+          return `
           <button class="btn ${state.activeJournalTraineeId === tr.id ? 'btn-primary' : 'btn-outline'}" 
                   onclick="state.activeJournalTraineeId='${tr.id}'; window.renderJournals();"
-                  style="flex:1; white-space:nowrap; border-radius:8px; padding:8px 12px; font-size:14px; font-weight:600;">
-            ${tr.avatar ? tr.avatar : '🎓'} ${tr.name.split(' (')[0]}
+                  style="flex:1; display:flex; flex-direction:column; align-items:center; border-radius:12px; padding:12px 8px; font-size:15px; font-weight:700; line-height:1.2; min-width:140px;">
+            <span style="font-size:20px; margin-bottom:6px;">${tr.avatar ? tr.avatar : '🎓'}</span>
+            ${nameHtml}
           </button>
-        `).join('')}
+          `;
+        }).join('')}
       </div>
     `;
   }

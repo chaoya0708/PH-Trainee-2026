@@ -48,7 +48,7 @@ const CONFIG = {
   TRAINEES: [
     {
       id: 'diane',
-      name: '白妙儀 (Diane Solomon Barcelenia)',
+      name: '白妙儀 / Diane Solomon Barcelenia',
       avatar: '<i class="fi fi-rr-user"></i>',
       pin: '041202Gizmo',
       bio: '',
@@ -56,7 +56,7 @@ const CONFIG = {
     },
     {
       id: 'mark',
-      name: '段亦林 (Mark Jayzon Comon Dagala)',
+      name: '段亦林 / Mark Jayzon Comon Dagala',
       avatar: '<i class="fi fi-rr-user"></i>',
       pin: '211312',
       bio: '',
@@ -64,7 +64,7 @@ const CONFIG = {
     },
     {
       id: 'jairuz',
-      name: '侯俊材 (Jairuz Delos Reyes Nazareno)',
+      name: '侯俊材 / Jairuz Delos Reyes Nazareno',
       avatar: '<i class="fi fi-rr-user"></i>',
       pin: 'mudkip',
       bio: '',
