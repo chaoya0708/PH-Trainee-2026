@@ -1233,22 +1233,31 @@ function setupMainEventListeners() {
   // Secret God Mode Trigger
   let godModeClicks = 0;
   let godModeTimer;
+  const godModeHandler = (e) => {
+    godModeClicks++;
+    clearTimeout(godModeTimer);
+    if (godModeClicks >= 3) {
+      godModeClicks = 0;
+      const pin = prompt("God Mode - Enter Master PIN:");
+      if (pin === "0000") {
+        window.logoutAndSwitch(e, true);
+      }
+    } else {
+      godModeTimer = setTimeout(() => godModeClicks = 0, 500);
+    }
+  };
+
   const logo = document.querySelector('.top-bar-logo');
   if (logo) {
     logo.style.cursor = 'pointer';
-    logo.addEventListener('click', (e) => {
-      godModeClicks++;
-      clearTimeout(godModeTimer);
-      if (godModeClicks >= 3) {
-        godModeClicks = 0;
-        const pin = prompt("God Mode - Enter Master PIN:");
-        if (pin === "0000") {
-          window.logoutAndSwitch(e, true);
-        }
-      } else {
-        godModeTimer = setTimeout(() => godModeClicks = 0, 500);
-      }
-    });
+    logo.addEventListener('click', godModeHandler);
+  }
+
+  // Also attach to page title for easier tapping on mobile
+  const title = document.querySelector('.page-title');
+  if (title) {
+    title.style.cursor = 'pointer';
+    title.addEventListener('click', godModeHandler);
   }
 
   window.fastSwitchRole = function(role, id) {
