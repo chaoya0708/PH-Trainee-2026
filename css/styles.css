@@ -5,57 +5,57 @@
 
 
 :root {
-  --bg-color: #ffffff; 
-  --bg-gradient: #ffffff; 
+  --bg-color: #f8fafc; 
+  --bg-gradient: #f8fafc; 
   --panel-bg: #ffffff;
-  --panel-border: #000000;
+  --panel-border: rgba(0,0,0,0.04);
   --card-bg: #ffffff;
-  --card-border: #000000;
-  --text-primary: #000000;
-  --text-secondary: #000000;
-  --text-muted: #555555;
+  --card-border: rgba(0,0,0,0.04);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
   --primary: #f97316;
   --primary-hover: #ea580c;
-  --primary-glow: transparent;
-  --secondary: #000000;
-  --secondary-hover: #333333;
+  --primary-glow: rgba(249,115,22,0.2);
+  --secondary: #e2e8f0;
+  --secondary-hover: #cbd5e1;
   --secondary-glow: transparent;
-  --success: #000000;
-  --success-glow: transparent;
-  --warning: #000000;
-  --danger: #000000;
+  --success: #10b981;
+  --success-glow: rgba(16,185,129,0.2);
+  --warning: #f59e0b;
+  --danger: #ef4444;
 
   --font-title: 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-serif: 'Playfair Display', serif;
-  --backdrop-blur: none;
-  --shadow-sm: none;
-  --shadow-md: none;
-  --shadow-lg: none;
-  --transition-fast: 0.1s;
-  --transition-normal: 0.15s;
+  --backdrop-blur: blur(8px);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 24px rgba(0,0,0,0.05);
+  --transition-fast: 0.15s;
+  --transition-normal: 0.25s;
   --sidebar-width: 260px;
 }
 
 [data-theme="dark"] {
-  --bg-color: #121212;
-  --bg-gradient: #121212;
-  --panel-bg: #1a1a1a;
-  --panel-border: #333333;
-  --card-bg: #1a1a1a;
-  --card-border: #333333;
-  --text-primary: #e5e5e5;
-  --text-secondary: #a3a3a3;
-  --text-muted: #737373;
+  --bg-color: #0f1115;
+  --bg-gradient: #0f1115;
+  --panel-bg: #181a1f;
+  --panel-border: rgba(255,255,255,0.04);
+  --card-bg: #181a1f;
+  --card-border: rgba(255,255,255,0.04);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
   --primary: #f97316;
   --primary-hover: #ea580c;
-  --primary-glow: transparent;
-  --secondary: #2c2c2c;
-  --secondary-hover: #3f3f3f;
+  --primary-glow: rgba(249,115,22,0.15);
+  --secondary: #272a31;
+  --secondary-hover: #373b45;
   --secondary-glow: transparent;
-  --shadow-sm: none;
-  --shadow-md: none;
-  --shadow-lg: none;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+  --shadow-md: 0 8px 16px rgba(0,0,0,0.3);
+  --shadow-lg: 0 16px 32px rgba(0,0,0,0.4);
 }
 
 /* ── Reset ── */
@@ -280,7 +280,7 @@ body {
 }
 
 .user-profile-card {
-  background: var(--card-bg); border: 1px solid var(--card-border);
+  background: var(--card-bg); border: none; box-shadow: var(--shadow-md);
   border-radius: 12px; padding: 14px; margin-top: auto;
   display: flex; flex-direction: column; gap: 10px;
 }
@@ -322,7 +322,7 @@ body {
 
 .current-user-chip {
   display: flex; align-items: center; gap: 8px;
-  background: var(--card-bg); border: 1px solid var(--card-border);
+  background: var(--card-bg); border: none; box-shadow: var(--shadow-sm);
   padding: 6px 14px; border-radius: 12px; font-size: 13px; font-weight: 600;
 }
 .current-user-chip span:first-child {
@@ -333,7 +333,7 @@ body {
 
 .simulator-select-wrapper {
   display: flex; align-items: center; gap: 6px;
-  background: var(--card-bg); border: 1px solid var(--card-border);
+  background: var(--card-bg); border: none; box-shadow: var(--shadow-sm);
   padding: 6px 12px; border-radius: 12px;
 }
 
@@ -346,7 +346,7 @@ body {
 .simulator-select option { background: var(--bg-color); }
 
 .icon-btn {
-  background: var(--card-bg); border: 1px solid var(--card-border);
+  background: var(--card-bg); border: none; box-shadow: var(--shadow-sm);
   color: var(--text-primary); width: 36px; height: 36px;
   border-radius: 12px; display: flex; align-items: center; justify-content: center;
   cursor: pointer; transition: all var(--transition-fast); font-size: 15px;
@@ -366,7 +366,7 @@ body {
 .glass-card {
   background: var(--panel-bg); backdrop-filter: var(--backdrop-blur);
   border: none; border-radius: 12px;
-  padding: 24px; box-shadow: none; position: relative; overflow: hidden;
+  padding: 24px; box-shadow: var(--shadow-md); position: relative; overflow: hidden;
 }
 
 .card-header {
@@ -410,16 +410,17 @@ body {
   width: 100%;
   padding: 12px 16px;
   font-size: 14px;
-  background: transparent;
+  background: var(--bg-color);
   border: none;
-  border-bottom: 2px solid var(--text-primary);
+  box-shadow: inset 0 0 0 1px transparent;
   border-radius: 12px;
   color: var(--text-primary);
   transition: all 0.3s ease;
 }
 .form-control:focus {
   outline: none;
-  border-bottom-color: var(--primary);
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--primary);
 }
 input.form-control, select.form-control {
   height: 48px;
@@ -428,16 +429,17 @@ textarea.form-control {
   width: 100%;
   padding: 12px 16px;
   font-size: 14px;
-  background: transparent;
+  background: var(--bg-color);
   border: none;
-  border-bottom: 2px solid var(--text-primary);
+  box-shadow: inset 0 0 0 1px transparent;
   border-radius: 12px;
   color: var(--text-primary);
   transition: all 0.3s ease;
 }
-.form-control:focus {
+textarea.form-control:focus {
   outline: none;
-  border-bottom-color: var(--primary);
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--primary);
 }
 
 /* Alert banner */
@@ -455,7 +457,7 @@ textarea.form-control {
 .alert-demo i { color: var(--secondary); }
 
 /* Calendar */
-.calendar-view { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; }
+.calendar-view { background: var(--card-bg); border: none; box-shadow: var(--shadow-md); border-radius: 16px; overflow: hidden; }
 
 .calendar-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
 .calendar-nav { display: flex; align-items: center; gap: 12px; }
@@ -530,11 +532,11 @@ textarea.form-control {
 .progress-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--primary) 0%, var(--success) 100%); transition: width 0.9s cubic-bezier(0.1,0.8,0.2,1); box-shadow: none; }
 
 .dept-milestone-card {
-  background: var(--card-bg); border: 1px solid var(--card-border);
+  background: var(--card-bg); border: none; box-shadow: var(--shadow-sm);
   border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px;
   transition: transform var(--transition-fast);
 }
-.dept-milestone-card:hover { transform: translateY(-2px); border-color: var(--text-muted); }
+.dept-milestone-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 .dept-milestone-header { display: flex; justify-content: space-between; align-items: center; }
 .dept-milestone-title { display: flex; align-items: center; gap: 7px; font-weight: 700; font-size: 13px; font-family: var(--font-title); }
 .dept-milestone-pct { font-weight: 800; color: var(--primary); font-size: 15px; }
@@ -544,7 +546,7 @@ textarea.form-control {
 
 /* Feed / Review cards */
 .feed { display: flex; flex-direction: column; gap: 18px; }
-.feed-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.feed-item { background: var(--card-bg); border: none; box-shadow: var(--shadow-md); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
 .feed-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; }
 .feed-trainee { display: flex; align-items: center; gap: 10px; }
 .feed-trainee-meta h4 { font-size: 14px; font-weight: 700; }
@@ -632,7 +634,7 @@ textarea.form-control {
     display: none;
   }
   .current-user-chip {
-    padding: 4px 8px;
+    padding: 6px 12px; box-shadow: var(--shadow-sm);
   }
   .current-user-chip span:last-child {
     display: inline-block;
@@ -727,7 +729,8 @@ textarea.form-control {
 /* ── Analytics Tab ── */
 .analytics-metric-card {
   background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  border: none;
+  box-shadow: var(--shadow-sm);
   border-radius: 16px;
   padding: 20px;
   display: flex;
@@ -907,7 +910,7 @@ textarea.form-control {
 .cal-head-day { border-right: 1px solid var(--card-border); }
 
 /* Remove any glowing or transparent bg */
-.role-btn { border: 1px solid var(--card-border); }
+.role-btn { border: none; box-shadow: var(--shadow-sm); background: var(--card-bg); }
 .role-btn:hover { background: var(--text-primary); color: var(--bg-color); border-color: var(--text-primary); }
 .role-btn:hover strong, .role-btn:hover small { color: var(--bg-color); }
 

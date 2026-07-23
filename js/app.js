@@ -665,7 +665,7 @@ function renderDashboard() {
           <button class="btn ${currentStatus === 'yellow' ? 'btn-primary' : 'btn-outline'}" onclick="window.setPulseCheck('yellow')" style="flex:1;">🟡 ${state.activeLanguage === 'zh' ? '遇到瓶頸' : 'Facing Blocks'}</button>
           <button class="btn ${currentStatus === 'red' ? 'btn-primary' : 'btn-outline'}" onclick="window.setPulseCheck('red')" style="flex:1;">🔴 ${state.activeLanguage === 'zh' ? '需要協助' : 'Need Help'}</button>
         </div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:12px;line-height:1.6;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;border:1px dashed var(--border-color);">
+        <div style="font-size:12px;color:var(--text-muted);margin-top:12px;line-height:1.6;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;border:none;">
           ${state.activeLanguage === 'zh' 
             ? '💡 <b>為什麼要打卡？</b> 透過「敏捷脈搏打卡 (Agile Pulse Check)」，能幫助導師更即時掌握您的學習狀況。建議您於<b>每週五下班前</b>點擊上方燈號，誠實反應當下狀態。若亮起黃燈或紅燈，導師將能及時為您排除困難！' 
             : '💡 <b>Why do a Pulse Check?</b> The Agile Pulse Check helps your mentor understand your learning progress. We recommend updating your status <b>every Friday before logging off</b>. This check-in allows your mentor to provide timely support if you face any roadblocks!'}
@@ -856,7 +856,7 @@ function renderDashboard() {
           
           if (hasAssessment) {
             barColor = 'var(--warning)'; 
-            extraBadge = `<span style="font-size:10px;background:rgba(245,158,11,0.15);color:var(--warning);padding:2px 6px;border-radius:4px;margin-left:6px;border:1px solid rgba(245,158,11,0.3);">${t('lblAssessGrade')}: ${assessment.grade}</span>`;
+            extraBadge = `<span style="font-size:10px;background:rgba(245,158,11,0.15);color:var(--warning);padding:2px 6px;border-radius:4px;margin-left:6px;border:none;">${t('lblAssessGrade')}: ${assessment.grade}</span>`;
           }
 
           return `
@@ -1337,7 +1337,7 @@ function renderForm() {
         <h3>${t('formTitle')}</h3>
       </div>
       <p style="color:var(--text-secondary);font-size:13px;margin-bottom:18px;">${t('formSubTitle')}</p>
-      <div class="alert-info" style="background:#fff3cd; color:#856404; border:1px solid #ffeeba; margin-bottom:15px;">
+      <div class="alert-info" style="background:#fff3cd; color:#856404; border:none; margin-bottom:15px; border-radius:12px; padding:12px;">
         <span style="font-weight:600;">${bannerText}</span>
       </div>
       <div class="alert-info"><span>${t('privateNotice')}</span></div>
@@ -1363,7 +1363,7 @@ function renderForm() {
           <input type="file" multiple class="form-control" id="obsPhoto" style="display:none;" onchange="window.updateObsFileList()">
           <div id="obsFileList" style="display:flex; flex-direction:column; gap:8px;"></div>
           
-          <div style="font-size:12px;color:#ea580c;font-weight:600;margin-top:12px;line-height:1.5;background:var(--bg-card);padding:12px;border-radius:6px;border:1px solid #ea580c33;">
+          <div style="font-size:12px;color:#ea580c;font-weight:600;margin-top:12px;line-height:1.5;background:var(--bg-card);padding:12px;border-radius:6px;border:none;">
             ${state.activeLanguage === 'zh' 
               ? '⚠️ <b>上傳須知：</b><br>1. 建議將報告轉為 <b>PDF</b> 檔。<br>2. 檔案大小請控制在 20MB 以內。<br>3. 系統將自動把檔案上傳至中央資料夾。' 
               : '⚠️ <b>Upload Instructions:</b><br>1. PDF format is recommended.<br>2. File size must be under 20MB.<br>3. The file will be automatically uploaded to the central directory.'}
@@ -1371,7 +1371,7 @@ function renderForm() {
         </div>
 
         <!-- 3. Self-Appraisal Feature -->
-        <div class="form-group" style="background: var(--bg-card); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+        <div class="form-group" style="background: var(--bg-card); padding: 16px; border-radius: 8px; border: none; margin-bottom: 20px;">
           <label style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">${state.activeLanguage === 'zh' ? '本週表現自評 (Self-Appraisal)' : 'Self-Appraisal (Rating)'}</label>
           <div style="display:flex;gap:10px;" id="selfAppraisalStars">
             ${[1,2,3,4,5].map(v => `<i class="fi fi-rs-star star-btn" data-val="${v}" style="font-size:28px;cursor:pointer;color:#d1d5db;transition:all 0.2s;" onclick="window.setSelfRating(${v})"></i>`).join('')}
@@ -1580,7 +1580,7 @@ function renderMilestones() {
       if (assessment) {
         if (user.role === 'trainee' && !assessment.visibleToTrainee) {
           assessmentHtml = `
-            <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:1px dashed var(--card-border);border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
+            <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:none;border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
               ${state.activeLanguage === 'zh' ? '✅ 主管考核已送出 (不公開)' : '✅ Assessment Submitted (Private)'}
             </div>
           `;
@@ -1600,7 +1600,7 @@ function renderMilestones() {
           });
 
           assessmentHtml = `
-            <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:1px solid rgba(234,88,12,0.15);border-radius:10px;">
+            <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:none;border-radius:10px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                 <span style="font-size:10px;text-transform:uppercase;font-weight:700;color:var(--primary);letter-spacing:0.5px;">${t('lblAssessGrade')}</span>
                 <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;padding:3px 8px;border-radius:6px;">${assessment.grade}</span>
@@ -1643,7 +1643,7 @@ function renderMilestones() {
         }
       } else {
         assessmentHtml = `
-          <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:1px dashed var(--card-border);border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
+          <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:none;border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
             ${t('lblAwaitingAssessment')}
           </div>
         `;
@@ -1845,7 +1845,7 @@ function renderReview() {
           </div>
         </div>
         
-        <div style="margin-top:14px;background:rgba(255,255,255,0.02);padding:14px;border-radius:12px;border:1px solid var(--card-border);">
+        <div style="margin-top:14px;background:rgba(255,255,255,0.02);padding:14px;border-radius:12px;border:none;">
           <h4 style="font-size:11px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;letter-spacing:0.5px;">核心能力評估 / Core Competencies</h4>
           <div class="grid-2" style="gap:14px 20px;">
             <div class="form-group" style="margin-bottom:0;">
@@ -1947,7 +1947,7 @@ function renderReview() {
 
     if (smartNudgeHtml !== '') {
       smartNudgeHtml = `
-        <div style="background:var(--bg-card);border:1px solid rgba(234,88,12,0.15);border-radius:8px;padding:12px;margin-bottom:20px;">
+        <div style="background:var(--bg-card);border:none;border-radius:8px;padding:12px;margin-bottom:20px;">
           <div class="smart-nudge-header" style="font-weight:700;margin-bottom:10px;"><i class="fi fi-rr-bolt"></i> ${state.activeLanguage === 'zh' ? '智慧提醒中心' : 'Smart Action Center'}</div>
           <div class="smart-nudge-list" style="display:flex; gap:10px;">
             ${smartNudgeHtml}
