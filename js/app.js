@@ -282,8 +282,12 @@ async function enterApp() {
   } else {
     state.activeLanguage = 'zh';
   }
+  window._appLang = state.activeLanguage;
+  localStorage.setItem('vimei_lang', state.activeLanguage);
   document.documentElement.lang = state.activeLanguage === 'zh' ? 'zh-TW' : 'en';
   if ($('langSelector')) $('langSelector').value = state.activeLanguage;
+  
+  translateDOM();
 
   // For trainees, always view their own data
   if (user.role === 'trainee') {
