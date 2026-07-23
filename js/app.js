@@ -1199,7 +1199,7 @@ function setupMainEventListeners() {
     const options = [
       { r: 'admin', i: 'admin', l: '👑 Mentor (Admin)' },
       { r: 'executive', i: 'executive', l: '🏢 Management' },
-      { r: 'guest', i: 'cmf_production', l: '👥 Guest' },
+      { r: 'guest', i: 'cmf_production_rende', l: '👥 Guest' },
       { r: 'trainee', i: 'diane', l: '🎓 Diane' },
       { r: 'trainee', i: 'mark', l: '🎓 Mark' },
       { r: 'trainee', i: 'jairuz', l: '🎓 Jairuz' }
