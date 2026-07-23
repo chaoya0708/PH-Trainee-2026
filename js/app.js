@@ -852,8 +852,11 @@ function renderDashboard() {
         <span style="font-size:18px;font-weight:700;color:var(--primary);">${overallPct}%</span>
       </div>
       <div class="progress-row">
-        ${Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d => {
-          const pct = calculateMilestoneProgress(state.observations, viewId, d.id);
+        ${(function(){
+          const traineeObj = CONFIG.TRAINEES.find(t => t.id === viewId);
+          const excluded = traineeObj ? (traineeObj.excludedDepartments || []) : [];
+          return Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excluded.includes(d.id)).map(d => {
+            const pct = calculateMilestoneProgress(state.observations, viewId, d.id);
           const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === d.id);
           const hasAssessment = !!assessment;
           let barColor = pct === 100 ? d.color : 'var(--primary)';
@@ -873,7 +876,8 @@ function renderDashboard() {
               <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${barColor};"></div></div>
             </div>
           `;
-        }).join('')}
+          }).join('');
+        })()}
       </div>
     </div>
     
@@ -1312,8 +1316,11 @@ function renderForm() {
   const container = $('sectionForm');
   const sched     = (state.schedules[user.id] || {})[state.selectedDate];
   const presetDept = sched ? sched.dept : 'yushan_prep';
+  
+  const traineeUser = Auth.getCurrentUser();
+  const excludedDepts = traineeUser && traineeUser.excludedDepartments ? traineeUser.excludedDepartments : [];
 
-  const deptOptions = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d =>
+  const deptOptions = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excludedDepts.includes(d.id)).map(d =>
     `<option value="${d.id}" ${d.id === presetDept ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
   ).join('');
 
@@ -1495,7 +1502,9 @@ window.submitObsForm = async function(e) {
 // ══════════════════════════════════════════════════════════════════
 
 function calcOverallProgress(traineeId) {
-  const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d => d.id);
+  const trainee = CONFIG.TRAINEES.find(t => t.id === traineeId);
+  const excluded = trainee ? (trainee.excludedDepartments || []) : [];
+  const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excluded.includes(d.id)).map(d => d.id);
   const sum = depts.reduce((acc, d) =>
     acc + calculateMilestoneProgress(state.observations, traineeId, d), 0);
   return Math.round(sum / depts.length);
@@ -1604,9 +1613,10 @@ function renderMilestones() {
       trendLabels.push(deptName || a.department);
       trendData.push(avg.toFixed(1));
     });
-  }
+  const traineeObj = CONFIG.TRAINEES.find(t => t.id === viewId);
+  const excludedDepts = traineeObj ? (traineeObj.excludedDepartments || []) : [];
 
-  const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(dept => {
+  const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excludedDepts.includes(d.id)).map(dept => {
       const pct   = calculateMilestoneProgress(state.observations, viewId, dept.id);
       const deptObs = state.observations.filter(o => o.traineeId === viewId && o.department === dept.id);
       const c1 = deptObs.length > 0;
@@ -2108,8 +2118,15 @@ function renderReview() {
     state.observations.forEach(o => {
       if (o.status === 'pending') pendingObsCount++;
     });
+    let totalExpected = 0;
+    CONFIG.TRAINEES.forEach(t => {
+      const ex = t.excludedDepartments || [];
+      totalExpected += Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !ex.includes(d.id)).length;
+    });
     
-    let pendingAssessCount = CONFIG.TRAINEES.length * Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).length - (state.assessments || []).length;
+    // Ignore self_eval when counting pending assessments
+    const assessmentCount = (state.assessments || []).filter(a => !a.department.startsWith('self_eval')).length;
+    let pendingAssessCount = totalExpected - assessmentCount;
     if (pendingAssessCount < 0) pendingAssessCount = 0;
 
     if (pendingObsCount > 0) {
