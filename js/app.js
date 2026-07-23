@@ -978,7 +978,9 @@ function renderAnalytics() {
       : '0.0';
 
     // Department completion detailed badges
-    const deptBadges = depts.map(d => {
+    const excludedDepts = tr.excludedDepartments || [];
+    const trDepts = depts.filter(d => !excludedDepts.includes(d.id));
+    const deptBadges = trDepts.map(d => {
       const pct = calculateMilestoneProgress(state.observations, tr.id, d.id);
       const assessment = (state.assessments || []).find(a => a.traineeId === tr.id && a.department === d.id);
       
@@ -1561,7 +1563,7 @@ function renderMilestones() {
         </h3>
         <div style="background-color:rgba(16, 185, 129, 0.1); border-left:3px solid #10b981; padding:8px 12px; margin-bottom:12px; border-radius:4px; font-size:12px; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
           <i class="fi fi-rr-bell-ring" style="color:#10b981;"></i>
-          <span>${state.activeLanguage === 'zh' ? '<strong>溫馨提醒：</strong>請於「每個月的最後一週」完成本月份的自我覺察評分。' : '<strong>Reminder:</strong> Please complete your self-assessment during the last week of every month.'}</span>
+          <span>${state.activeLanguage === 'zh' ? '<strong>溫馨提醒：</strong>請於「每個月的 30 日前」完成本月份的自我覺察評分。' : '<strong>Reminder:</strong> Please complete your self-assessment before the 30th of every month.'}</span>
         </div>
         <p style="font-size:11px; color:var(--text-secondary); margin-bottom:12px;">
           ${state.activeLanguage === 'zh' ? '請為自己目前的五大核心職能進行評分 (0-5分)，此自評將與主管評分疊加，幫助您看見認知落差並促進反思。' : 'Please rate your core competencies (0-5). Your self-assessment will be overlaid with your supervisor\'s scores to visualize any perception gaps.'}
