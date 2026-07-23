@@ -1525,11 +1525,41 @@ function renderMilestones() {
   const viewId  = user.role === 'trainee' ? user.id : state.selectedTraineeId;
   const overall = calcOverallProgress(viewId);
 
-  // 計算所有已考評部門的核心職能平均分數
+  // Get Self Assessment
+  const selfEval = (state.assessments || []).find(a => a.traineeId === viewId && a.department === 'self_eval');
+
+  let selfAssessmentHtml = '';
+  if (user.role === 'trainee') {
+    selfAssessmentHtml = `
+      <div class="glass-card" style="margin-bottom: 20px;">
+        <h3 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; justify-content:space-between;">
+          <span>${state.activeLanguage === 'zh' ? '🎯 自我能力覺察 (Self-Assessment)' : '🎯 Self-Assessment (Radar)'}</span>
+          <button class="btn btn-primary btn-sm" onclick="window.saveSelfAssessment()">
+            ${state.activeLanguage === 'zh' ? '儲存評估' : 'Save'}
+          </button>
+        </h3>
+        <p style="font-size:11px; color:var(--text-secondary); margin-bottom:12px;">
+          ${state.activeLanguage === 'zh' ? '請為自己目前的五大核心職能進行評分 (0-5分)，此自評將與主管評分疊加，幫助您看見認知落差並促進反思。' : 'Please rate your core competencies (0-5). Your self-assessment will be overlaid with your supervisor\\'s scores to visualize any perception gaps.'}
+        </p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+          ${[1,2,3,4,5].map(i => `
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:12px; width:100px; color:var(--text-primary);">${t('lblCompetency' + i).split(' ')[0]}</span>
+              <input type="range" id="selfScoreC${i}" min="0" max="5" step="0.5" value="${selfEval ? (selfEval['competency' + i] || 3) : 0}" oninput="document.getElementById('selfScoreValC${i}').innerText = this.value" style="flex:1;">
+              <span id="selfScoreValC${i}" style="font-size:12px; font-weight:bold; width:24px; text-align:right;">${selfEval ? (selfEval['competency' + i] || 3) : 0}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+
+  // 計算所有已考評部門的核心職能平均分數 (Exclude self_eval)
   let sumC1 = 0, sumC2 = 0, sumC3 = 0, sumC4 = 0, sumC5 = 0;
   let count = 0;
   (state.assessments || []).forEach(a => {
-    if (a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee)) {
+    if (a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee)) {
       sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
       sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
       count++;
@@ -1545,6 +1575,7 @@ function renderMilestones() {
     chartsToRender.push({
       id: 'globalRadarChart',
       data: [(sumC1/count).toFixed(1), (sumC2/count).toFixed(1), (sumC3/count).toFixed(1), (sumC4/count).toFixed(1), (sumC5/count).toFixed(1)],
+      selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
       labels: [
         t('lblCompetency1').split(' ')[0], 
         t('lblCompetency2').split(' ')[0], 
@@ -1557,7 +1588,7 @@ function renderMilestones() {
 
     // 計算各站別平均成績供趨勢圖使用
     const sortedAssessments = (state.assessments || [])
-      .filter(a => a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee))
+      .filter(a => a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee))
       .sort((a, b) => new Date(a.assessedAt || 0) - new Date(b.assessedAt || 0));
 
     sortedAssessments.forEach(a => {
@@ -1596,6 +1627,7 @@ function renderMilestones() {
           chartsToRender.push({
             id: chartId,
             data: [assessment.competency1, assessment.competency2, assessment.competency3, assessment.competency4, assessment.competency5 || 3],
+            selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
             labels: [
               t('lblCompetency1').split(' ')[0], 
               t('lblCompetency2').split(' ')[0], 
@@ -1674,9 +1706,11 @@ function renderMilestones() {
       `;
     }).join('');
 
+    }).join('');
+
     container.innerHTML = `
       ${selectorHtml}
-      <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 20px;">
+      <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
         <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; justify-content: center;">
           <div class="card-header">
             <h3>${t('milestoneTitle')}</h3>
@@ -1703,26 +1737,43 @@ function renderMilestones() {
         ` : ''}
       </div>
       
-      <div style="display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 20px;">${deptCards}</div>
+      ${selfAssessmentHtml}
+      
+      <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">${deptCards}</div>
     `;
 
     // Render charts
     chartsToRender.forEach(chartConfig => {
       const ctx = document.getElementById(chartConfig.id);
       if (ctx) {
+        const datasets = [{
+          label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
+          data: chartConfig.data,
+          backgroundColor: 'rgba(249, 115, 22, 0.2)',
+          borderColor: '#f97316',
+          pointBackgroundColor: '#ea580c',
+          borderWidth: 1.5,
+          pointRadius: 2
+        }];
+
+        if (chartConfig.selfData) {
+          datasets.push({
+            label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
+            data: chartConfig.selfData,
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderColor: '#10b981',
+            borderDash: [5, 5],
+            pointBackgroundColor: '#10b981',
+            borderWidth: 2,
+            pointRadius: 2
+          });
+        }
+
         new Chart(ctx, {
           type: 'radar',
           data: {
             labels: chartConfig.labels,
-            datasets: [{
-              label: 'Score',
-              data: chartConfig.data,
-              backgroundColor: 'rgba(249, 115, 22, 0.2)',
-              borderColor: '#f97316',
-              pointBackgroundColor: '#ea580c',
-              borderWidth: 1.5,
-              pointRadius: 2
-            }]
+            datasets: datasets
           },
           options: {
             scales: {
@@ -1749,6 +1800,42 @@ function renderMilestones() {
 }
 
 window.renderMilestonesView = renderMilestones;
+
+window.saveSelfAssessment = async function() {
+  const c1 = parseFloat(document.getElementById('selfScoreC1').value);
+  const c2 = parseFloat(document.getElementById('selfScoreC2').value);
+  const c3 = parseFloat(document.getElementById('selfScoreC3').value);
+  const c4 = parseFloat(document.getElementById('selfScoreC4').value);
+  const c5 = parseFloat(document.getElementById('selfScoreC5').value);
+  const user = Auth.getCurrentUser();
+  if (!user || user.role !== 'trainee') return;
+  
+  const existing = (state.assessments || []).find(a => a.traineeId === user.id && a.department === 'self_eval');
+  const comments = state.activeLanguage === 'zh' ? '學生自我評估紀錄' : 'Trainee Self Assessment';
+  
+  if (existing) {
+    const res = await window.db.updateAssessment(existing.id, {
+      competency1: c1, competency2: c2, competency3: c3, competency4: c4, competency5: c5
+    });
+    if (res && (res.success || res.status === 'success')) {
+      alert(state.activeLanguage === 'zh' ? '自評已更新！' : 'Self-assessment updated!');
+      existing.competency1 = c1;
+      existing.competency2 = c2;
+      existing.competency3 = c3;
+      existing.competency4 = c4;
+      existing.competency5 = c5;
+      renderMilestones();
+    }
+  } else {
+    const res = await window.db.submitAssessment(
+      user.id, 'self_eval', 'N/A', c1, c2, c3, c4, c5, comments, user.name
+    );
+    if (res && (res.success || res.status === 'success')) {
+      alert(state.activeLanguage === 'zh' ? '自評已儲存！' : 'Self-assessment saved!');
+      window.location.reload(); 
+    }
+  }
+};
 
 // ══════════════════════════════════════════════════════════════════
 // 4. REVIEW & FEEDBACK
