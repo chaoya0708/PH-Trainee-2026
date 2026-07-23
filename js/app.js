@@ -997,11 +997,19 @@ function renderAnalytics() {
     }).join(' ');
 
     const currentStatus = localStorage.getItem(`MA_STATUS_${tr.id}`) || 'green';
-    const statusEmoji = currentStatus === 'green' ? '🟢' : currentStatus === 'yellow' ? '🟡' : '🔴';
+    let pulseBadge = '';
+    if (currentStatus === 'green') {
+      pulseBadge = `<div style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(16,185,129,0.1);color:#10b981;white-space:nowrap;">🟢 ${state.activeLanguage === 'zh' ? '順利推進' : 'On Track'}</div>`;
+    } else if (currentStatus === 'yellow') {
+      pulseBadge = `<div style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(245,158,11,0.1);color:#f59e0b;white-space:nowrap;">🟡 ${state.activeLanguage === 'zh' ? '遇到瓶頸' : 'Facing Blocks'}</div>`;
+    } else {
+      pulseBadge = `<div style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(239,68,68,0.1);color:#ef4444;white-space:nowrap;">🔴 ${state.activeLanguage === 'zh' ? '需要協助' : 'Need Help'}</div>`;
+    }
 
     return `
       <tr>
-        <td><strong>${tr.name}</strong> <span style="font-size:12px;" title="Pulse Check">${statusEmoji}</span></td>
+        <td><strong>${tr.name}</strong></td>
+        <td>${pulseBadge}</td>
         <td>
           <div style="display:flex;align-items:center;gap:10px;">
             <div class="progress-bar" style="width:80px;height:8px;margin-bottom:0;"><div class="progress-fill" style="width:${progress}%;"></div></div>
@@ -1053,6 +1061,7 @@ function renderAnalytics() {
           <thead>
             <tr>
               <th>${t('tblHeaderName')}</th>
+              <th>Pulse Check</th>
               <th>${t('tblHeaderProgress')}</th>
               <th>${t('tblHeaderAvgRating')}</th>
               <th>${t('tblHeaderSubmissions')}</th>
