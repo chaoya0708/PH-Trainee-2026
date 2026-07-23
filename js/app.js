@@ -1525,8 +1525,11 @@ function renderMilestones() {
   const viewId  = user.role === 'trainee' ? user.id : state.selectedTraineeId;
   const overall = calcOverallProgress(viewId);
 
-  // Get Self Assessment
-  const selfEval = (state.assessments || []).find(a => a.traineeId === viewId && a.department === 'self_eval');
+  // Get Self Assessment for current month
+  const now = new Date();
+  const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const currentSelfEvalId = `self_eval_${currentMonthStr}`;
+  const selfEval = (state.assessments || []).find(a => a.traineeId === viewId && a.department === currentSelfEvalId);
 
   let selfAssessmentHtml = '';
   if (user.role === 'trainee') {
@@ -1795,6 +1798,98 @@ function renderMilestones() {
         });
       }
     });
+
+    // Render Trend Line Chart if it exists
+    const trendCtx = document.getElementById('trendLineChart');
+    if (trendCtx) {
+      // Group assessments by month (YYYY-MM)
+      const monthlyData = {};
+      
+      const traineeAssessments = (state.assessments || []).filter(a => a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee || a.department.startsWith('self_eval')));
+      
+      traineeAssessments.forEach(a => {
+        let dateStr = a.submittedAt;
+        if (!dateStr) {
+          // fallback if submittedAt is missing, try to extract from self_eval_YYYY-MM
+          if (a.department.startsWith('self_eval_')) {
+            dateStr = a.department.replace('self_eval_', '') + '-01T00:00:00Z';
+          } else {
+            return;
+          }
+        }
+        const month = dateStr.substring(0, 7); // '2026-07'
+        if (!monthlyData[month]) {
+          monthlyData[month] = { supSum: 0, supCount: 0, selfSum: 0, selfCount: 0 };
+        }
+        
+        const avgScore = ((a.competency1 || 0) + (a.competency2 || 0) + (a.competency3 || 0) + (a.competency4 || 0) + (a.competency5 || 0)) / 5;
+        
+        if (a.department.startsWith('self_eval')) {
+          monthlyData[month].selfSum += avgScore;
+          monthlyData[month].selfCount += 1;
+        } else {
+          monthlyData[month].supSum += avgScore;
+          monthlyData[month].supCount += 1;
+        }
+      });
+      
+      const sortedMonths = Object.keys(monthlyData).sort();
+      const labels = sortedMonths;
+      const supData = sortedMonths.map(m => monthlyData[m].supCount > 0 ? (monthlyData[m].supSum / monthlyData[m].supCount).toFixed(1) : null);
+      const selfData = sortedMonths.map(m => monthlyData[m].selfCount > 0 ? (monthlyData[m].selfSum / monthlyData[m].selfCount).toFixed(1) : null);
+      
+      new Chart(trendCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
+              data: supData,
+              borderColor: '#f97316',
+              backgroundColor: 'rgba(249, 115, 22, 0.1)',
+              borderWidth: 2,
+              pointBackgroundColor: '#ea580c',
+              tension: 0.3,
+              fill: true,
+              spanGaps: true
+            },
+            {
+              label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
+              data: selfData,
+              borderColor: '#10b981',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              pointBackgroundColor: '#10b981',
+              tension: 0.3,
+              spanGaps: true
+            }
+          ]
+        },
+        options: {
+          scales: {
+            y: {
+              min: 0, max: 5,
+              grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+              ticks: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' }
+            }
+          },
+          plugins: {
+            legend: { 
+              display: true,
+              position: 'bottom',
+              labels: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b', boxWidth: 12 }
+            }
+          },
+          maintainAspectRatio: false
+        }
+      });
+    }
 }
 
 window.renderMilestonesView = renderMilestones;
@@ -1808,7 +1903,11 @@ window.saveSelfAssessment = async function() {
   const user = Auth.getCurrentUser();
   if (!user || user.role !== 'trainee') return;
   
-  const existing = (state.assessments || []).find(a => a.traineeId === user.id && a.department === 'self_eval');
+  const now = new Date();
+  const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const currentSelfEvalId = `self_eval_${currentMonthStr}`;
+  
+  const existing = (state.assessments || []).find(a => a.traineeId === user.id && a.department === currentSelfEvalId);
   const comments = state.activeLanguage === 'zh' ? '學生自我評估紀錄' : 'Trainee Self Assessment';
   
   if (existing) {
@@ -1826,7 +1925,7 @@ window.saveSelfAssessment = async function() {
     }
   } else {
     const res = await window.db.submitAssessment(
-      user.id, 'self_eval', 'N/A', c1, c2, c3, c4, c5, comments, user.name
+      user.id, currentSelfEvalId, 'N/A', c1, c2, c3, c4, c5, comments, user.name
     );
     if (res && (res.success || res.status === 'success')) {
       alert(state.activeLanguage === 'zh' ? '自評已儲存！' : 'Self-assessment saved!');
