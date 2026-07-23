@@ -1539,7 +1539,7 @@ function renderMilestones() {
           </button>
         </h3>
         <p style="font-size:11px; color:var(--text-secondary); margin-bottom:12px;">
-          ${state.activeLanguage === 'zh' ? '請為自己目前的五大核心職能進行評分 (0-5分)，此自評將與主管評分疊加，幫助您看見認知落差並促進反思。' : 'Please rate your core competencies (0-5). Your self-assessment will be overlaid with your supervisor\\'s scores to visualize any perception gaps.'}
+          ${state.activeLanguage === 'zh' ? '請為自己目前的五大核心職能進行評分 (0-5分)，此自評將與主管評分疊加，幫助您看見認知落差並促進反思。' : 'Please rate your core competencies (0-5). Your self-assessment will be overlaid with your supervisor\'s scores to visualize any perception gaps.'}
         </p>
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
           ${[1,2,3,4,5].map(i => `
