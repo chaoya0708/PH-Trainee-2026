@@ -980,20 +980,28 @@ textarea.form-control:focus {
 @media (max-width: 768px) {
   .login-screen {
     flex-direction: column;
+    overflow-y: auto;
   }
   .login-image-side {
-  position: relative;
+    position: relative;
     flex: none;
+    min-height: 200px;
     height: 30vh;
     border-left: none;
     border-bottom: 1px solid var(--panel-border);
     order: 1;
   }
   .login-form-side {
-    flex: none;
-    height: 70vh;
+    flex: 1;
+    height: auto;
+    min-height: 500px;
     padding: 20px;
     order: 2;
+    justify-content: flex-start;
+    overflow-y: visible;
+  }
+  .login-card {
+    padding: 24px 20px;
   }
 }
 
