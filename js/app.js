@@ -2114,7 +2114,7 @@ function renderReview() {
 
   // --- Smart Nudges (Action Center) ---
   let smartNudgeHtml = '';
-  if (user.role === 'admin' || user.role === 'executive') {
+  if (user.role === 'admin') {
     let pendingObsCount = 0;
     state.observations.forEach(o => {
       if (o.status === 'pending') pendingObsCount++;
