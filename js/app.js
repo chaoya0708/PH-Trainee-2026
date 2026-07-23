@@ -1158,7 +1158,15 @@ function setupMainEventListeners() {
   // Quick switch account (Admin Only or God Mode)
   window.logoutAndSwitch = function(event, forceGodMode = false) {
     const user = Auth.getCurrentUser();
+    
+    // If not God Mode and not Admin, do nothing
     if (!forceGodMode && (!user || user.role !== 'admin')) return;
+
+    // If mobile and clicking the avatar, do not show switcher
+    // (Only allow title click to show switcher on mobile)
+    if (!forceGodMode && window.innerWidth <= 768) {
+      return;
+    }
 
     let existing = document.getElementById('fastSwitchPopup');
     if (existing) {
@@ -1247,13 +1255,7 @@ function setupMainEventListeners() {
     }
   };
 
-  const logo = document.querySelector('.top-bar-logo');
-  if (logo) {
-    logo.style.cursor = 'pointer';
-    logo.addEventListener('click', godModeHandler);
-  }
-
-  // Also attach to page title for easier tapping on mobile
+  // Attach ONLY to page title for safer tapping
   const title = document.querySelector('.page-title');
   if (title) {
     title.style.cursor = 'pointer';
