@@ -1157,10 +1157,13 @@ function setupMainEventListeners() {
 
   // Quick switch account
   window.logoutAndSwitch = function() {
-    if (confirm(state.activeLanguage === 'zh' ? '確定要登出並切換帳號嗎？' : 'Are you sure you want to log out and switch accounts?')) {
-      Auth.logout();
-      location.reload();
-    }
+    const modal = document.getElementById('roleSwitchModal');
+    if (modal) modal.style.display = 'flex';
+  };
+
+  window.fastSwitchRole = function(role, id) {
+    Auth.login(role, id, '0000');
+    location.reload();
   };
 
   // Logout
