@@ -364,6 +364,9 @@ function toggleTheme() {
   state.activeTheme = state.activeTheme === 'dark' ? 'light' : 'dark';
   localStorage.setItem('vimei_theme', state.activeTheme);
   applyTheme();
+  if (state.activeTab) {
+    switchTab(state.activeTab); // Re-render to update chart colors
+  }
 }
 
 function translateSidebar() {
@@ -1720,9 +1723,12 @@ function renderMilestones() {
                 min: 0,
                 max: 5,
                 ticks: { display: false, stepSize: 1 },
-                pointLabels: { font: { size: 16, weight: 'bold' }, color: '#64748b' },
-                grid: { color: 'rgba(0,0,0,0.05)' },
-                angleLines: { color: 'rgba(0,0,0,0.05)' }
+                pointLabels: { 
+                  font: { size: 16, weight: 'bold' }, 
+                  color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' 
+                },
+                grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
+                angleLines: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }
               }
             },
             plugins: {
