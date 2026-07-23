@@ -332,6 +332,7 @@ function updateTopBar(user) {
   $('liDashboard').style.display  = 'block'; // Show dashboard schedule to all roles
   $('liForm').style.display       = isTrainee ? 'block' : 'none';
   $('liMilestones').style.display = (isTrainee || isMentor || isExecutive || isGuest) ? 'block' : 'none';
+  $('liJournals').style.display   = (isTrainee || isMentor || isExecutive || isGuest) ? 'block' : 'none';
   $('liReview').style.display     = (isTrainee || isMentor || isGuest || isExecutive) ? 'block' : 'none';
   $('liAnalytics').style.display  = (isMentor || isGuest || isExecutive) ? 'block' : 'none';
 }
@@ -375,6 +376,7 @@ function translateSidebar() {
     'navDashboard': 'tabDashboard',
     'navForm':      'tabForm',
     'navMilestones':'tabMilestones',
+    'navJournals':  'tabJournals',
     'navReview':    'tabReview',
     'navAnalytics': 'tabAnalytics'
   };
@@ -460,6 +462,7 @@ function renderCurrentTab() {
   if      (state.activeTab === 'dashboard')  renderDashboard();
   else if (state.activeTab === 'form')       renderForm();
   else if (state.activeTab === 'milestones') renderMilestones();
+  else if (state.activeTab === 'journals')   renderJournals();
   else if (state.activeTab === 'review')     renderReview();
   else if (state.activeTab === 'analytics')  renderAnalytics();
 }
@@ -1179,7 +1182,7 @@ window.exportObservationLogs = function() {
 
 function setupMainEventListeners() {
   // Nav links
-  [['navDashboard','dashboard'],['navForm','form'],['navMilestones','milestones'],['navReview','review'],['navAnalytics','analytics']]
+  [['navDashboard','dashboard'],['navForm','form'],['navMilestones','milestones'],['navJournals','journals'],['navReview','review'],['navAnalytics','analytics']]
     .forEach(([id, tab]) => {
       const el = $(id);
       if (el) el.addEventListener('click', e => { e.preventDefault(); switchTab(tab); });
@@ -1976,7 +1979,91 @@ window.saveSelfAssessment = async function() {
 };
 
 // ══════════════════════════════════════════════════════════════════
-// 4. REVIEW & FEEDBACK
+// 3.5. JOURNALS
+// ══════════════════════════════════════════════════════════════════
+
+let _filterJournalTrainee = 'all';
+let _filterJournalDept = 'all';
+
+function renderJournals() {
+  const user = Auth.getCurrentUser();
+  const container = $('sectionJournals');
+  
+  if (!state.activeJournalTraineeId) {
+    state.activeJournalTraineeId = CONFIG.TRAINEES[0].id;
+  }
+
+  // Enforce guest department filter
+  const isGuest = user.role === 'guest';
+  if (isGuest) {
+    _filterJournalDept = user.departmentId;
+  }
+
+  // Trainee Tabs
+  let tabsHtml = '';
+  if (user.role === 'admin' || user.role === 'executive') {
+    tabsHtml = `
+      <div style="display:flex; gap:10px; margin-bottom:20px; overflow-x:auto;">
+        ${CONFIG.TRAINEES.map(tr => `
+          <button class="btn ${state.activeJournalTraineeId === tr.id ? 'btn-primary' : 'btn-outline'}" 
+                  onclick="state.activeJournalTraineeId='${tr.id}'; window.renderJournals();"
+                  style="flex:1; white-space:nowrap; border-radius:12px; padding:12px; font-size:16px;">
+            ${tr.avatar ? tr.avatar : '🎓'} ${tr.name}
+          </button>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // Dept filter
+  let filterHtml = `<div class="glass-card" style="margin-bottom:20px; padding: 12px 20px;"><div class="filter-bar" style="border:none;padding:0;">`;
+  let deptOpts = '';
+  if (isGuest) {
+    const d = CONFIG.DEPARTMENTS[user.departmentId];
+    deptOpts = `<option value="${user.departmentId}" selected>${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`;
+  } else {
+    deptOpts = `<option value="all">${t('allDepts')}</option>` +
+      Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d =>
+        `<option value="${d.id}" ${_filterJournalDept === d.id ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
+      ).join('');
+  }
+  filterHtml += `
+      <label>${t('filterLabel')}</label>
+      <select class="form-control" style="width:auto;" onchange="window.setFilterDeptForJournals(this.value)" ${isGuest ? 'disabled' : ''}>${deptOpts}</select>
+    </div></div>`;
+
+  // Filter observations
+  let obs = [...state.observations].sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+  
+  if (user.role === 'trainee') {
+    obs = obs.filter(o => o.traineeId === user.id);
+  } else {
+    obs = obs.filter(o => o.traineeId === state.activeJournalTraineeId);
+  }
+  
+  if (_filterJournalDept !== 'all') obs = obs.filter(o => o.department === _filterJournalDept);
+
+  let feedHtml = obs.length === 0
+    ? `<div class="glass-card" style="text-align:center;padding:40px;color:var(--text-secondary);">
+        ${t('noObservations')}
+       </div>`
+    : obs.map(o => buildFeedItem(o, user)).join('');
+
+  container.innerHTML = `
+    <div class="card-header" style="margin:0 0 10px;">
+      <div><h2 style="font-family:var(--font-title);font-size:20px;font-weight:700;">${t('tabJournals')}</h2>
+      <p style="font-size:12px;color:var(--text-secondary);">${state.activeLanguage === 'zh' ? '查看並審閱國際生每週的現場觀察與心得。' : 'Review trainees weekly observations and feedback.'}</p></div>
+    </div>
+    ${tabsHtml}
+    ${filterHtml}
+    <div class="feed">${feedHtml}</div>
+  `;
+}
+
+window.setFilterDeptForJournals = function(val) { _filterJournalDept = val; renderJournals(); };
+
+// ══════════════════════════════════════════════════════════════════
+// 4. REVIEW & FEEDBACK (Assessments)
 // ══════════════════════════════════════════════════════════════════
 
 let _filterTrainee = 'all';
@@ -1991,46 +2078,6 @@ function renderReview() {
   if (isGuest) {
     _filterDept = user.departmentId;
   }
-
-  // Filter controls
-  let filterHtml = `<div class="glass-card"><div class="filter-bar">`;
-
-  if (user.role === 'admin') {
-    // Trainee filter
-    const traineeOpts = `<option value="all">${t('allTrainees')}</option>` +
-      CONFIG.TRAINEES.map(tr => `<option value="${tr.id}" ${_filterTrainee === tr.id ? 'selected' : ''}>${tr.name}</option>`).join('');
-    filterHtml += `
-      <label>${t('filterLabel')}</label>
-      <select class="form-control" style="width:auto;" onchange="window.setFilterTrainee(this.value)">${traineeOpts}</select>
-    `;
-  }
-
-  // Dept filter
-  let deptOpts = '';
-  if (isGuest) {
-    const d = CONFIG.DEPARTMENTS[user.departmentId];
-    deptOpts = `<option value="${user.departmentId}" selected>${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`;
-  } else {
-    deptOpts = `<option value="all">${t('allDepts')}</option>` +
-      Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d =>
-        `<option value="${d.id}" ${_filterDept === d.id ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
-      ).join('');
-  }
-  filterHtml += `
-      <select class="form-control" style="width:auto;" onchange="window.setFilterDept(this.value)" ${isGuest ? 'disabled' : ''}>${deptOpts}</select>
-    </div></div>`;
-
-  // Filter observations
-  let obs = [...state.observations].sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
-  if (user.role === 'trainee') _filterTrainee = user.id;
-  if (_filterTrainee !== 'all') obs = obs.filter(o => o.traineeId === _filterTrainee);
-  if (_filterDept    !== 'all') obs = obs.filter(o => o.department === _filterDept);
-
-  let feedHtml = obs.length === 0
-    ? `<div class="glass-card" style="text-align:center;padding:40px;color:var(--text-secondary);">
-        ${t('noObservations')}
-       </div>`
-    : obs.map(o => buildFeedItem(o, user)).join('');
 
   let assessFormHtml = '';
   if (user.role === 'admin' || user.role === 'guest') {
@@ -2158,7 +2205,7 @@ function renderReview() {
 
     if (pendingObsCount > 0) {
       smartNudgeHtml += `
-        <div class="smart-nudge-item info" onclick="window.switchTab('review')" style="cursor:pointer;">
+        <div class="smart-nudge-item info" onclick="window.switchTab('journals')" style="cursor:pointer;">
           <div class="icon-circle" style="color:#2563eb;background:rgba(37,99,235,0.1);">
             <i class="fi fi-rr-bell"></i>
           </div>
@@ -2203,9 +2250,9 @@ function renderReview() {
       <div><h2 style="font-family:var(--font-title);font-size:20px;font-weight:700;">${t('reviewTitle')}</h2>
       <p style="font-size:12px;color:var(--text-secondary);">${t('reviewSubTitle')}</p></div>
     </div>
-    ${filterHtml}
     ${assessFormHtml}
-    <div class="feed">${feedHtml}</div>
+    
+    <!-- Render Assessments Feed -->
   `;
 }
 
@@ -2493,7 +2540,7 @@ window.lockObservation = async function(id) {
     await Api.submitFeedback(id, obs.mentorComment || '', obs.mentorName || Auth.getCurrentUser().name, obs.rating || 0);
     state.observations = await Api.getAllObservations();
     showToast(state.activeLanguage === 'zh' ? '已鎖定' : 'Locked', 'success');
-    renderReview();
+    renderCurrentTab();
   } catch(err) {
     showToast('Error: ' + err.message, 'error');
   } finally {
@@ -2543,7 +2590,7 @@ window.saveEditedObservation = async function() {
     if (res.success) {
       showToast(state.activeLanguage === 'zh' ? '更新成功' : 'Update successful', 'success');
       state.observations = await Api.getAllObservations();
-      renderReview();
+      renderCurrentTab();
     } else {
       showToast('Update failed.', 'error');
     }
@@ -2564,7 +2611,7 @@ window.deleteObservation = async function(id) {
     if (res.success) {
       showToast(state.activeLanguage === 'zh' ? '刪除成功' : 'Deleted successfully', 'success');
       state.observations = await Api.getAllObservations();
-      renderReview();
+      renderCurrentTab();
     } else {
       showToast('Delete failed.', 'error');
     }
@@ -2685,7 +2732,7 @@ window.submitFeedback = async function(obsId) {
     await Api.submitFeedback(obsId, comment, user.name, 0);
     state.observations = await Api.getAllObservations();
     showToast(t('feedbackSuccess'), 'success');
-    renderReview();
+    renderCurrentTab();
   } catch(err) {
     showToast('Error: ' + err.message, 'error');
   } finally {
@@ -2702,7 +2749,7 @@ window.submitGuestComment = async function(obsId) {
     await Api.submitGuestComment(obsId, comment);
     state.observations = await Api.getAllObservations();
     showToast(t('guestSuccess'), 'success');
-    renderReview();
+    renderCurrentTab();
   } catch(err) {
     showToast('Error: ' + err.message, 'error');
   } finally {

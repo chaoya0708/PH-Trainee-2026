@@ -29,10 +29,11 @@ const I18N = {
 
     // Sidebar tabs
     tabDashboard:  'Dashboard & Schedule',
-    tabForm:       'Weekly Journal',
-    tabMilestones: 'Milestone Tracker',
-    tabReview:     'Review & Feedback',
-    tabAnalytics:  'Analytics',
+    tabForm:       'Observation Log',
+    tabMilestones: 'Milestones Tracker',
+    tabJournals:   'Weekly Journals',
+    tabReview:     'Assessments',
+    tabAnalytics:  'Data Analytics',
 
     // Dashboard
     weeklySchedule:     'Rotation Schedule',
@@ -68,8 +69,8 @@ const I18N = {
     criteria4: 'Excellent & Locked (Rating ≥ 4★)',
 
     // Review Panel
-    reviewTitle:        'Review & Feedback',
-    reviewSubTitle:     'Mentor feedback and supervisor/colleague comments.',
+    reviewTitle:        'Rotation Assessments',
+    reviewSubTitle:     'Mentor and supervisor station assessment grading.',
     filterLabel:        'Filter by:',
     allTrainees:        'All Trainees',
     allDepts:           'All Departments',
@@ -151,7 +152,8 @@ const I18N = {
     tabDashboard:  '儀表板與排程',
     tabForm:       '填寫週記',
     tabMilestones: '里程碑追蹤',
-    tabReview:     '審查與回饋',
+    tabJournals:   '週記總覽',
+    tabReview:     '站別考核',
     tabAnalytics:  '數據分析',
 
     // Dashboard
@@ -188,8 +190,8 @@ const I18N = {
     criteria4: '表現優異且已結案（評分 ≥ 4★）',
 
     // Review Panel
-    reviewTitle:        '審查與回饋',
-    reviewSubTitle:     '導師回饋與主管/同仁評語。',
+    reviewTitle:        '站別考核總覽',
+    reviewSubTitle:     '主管對各輪調站別的最終考核與等第。',
     filterLabel:        '篩選：',
     allTrainees:        '所有學員',
     allDepts:           '所有單位',
