@@ -38,12 +38,6 @@ function initLoginSlogans() {
   sloganEl.innerHTML = "Observe with Curiosity, Grow with Initiative.";
 }
 
-// ── Init ───────────────────────────────────────────────────────────
-window.initApp = async function() {
-  await Auth.init();
-};
-
-window.addEventListener('DOMContentLoaded', initApp);
 
 // Multi-file Upload List Renderers
 window.updateObsFileList = function() {
