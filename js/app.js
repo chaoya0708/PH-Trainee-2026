@@ -1613,6 +1613,7 @@ function renderMilestones() {
       trendLabels.push(deptName || a.department);
       trendData.push(avg.toFixed(1));
     });
+  }
   const traineeObj = CONFIG.TRAINEES.find(t => t.id === viewId);
   const excludedDepts = traineeObj ? (traineeObj.excludedDepartments || []) : [];
 
