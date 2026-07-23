@@ -1259,7 +1259,7 @@ function setupMainEventListeners() {
     clearTimeout(godModeTimer);
     if (godModeClicks >= 3) {
       godModeClicks = 0;
-      const pin = prompt("God Mode - Enter Master PIN:");
+      const pin = prompt("Enter Master Pin");
       if (pin === "0000") {
         window.logoutAndSwitch(e, true);
       }
