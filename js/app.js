@@ -691,6 +691,14 @@ function renderDashboard() {
           <h3>${state.activeLanguage === 'zh' ? 'IDP 個人發展目標 (Individual Development Plan)' : 'Individual Development Plan (IDP)'}</h3>
           ${user.role === 'trainee' ? `<button class="btn btn-primary btn-sm" onclick="window.addIdpGoal()">+ ${state.activeLanguage === 'zh' ? '新增目標' : 'Add Goal'}</button>` : ''}
         </div>
+        ${user.role === 'trainee' ? `
+        <div style="background-color:rgba(37, 99, 235, 0.05); border-left:3px solid #2563eb; padding:10px 14px; margin-top:10px; margin-bottom:10px; border-radius:4px; font-size:12px; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">💡 ${state.activeLanguage === 'zh' ? '設定您的專屬目標：' : 'Set Your Personal Goals:'}</strong><br>
+          ${state.activeLanguage === 'zh' 
+            ? '這是一趟由您主導的學習旅程！請在此寫下您在培訓中最想達成的目標。建議設定 1-3 個具體且可衡量的目標（例如：「能獨立完成燒賣配餡並通過檢定」、「以中文進行5分鐘的早會報告」）。這能幫助導師與主管更有效地提供資源與指導。' 
+            : 'This is your learning journey to own! Use this space to define what you want to achieve. We recommend setting 1-3 specific, measurable goals (e.g., "Independently complete Siomai filling and pass the exam," "Deliver a 5-minute morning briefing in Chinese"). This helps mentors and supervisors provide the exact resources you need.'}
+        </div>
+        ` : ''}
         <ul style="list-style: none; padding: 0; margin-top: 10px;">
           ${idpGoals.length === 0 ? `<li style="color:var(--text-muted); font-size:14px; padding:10px 0;">${state.activeLanguage === 'zh' ? '尚未設定發展目標...' : 'No goals set...'}</li>` : idpGoals.map((g, i) => `
             <li style="display:flex; align-items:center; gap:10px; padding: 10px 0; border-bottom: 1px solid var(--border-color);">
