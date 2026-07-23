@@ -635,7 +635,11 @@ textarea.form-control {
     padding: 4px 8px;
   }
   .current-user-chip span:last-child {
-    display: none;
+    display: inline-block;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .controls-group {
     gap: 6px;
