@@ -1706,8 +1706,6 @@ function renderMilestones() {
       `;
     }).join('');
 
-    }).join('');
-
     container.innerHTML = `
       ${selectorHtml}
       <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
