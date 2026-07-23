@@ -89,8 +89,10 @@ window.updateAssessFileList = function() {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-  window._appLang = state.activeLanguage;
+  window._appLang = state.activeLanguage || localStorage.getItem('vimei_lang') || 'en';
+  state.activeLanguage = window._appLang;
   applyTheme();
+  translateDOM();
 
   Api.init(); // seed demo data if needed
   initLoginSlogans(); // initialize slogans rotation
@@ -416,17 +418,21 @@ function updateGlobalReminder() {
 }
 
 function changeLanguage(lang) {
-  state.activeLanguage = lang;
-  window._appLang = lang;
   localStorage.setItem('vimei_lang', lang);
-  translateSidebar();
-  updateGlobalReminder();
-  renderCurrentTab();
-  const user = Auth.getCurrentUser();
-  if (user) {
-    updateSidebarProfile(user);
-    updateTopBar(user);
-  }
+  window.location.reload();
+}
+
+function translateDOM() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      if (el.placeholder) el.placeholder = t(key);
+    } else {
+      // Keep inner HTML structure if any (e.g. icons), by replacing text nodes safely?
+      // For simplicity, directly set innerHTML.
+      el.innerHTML = t(key);
+    }
+  });
 }
 
 // ══════════════════════════════════════════════════════════════════
