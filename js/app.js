@@ -219,7 +219,10 @@ window.handleLogin = async function() {
   const ok = Auth.login(_loginRole, identifier, credential);
 
   if (ok) {
-    await enterApp();
+    // Set default language based on role on initial login
+    const targetLang = (_loginRole === 'trainee') ? 'en' : 'zh';
+    localStorage.setItem('vimei_lang', targetLang);
+    window.location.reload();
   } else {
     if (errorEl) {
       errorEl.style.display = 'block';
@@ -276,14 +279,6 @@ async function enterApp() {
   await window.autoSyncSchedules();
   const user = Auth.getCurrentUser();
 
-  // Determine default language based on role
-  if (user.role === 'trainee') {
-    state.activeLanguage = 'en';
-  } else {
-    state.activeLanguage = 'zh';
-  }
-  window._appLang = state.activeLanguage;
-  localStorage.setItem('vimei_lang', state.activeLanguage);
   document.documentElement.lang = state.activeLanguage === 'zh' ? 'zh-TW' : 'en';
   if ($('langSelector')) $('langSelector').value = state.activeLanguage;
   
@@ -1219,6 +1214,8 @@ function setupMainEventListeners() {
       btn.style.justifyContent = 'flex-start';
       btn.onclick = () => {
         Auth.login(opt.r, opt.i, '0000');
+        const targetLang = (opt.r === 'trainee') ? 'en' : 'zh';
+        localStorage.setItem('vimei_lang', targetLang);
         location.reload();
       };
       popup.appendChild(btn);
