@@ -333,7 +333,7 @@ function updateTopBar(user) {
   $('liForm').style.display       = isTrainee ? 'block' : 'none';
   $('liMilestones').style.display = (isTrainee || isMentor || isExecutive || isGuest) ? 'block' : 'none';
   $('liJournals').style.display   = (isTrainee || isMentor || isExecutive || isGuest) ? 'block' : 'none';
-  $('liReview').style.display     = (isTrainee || isMentor || isGuest || isExecutive) ? 'block' : 'none';
+  $('liReview').style.display     = (isMentor || isGuest) ? 'block' : 'none';
   $('liAnalytics').style.display  = (isMentor || isGuest || isExecutive) ? 'block' : 'none';
 }
 
