@@ -1724,7 +1724,7 @@ function renderMilestones() {
               
               <div style="font-size:13px;line-height:1.5;border-top:1px dashed var(--card-border);padding-top:10px;">
                 <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
-                ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(assessment.comments)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
+                ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/en/translator#zh/en/${encodeURIComponent(assessment.comments)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
                 ${assessment.attachmentUrl ? `
                 <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;">
                   ${assessment.attachmentUrl.split(',').map((url, idx) => `
@@ -2501,7 +2501,7 @@ function buildFeedItem(obs, user) {
           <span class="comment-bubble-time">${formatTaipeiTime(obs.feedbackAt, state.activeLanguage)}</span>
         </div>
         <p class="comment-bubble-text">${obs.mentorComment}</p>
-        ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(obs.mentorComment)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
+        ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/en/translator#zh/en/${encodeURIComponent(obs.mentorComment)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
       </div>
     `;
   }
@@ -2515,7 +2515,7 @@ function buildFeedItem(obs, user) {
         <div class="comment-bubble guest-bubble">
           <div class="comment-bubble-header"><span>👀 Guest</span><span class="comment-bubble-time">${formatTaipeiTime(g.submittedAt, state.activeLanguage)}</span></div>
           <p class="comment-bubble-text">${g.comment}</p>
-          ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(g.comment)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
+          ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/en/translator#zh/en/${encodeURIComponent(g.comment)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
         </div>
       `).join('')}
     `;
