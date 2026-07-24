@@ -10,10 +10,10 @@
 const Api = (() => {
 
   // ----- localStorage keys (Demo mode) -----
-  const LS_OBS      = 'vimei2_observations';
-  const LS_SCHED    = 'vimei2_schedules';
+  const LS_OBS = 'vimei2_observations';
+  const LS_SCHED = 'vimei2_schedules';
   const LS_GCOMMENT = 'vimei2_guest_comments';
-  const LS_ASSESS   = 'vimei2_assessments';
+  const LS_ASSESS = 'vimei2_assessments';
   const LS_MENTOR_NOTES = 'vimei2_mentor_notes';
 
   // ----- Default demo seed data -----
@@ -22,51 +22,51 @@ const Api = (() => {
       const seed = [
         {
           id: 'obs-seed-1',
-          traineeId:      'diane',
-          traineeName:    'Diane',
-          date:           '2026-07-13',
-          department:     'yushan_prep',
+          traineeId: 'diane',
+          traineeName: 'Diane',
+          date: '2026-07-13',
+          department: 'yushan_prep',
           keyObservation: 'The vegetable washing sector has a minor bottleneck during peak hours. Workers frequently cross paths when carrying sanitized crates due to a narrow layout. The 5S signage is clear but the physical flow has not been redesigned to match it.',
           actionableIdea: 'Propose an L-shaped crate flow in the VIMEI Philippines plant. Bilingual (English + Tagalog) floor markings would guide local staff more effectively than signage alone.',
-          attachmentUrl:  'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=60',
-          submittedAt:    '2026-07-13T09:15:00Z',
-          status:         'pending',
-          mentorComment:  '',
-          mentorName:     '',
-          feedbackAt:     '',
-          rating:         0
+          attachmentUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=60',
+          submittedAt: '2026-07-13T09:15:00Z',
+          status: 'pending',
+          mentorComment: '',
+          mentorName: '',
+          feedbackAt: '',
+          rating: 0
         },
         {
           id: 'obs-seed-2',
-          traineeId:      'mark',
-          traineeName:    'Mark',
-          date:           '2026-07-13',
-          department:     'yushan_prep',
+          traineeId: 'mark',
+          traineeName: 'Mark',
+          date: '2026-07-13',
+          department: 'yushan_prep',
           keyObservation: 'The automatic dicer machine runs at 80% capacity because the raw material feeding rate fluctuates. A lot of idle time is caused by waiting for manually trimmed vegetables from upstream.',
           actionableIdea: 'Introduce a gravity-assisted staging chute above the feeder. Clear visual buffer threshold signage (bilingual) will help Filipino operators respond faster without needing supervisor intervention.',
-          attachmentUrl:  'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=60',
-          submittedAt:    '2026-07-13T10:00:00Z',
-          status:         'pending',
-          mentorComment:  '',
-          mentorName:     '',
-          feedbackAt:     '',
-          rating:         0
+          attachmentUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=60',
+          submittedAt: '2026-07-13T10:00:00Z',
+          status: 'pending',
+          mentorComment: '',
+          mentorName: '',
+          feedbackAt: '',
+          rating: 0
         },
         {
           id: 'obs-seed-3',
-          traineeId:      'jairuz',
-          traineeName:    'Jairuz',
-          date:           '2026-07-13',
-          department:     'cmf_qc',
+          traineeId: 'jairuz',
+          traineeName: 'Jairuz',
+          date: '2026-07-13',
+          department: 'cmf_qc',
           keyObservation: 'Metal detector test sticks are stored in an unlocked generic cabinet instead of a dedicated verification kit with controlled access. This is a potential HACCP deviation risk.',
           actionableIdea: 'Create a shadow board for test sticks with a digital keypad lock. Only QA-certified personnel should hold the PIN. Label the board in both English and Tagalog for clarity.',
-          attachmentUrl:  'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&auto=format&fit=crop&q=60',
-          submittedAt:    '2026-07-13T11:30:00Z',
-          status:         'pending',
-          mentorComment:  '',
-          mentorName:     '',
-          feedbackAt:     '',
-          rating:         0
+          attachmentUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&auto=format&fit=crop&q=60',
+          submittedAt: '2026-07-13T11:30:00Z',
+          status: 'pending',
+          mentorComment: '',
+          mentorName: '',
+          feedbackAt: '',
+          rating: 0
         }
       ];
       localStorage.setItem(LS_OBS, JSON.stringify(seed));
@@ -86,8 +86,8 @@ const Api = (() => {
   }
 
   // ----- Demo helpers -----
-  function lsGet(key)       { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } }
-  function lsGetObj(key)    { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; } }
+  function lsGet(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } }
+  function lsGetObj(key) { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; } }
   function lsSave(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
   function nowIso() {
@@ -103,7 +103,7 @@ const Api = (() => {
     return `${p.year}-${p.month}-${p.day}T${hour}:${p.minute}:${p.second}+08:00`;
   }
 
-  function nowStr() { 
+  function nowStr() {
     return nowIso().replace('T', ' ').substring(0, 16);
   }
 
@@ -114,8 +114,8 @@ const Api = (() => {
       throw new Error('Apps Script URL not configured. Check config.js');
     }
     const res = await fetch(url, {
-      method:  'POST',
-      body:    JSON.stringify(params),
+      method: 'POST',
+      body: JSON.stringify(params),
       headers: { 'Content-Type': 'text/plain' } // avoids CORS preflight
     });
     return res.json();
@@ -155,7 +155,7 @@ const Api = (() => {
 
     async getAllObservations() {
       if (CONFIG.DEMO_MODE) {
-        const obs      = lsGet(LS_OBS);
+        const obs = lsGet(LS_OBS);
         const gcomments = lsGet(LS_GCOMMENT);
         // Attach guest comments to each observation
         return obs.map(o => ({
@@ -192,22 +192,22 @@ const Api = (() => {
       if (CONFIG.DEMO_MODE) {
         const obs = lsGet(LS_OBS);
         const newObs = {
-          id:             'obs-' + Date.now(),
-          traineeId:      data.traineeId,
-          traineeName:    data.traineeName,
-          date:           data.date,
-          department:     data.department,
+          id: 'obs-' + Date.now(),
+          traineeId: data.traineeId,
+          traineeName: data.traineeName,
+          date: data.date,
+          department: data.department,
           keyObservation: data.keyObservation,
           actionableIdea: data.actionableIdea,
-          attachmentUrl:  data.attachmentUrl || (data.fileData ? data.fileData.base64 : ''),
-          submittedAt:    nowIso(),
-          status:         'pending',
-          mentorComment:  '',
-          mentorName:     '',
-          feedbackAt:     '',
-          rating:         0,
-          selfRating:     data.selfRating || 0,
-          guestComments:  []
+          attachmentUrl: data.attachmentUrl || (data.fileData ? data.fileData.base64 : ''),
+          submittedAt: nowIso(),
+          status: 'pending',
+          mentorComment: '',
+          mentorName: '',
+          feedbackAt: '',
+          rating: 0,
+          selfRating: data.selfRating || 0,
+          guestComments: []
         };
         obs.unshift(newObs);
         lsSave(LS_OBS, obs);
@@ -244,11 +244,11 @@ const Api = (() => {
         const obs = lsGet(LS_OBS);
         const idx = obs.findIndex(o => o.id === obsId);
         if (idx === -1) return { error: 'Not found' };
-        obs[idx].status        = 'reviewed';
+        obs[idx].status = 'reviewed';
         obs[idx].mentorComment = mentorComment;
-        obs[idx].mentorName    = mentorName;
-        obs[idx].feedbackAt    = nowStr();
-        obs[idx].rating        = rating;
+        obs[idx].mentorName = mentorName;
+        obs[idx].feedbackAt = nowStr();
+        obs[idx].rating = rating;
         lsSave(LS_OBS, obs);
         return { success: true };
       }
@@ -289,7 +289,7 @@ const Api = (() => {
         let key = dStr;
         const parts = dStr.match(/([a-zA-Z]{3}) (\d{1,2}) (\d{4})/);
         if (parts) {
-          const monthMap = { Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6, Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12 };
+          const monthMap = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
           const yyyy = parts[3];
           const mm = String(monthMap[parts[1]]).padStart(2, '0');
           const dd = String(parts[2]).padStart(2, '0');

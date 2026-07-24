@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="app">
+    <div id="sectionReview"></div>
+  </div>
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+    // Mocks for DOM elements that might be missing
+    window.$ = id => document.getElementById(id) || document.createElement('div');
+    window.state = { 
+      activeLanguage: 'zh', 
+      data: { assessments: [] },
+      pendingAssessRatings: null,
+      observations: []
+    };
+    window.Auth = {
+      getCurrentUser: () => ({ role: 'guest', departmentId: 'cmf_production_hunei' })
+    };
+  </script>
+  <script src="js/app.js"></script>
+  <script>
+    try {
+      renderReview();
+      fetch('/log', { method: 'POST', body: 'SUCCESS: ' + $('sectionReview').innerHTML.length + ' bytes of HTML generated.' });
+    } catch (e) {
+      fetch('/log', { method: 'POST', body: 'ERROR: ' + e.message + '\n' + e.stack });
+    }
+  </script>
+</body>
+</html>

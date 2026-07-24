@@ -1,0 +1,19 @@
+127.0.0.1 - - [24/Jul/2026 11:39:29] "GET /test_render.html HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:39:29] "GET /js/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:39:29] "POST /log HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:39:29] code 404, message File not found
+127.0.0.1 - - [24/Jul/2026 11:39:29] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Jul/2026 11:39:55] "GET /test_render.html HTTP/1.1" 304 -
+127.0.0.1 - - [24/Jul/2026 11:39:55] "POST /log HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:41:18] "GET /test_render.html HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:41:18] "GET /js/config.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:41:18] "GET /js/i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:41:18] "POST /log HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:41:40] "GET /test_render.html HTTP/1.1" 304 -
+127.0.0.1 - - [24/Jul/2026 11:41:40] "POST /log HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:43:25] "GET /test_render.html HTTP/1.1" 304 -
+127.0.0.1 - - [24/Jul/2026 11:43:25] "POST /log HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:43:49] "GET /test_render.html HTTP/1.1" 304 -
+127.0.0.1 - - [24/Jul/2026 11:43:49] "POST /log HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:44:02] "POST /log HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 11:44:26] "GET /result.txt HTTP/1.1" 200 -
