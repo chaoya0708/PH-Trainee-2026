@@ -2298,7 +2298,7 @@ function renderReview() {
             ${relevantAssessments.map(a => {
               const tr = CONFIG.TRAINEES.find(t => t.id === a.traineeId);
               const dept = CONFIG.DEPARTMENTS[a.department] || {};
-              return \`
+              return `
                 <div class="glass-card" style="padding:12px; border-left: 4px solid ${dept.color || 'var(--primary)'};">
                   <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                     <div>
@@ -2319,7 +2319,7 @@ function renderReview() {
                     ${a.assessor} • ${formatTaipeiTime(a.submittedAt, state.activeLanguage)}
                   </div>
                 </div>
-              \`;
+              `;
             }).join('')}
           </div>
         </div>
