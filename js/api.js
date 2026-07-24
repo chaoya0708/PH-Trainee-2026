@@ -320,8 +320,8 @@ const Api = (() => {
 
 
     async getMentorNotes() {
-      if (CONFIG.DEMO_MODE) return lsGet(LS_MENTOR_NOTES);
-      return callScriptGet('getMentorNotes');
+      // Always use localStorage for private mentor notes for now
+      return lsGet(LS_MENTOR_NOTES) || [];
     },
 
     async submitMentorNote(traineeId, content, tags) {
@@ -332,26 +332,18 @@ const Api = (() => {
         tags: tags || [],
         createdAt: nowStr()
       };
-      if (CONFIG.DEMO_MODE) {
-        const list = lsGet(LS_MENTOR_NOTES);
-        list.unshift(record);
-        lsSave(LS_MENTOR_NOTES, list);
-        return { success: true, record };
-      }
-      return callScript({
-        action: 'submitMentorNote',
-        ...record
-      });
+      // Always use localStorage for private mentor notes for now
+      let list = lsGet(LS_MENTOR_NOTES) || [];
+      list.unshift(record);
+      lsSave(LS_MENTOR_NOTES, list);
+      return { success: true, record };
     },
 
     async deleteMentorNote(id) {
-      if (CONFIG.DEMO_MODE) {
-        let list = lsGet(LS_MENTOR_NOTES);
-        list = list.filter(n => n.id !== id);
-        lsSave(LS_MENTOR_NOTES, list);
-        return { success: true };
-      }
-      return callScript({ action: 'deleteMentorNote', id });
+      let list = lsGet(LS_MENTOR_NOTES) || [];
+      list = list.filter(n => n.id !== id);
+      lsSave(LS_MENTOR_NOTES, list);
+      return { success: true };
     },
     async getAssessments() {
       if (CONFIG.DEMO_MODE) return lsGet(LS_ASSESS);
