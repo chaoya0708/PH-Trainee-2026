@@ -1776,24 +1776,24 @@ function renderMilestones() {
       ${selectorHtml}
       <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
         <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; justify-content: center;">
-          <div class="card-header">
-            <h3>${t('milestoneTitle')}</h3>
-            <span style="font-size:24px;font-weight:800;color:var(--primary);">${overall}%</span>
+          <div class="card-header" style="align-items:center; margin-bottom:10px;">
+            <h3 style="font-size:16px; margin:0;">${t('milestoneTitle')}</h3>
+            <span style="font-size:18px;font-weight:700;color:var(--primary);">${overall}%</span>
           </div>
-          <div class="progress-bar" style="height:18px;margin-bottom:14px;">
+          <div class="progress-bar" style="height:12px;margin-bottom:12px;">
             <div class="progress-fill" style="width:${overall}%;"></div>
           </div>
           <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">${t('milestoneSubTitle')}</p>
         </div>
         ${count > 0 ? `
         <div style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
-          <h4 style="font-size:14px;color:var(--text-primary);margin-bottom:10px;">${state.activeLanguage === 'zh' ? '綜合職能分析 (Overall)' : 'Overall Competency'}</h4>
+          <h4 style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">${state.activeLanguage === 'zh' ? '綜合職能分析 (Overall)' : 'Overall Competency'}</h4>
           <div style="width:100%; max-width: 280px;">
             <canvas id="globalRadarChart" style="width:100%; max-height: 220px;"></canvas>
           </div>
         </div>
         <div style="flex: 1.5; min-width: 300px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
-          <h4 style="font-size:14px;color:var(--text-primary);margin-bottom:10px;">${state.activeLanguage === 'zh' ? '成長趨勢軌跡 (Growth Trend)' : 'Growth Trend Line'}</h4>
+          <h4 style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">${state.activeLanguage === 'zh' ? '成長趨勢軌跡 (Growth Trend)' : 'Growth Trend Line'}</h4>
           <div style="width:100%;">
             <canvas id="trendLineChart" style="width:100%; max-height: 220px;"></canvas>
           </div>
