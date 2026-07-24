@@ -1238,7 +1238,7 @@ function setupMainEventListeners() {
     popup.style.overflowY = 'auto';
 
     const options = [
-      { r: 'admin', i: 'admin', l: '👑 Mentor (Admin)' },
+      { r: 'admin', i: 'admin', l: 'Mentor (Admin)' },
       { r: 'executive', i: 'executive', l: '👔 Executive' }
     ];
     Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).forEach(d => {
@@ -2499,7 +2499,7 @@ function buildFeedItem(obs, user) {
     feedbackBlock = `
       <div class="comment-bubble">
         <div class="comment-bubble-header">
-          <span>👑 ${obs.mentorName}</span>
+          <span>${obs.mentorName}</span>
           <span class="comment-bubble-time">${formatTaipeiTime(obs.feedbackAt, state.activeLanguage)}</span>
         </div>
         <p class="comment-bubble-text">${obs.mentorComment}</p>
