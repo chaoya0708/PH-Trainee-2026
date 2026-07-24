@@ -1026,7 +1026,7 @@ function renderAnalytics() {
     return `
       <tr>
         <td><strong>${tr.name}</strong></td>
-        <td>${pulseBadge}</td>
+        ${user.role !== 'guest' ? `<td>${pulseBadge}</td>` : ''}
         <td>
           <div style="display:flex;align-items:center;gap:10px;">
             <div class="progress-bar" style="width:80px;height:8px;margin-bottom:0;"><div class="progress-fill" style="width:${progress}%;"></div></div>
@@ -1072,12 +1072,14 @@ function renderAnalytics() {
     </div>
 
     <!-- Leaderboard Table -->
+    ${user.role !== 'guest' ? `
     <div style="background-color:rgba(37, 99, 235, 0.05); border-left:3px solid #2563eb; padding:10px 14px; margin-top:20px; border-radius:4px; font-size:12px; color:var(--text-secondary); line-height:1.6;">
       <strong style="color:var(--text-primary);">💡 Pulse Check (敏捷脈搏打卡) 用意說明：</strong><br>
       ${state.activeLanguage === 'zh' 
         ? '此欄位顯示學生每週自行回報的當下心理與學習狀態。綠色代表「順利推進」，黃色代表「遇到瓶頸」，紅色代表「需要協助」。導師與主管可藉此即時察覺學生的困難並適時介入輔導。' 
         : 'Displays the weekly self-reported psychological and learning status of the trainees. Mentors and executives can use this to quickly identify bottlenecks and provide timely support.'}
     </div>
+    ` : ''}
     
     <div class="glass-card" style="margin-top:10px;">
       <div class="table-responsive">
@@ -1085,7 +1087,7 @@ function renderAnalytics() {
           <thead>
             <tr>
               <th>${t('tblHeaderName')}</th>
-              <th>Pulse Check</th>
+              ${user.role !== 'guest' ? '<th>Pulse Check</th>' : ''}
               <th>${t('tblHeaderProgress')}</th>
               <th>${t('tblHeaderAvgRating')}</th>
               <th>${t('tblHeaderSubmissions')}</th>
