@@ -356,6 +356,7 @@ const Api = (() => {
       if (CONFIG.DEMO_MODE) {
         const list = lsGet(LS_ASSESS);
         const filtered = list.filter(a => !(a.traineeId === traineeId && a.department === department));
+        record.visibleToTrainee = false;
         filtered.push(record);
         lsSave(LS_ASSESS, filtered);
         return { success: true, record };
@@ -372,7 +373,8 @@ const Api = (() => {
         competency5,
         comments,
         assessor,
-        attachmentUrl
+        attachmentUrl,
+        visibleToTrainee: false
       });
     },
 

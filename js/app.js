@@ -1711,7 +1711,8 @@ function renderMilestones() {
           });
 
           assessmentHtml = `
-            <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:none;border-radius:10px;">
+            <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:none;border-radius:10px;position:relative;">
+              ${!assessment.visibleToTrainee && user.role !== 'trainee' ? `<div style="position:absolute; top:-8px; right:12px; background:#fef2f2; color:#ef4444; border:1px solid #fecaca; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,0.1); z-index:2;"><i class="fi fi-rr-eye-crossed"></i> ${state.activeLanguage === 'zh' ? '學生不可見 (Hidden)' : 'Hidden from Trainee'}</div>` : ''}
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                 <span style="font-size:10px;text-transform:uppercase;font-weight:700;color:var(--primary);letter-spacing:0.5px;">${t('lblAssessGrade')}</span>
                 <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;padding:3px 8px;border-radius:6px;">${assessment.grade}</span>
@@ -1723,7 +1724,7 @@ function renderMilestones() {
               
               <div style="font-size:13px;line-height:1.5;border-top:1px dashed var(--card-border);padding-top:10px;">
                 <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
-                ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:4px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(assessment.comments)}" target="_blank" style="font-size:10px; color:var(--text-muted); text-decoration:none; padding:4px; border:1px solid rgba(0,0,0,0.05); border-radius:12px; display:inline-block;"><i class="fi fi-rr-language"></i> Translate with DeepL</a></div>` : ''}
+                ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(assessment.comments)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
                 ${assessment.attachmentUrl ? `
                 <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;">
                   ${assessment.attachmentUrl.split(',').map((url, idx) => `
@@ -2500,7 +2501,7 @@ function buildFeedItem(obs, user) {
           <span class="comment-bubble-time">${formatTaipeiTime(obs.feedbackAt, state.activeLanguage)}</span>
         </div>
         <p class="comment-bubble-text">${obs.mentorComment}</p>
-        ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:4px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(obs.mentorComment)}" target="_blank" style="font-size:10px; color:var(--text-muted); text-decoration:none;"><i class="fi fi-rr-language"></i> Translate (DeepL)</a></div>` : ''}
+        ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(obs.mentorComment)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
       </div>
     `;
   }
@@ -2514,7 +2515,7 @@ function buildFeedItem(obs, user) {
         <div class="comment-bubble guest-bubble">
           <div class="comment-bubble-header"><span>👀 Guest</span><span class="comment-bubble-time">${formatTaipeiTime(g.submittedAt, state.activeLanguage)}</span></div>
           <p class="comment-bubble-text">${g.comment}</p>
-          ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:4px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(g.comment)}" target="_blank" style="font-size:10px; color:var(--text-muted); text-decoration:none;"><i class="fi fi-rr-language"></i> Translate (DeepL)</a></div>` : ''}
+          ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(g.comment)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
         </div>
       `).join('')}
     `;
