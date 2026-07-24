@@ -35,6 +35,9 @@ const I18N = {
     tabReview:     'Assessments',
     tabInsights: 'Mentor\'s Insight Memo',
     insightsDesc: 'Internal private observation notes for Mentor.',
+    insightsNew: 'New Observation',
+    placeholderNote: 'Write your observation here...',
+    btnSaveNote: 'Save Note',
     tabAnalytics:  'Data Analytics',
 
     // Dashboard
@@ -158,6 +161,9 @@ const I18N = {
     tabReview:     '站別考核',
     tabInsights: '導師觀察筆記',
     insightsDesc: '導師專用之私密觀察記錄',
+    insightsNew: '新增觀察紀錄',
+    placeholderNote: '請在此輸入您的觀察筆記...',
+    btnSaveNote: '儲存筆記',
     tabAnalytics:  '數據分析',
 
     // Dashboard
