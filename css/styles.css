@@ -561,7 +561,7 @@ textarea.form-control:focus {
 .review-box { background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
 
 .rating-stars { display: flex; gap: 6px; font-size: 22px; cursor: pointer; color: var(--text-muted); }
-.rating-stars i:hover, .rating-stars i.active { color: var(--warning); }
+.rating-stars i:hover, .rating-stars i.active { color: var(--text-secondary); }
 
 .comment-bubble { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 10px 13px; font-size: 12px; border-left: 3px solid var(--primary); }
 .comment-bubble.guest-bubble { border-left-color: var(--secondary); }
