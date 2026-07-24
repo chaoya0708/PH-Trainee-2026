@@ -33,6 +33,8 @@ const I18N = {
     tabMilestones: 'Milestones Tracker',
     tabJournals:   'Weekly Journals',
     tabReview:     'Assessments',
+    tabInsights: 'Mentor\'s Insight Memo',
+    insightsDesc: 'Internal private observation notes for Mentor.',
     tabAnalytics:  'Data Analytics',
 
     // Dashboard
@@ -154,6 +156,8 @@ const I18N = {
     tabMilestones: '里程碑追蹤',
     tabJournals:   '週記總覽',
     tabReview:     '站別考核',
+    tabInsights: '導師觀察筆記',
+    insightsDesc: '導師專用之私密觀察記錄',
     tabAnalytics:  '數據分析',
 
     // Dashboard
