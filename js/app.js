@@ -2285,7 +2285,7 @@ function renderReview() {
 
     // Render Past Assessments
     let pastAssessmentsHtml = '';
-    const relevantAssessments = (state.data.assessments || []).filter(a => {
+    const relevantAssessments = (state.assessments || []).filter(a => {
       if (isGuest) return a.department === user.departmentId;
       return true;
     }).sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
