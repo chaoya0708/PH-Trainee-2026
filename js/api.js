@@ -14,6 +14,7 @@ const Api = (() => {
   const LS_SCHED    = 'vimei2_schedules';
   const LS_GCOMMENT = 'vimei2_guest_comments';
   const LS_ASSESS   = 'vimei2_assessments';
+  const LS_MENTOR_NOTES = 'vimei2_mentor_notes';
 
   // ----- Default demo seed data -----
   function seedDemoData() {
