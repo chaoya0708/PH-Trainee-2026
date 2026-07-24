@@ -1723,6 +1723,7 @@ function renderMilestones() {
               
               <div style="font-size:13px;line-height:1.5;border-top:1px dashed var(--card-border);padding-top:10px;">
                 <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
+                ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:4px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(assessment.comments)}" target="_blank" style="font-size:10px; color:var(--text-muted); text-decoration:none; padding:4px; border:1px solid rgba(0,0,0,0.05); border-radius:12px; display:inline-block;"><i class="fi fi-rr-language"></i> Translate with DeepL</a></div>` : ''}
                 ${assessment.attachmentUrl ? `
                 <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;">
                   ${assessment.attachmentUrl.split(',').map((url, idx) => `
@@ -2457,6 +2458,7 @@ function buildFeedItem(obs, user) {
           <span class="comment-bubble-time">${formatTaipeiTime(obs.feedbackAt, state.activeLanguage)}</span>
         </div>
         <p class="comment-bubble-text">${obs.mentorComment}</p>
+        ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:4px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(obs.mentorComment)}" target="_blank" style="font-size:10px; color:var(--text-muted); text-decoration:none;"><i class="fi fi-rr-language"></i> Translate (DeepL)</a></div>` : ''}
       </div>
     `;
   }
@@ -2470,6 +2472,7 @@ function buildFeedItem(obs, user) {
         <div class="comment-bubble guest-bubble">
           <div class="comment-bubble-header"><span>👀 Guest</span><span class="comment-bubble-time">${formatTaipeiTime(g.submittedAt, state.activeLanguage)}</span></div>
           <p class="comment-bubble-text">${g.comment}</p>
+          ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:4px;"><a href="https://www.deepl.com/translator#zh/en/${encodeURIComponent(g.comment)}" target="_blank" style="font-size:10px; color:var(--text-muted); text-decoration:none;"><i class="fi fi-rr-language"></i> Translate (DeepL)</a></div>` : ''}
         </div>
       `).join('')}
     `;
