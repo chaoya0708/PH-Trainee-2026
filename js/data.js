@@ -17,18 +17,22 @@ function calculateMilestoneProgress(observations, traineeId, deptId) {
   const deptObs = observations.filter(
     o => o.traineeId === traineeId && o.department === deptId
   );
-  if (deptObs.length === 0) return 0;
+  
+  const assessment = (window.state && window.state.assessments) 
+    ? window.state.assessments.find(a => a.traineeId === traineeId && a.department === deptId) 
+    : null;
 
-  let score = 25; // has at least one submission
+  let score = 0;
 
-  const hasRating  = deptObs.some(o => o.rating > 0);
-  if (hasRating) score += 25;
+  const c1 = deptObs.length > 0;
+  const c2 = deptObs.some(o => o.rating > 0);
+  const c3 = !!assessment;
+  const c4 = assessment && (assessment.grade === 'A' || assessment.grade === 'B');
 
-  const hasGoodRating = deptObs.some(o => o.rating >= 3);
-  if (hasGoodRating) score += 25;
-
-  const hasExcellent = deptObs.some(o => o.rating >= 4 && o.status === 'reviewed');
-  if (hasExcellent) score += 25;
+  if (c1) score += 25;
+  if (c2) score += 25;
+  if (c3) score += 25;
+  if (c4) score += 25;
 
   return score;
 }

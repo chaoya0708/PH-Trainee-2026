@@ -1678,12 +1678,21 @@ function renderMilestones() {
   const excludedDepts = traineeObj ? (traineeObj.excludedDepartments || []) : [];
 
   const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excludedDepts.includes(d.id)).map(dept => {
-      const pct   = calculateMilestoneProgress(state.observations, viewId, dept.id);
       const deptObs = state.observations.filter(o => o.traineeId === viewId && o.department === dept.id);
+      const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === dept.id);
+      
       const c1 = deptObs.length > 0;
       const c2 = deptObs.some(o => o.rating > 0);
-      const c3 = deptObs.some(o => o.rating >= 3);
-      const c4 = deptObs.some(o => o.rating >= 4 && o.status === 'reviewed');
+      const c3 = !!assessment;
+      const c4 = assessment && (assessment.grade === 'A' || assessment.grade === 'B');
+      
+      // We calculate percentage based on these new criteria
+      let doneCount = 0;
+      if (c1) doneCount++;
+      if (c2) doneCount++;
+      if (c3) doneCount++;
+      if (c4) doneCount++;
+      const pct = (doneCount / 4) * 100;
 
       const ci = (done, label) => `
         <li class="criteria-item ${done ? 'done' : ''}">
@@ -1691,7 +1700,6 @@ function renderMilestones() {
           ${label}
         </li>`;
 
-      const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === dept.id);
       let assessmentHtml = '';
       if (assessment) {
         if (user.role === 'trainee' && !assessment.visibleToTrainee) {
