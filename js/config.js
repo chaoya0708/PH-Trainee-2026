@@ -22,7 +22,7 @@ const CONFIG = {
   // ----------------------------------------------------------------
   // 密碼設定 / PIN & Access Codes (請自行修改 / Please change these)
   // ----------------------------------------------------------------
-  ADMIN_PIN: '0000',      // 計畫導師 (Mentor) 密碼
+  ADMIN_PIN: '3142',      // 計畫導師 (Mentor) 密碼
   GUEST_CODE: 'vimei2026', // 輪調主管/同仁 (Assessor) 授權代碼
   EXECUTIVE_CODE: 'ph2026',  // 高階決策主管 (Executive) 授權代碼
 

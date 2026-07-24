@@ -1256,7 +1256,7 @@ function setupMainEventListeners() {
       btn.style.width = '100%';
       btn.style.justifyContent = 'flex-start';
       btn.onclick = () => {
-        Auth.login(opt.r, opt.i, '0000');
+        Auth.login(opt.r, opt.i, CONFIG.ADMIN_PIN);
         const targetLang = (opt.r === 'trainee') ? 'en' : 'zh';
         localStorage.setItem('vimei_lang', targetLang);
         location.reload();
@@ -1300,7 +1300,7 @@ function setupMainEventListeners() {
     if (godModeClicks >= 3) {
       godModeClicks = 0;
       const pin = prompt("Enter Master Pin");
-      if (pin === "0000") {
+      if (pin === CONFIG.ADMIN_PIN) {
         window.logoutAndSwitch(e, true);
       }
     } else {
@@ -1316,7 +1316,7 @@ function setupMainEventListeners() {
   }
 
   window.fastSwitchRole = function(role, id) {
-    Auth.login(role, id, '0000');
+    Auth.login(role, id, CONFIG.ADMIN_PIN);
     location.reload();
   };
 
