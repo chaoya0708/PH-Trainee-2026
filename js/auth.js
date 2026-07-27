@@ -53,7 +53,7 @@ const Auth = {
           role:   'guest',
           id:     'guest',
           departmentId: identifier, // Save selected department
-          name:   window.VimeiI18n ? window.VimeiI18n.t('roleAssessorName') : '輪調主管/同仁',
+          name:   window.VimeiI18n ? window.VimeiI18n.t('roleAssessorName') : '輪調單位評核',
           avatar: '',
           bio:    ''
         };
@@ -104,7 +104,7 @@ const Auth = {
       } else if (user.role === 'guest') {
         const d = CONFIG.DEPARTMENTS[user.departmentId];
         const deptName = d ? (window.state && window.state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name) : '';
-        user.name = (window.VimeiI18n ? window.VimeiI18n.t('roleAssessorName') : '輪調主管/同仁') + (deptName ? ` (${deptName})` : '');
+        user.name = (window.VimeiI18n ? window.VimeiI18n.t('roleAssessorName') : '輪調單位評核') + (deptName ? ` (${deptName})` : '');
         user.avatar = '';
         user.bio = '';
       } else if (user.role === 'executive') {
