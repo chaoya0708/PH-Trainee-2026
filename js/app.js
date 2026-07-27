@@ -1243,15 +1243,15 @@ function setupMainEventListeners() {
 
     const options = [
       { r: 'admin', i: 'admin', l: 'Mentor (Admin)' },
-      { r: 'executive', i: 'executive', l: '👔 Executive' }
+      { r: 'executive', i: 'executive', l: 'Executive' }
     ];
     Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).forEach(d => {
-      options.push({ r: 'guest', i: d.id, l: '📋 ' + (d.shortZh || d.nameZh || d.name) });
+      options.push({ r: 'guest', i: d.id, l: (d.shortZh || d.nameZh || d.name) });
     });
     options.push(
-      { r: 'trainee', i: 'diane', l: '👩‍🎓 Trainee (Diane)' },
-      { r: 'trainee', i: 'mark', l: '👨‍🎓 Trainee (Mark)' },
-      { r: 'trainee', i: 'jairuz', l: '👨‍🎓 Trainee (Jairuz)' }
+      { r: 'trainee', i: 'diane', l: 'Trainee (Diane)' },
+      { r: 'trainee', i: 'mark', l: 'Trainee (Mark)' },
+      { r: 'trainee', i: 'jairuz', l: 'Trainee (Jairuz)' }
     );
 
     options.forEach(opt => {
