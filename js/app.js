@@ -2553,11 +2553,8 @@ function buildFeedItem(obs, user) {
   if (user.role === 'guest') {
     actionHtml = `
       <div class="review-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <div style="margin-bottom:6px;">
           <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin:0;">${t('guestCommentLabel')}</p>
-          <button id="btnVoiceGuest-${obs.id}" class="btn btn-sm" style="background:transparent; border:1px solid var(--primary); color:var(--primary); border-radius:20px; padding:2px 8px; font-size:10px; display:flex; align-items:center; gap:4px;" onclick="window.startVoiceRecognition('gcomment-${obs.id}', 'btnVoiceGuest-${obs.id}')">
-            <i class="fi fi-rr-mic"></i> ${state.activeLanguage === 'zh' ? '語音' : 'Voice'}
-          </button>
         </div>
 
         <div class="form-group" style="margin-bottom:8px;">
@@ -2881,41 +2878,6 @@ function showToast(msg, type = 'primary') {
 
 // ── Utilities ──────────────────────────────────────────────────────
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-// Voice to Text Feature
-window.startVoiceRecognition = function(targetId, btnId) {
-  const target = document.getElementById(targetId);
-  const btn = document.getElementById(btnId);
-  if (!target || !btn) return;
-
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert(state.activeLanguage === 'zh' ? '您的瀏覽器不支援語音輸入，請使用最新版 Chrome 或 Safari。' : 'Voice input not supported on this browser.');
-    return;
-  }
-
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = new SpeechRecognition();
-  recognition.lang = state.activeLanguage === 'zh' ? 'zh-TW' : 'en-US';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  btn.innerHTML = '<i class="fi fi-rr-circle-microphone" style="color:var(--danger)"></i> ' + (state.activeLanguage === 'zh' ? '聆聽中...' : 'Listening...');
-  btn.style.borderColor = 'var(--danger)';
-  btn.style.color = 'var(--danger)';
-
-  recognition.start();
-
-  recognition.onresult = function(event) {
-    const transcript = event.results[0][0].transcript;
-    target.value = (target.value ? target.value + (state.activeLanguage === 'zh' ? '，' : ', ') : '') + transcript;
-  };
-
-  recognition.onend = function() {
-    btn.innerHTML = '<i class="fi fi-rr-mic"></i> ' + (state.activeLanguage === 'zh' ? '語音輸入' : 'Voice');
-    btn.style.borderColor = 'var(--primary)';
-    btn.style.color = 'var(--primary)';
-  };
-};
 
 
 // ══════════════════════════════════════════════════════════════════
