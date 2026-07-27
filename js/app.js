@@ -1181,7 +1181,7 @@ window.exportObservationLogs = function() {
            `"${cleanStr(obs.submittedAt)}",` +
            `"${cleanStr(obs.status)}",` +
            `"${cleanStr(obs.mentorName)}",` +
-           `"${cleanStr(obs.mentorComment)}",` +
+           `"${cleanStr((Auth.getCurrentUser() && Auth.getCurrentUser().role === 'admin') ? obs.mentorComment : '')}",` +
            `"${cleanStr(obs.feedbackAt)}",` +
            `${obs.rating || 0}\n`;
   });
@@ -2507,7 +2507,8 @@ function buildFeedItem(obs, user) {
 
   // Existing mentor feedback block
   let feedbackBlock = '';
-  if (obs.mentorComment) {
+  const isMentorFeedbackVisible = user && (user.role === 'admin' || (user.role === 'trainee' && user.id === obs.traineeId));
+  if (obs.mentorComment && isMentorFeedbackVisible) {
     feedbackBlock = `
       <div class="comment-bubble">
         <div class="comment-bubble-header">
