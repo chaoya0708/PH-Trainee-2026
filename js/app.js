@@ -2209,11 +2209,8 @@ function renderReview() {
         </div>
 
         <div class="form-group" style="margin-top:14px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <div style="margin-bottom:6px;">
             <label style="margin:0;">${t('lblAssessComments')}</label>
-            <button id="btnVoiceAssess" class="btn btn-sm" style="background:transparent; border:1px solid var(--primary); color:var(--primary); border-radius:20px; padding:2px 10px; font-size:11px; display:flex; align-items:center; gap:4px;" onclick="window.startVoiceRecognition('assessComments', 'btnVoiceAssess')">
-              <i class="fi fi-rr-mic"></i> ${state.activeLanguage === 'zh' ? '語音輸入' : 'Voice'}
-            </button>
           </div>
 
           <textarea class="form-control" id="assessComments" rows="3" placeholder="請輸入本輪調站別之考核總評語... / Enter overall assessment comments..."></textarea>
