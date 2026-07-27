@@ -2042,7 +2042,7 @@ function renderJournals() {
 
   // Trainee Tabs
   let tabsHtml = '';
-  if (user.role === 'admin' || user.role === 'executive') {
+  if (user.role === 'admin' || user.role === 'executive' || user.role === 'guest') {
     tabsHtml = `
       <div style="display:flex; gap:10px; margin-bottom:20px; overflow-x:auto;">
         ${CONFIG.TRAINEES.map(tr => {
