@@ -24,6 +24,8 @@
   --success-glow: rgba(16,185,129,0.2);
   --warning: #f59e0b;
   --danger: #ef4444;
+  --slot-border-reviewed: rgba(0,0,0,0.2);
+  --slot-border-pending: rgba(0,0,0,0.1);
 
   --font-title: 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -56,6 +58,8 @@
   --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
   --shadow-md: 0 8px 16px rgba(0,0,0,0.3);
   --shadow-lg: 0 16px 32px rgba(0,0,0,0.4);
+  --slot-border-reviewed: rgba(255,255,255,0.3);
+  --slot-border-pending: rgba(255,255,255,0.15);
 }
 
 /* ── Reset ── */
