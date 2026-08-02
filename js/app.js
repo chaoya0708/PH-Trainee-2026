@@ -2170,6 +2170,9 @@ function renderJournals() {
         const isReviewed = o.status === 'reviewed';
         const statusIcon = isReviewed ? '✅ 已確認 (Reviewed)' : '⏳ 待確認 (Pending)';
         const targetWeek = o.targetWeek ? o.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(o.submittedAt || o.date);
+        const canEvaluate = user.role === 'admin' || user.role === 'guest';
+        const scrollBtnText = canEvaluate ? '往下評分' : '往下查看';
+        const fullBtnText = canEvaluate ? '查看內容與評分' : '查看內容詳情';
         
         feedHtml += `
           <div style="min-width: 240px; flex-shrink: 0; border: ${isReviewed ? '1px solid var(--slot-border-reviewed)' : '1px dashed var(--slot-border-pending)'}; border-radius: 12px; padding: 16px; background: ${isReviewed ? 'var(--bg-highlight)' : 'transparent'}; display: flex; flex-direction: column; justify-content: space-between; box-shadow: ${isReviewed ? '0 2px 4px rgba(0,0,0,0.02)' : 'none'};">
@@ -2180,11 +2183,11 @@ function renderJournals() {
             </div>
             ${o.attachmentUrl ? `
               <div style="display:flex; gap: 8px;">
-                <button class="btn btn-primary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px;" onclick="window.open('${o.attachmentUrl.split(',')[0]}', '_blank')"><i class="fi fi-rr-document"></i> 打開附件</button>
-                <button class="btn btn-secondary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px;" onclick="document.getElementById('obs-detail-${o.id}').scrollIntoView({behavior: 'smooth', block: 'center'})"><i class="fi fi-rr-arrow-down"></i> 往下評分</button>
+                <button class="btn btn-primary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px;" onclick="window.open('${o.attachmentUrl.split(',')[0]}', '_blank')"><i class="fi fi-rr-document"></i> 打開週記檔案</button>
+                <button class="btn btn-secondary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px;" onclick="document.getElementById('obs-detail-${o.id}').scrollIntoView({behavior: 'smooth', block: 'center'})"><i class="fi fi-rr-arrow-down"></i> ${scrollBtnText}</button>
               </div>
             ` : `
-              <button class="btn btn-secondary btn-sm" style="width: 100%; border-radius: 6px; padding: 6px 4px; font-size: 11px;" onclick="document.getElementById('obs-detail-${o.id}').scrollIntoView({behavior: 'smooth', block: 'center'})"><i class="fi fi-rr-arrow-down"></i> 查看內容與評分</button>
+              <button class="btn btn-secondary btn-sm" style="width: 100%; border-radius: 6px; padding: 6px 4px; font-size: 11px;" onclick="document.getElementById('obs-detail-${o.id}').scrollIntoView({behavior: 'smooth', block: 'center'})"><i class="fi fi-rr-arrow-down"></i> ${fullBtnText}</button>
             `}
           </div>
         `;
