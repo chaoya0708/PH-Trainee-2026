@@ -1723,7 +1723,7 @@ function renderMilestones() {
       const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === dept.id);
       
       const c1 = deptObs.length > 0;
-      const c2 = deptObs.some(o => o.status === 'reviewed');
+      const c2 = deptObs.length > 0 && deptObs.every(o => o.status === 'reviewed');
       const c3 = !!assessment;
       const c4 = assessment && (assessment.grade === 'A' || assessment.grade === 'B');
       
