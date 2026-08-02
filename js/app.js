@@ -1390,6 +1390,41 @@ function renderForm() {
   const reminderEn = `⚠️ Reminder: Please submit last week's journal by (${nextWedStr}) 11:59 PM. Late submissions will be flagged.`;
   const bannerText = state.activeLanguage === 'zh' ? reminderZh : reminderEn;
 
+  // Generate target week options dynamically (Monday to Friday)
+  const generateTargetWeekOptions = () => {
+    let options = '';
+    const now = new Date();
+    const currentDay = now.getDay();
+    const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay;
+    const currentMonday = new Date(now);
+    currentMonday.setDate(now.getDate() + diffToMonday);
+    
+    for (let i = 0; i < 4; i++) {
+      const mon = new Date(currentMonday);
+      mon.setDate(currentMonday.getDate() - i * 7);
+      const fri = new Date(mon);
+      fri.setDate(mon.getDate() + 4);
+      
+      const monStr = `${mon.getMonth() + 1}/${mon.getDate()}`;
+      const friStr = `${fri.getMonth() + 1}/${fri.getDate()}`;
+      
+      let labelZh = `${monStr}(週一) ~ ${friStr}(週五)`;
+      let labelEn = `${monStr}(Mon) ~ ${friStr}(Fri)`;
+      if (i === 0) {
+        labelZh += ' - 本週 (This Week)';
+        labelEn += ' - This Week';
+      } else if (i === 1) {
+        labelZh += ' - 上週 (Last Week)';
+        labelEn += ' - Last Week';
+      }
+      
+      const valStr = `${mon.getFullYear()}-${String(mon.getMonth()+1).padStart(2,'0')}-${String(mon.getDate()).padStart(2,'0')}~${fri.getFullYear()}-${String(fri.getMonth()+1).padStart(2,'0')}-${String(fri.getDate()).padStart(2,'0')}`;
+      options += `<option value="${valStr}">${state.activeLanguage === 'zh' ? labelZh : labelEn}</option>`;
+    }
+    return options;
+  };
+  const weekOptions = generateTargetWeekOptions();
+
   container.innerHTML = `
     <div class="glass-card">
       <div class="card-header">
@@ -1402,6 +1437,11 @@ function renderForm() {
       <div class="alert-info"><span>${t('privateNotice')}</span></div>
 
       <form id="obsForm" onsubmit="window.submitObsForm(event)">
+        <div class="form-group">
+          <label>${state.activeLanguage === 'zh' ? '週記週期 (Target Week)' : 'Target Week'}</label>
+          <select class="form-control" id="obsTargetWeek" required>${weekOptions}</select>
+        </div>
+
         <div class="form-group">
           <label>${t('lblDept')}</label>
           <select class="form-control" id="obsDept" required>${deptOptions}</select>
@@ -1528,7 +1568,8 @@ window.submitObsForm = async function(e) {
       keyObservation: window.obsQuill.root.innerHTML,
       actionableIdea: '',
       attachmentUrl:  attachmentUrl,
-      selfRating:     parseInt($('obsSelfRating') ? $('obsSelfRating').value : 0, 10)
+      selfRating:     parseInt($('obsSelfRating') ? $('obsSelfRating').value : 0, 10),
+      targetWeek:     $('obsTargetWeek') ? $('obsTargetWeek').value : ''
     };
 
     await Api.submitObservation(data);
@@ -2483,15 +2524,26 @@ function buildFeedItem(obs, user) {
   const dept        = CONFIG.DEPARTMENTS[obs.department] || {};
   
   let isLateStr = '';
-  if (obs.date) {
+  if (obs.targetWeek) {
+    const parts = obs.targetWeek.split('~');
+    if (parts.length === 2) {
+      const weekEndStr = parts[1]; // e.g. "2026-07-24"
+      const weekEnd = new Date(weekEndStr + 'T00:00:00+08:00'); // Friday
+      // Deadline is Wednesday (Friday + 5 days) at 23:59:59
+      const deadline = new Date(weekEnd.getTime() + 5 * 24 * 60 * 60 * 1000);
+      deadline.setHours(23, 59, 59, 999);
+      
+      const submitted = new Date(obs.submittedAt || obs.date);
+      if (submitted > deadline) {
+        isLateStr = `<span class="badge" style="background-color:#ef4444;margin-left:8px;">${state.activeLanguage === 'zh' ? '遲交 (Late)' : 'Late'}</span>`;
+      }
+    }
+  } else if (obs.date) {
     const submitted = new Date(obs.date);
     if (!isNaN(submitted.getTime())) {
-      // Calculate Taipei time day
       const taipeiTime = new Date(submitted.getTime() + 8 * 60 * 60 * 1000);
-      const day = taipeiTime.getUTCDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
-      
-      // If submitted on Thursday (4), Friday (5), Saturday (6), or Sunday (0), mark as late.
-      if (day === 0 || day > 3) {
+      const day = taipeiTime.getUTCDay(); 
+      if (day === 4 || day === 5) {
         isLateStr = `<span class="badge" style="background-color:#ef4444;margin-left:8px;">${state.activeLanguage === 'zh' ? '遲交 (Late)' : 'Late'}</span>`;
       }
     }
@@ -2575,7 +2627,7 @@ function buildFeedItem(obs, user) {
           <div class="feed-trainee-meta">
             <h4>${obs.traineeName}</h4>
             <p>
-              ${formatTaipeiDateOnly(obs.submittedAt || obs.date)} · <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
+              ${obs.targetWeek ? obs.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(obs.submittedAt || obs.date)} · <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
               <span style="font-size:11px;color:var(--text-muted);">${t('lblSubmittedAt')}: ${formatTaipeiTime(obs.submittedAt || obs.date, state.activeLanguage)}</span>
               ${obs.selfRating ? `<br><span style="font-size:12px;color:#f59e0b;font-weight:700;margin-top:4px;display:inline-block;">${state.activeLanguage === 'zh' ? '自我評分' : 'Self-Appraisal'}: ${obs.selfRating} / 5 <i class="fi fi-ss-star"></i></span>` : ''}
             </p>

@@ -207,6 +207,7 @@ const Api = (() => {
           feedbackAt: '',
           rating: 0,
           selfRating: data.selfRating || 0,
+          targetWeek: data.targetWeek || '',
           guestComments: []
         };
         obs.unshift(newObs);
@@ -271,7 +272,7 @@ const Api = (() => {
       if (CONFIG.DEMO_MODE) return lsGetObj(LS_SCHED);
       const res = await callScriptGet('getAllSchedules');
       if (!res) return {};
-      
+
       const allSchedules = {};
       for (const traineeId in res) {
         const traineeData = res[traineeId];

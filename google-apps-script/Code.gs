@@ -71,6 +71,13 @@ function getOrCreateSheet(name, headers) {
     sheet = ss.insertSheet(name);
     sheet.appendRow(headers);
     sheet.setFrozenRows(1);
+  } else {
+    const existingHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn() || 1).getValues()[0];
+    if (existingHeaders.length < headers.length) {
+      for (let i = existingHeaders.length; i < headers.length; i++) {
+        sheet.getRange(1, i + 1).setValue(headers[i]);
+      }
+    }
   }
   return sheet;
 }
@@ -96,7 +103,7 @@ function findRowIndex(sheet, colName, value) {
   return -1;
 }
 
-const OBS_HEADERS = ['id','traineeId','traineeName','date','department','keyObservation','actionableIdea','attachmentUrl','submittedAt','status','mentorComment','mentorName','feedbackAt','rating'];
+const OBS_HEADERS = ['id','traineeId','traineeName','date','department','keyObservation','actionableIdea','attachmentUrl','submittedAt','status','mentorComment','mentorName','feedbackAt','rating','targetWeek'];
 
 function getAllObservations() {
   return sheetToArray(getOrCreateSheet(SHEETS.OBSERVATIONS, OBS_HEADERS));
@@ -181,7 +188,7 @@ function submitObservation(params) {
   sheet.appendRow([
     params.id, params.traineeId, params.traineeName, params.date,
     params.department, params.keyObservation, params.actionableIdea || "",
-    attachmentUrl, params.submittedAt, 'pending', '', '', '', 0
+    attachmentUrl, params.submittedAt, 'pending', '', '', '', 0, params.targetWeek || ''
   ]);
   return { success: true };
 }
@@ -210,6 +217,7 @@ function updateObservation(params) {
       if (updateData.keyObservation !== undefined) sheet.getRange(i + 1, 6).setValue(updateData.keyObservation);
       if (updateData.actionableIdea !== undefined) sheet.getRange(i + 1, 7).setValue(updateData.actionableIdea);
       if (updateData.attachmentUrl !== undefined) sheet.getRange(i + 1, 8).setValue(updateData.attachmentUrl);
+      if (updateData.targetWeek !== undefined) sheet.getRange(i + 1, 15).setValue(updateData.targetWeek);
       return { success: true };
     }
   }
