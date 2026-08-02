@@ -2158,7 +2158,7 @@ function renderJournals() {
       const deptName = state.activeLanguage === 'zh' ? (dept.nameZh || dept.name) : dept.name;
       
       feedHtml += `<div class="glass-card" style="margin-bottom: 24px; padding: 20px;">`;
-      feedHtml += `<h3 style="margin-top: 0; margin-bottom: 16px; color: ${dept.color}; display: flex; align-items: center; gap: 8px;"><i class="fi fi-rr-folder"></i> ${deptName} <span style="font-size: 12px; background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 12px; color: var(--text-secondary);">${deptObs.length} 篇週記</span></h3>`;
+      feedHtml += `<h3 style="margin-top: 0; margin-bottom: 16px; color: ${dept.color}; display: flex; align-items: center; gap: 8px;"><i class="fi fi-rr-folder"></i> ${deptName} <span style="font-size: 12px; background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 12px; color: var(--text-secondary);">${deptObs.length} ${state.activeLanguage === 'zh' ? '篇週記' : 'Journals'}</span></h3>`;
       
       // Stamp Card UI (Slots)
       feedHtml += `<div style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color);">`;
@@ -2168,11 +2168,13 @@ function renderJournals() {
       
       timelineObs.forEach((o, idx) => {
         const isReviewed = o.status === 'reviewed';
-        const statusIcon = isReviewed ? '✅ 已確認 (Reviewed)' : '⏳ 待確認 (Pending)';
+        const statusIcon = isReviewed ? (state.activeLanguage === 'zh' ? '✅ 已確認' : '✅ Reviewed') : (state.activeLanguage === 'zh' ? '⏳ 待確認' : '⏳ Pending');
         const targetWeek = o.targetWeek ? o.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(o.submittedAt || o.date);
         const canEvaluate = user.role === 'admin' || user.role === 'guest';
-        const scrollBtnText = canEvaluate ? '往下評分' : '往下查看';
-        const fullBtnText = canEvaluate ? '閱讀與評分' : '閱讀全文';
+        
+        const scrollBtnText = canEvaluate ? (state.activeLanguage === 'zh' ? '往下評分' : 'Grade') : (state.activeLanguage === 'zh' ? '往下查看' : 'View Details');
+        const fullBtnText = canEvaluate ? (state.activeLanguage === 'zh' ? '閱讀與評分' : 'Read & Grade') : (state.activeLanguage === 'zh' ? '閱讀全文' : 'Read Full Post');
+        const openFileText = state.activeLanguage === 'zh' ? '開啟週記' : 'Open Journal';
         
         feedHtml += `
           <div style="min-width: 240px; flex-shrink: 0; border: ${isReviewed ? '1px solid var(--slot-border-reviewed)' : '1px dashed var(--slot-border-pending)'}; border-radius: 12px; padding: 16px; background: ${isReviewed ? 'var(--bg-highlight)' : 'transparent'}; display: flex; flex-direction: column; justify-content: space-between; box-shadow: ${isReviewed ? '0 2px 4px rgba(0,0,0,0.02)' : 'none'};">
@@ -2183,7 +2185,7 @@ function renderJournals() {
             </div>
             ${o.attachmentUrl ? `
               <div style="display:flex; gap: 8px;">
-                <button class="btn btn-primary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px; white-space: nowrap;" onclick="window.open('${o.attachmentUrl.split(',')[0]}', '_blank')"><i class="fi fi-rr-document"></i> 開啟週記</button>
+                <button class="btn btn-primary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px; white-space: nowrap;" onclick="window.open('${o.attachmentUrl.split(',')[0]}', '_blank')"><i class="fi fi-rr-document"></i> ${openFileText}</button>
                 <button class="btn btn-secondary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px; white-space: nowrap;" onclick="document.getElementById('obs-detail-${o.id}').scrollIntoView({behavior: 'smooth', block: 'center'})"><i class="fi fi-rr-arrow-down"></i> ${scrollBtnText}</button>
               </div>
             ` : `
