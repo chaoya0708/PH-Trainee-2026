@@ -2172,7 +2172,7 @@ function renderJournals() {
         const targetWeek = o.targetWeek ? o.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(o.submittedAt || o.date);
         
         feedHtml += `
-          <div style="min-width: 240px; flex-shrink: 0; border: ${isReviewed ? '1px solid rgba(0,0,0,0.05)' : '1px dashed var(--border-color)'}; border-radius: 12px; padding: 16px; background: ${isReviewed ? 'var(--bg-highlight)' : 'transparent'}; display: flex; flex-direction: column; justify-content: space-between; box-shadow: ${isReviewed ? '0 2px 4px rgba(0,0,0,0.02)' : 'none'};">
+          <div style="min-width: 240px; flex-shrink: 0; border: ${isReviewed ? '1px solid rgba(0,0,0,0.2)' : '1px dashed rgba(0,0,0,0.1)'}; border-radius: 12px; padding: 16px; background: ${isReviewed ? 'var(--bg-highlight)' : 'transparent'}; display: flex; flex-direction: column; justify-content: space-between; box-shadow: ${isReviewed ? '0 2px 4px rgba(0,0,0,0.02)' : 'none'};">
             <div>
               <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; text-transform: uppercase;">Week ${idx + 1}</div>
               <div style="font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--text-primary); line-height: 1.4;">${targetWeek}</div>
