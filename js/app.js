@@ -2538,15 +2538,6 @@ function buildFeedItem(obs, user) {
         isLateStr = `<span class="badge" style="background-color:#ef4444;margin-left:8px;">${state.activeLanguage === 'zh' ? '遲交 (Late)' : 'Late'}</span>`;
       }
     }
-  } else if (obs.date) {
-    const submitted = new Date(obs.date);
-    if (!isNaN(submitted.getTime())) {
-      const taipeiTime = new Date(submitted.getTime() + 8 * 60 * 60 * 1000);
-      const day = taipeiTime.getUTCDay(); 
-      if (day === 4 || day === 5) {
-        isLateStr = `<span class="badge" style="background-color:#ef4444;margin-left:8px;">${state.activeLanguage === 'zh' ? '遲交 (Late)' : 'Late'}</span>`;
-      }
-    }
   }
 
   const isReviewed  = obs.status === 'reviewed';
