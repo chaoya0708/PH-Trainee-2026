@@ -2132,11 +2132,67 @@ function renderJournals() {
   
   if (_filterJournalDept !== 'all') obs = obs.filter(o => o.department === _filterJournalDept);
 
-  let feedHtml = obs.length === 0
-    ? `<div class="glass-card" style="text-align:center;padding:40px;color:var(--text-secondary);">
+  let feedHtml = '';
+  if (obs.length === 0) {
+    feedHtml = `<div class="glass-card" style="text-align:center;padding:40px;color:var(--text-secondary);">
         ${t('noObservations')}
-       </div>`
-    : obs.map(o => buildFeedItem(o, user)).join('');
+       </div>`;
+  } else {
+    // Group by department
+    const grouped = {};
+    obs.forEach(o => {
+      if (!grouped[o.department]) grouped[o.department] = [];
+      grouped[o.department].push(o);
+    });
+
+    // Sort departments by the latest submission
+    const sortedDepts = Object.keys(grouped).sort((a, b) => {
+      const latestA = new Date(grouped[a][0].submittedAt);
+      const latestB = new Date(grouped[b][0].submittedAt);
+      return latestB - latestA; // newest first
+    });
+
+    sortedDepts.forEach(deptId => {
+      const deptObs = grouped[deptId];
+      const dept = CONFIG.DEPARTMENTS[deptId] || { name: deptId, color: '#ccc' };
+      const deptName = state.activeLanguage === 'zh' ? (dept.nameZh || dept.name) : dept.name;
+      
+      feedHtml += `<div class="glass-card" style="margin-bottom: 24px; padding: 20px;">`;
+      feedHtml += `<h3 style="margin-top: 0; margin-bottom: 16px; color: ${dept.color}; display: flex; align-items: center; gap: 8px;"><i class="fi fi-rr-folder"></i> ${deptName} <span style="font-size: 12px; background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 12px; color: var(--text-secondary);">${deptObs.length} 篇週記</span></h3>`;
+      
+      // Stamp Card UI (Slots)
+      feedHtml += `<div style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color);">`;
+      
+      // Sort oldest to newest for the timeline feel
+      const timelineObs = [...deptObs].sort((a, b) => new Date(a.submittedAt) - new Date(b.submittedAt));
+      
+      timelineObs.forEach((o, idx) => {
+        const isReviewed = o.status === 'reviewed';
+        const statusIcon = isReviewed ? '✅ 已確認 (Reviewed)' : '⏳ 待確認 (Pending)';
+        const targetWeek = o.targetWeek ? o.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(o.submittedAt || o.date);
+        
+        feedHtml += `
+          <div style="min-width: 240px; flex-shrink: 0; border: ${isReviewed ? '1px solid rgba(0,0,0,0.05)' : '1px dashed var(--border-color)'}; border-radius: 12px; padding: 16px; background: ${isReviewed ? 'var(--bg-highlight)' : 'transparent'}; display: flex; flex-direction: column; justify-content: space-between; box-shadow: ${isReviewed ? '0 2px 4px rgba(0,0,0,0.02)' : 'none'};">
+            <div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; text-transform: uppercase;">Week ${idx + 1}</div>
+              <div style="font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--text-primary); line-height: 1.4;">${targetWeek}</div>
+              <div style="font-size: 11px; font-weight: 700; color: ${isReviewed ? '#10b981' : '#f59e0b'}; margin-bottom: 12px;">${statusIcon}</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" style="width: 100%; border-radius: 8px;" onclick="document.getElementById('obs-detail-${o.id}').scrollIntoView({behavior: 'smooth', block: 'center'})">查看內容 (View)</button>
+          </div>
+        `;
+      });
+      
+      feedHtml += `</div>`; // End of slots
+      
+      // Render the actual feed items below the slots
+      feedHtml += `<div style="display: flex; flex-direction: column; gap: 16px;">`;
+      deptObs.forEach(o => {
+        feedHtml += `<div id="obs-detail-${o.id}">${buildFeedItem(o, user)}</div>`;
+      });
+      feedHtml += `</div></div>`; // End of dept items
+    });
+  }
 
   container.innerHTML = `
     <div class="card-header" style="margin:0 0 10px;">
