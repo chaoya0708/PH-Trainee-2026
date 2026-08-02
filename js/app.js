@@ -2528,10 +2528,11 @@ function buildFeedItem(obs, user) {
     const parts = obs.targetWeek.split('~');
     if (parts.length === 2) {
       const weekEndStr = parts[1]; // e.g. "2026-07-24"
-      const weekEnd = new Date(weekEndStr + 'T00:00:00+08:00'); // Friday
-      // Deadline is Wednesday (Friday + 5 days) at 23:59:59
-      const deadline = new Date(weekEnd.getTime() + 5 * 24 * 60 * 60 * 1000);
-      deadline.setHours(23, 59, 59, 999);
+      // weekEnd is Friday 00:00:00 Taipei time
+      const weekEnd = new Date(weekEndStr + 'T00:00:00+08:00'); 
+      // Deadline is Wednesday 23:59:59 Taipei Time (Friday 00:00 + 5 days + 23h59m59s)
+      const offsetMs = (5 * 24 + 23) * 60 * 60 * 1000 + 59 * 60 * 1000 + 59 * 1000 + 999;
+      const deadline = new Date(weekEnd.getTime() + offsetMs);
       
       const submitted = new Date(obs.submittedAt || obs.date);
       if (submitted > deadline) {
