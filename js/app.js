@@ -2178,7 +2178,14 @@ function renderJournals() {
               <div style="font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--text-primary); line-height: 1.4;">${targetWeek}</div>
               <div style="font-size: 11px; font-weight: 700; color: ${isReviewed ? '#10b981' : '#f59e0b'}; margin-bottom: 12px;">${statusIcon}</div>
             </div>
-            <button class="btn btn-secondary btn-sm" style="width: 100%; border-radius: 8px;" onclick="document.getElementById('obs-detail-${o.id}').scrollIntoView({behavior: 'smooth', block: 'center'})">查看內容 (View)</button>
+            ${o.attachmentUrl ? `
+              <div style="display:flex; gap: 8px;">
+                <button class="btn btn-primary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px;" onclick="window.open('${o.attachmentUrl.split(',')[0]}', '_blank')"><i class="fi fi-rr-document"></i> 打開附件</button>
+                <button class="btn btn-secondary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px;" onclick="document.getElementById('obs-detail-${o.id}').scrollIntoView({behavior: 'smooth', block: 'center'})"><i class="fi fi-rr-arrow-down"></i> 往下評分</button>
+              </div>
+            ` : `
+              <button class="btn btn-secondary btn-sm" style="width: 100%; border-radius: 6px; padding: 6px 4px; font-size: 11px;" onclick="document.getElementById('obs-detail-${o.id}').scrollIntoView({behavior: 'smooth', block: 'center'})"><i class="fi fi-rr-arrow-down"></i> 查看內容與評分</button>
+            `}
           </div>
         `;
       });
