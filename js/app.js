@@ -909,6 +909,25 @@ window.setPulseCheck = function(status) {
   if(user.role !== 'trainee') return;
   localStorage.setItem(`MA_STATUS_${user.id}`, status);
   renderDashboard();
+
+  // 觸發 EmailJS 通知 (當遇到瓶頸或需要協助時)
+  if ((status === 'yellow' || status === 'red') && window.emailjs) {
+    const statusText = status === 'yellow' ? '遇到瓶頸 (Yellow)' : '需要協助 (Red)';
+    const templateParams = {
+      trainee_name: user.name,
+      status: statusText
+    };
+    
+    // 顯示提示讓學生知道系統已經發出通知
+    showToast(state.activeLanguage === 'zh' ? '已同步通知導師與主管您的狀態！' : 'Mentors have been notified of your status!', 'success');
+
+    emailjs.send('service_p5wknhf', 'template_jzqq33b', templateParams)
+      .then(function(response) {
+         console.log('EmailJS SUCCESS!', response.status, response.text);
+      }, function(error) {
+         console.error('EmailJS FAILED...', error);
+      });
+  }
 };
 
 window.addIdpGoal = function() {
