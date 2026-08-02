@@ -683,8 +683,8 @@ function renderDashboard() {
         </div>
         <div style="font-size:12px;color:var(--text-muted);margin-top:12px;line-height:1.6;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;border:none;">
           ${state.activeLanguage === 'zh' 
-            ? '💡 <b>為什麼要打卡？</b> 透過「敏捷脈搏打卡 (Agile Pulse Check)」，能幫助導師更即時掌握您的學習狀況。建議您於<b>每週五下班前</b>點擊上方燈號，誠實反應當下狀態。若亮起黃燈或紅燈，導師將能及時為您排除困難！' 
-            : '💡 <b>Why do a Pulse Check?</b> The Agile Pulse Check helps your mentor understand your learning progress. We recommend updating your status <b>every Friday before logging off</b>. This check-in allows your mentor to provide timely support if you face any roadblocks!'}
+            ? '💡 <b>為什麼要打卡？</b> 透過「敏捷脈搏打卡 (Agile Pulse Check)」，能幫助導師即時掌握您的學習狀況。您可以<b>隨時</b>根據當下的心理與學習狀態切換燈號。若亮起黃燈或紅燈，導師將能第一時間為您排除困難！' 
+            : '💡 <b>Why do a Pulse Check?</b> The Agile Pulse Check helps your mentor understand your learning progress in real-time. You can update your status <b>at any time</b> to reflect your current situation. If you switch to yellow or red, your mentor will be alerted to provide immediate support!'}
         </div>
       </div>
     `;
@@ -1080,8 +1080,8 @@ function renderAnalytics() {
     <div style="background-color:rgba(37, 99, 235, 0.05); border-left:3px solid #2563eb; padding:10px 14px; margin-top:20px; border-radius:4px; font-size:12px; color:var(--text-secondary); line-height:1.6;">
       <strong style="color:var(--text-primary);">💡 Pulse Check (敏捷脈搏打卡) 用意說明：</strong><br>
       ${state.activeLanguage === 'zh' 
-        ? '此欄位顯示學生每週自行回報的當下心理與學習狀態。綠色代表「順利推進」，黃色代表「遇到瓶頸」，紅色代表「需要協助」。導師與主管可藉此即時察覺學生的困難並適時介入輔導。' 
-        : 'Displays the weekly self-reported psychological and learning status of the trainees. Mentors and executives can use this to quickly identify bottlenecks and provide timely support.'}
+        ? '此欄位顯示學生<b>隨時</b>自行回報的當下心理與學習狀態。綠色代表「順利推進」，黃色代表「遇到瓶頸」，紅色代表「需要協助」。導師與主管可藉此即時察覺學生的困難，並在第一時間介入輔導與協助。' 
+        : 'Displays the real-time, self-reported psychological and learning status of the trainees. Mentors and executives can use this to immediately identify bottlenecks and provide timely support as soon as they arise.'}
     </div>
     ` : ''}
     
