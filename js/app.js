@@ -918,14 +918,16 @@ window.setPulseCheck = function(status) {
       status: statusText
     };
     
-    // 顯示提示讓學生知道系統已經發出通知
-    showToast(state.activeLanguage === 'zh' ? '已同步通知導師與主管您的狀態！' : 'Mentors have been notified of your status!', 'success');
+    // 顯示發送中提示
+    showToast(state.activeLanguage === 'zh' ? '正在發送通知中...' : 'Sending notification...', 'info');
 
     emailjs.send('service_p5wknhf', 'template_jzqq33b', templateParams)
       .then(function(response) {
          console.log('EmailJS SUCCESS!', response.status, response.text);
+         showToast(state.activeLanguage === 'zh' ? '已同步通知導師與主管您的狀態！' : 'Mentors have been notified of your status!', 'success');
       }, function(error) {
          console.error('EmailJS FAILED...', error);
+         alert('信件發送失敗！錯誤訊息：\n' + (error.text || JSON.stringify(error)) + '\n請截圖此畫面給開發人員。');
       });
   }
 };
