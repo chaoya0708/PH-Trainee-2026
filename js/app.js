@@ -921,7 +921,7 @@ window.setPulseCheck = function(status) {
     // 顯示發送中提示
     showToast(state.activeLanguage === 'zh' ? '正在發送通知中...' : 'Sending notification...', 'info');
 
-    emailjs.send('service_p5wknhf', 'template_jzqq33b', templateParams)
+    emailjs.send('service_mabpwqj', 'template_jzqq33b', templateParams)
       .then(function(response) {
          console.log('EmailJS SUCCESS!', response.status, response.text);
          showToast(state.activeLanguage === 'zh' ? '已同步通知導師與主管您的狀態！' : 'Mentors have been notified of your status!', 'success');
