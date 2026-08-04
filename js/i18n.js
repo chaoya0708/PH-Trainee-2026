@@ -74,7 +74,7 @@ const I18N = {
     criteria1: 'Learning in Progress (Journal)',
     criteria2: 'Mentor Confirmed Weekly Report',
     criteria3: 'Station Assessment Completed',
-    criteria4: 'Passed Station (Grade A/B)',
+    criteria4: 'Successfully Completed Station Rotation',
 
     // Review Panel
     reviewTitle:        'Rotation Assessments',
@@ -203,7 +203,7 @@ const I18N = {
     criteria1: '持續學習中 (首篇週記)',
     criteria2: '導師已確認週報',
     criteria3: '完成站別最終考核',
-    criteria4: '順利通過此站別 (A/B)',
+    criteria4: '順利完成此站別輪調實習',
 
     // Review Panel
     reviewTitle:        '站別考核總覽',
