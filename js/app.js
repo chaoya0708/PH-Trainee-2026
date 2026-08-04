@@ -2792,7 +2792,7 @@ function buildFeedItem(obs, user) {
               }
             }).join('')}
           </div>
-        </div>\` : ''}
+        </div>` : ''}
 
       ${feedbackBlock}
       ${guestBlock}
