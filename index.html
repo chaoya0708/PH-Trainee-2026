@@ -496,8 +496,7 @@
 
   <!-- ── Scripts (order matters) ── -->
   <script>
-    // Set the worker source for pdf.js
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    // pdf.js is not included, removing the worker assignment to prevent ReferenceError
   </script>
   <script src="js/config.js?v=248"></script>
   <script src="js/auth.js?v=248"></script>

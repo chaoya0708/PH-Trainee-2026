@@ -2773,7 +2773,7 @@ function buildFeedItem(obs, user) {
               
               if (isImage) {
                 let thumbUrl = url;
-                const idMatch = url.match(/\\/d\\/([a-zA-Z0-9_-]+)/);
+                const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
                 if (idMatch && idMatch[1]) {
                   thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
                 }
