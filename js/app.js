@@ -336,7 +336,7 @@ function updateTopBar(user) {
   $('liReview').style.display     = (isMentor || isGuest) ? 'block' : 'none';
   $('liInsights').style.display   = (isMentor) ? 'block' : 'none';
   $('liAnalytics').style.display  = (isMentor || isGuest || isExecutive) ? 'block' : 'none';
-  if ($('liResources')) $('liResources').style.display = (isTrainee || isMentor) ? 'block' : 'none';
+  if ($('liResources')) $('liResources').style.display = (isTrainee || isMentor || isExecutive) ? 'block' : 'none';
 }
 
 // ── Sidebar profile ───────────────────────────────────────────────
