@@ -40,6 +40,8 @@ const I18N = {
     btnSaveNote: 'Save Note',
     tabAnalytics:  'Data Analytics',
     tabResources:  'Learning Resource',
+    resourceWarningTitle: '🚨 STRICT CONFIDENTIALITY NOTICE',
+    resourceWarningDesc: 'The following materials are strictly for internal training purposes and are considered highly confidential company assets. Any unauthorized distribution, screenshots, modification, reproduction, or commercial use is <strong>strictly prohibited</strong>. Violators will face severe legal and disciplinary action!',
 
     // Dashboard
     weeklySchedule:     'Rotation Schedule',
@@ -167,6 +169,8 @@ const I18N = {
     btnSaveNote: '儲存筆記',
     tabAnalytics:  '數據分析',
     tabResources:  '學習資源',
+    resourceWarningTitle: '🚨 嚴正聲明',
+    resourceWarningDesc: '以下資料僅供本培訓計畫內部使用，屬於公司機密與重要資產。<strong>嚴禁</strong>以任何形式外流、截圖、修改、散布或作為商業用途。違者將追究相關法律責任與懲處！',
 
     // Dashboard
     weeklySchedule:     '輪調排程',

@@ -12,7 +12,7 @@ const todayObj = new Date();
 const todayStr = todayObj.getFullYear() + '-' + String(todayObj.getMonth() + 1).padStart(2, '0') + '-' + String(todayObj.getDate()).padStart(2, '0');
 
 const state = {
-  activeTab:          'dashboard',
+  activeTab:          sessionStorage.getItem('vimei_activeTab') || 'dashboard',
   activeLanguage:     ['en', 'zh'].includes(localStorage.getItem('vimei_lang')) ? localStorage.getItem('vimei_lang') : 'en',
   activeTheme:        localStorage.getItem('vimei_theme') || 'light',
   selectedTraineeId:  'diane',
@@ -445,6 +445,7 @@ function translateDOM() {
 
 function switchTab(tabName, reload = true) {
   state.activeTab = tabName;
+  sessionStorage.setItem('vimei_activeTab', tabName);
 
   document.querySelectorAll('.nav-item').forEach(li => li.classList.remove('active'));
   const activeNav = $('li' + cap(tabName));
