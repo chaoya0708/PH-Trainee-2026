@@ -482,25 +482,29 @@ async function loadAllData() {
     const user = Auth.getCurrentUser();
 
     if (user.role === 'trainee') {
-      const [obs, sched, asm] = await Promise.all([
+      const [obs, sched, asm, res] = await Promise.all([
         Api.getObservationsForTrainee(user.id),
         Api.getScheduleForTrainee(user.id),
-        Api.getAssessments()
+        Api.getAssessments(),
+        Api.getAllResources()
       ]);
       state.observations = obs;
       state.schedules = { [user.id]: sched };
       state.assessments = asm;
+      state.resources = res;
     } else {
-      const [obs, sched, asm, notes] = await Promise.all([
+      const [obs, sched, asm, notes, res] = await Promise.all([
         Api.getAllObservations(),
         Api.getAllSchedules(),
         Api.getAssessments(),
-        user.role === 'admin' ? Api.getMentorNotes() : Promise.resolve([])
+        user.role === 'admin' ? Api.getMentorNotes() : Promise.resolve([]),
+        Api.getAllResources()
       ]);
       state.observations = obs;
       state.schedules = sched;
       state.assessments = asm;
       state.mentorNotes = notes || [];
+      state.resources = res;
     }
   } catch (err) {
     console.error('Data load error:', err);
