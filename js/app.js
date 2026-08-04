@@ -2163,7 +2163,7 @@ function renderJournals() {
     </div></div>`;
 
   // Filter observations
-  let obs = [...state.observations].sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+  let obs = [...state.observations].sort((a, b) => (new Date(b.submittedAt || b.date).getTime() || 0) - (new Date(a.submittedAt || a.date).getTime() || 0));
   
   if (user.role === 'trainee') {
     obs = obs.filter(o => o.traineeId === user.id);
@@ -2188,8 +2188,8 @@ function renderJournals() {
 
     // Sort departments by the latest submission
     const sortedDepts = Object.keys(grouped).sort((a, b) => {
-      const latestA = new Date(grouped[a][0].submittedAt);
-      const latestB = new Date(grouped[b][0].submittedAt);
+      const latestA = new Date(grouped[a][0].submittedAt || grouped[a][0].date).getTime() || 0;
+      const latestB = new Date(grouped[b][0].submittedAt || grouped[b][0].date).getTime() || 0;
       return latestB - latestA; // newest first
     });
 
@@ -2205,7 +2205,7 @@ function renderJournals() {
       feedHtml += `<div style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color);">`;
       
       // Sort oldest to newest for the timeline feel
-      const timelineObs = [...deptObs].sort((a, b) => new Date(a.submittedAt) - new Date(b.submittedAt));
+      const timelineObs = [...deptObs].sort((a, b) => (new Date(a.submittedAt || a.date).getTime() || 0) - (new Date(b.submittedAt || b.date).getTime() || 0));
       
       timelineObs.forEach((o, idx) => {
         const isReviewed = o.status === 'reviewed';
@@ -2450,7 +2450,7 @@ function renderReview() {
     const relevantAssessments = (state.assessments || []).filter(a => {
       if (isGuest) return a.department === user.departmentId;
       return true;
-    }).sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+    }).sort((a, b) => (new Date(b.submittedAt || b.date).getTime() || 0) - (new Date(a.submittedAt || a.date).getTime() || 0));
 
     if (relevantAssessments.length > 0) {
       pastAssessmentsHtml = `
