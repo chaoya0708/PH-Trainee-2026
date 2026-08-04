@@ -39,7 +39,7 @@ const I18N = {
     placeholderNote: 'Write your observation here...',
     btnSaveNote: 'Save Note',
     tabAnalytics:  'Data Analytics',
-    tabResources:  'Resources',
+    tabResources:  'Learning Resource',
 
     // Dashboard
     weeklySchedule:     'Rotation Schedule',

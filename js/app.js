@@ -3214,7 +3214,6 @@ window.handleUploadResource = async function() {
   if (!fileInput.files.length) return alert('Please select a file');
 
   const file = fileInput.files[0];
-  if (file.size > 5 * 1024 * 1024) return alert('File is too large (max 5MB)');
 
   showLoading();
   try {
