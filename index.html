@@ -515,6 +515,15 @@
       });
     })();
   </script>
-</body>
+    <!-- Image Lightbox Modal -->
+    <div id="imageLightboxModal" class="modal-overlay" style="display:none; z-index:99999; background:rgba(0,0,0,0.85); align-items:center; justify-content:center;" onclick="this.style.display='none'">
+      <div style="position:relative; width:90%; max-width:900px; max-height:90vh; display:flex; flex-direction:column; align-items:center; justify-content:center;" onclick="event.stopPropagation()">
+        <button class="btn btn-secondary btn-sm" style="position:absolute; top:-40px; right:0; background:var(--bg-card); color:var(--text-primary); border:none; padding:6px 12px; border-radius:20px; font-weight:600; cursor:pointer;" onclick="document.getElementById('imageLightboxModal').style.display='none'">
+          <i class="fi fi-rr-cross"></i> <span data-i18n="close">關閉 / Close</span>
+        </button>
+        <img id="lightboxImage" src="" style="max-width:100%; max-height:90vh; object-fit:contain; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.5);" />
+      </div>
+    </div>
+  </body>
 
 </html>

@@ -1563,7 +1563,7 @@ window.submitObsForm = async function(e) {
         const folderName = 'MA_Program_Uploads';
         const uploadRes = await Api.uploadFile(base64, file.type, file.name, folderName);
         if (uploadRes.success) {
-          attachmentUrls.push(uploadRes.url);
+          attachmentUrls.push(uploadRes.url + '|' + (file.type || '') + '|' + encodeURIComponent(file.name || ''));
         } else {
           throw new Error('File upload failed for ' + file.name);
         }
@@ -1801,13 +1801,34 @@ function renderMilestones() {
                 <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
                 ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/en/translator#zh/en/${encodeURIComponent(assessment.comments)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
                 ${assessment.attachmentUrl ? `
-                <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;">
-                  ${assessment.attachmentUrl.split(',').map((url, idx) => `
-                    <a href="${url}" target="_blank" class="btn btn-secondary" style="font-size:14px; padding:8px 12px; display:inline-flex; align-items:center; gap:6px; background-color:var(--bg-highlight); color:var(--primary); font-weight:bold;">
-                      <i class="fi fi-rr-clip"></i> ${state.activeLanguage === 'zh' ? '檢視附件' : 'View Attachment'} ${assessment.attachmentUrl.split(',').length > 1 ? idx + 1 : ''}
-                    </a>
-                  `).join('')}
-                </div>
+                  <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
+                  ${assessment.attachmentUrl.split(',').map((part, idx) => {
+                    const [url, mimeType, filename] = part.split('|');
+                    const isImage = mimeType ? mimeType.startsWith('image/') : false;
+                    const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '檢視附件 (View Attachment)' : 'View Attachment');
+                    
+                    if (isImage) {
+                      let thumbUrl = url;
+                      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                      if (idMatch && idMatch[1]) {
+                        thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
+                      }
+                      return `
+                        <div onclick="window.openLightbox('${url}')" style="cursor:pointer; position:relative; width:64px; height:64px; border-radius:8px; overflow:hidden; border:2px solid var(--border-color); box-shadow:0 2px 4px rgba(0,0,0,0.05);" title="${name}">
+                          <div style="width:100%; height:100%; background-image:url('${thumbUrl}'); background-size:cover; background-position:center; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
+                          <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); color:#fff; font-size:9px; text-align:center; padding:2px;">🖼️預覽</div>
+                        </div>
+                      `;
+                    } else {
+                      return `
+                        <a href="${url}" target="_blank" class="btn btn-outline" style="font-size:12px; padding:6px 12px; border-radius:8px; color:var(--text-primary); border-color:var(--border-color); background:var(--bg-card); display:flex; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,0.02); max-width:250px;">
+                          <i class="fi fi-rr-document" style="font-size:16px; margin-right:8px; color:#ef4444;"></i>
+                          <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</span>
+                        </a>
+                      `;
+                    }
+                  }).join('')}
+                  </div>
                 ` : ''}
                 <p style="font-size:11px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
               </div>
@@ -2205,7 +2226,7 @@ function renderJournals() {
             </div>
             ${o.attachmentUrl ? `
               <div style="display:flex; gap: 8px;">
-                <button class="btn btn-primary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px; white-space: nowrap;" onclick="window.open('${o.attachmentUrl.split(',')[0]}', '_blank')"><i class="fi fi-rr-document"></i> ${openFileText}</button>
+                <button class="btn btn-primary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px; white-space: nowrap;" onclick="window.open('${o.attachmentUrl.split(',')[0].split('|')[0]}', '_blank')"><i class="fi fi-rr-document"></i> ${openFileText}</button>
                 <button class="btn btn-secondary btn-sm" style="flex:1; border-radius: 6px; padding: 6px 4px; font-size: 11px; white-space: nowrap;" onclick="document.getElementById('obs-detail-${o.id}').scrollIntoView({behavior: 'smooth', block: 'center'})"><i class="fi fi-rr-arrow-down"></i> ${scrollBtnText}</button>
               </div>
             ` : `
@@ -2533,7 +2554,7 @@ window.submitStationAssessment = async function() {
         const folderName = 'MA_Program_Assessments';
         const uploadRes = await Api.uploadFile(base64, file.type, file.name, folderName);
         if (uploadRes.success) {
-          attachmentUrls.push(uploadRes.url);
+          attachmentUrls.push(uploadRes.url + '|' + (file.type || '') + '|' + encodeURIComponent(file.name || ''));
         } else {
           throw new Error('File upload failed for ' + file.name);
         }
@@ -2558,6 +2579,19 @@ window.submitStationAssessment = async function() {
     showToast('Error: ' + err.message, 'error');
   } finally {
     hideLoading();
+  }
+}
+
+window.openLightbox = function(url) {
+  let imgUrl = url;
+  const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (idMatch && idMatch[1]) {
+    imgUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w1600';
+  }
+  const imgEl = document.getElementById('lightboxImage');
+  if (imgEl) {
+    imgEl.src = imgUrl;
+    document.getElementById('imageLightboxModal').style.display = 'flex';
   }
 };
 
@@ -2730,15 +2764,35 @@ function buildFeedItem(obs, user) {
 
       ${obs.attachmentUrl ? `
         <div class="obs-block">
-          <h5>${state.activeLanguage === 'zh' ? '照片或報告檔案連結' : 'Attachment Link'}</h5>
+          <h5>${state.activeLanguage === 'zh' ? '照片或報告檔案連結 (Attachments)' : 'Attachment Link'}</h5>
           <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
-            ${obs.attachmentUrl.split(',').map((url, idx) => `
-              <button onclick="window.open('${url}', '_blank')" class="btn btn-outline" style="color:var(--primary); border-color:var(--primary); padding: 8px 16px; font-size: 14px; border-width: 2px; font-weight: 600;">
-                <i class="fi fi-rr-arrow-up-right-from-square" style="margin-right:8px; font-weight:bold;"></i> ${state.activeLanguage === 'zh' ? '點擊檢視附件內容' : 'View Attachment'} ${obs.attachmentUrl.split(',').length > 1 ? `(${idx + 1})` : ''}
-              </button>
-            `).join('')}
+            ${obs.attachmentUrl.split(',').map((part, idx) => {
+              const [url, mimeType, filename] = part.split('|');
+              const isImage = mimeType ? mimeType.startsWith('image/') : false;
+              const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '點擊檢視附件內容' : 'View Attachment');
+              
+              if (isImage) {
+                let thumbUrl = url;
+                const idMatch = url.match(/\\/d\\/([a-zA-Z0-9_-]+)/);
+                if (idMatch && idMatch[1]) {
+                  thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
+                }
+                return \`
+                  <div onclick="window.openLightbox('\${url}')" style="cursor:pointer; position:relative; width:80px; height:80px; border-radius:8px; overflow:hidden; border:2px solid var(--border-color); box-shadow:0 2px 4px rgba(0,0,0,0.05);" title="\${name}">
+                    <div style="width:100%; height:100%; background-image:url('\${thumbUrl}'); background-size:cover; background-position:center; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
+                    <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); color:#fff; font-size:9px; text-align:center; padding:2px;">🖼️預覽</div>
+                  </div>
+                \`;
+              } else {
+                return \`
+                  <button onclick="window.open('\${url}', '_blank')" class="btn btn-outline" style="color:var(--text-primary); background:var(--bg-card); border-color:var(--border-color); padding: 8px 16px; font-size: 13px; border-width: 1px; font-weight: 500; display:flex; align-items:center; gap:8px;">
+                    <i class="fi fi-rr-document" style="color:#ef4444; font-size:16px;"></i> \${name}
+                  </button>
+                \`;
+              }
+            }).join('')}
           </div>
-        </div>` : ''}
+        </div>\` : ''}
 
       ${feedbackBlock}
       ${guestBlock}
