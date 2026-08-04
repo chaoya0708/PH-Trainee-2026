@@ -886,7 +886,9 @@ function renderDashboard() {
           
           if (hasAssessment) {
             barColor = 'var(--warning)'; 
-            extraBadge = `<span style="font-size:10px;background:rgba(245,158,11,0.15);color:var(--warning);padding:2px 6px;border-radius:4px;margin-left:6px;border:none;">${t('lblAssessGrade')}: ${assessment.grade}</span>`;
+            if (user.role !== 'trainee') {
+              extraBadge = `<span style="font-size:10px;background:rgba(245,158,11,0.15);color:var(--warning);padding:2px 6px;border-radius:4px;margin-left:6px;border:none;">${t('lblAssessGrade')}: ${assessment.grade}</span>`;
+            }
           }
 
           return `
@@ -3214,28 +3216,33 @@ window.handleUploadResource = async function() {
   try {
     const reader = new FileReader();
     reader.onload = async (e) => {
-      const base64 = e.target.result;
-      // 1. Upload to Drive
-      const uploadRes = await Api.uploadFile(base64, file.type, file.name, 'MA_Program_Resources'); 
-      if (uploadRes.error) throw new Error(uploadRes.error);
-      
-      // 2. Save metadata to Sheets
-      const user = Auth.getCurrentUser();
-      const metaRes = await Api.submitResource({
-        title,
-        category,
-        url: uploadRes.url,
-        uploadedBy: user.name
-      });
-      if (metaRes.error) throw new Error(metaRes.error);
+      try {
+        const base64 = e.target.result;
+        // 1. Upload to Drive
+        const uploadRes = await Api.uploadFile(base64, file.type, file.name, 'MA_Program_Resources'); 
+        if (uploadRes.error) throw new Error(uploadRes.error);
+        
+        // 2. Save metadata to Sheets
+        const user = Auth.getCurrentUser();
+        const metaRes = await Api.submitResource({
+          title,
+          category,
+          url: uploadRes.url,
+          uploadedBy: user.name
+        });
+        if (metaRes.error) throw new Error(metaRes.error);
 
-      // Refresh
-      $('resTitle').value = '';
-      fileInput.value = '';
-      state.resources = await Api.getAllResources();
-      window.filterResources('All');
-      hideLoading();
-      showToast('Resource uploaded successfully!');
+        // Refresh
+        $('resTitle').value = '';
+        fileInput.value = '';
+        state.resources = await Api.getAllResources();
+        window.filterResources('All');
+        hideLoading();
+        showToast('Resource uploaded successfully!');
+      } catch (err) {
+        hideLoading();
+        alert('Upload failed: ' + err.message);
+      }
     };
     reader.readAsDataURL(file);
   } catch (err) {
