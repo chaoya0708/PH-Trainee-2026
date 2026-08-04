@@ -2777,18 +2777,18 @@ function buildFeedItem(obs, user) {
                 if (idMatch && idMatch[1]) {
                   thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
                 }
-                return \`
-                  <div onclick="window.openLightbox('\${url}')" style="cursor:pointer; position:relative; width:80px; height:80px; border-radius:8px; overflow:hidden; border:2px solid var(--border-color); box-shadow:0 2px 4px rgba(0,0,0,0.05);" title="\${name}">
-                    <div style="width:100%; height:100%; background-image:url('\${thumbUrl}'); background-size:cover; background-position:center; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
+                return `
+                  <div onclick="window.openLightbox('${url}')" style="cursor:pointer; position:relative; width:80px; height:80px; border-radius:8px; overflow:hidden; border:2px solid var(--border-color); box-shadow:0 2px 4px rgba(0,0,0,0.05);" title="${name}">
+                    <div style="width:100%; height:100%; background-image:url('${thumbUrl}'); background-size:cover; background-position:center; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
                     <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); color:#fff; font-size:9px; text-align:center; padding:2px;">🖼️預覽</div>
                   </div>
-                \`;
+                `;
               } else {
-                return \`
-                  <button onclick="window.open('\${url}', '_blank')" class="btn btn-outline" style="color:var(--text-primary); background:var(--bg-card); border-color:var(--border-color); padding: 8px 16px; font-size: 13px; border-width: 1px; font-weight: 500; display:flex; align-items:center; gap:8px;">
-                    <i class="fi fi-rr-document" style="color:#ef4444; font-size:16px;"></i> \${name}
+                return `
+                  <button onclick="window.open('${url}', '_blank')" class="btn btn-outline" style="color:var(--text-primary); background:var(--bg-card); border-color:var(--border-color); padding: 8px 16px; font-size: 13px; border-width: 1px; font-weight: 500; display:flex; align-items:center; gap:8px;">
+                    <i class="fi fi-rr-document" style="color:#ef4444; font-size:16px;"></i> ${name}
                   </button>
-                \`;
+                `;
               }
             }).join('')}
           </div>
