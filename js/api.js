@@ -508,7 +508,7 @@ const Api = (() => {
           };
         }
       }
-      return callScript({ action: 'getInitData', role, traineeId });
+      return callScriptGet('getInitData', { role, traineeId });
     },
 
     async getAllResources() {
