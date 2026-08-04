@@ -1462,7 +1462,7 @@ function renderForm() {
         <h3>${t('formTitle')}</h3>
       </div>
       <p style="color:var(--text-secondary);font-size:13px;margin-bottom:18px;">${t('formSubTitle')}</p>
-      <div class="alert-info" style="background:#fff3cd; color:#856404; border:none; margin-bottom:15px; border-radius:12px; padding:12px;">
+      <div class="alert-info" style="background:rgba(245,158,11,0.15); color:var(--warning); border:none; margin-bottom:15px; border-radius:12px; padding:12px;">
         <span style="font-weight:600;">${bannerText}</span>
       </div>
       <div class="alert-info"><span>${t('privateNotice')}</span></div>
@@ -1683,7 +1683,7 @@ function renderMilestones() {
             ${state.activeLanguage === 'zh' ? '儲存評估' : 'Save'}
           </button>
         </h3>
-        <div class="alert-info" style="background:#fff3cd; color:#856404; border:none; margin-bottom:15px; border-radius:12px; padding:12px;">
+        <div class="alert-info" style="background:rgba(245,158,11,0.15); color:var(--warning); border:none; margin-bottom:15px; border-radius:12px; padding:12px;">
           <span style="font-weight:600;">${selfAssessBanner}</span>
         </div>
         <p style="font-size:11px; color:var(--text-secondary); margin-bottom:12px;">
@@ -1798,7 +1798,7 @@ function renderMilestones() {
 
           assessmentHtml = `
             <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:none;border-radius:10px;position:relative;">
-              ${!assessment.visibleToTrainee && user.role === 'admin' ? `<div style=\"position:absolute; top:-8px; right:12px; background:#fef2f2; color:#ef4444; border:1px solid #fecaca; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,0.1); z-index:2;"><i class="fi fi-rr-eye-crossed"></i> ${state.activeLanguage === 'zh' ? '學生不可見 (Hidden)' : 'Hidden from Trainee'}</div>` : ''}
+              ${!assessment.visibleToTrainee && user.role === 'admin' ? `<div style=\"position:absolute; top:-8px; right:12px; background:rgba(239,68,68,0.15); color:var(--danger); border:1px solid rgba(239,68,68,0.3); font-size:10px; padding:2px 6px; border-radius:4px; font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,0.1); z-index:2;"><i class="fi fi-rr-eye-crossed"></i> ${state.activeLanguage === 'zh' ? '學生不可見 (Hidden)' : 'Hidden from Trainee'}</div>` : ''}
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                 <span style="font-size:10px;text-transform:uppercase;font-weight:700;color:var(--primary);letter-spacing:0.5px;">${t('lblAssessGrade')}</span>
                 <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;padding:3px 8px;border-radius:6px;">${assessment.grade}</span>
