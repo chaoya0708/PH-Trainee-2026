@@ -114,7 +114,10 @@ function sheetToArray(sheet) {
     headers.forEach((h, i) => { 
       let val = row[i];
       if (h === 'date' && Object.prototype.toString.call(val) === '[object Date]') {
-        val = Utilities.formatDate(val, "Asia/Taipei", "yyyy-MM-dd");
+        const yyyy = val.getFullYear();
+        const mm = String(val.getMonth() + 1).padStart(2, '0');
+        const dd = String(val.getDate()).padStart(2, '0');
+        val = `${yyyy}-${mm}-${dd}`;
       } else if (h === 'date' && typeof val === 'string' && val.includes('T')) {
         val = val.split('T')[0];
       }
