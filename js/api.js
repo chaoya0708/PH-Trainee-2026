@@ -15,6 +15,7 @@ const Api = (() => {
   const LS_GCOMMENT = 'vimei2_guest_comments';
   const LS_ASSESS = 'vimei2_assessments';
   const LS_MENTOR_NOTES = 'vimei2_mentor_notes';
+  const LS_RESOURCES = 'vimei2_resources';
 
   // ----- Default demo seed data -----
   function seedDemoData() {
@@ -82,6 +83,10 @@ const Api = (() => {
 
     if (!localStorage.getItem(LS_MENTOR_NOTES)) {
       localStorage.setItem(LS_MENTOR_NOTES, JSON.stringify([]));
+    }
+
+    if (!localStorage.getItem(LS_RESOURCES)) {
+      localStorage.setItem(LS_RESOURCES, JSON.stringify([]));
     }
   }
 
@@ -481,6 +486,40 @@ const Api = (() => {
         id,
         visibleToTrainee
       });
+    },
+
+    // ---- Resources ----
+    async getAllResources() {
+      if (CONFIG.DEMO_MODE) return lsGet(LS_RESOURCES);
+      return callScriptGet('getAllResources');
+    },
+
+    async submitResource(data) {
+      if (CONFIG.DEMO_MODE) {
+        const list = lsGet(LS_RESOURCES);
+        const record = {
+          id: 'res-' + Date.now(),
+          title: data.title,
+          category: data.category,
+          url: data.url,
+          uploadedBy: data.uploadedBy,
+          uploadedAt: nowStr()
+        };
+        list.push(record);
+        lsSave(LS_RESOURCES, list);
+        return { success: true, id: record.id };
+      }
+      return callScript({ action: 'submitResource', ...data });
+    },
+
+    async deleteResource(id) {
+      if (CONFIG.DEMO_MODE) {
+        let list = lsGet(LS_RESOURCES);
+        list = list.filter(r => r.id !== id);
+        lsSave(LS_RESOURCES, list);
+        return { success: true };
+      }
+      return callScript({ action: 'deleteResource', id });
     }
 
   };

@@ -11,7 +11,8 @@ const SHEETS = {
   OBSERVATIONS:   'observations',
   SCHEDULES:      'schedules',
   GUEST_COMMENTS: 'guest_comments',
-  ASSESSMENTS:    'assessments'
+  ASSESSMENTS:    'assessments',
+  RESOURCES:      'resources'
 };
 
 function getTaipeiTime() {
@@ -33,6 +34,7 @@ function doGet(e) {
     else if (action === 'getAllGuestComments') result = getAllGuestComments();
     else if (action === 'getGuestComments')    result = getGuestComments(e.parameter.traineeId);
     else if (action === 'getAssessments')      result = getAssessments();
+    else if (action === 'getAllResources')     result = getAllResources();
     else result = { error: 'Unknown action: ' + action };
     return corsResponse(result);
   } catch (err) {
@@ -56,6 +58,8 @@ function doPost(e) {
     else if (action === 'updateObservation')          result = updateObservation(data);
     else if (action === 'deleteObservation')          result = deleteObservation(data);
     else if (action === 'uploadFile')                 result = uploadFile(data);
+    else if (action === 'submitResource')             result = submitResource(data);
+    else if (action === 'deleteResource')             result = deleteResource(data);
     else result = { error: 'Unknown action: ' + action };
     
     return corsResponse(result);
@@ -365,4 +369,34 @@ function updateAssessment(params) {
     }
   }
   return { success: false, error: 'Assessment not found' };
+}
+
+// ----------------------------------------------------
+// 學習資源 (Resources)
+// ----------------------------------------------------
+const RES_HEADERS = ['id', 'title', 'category', 'url', 'uploadedBy', 'uploadedAt'];
+
+function getAllResources() {
+  return sheetToArray(getOrCreateSheet(SHEETS.RESOURCES, RES_HEADERS));
+}
+
+function submitResource(data) {
+  const sheet = getOrCreateSheet(SHEETS.RESOURCES, RES_HEADERS);
+  const id = 'res-' + new Date().getTime();
+  sheet.appendRow([
+    id, data.title, data.category, data.url, data.uploadedBy, getTaipeiTime()
+  ]);
+  return { success: true, id };
+}
+
+function deleteResource(params) {
+  const sheet = getOrCreateSheet(SHEETS.RESOURCES, RES_HEADERS);
+  const data = sheet.getDataRange().getValues();
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][0] === params.id) {
+      sheet.deleteRow(i + 1);
+      return { success: true };
+    }
+  }
+  return { success: false, error: 'Resource not found' };
 }

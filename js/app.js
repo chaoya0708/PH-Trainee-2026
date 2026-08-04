@@ -336,6 +336,7 @@ function updateTopBar(user) {
   $('liReview').style.display     = (isMentor || isGuest) ? 'block' : 'none';
   $('liInsights').style.display   = (isMentor) ? 'block' : 'none';
   $('liAnalytics').style.display  = (isMentor || isGuest || isExecutive) ? 'block' : 'none';
+  if ($('liResources')) $('liResources').style.display = (isTrainee || isMentor) ? 'block' : 'none';
 }
 
 // ── Sidebar profile ───────────────────────────────────────────────
@@ -379,7 +380,8 @@ function translateSidebar() {
     'navMilestones':'tabMilestones',
     'navJournals':  'tabJournals',
     'navReview':    'tabReview',
-    'navAnalytics': 'tabAnalytics'
+    'navAnalytics': 'tabAnalytics',
+    'navResources': 'tabResources'
   };
   for (const [id, key] of Object.entries(map)) {
     const el = $(id);
@@ -467,6 +469,7 @@ function renderCurrentTab() {
   else if (state.activeTab === 'review')     renderReview();
   else if (state.activeTab === 'analytics')  renderAnalytics();
   else if (state.activeTab === 'insights')   renderInsights();
+  else if (state.activeTab === 'resources')  renderResources();
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -3137,3 +3140,120 @@ function renderInsights() {
     </div>
   `;
 }
+
+// ══════════════════════════════════════════════════════════════════
+// RESOURCES PAGE
+// ══════════════════════════════════════════════════════════════════
+window.renderResources = async function() {
+  const user = Auth.getCurrentUser();
+  if (user.role === 'admin') {
+    $('resourceUploadArea').style.display = 'block';
+  } else {
+    $('resourceUploadArea').style.display = 'none';
+  }
+  
+  if (!state.resources) {
+    showLoading();
+    state.resources = await Api.getAllResources();
+    hideLoading();
+  }
+  
+  window.filterResources('All');
+};
+
+window.filterResources = function(category) {
+  // Update button active states
+  const buttons = document.querySelectorAll('.filter-tabs button');
+  buttons.forEach(btn => {
+    if (btn.textContent === category) {
+      btn.className = 'btn btn-primary';
+    } else {
+      btn.className = 'btn btn-outline';
+    }
+  });
+
+  const list = state.resources || [];
+  const filtered = category === 'All' ? list : list.filter(r => r.category === category);
+  
+  const container = $('resourcesList');
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px;">No resources found.</div>';
+    return;
+  }
+
+  const user = Auth.getCurrentUser();
+  container.innerHTML = filtered.map(res => `
+    <div class="glass-card" style="display:flex; flex-direction:column; padding:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+        <span class="status-badge status-reviewed">${res.category}</span>
+        ${user.role === 'admin' ? `<button class="icon-btn" style="color:var(--danger);" onclick="window.deleteResource('${res.id}')"><i class="fi fi-rr-trash"></i></button>` : ''}
+      </div>
+      <h3 style="margin-bottom:8px; font-size:16px;">${res.title}</h3>
+      <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px; flex-grow:1;">
+        Uploaded by ${res.uploadedBy} on ${new Date(res.uploadedAt).toLocaleDateString()}
+      </div>
+      <a href="${res.url}" target="_blank" class="btn btn-primary" style="text-align:center; text-decoration:none; width:100%;">
+        <i class="fi fi-rr-download"></i> View / Download
+      </a>
+    </div>
+  `).join('');
+};
+
+window.handleUploadResource = async function() {
+  const title = $('resTitle').value.trim();
+  const category = $('resCategory').value;
+  const fileInput = $('resFile');
+
+  if (!title) return alert('Please enter a title');
+  if (!fileInput.files.length) return alert('Please select a file');
+
+  const file = fileInput.files[0];
+  if (file.size > 5 * 1024 * 1024) return alert('File is too large (max 5MB)');
+
+  showLoading();
+  try {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64 = e.target.result;
+      // 1. Upload to Drive
+      const uploadRes = await Api.uploadFile(base64, file.type, file.name, '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT'); 
+      if (uploadRes.error) throw new Error(uploadRes.error);
+      
+      // 2. Save metadata to Sheets
+      const user = Auth.getCurrentUser();
+      const metaRes = await Api.submitResource({
+        title,
+        category,
+        url: uploadRes.url,
+        uploadedBy: user.name
+      });
+      if (metaRes.error) throw new Error(metaRes.error);
+
+      // Refresh
+      $('resTitle').value = '';
+      fileInput.value = '';
+      state.resources = await Api.getAllResources();
+      window.filterResources('All');
+      hideLoading();
+      showToast('Resource uploaded successfully!');
+    };
+    reader.readAsDataURL(file);
+  } catch (err) {
+    hideLoading();
+    alert('Upload failed: ' + err.message);
+  }
+};
+
+window.deleteResource = async function(id) {
+  if (!confirm('Are you sure you want to delete this resource?')) return;
+  showLoading();
+  try {
+    await Api.deleteResource(id);
+    state.resources = await Api.getAllResources();
+    window.filterResources('All');
+    showToast('Resource deleted.');
+  } catch (err) {
+    alert('Delete failed: ' + err.message);
+  }
+  hideLoading();
+};

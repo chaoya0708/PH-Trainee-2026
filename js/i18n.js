@@ -39,6 +39,7 @@ const I18N = {
     placeholderNote: 'Write your observation here...',
     btnSaveNote: 'Save Note',
     tabAnalytics:  'Data Analytics',
+    tabResources:  'Resources',
 
     // Dashboard
     weeklySchedule:     'Rotation Schedule',
@@ -165,6 +166,7 @@ const I18N = {
     placeholderNote: '請在此輸入您的觀察筆記...',
     btnSaveNote: '儲存筆記',
     tabAnalytics:  '數據分析',
+    tabResources:  '學習資源',
 
     // Dashboard
     weeklySchedule:     '輪調排程',
