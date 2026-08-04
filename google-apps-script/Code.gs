@@ -111,7 +111,15 @@ function sheetToArray(sheet) {
   const headers = data[0];
   return data.slice(1).map(row => {
     const obj = {};
-    headers.forEach((h, i) => { obj[h] = row[i]; });
+    headers.forEach((h, i) => { 
+      let val = row[i];
+      if (h === 'date' && Object.prototype.toString.call(val) === '[object Date]') {
+        val = Utilities.formatDate(val, "Asia/Taipei", "yyyy-MM-dd");
+      } else if (h === 'date' && typeof val === 'string' && val.includes('T')) {
+        val = val.split('T')[0];
+      }
+      obj[h] = val; 
+    });
     return obj;
   });
 }
@@ -276,7 +284,13 @@ function getAllSchedules() {
   const result = {};
   rows.forEach(r => {
     if (!result[r.traineeId]) result[r.traineeId] = {};
-    result[r.traineeId][r.date] = { dept: r.dept, objective: r.objective };
+    let dateStr = r.date;
+    if (Object.prototype.toString.call(dateStr) === '[object Date]') {
+      dateStr = Utilities.formatDate(dateStr, "Asia/Taipei", "yyyy-MM-dd");
+    } else if (typeof dateStr === 'string' && dateStr.includes('T')) {
+      dateStr = dateStr.split('T')[0];
+    }
+    result[r.traineeId][dateStr] = { dept: r.dept, objective: r.objective };
   });
   return result;
 }
