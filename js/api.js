@@ -434,7 +434,7 @@ const Api = (() => {
       });
     },
 
-    async uploadFile(base64, mimeType, filename, folderId) {
+    async uploadFile(base64, mimeType, filename, folderName) {
       if (CONFIG.DEMO_MODE) {
         // Return a mock URL in demo mode
         return new Promise(resolve => setTimeout(() => resolve({ success: true, url: 'https://example.com/mock-file.pdf' }), 1000));
@@ -444,7 +444,7 @@ const Api = (() => {
         base64,
         mimeType,
         filename,
-        folderId
+        folderName
       });
     },
 

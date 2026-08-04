@@ -1564,8 +1564,8 @@ window.submitObsForm = async function(e) {
           reader.onerror = reject;
           reader.readAsDataURL(file);
         });
-        const FOLDER_ID = '1urhwEFrFRipQjP6Jd0LtR1VBRbs396UE';
-        const uploadRes = await Api.uploadFile(base64, file.type, file.name, FOLDER_ID);
+        const folderName = 'MA_Program_Uploads';
+        const uploadRes = await Api.uploadFile(base64, file.type, file.name, folderName);
         if (uploadRes.success) {
           attachmentUrls.push(uploadRes.url);
         } else {
@@ -2534,8 +2534,8 @@ window.submitStationAssessment = async function() {
           reader.onerror = reject;
           reader.readAsDataURL(file);
         });
-        const FOLDER_ID = '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT';
-        const uploadRes = await Api.uploadFile(base64, file.type, file.name, FOLDER_ID);
+        const folderName = 'MA_Program_Assessments';
+        const uploadRes = await Api.uploadFile(base64, file.type, file.name, folderName);
         if (uploadRes.success) {
           attachmentUrls.push(uploadRes.url);
         } else {
@@ -3216,7 +3216,7 @@ window.handleUploadResource = async function() {
     reader.onload = async (e) => {
       const base64 = e.target.result;
       // 1. Upload to Drive
-      const uploadRes = await Api.uploadFile(base64, file.type, file.name, '1RaGvfMc_15uRQw8tLtDZT7Bk2hRZe9IT'); 
+      const uploadRes = await Api.uploadFile(base64, file.type, file.name, 'MA_Program_Resources'); 
       if (uploadRes.error) throw new Error(uploadRes.error);
       
       // 2. Save metadata to Sheets
