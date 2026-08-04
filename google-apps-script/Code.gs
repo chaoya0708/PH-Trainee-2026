@@ -35,6 +35,25 @@ function doGet(e) {
     else if (action === 'getGuestComments')    result = getGuestComments(e.parameter.traineeId);
     else if (action === 'getAssessments')      result = getAssessments();
     else if (action === 'getAllResources')     result = getAllResources();
+    else if (action === 'getInitData') {
+      const role = e.parameter.role;
+      const tId = e.parameter.traineeId;
+      if (role === 'trainee') {
+        result = {
+          observations: getObservations(tId),
+          schedules: getSchedulesForTrainee(tId),
+          assessments: getAssessments(),
+          resources: getAllResources()
+        };
+      } else {
+        result = {
+          observations: getAllObservations(),
+          schedules: getAllSchedules(),
+          assessments: getAssessments(),
+          resources: getAllResources()
+        };
+      }
+    }
     else result = { error: 'Unknown action: ' + action };
     return corsResponse(result);
   } catch (err) {

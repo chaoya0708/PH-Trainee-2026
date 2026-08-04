@@ -482,30 +482,19 @@ async function loadAllData() {
   try {
     const user = Auth.getCurrentUser();
 
+    const data = await Api.getInitData(user.role, user.id);
+    
     if (user.role === 'trainee') {
-      const [obs, sched, asm, res] = await Promise.all([
-        Api.getObservationsForTrainee(user.id),
-        Api.getScheduleForTrainee(user.id),
-        Api.getAssessments(),
-        Api.getAllResources()
-      ]);
-      state.observations = obs;
-      state.schedules = { [user.id]: sched };
-      state.assessments = asm;
-      state.resources = res;
+      state.observations = data.observations || [];
+      state.schedules = { [user.id]: data.schedules || {} };
+      state.assessments = data.assessments || [];
+      state.resources = data.resources || [];
     } else {
-      const [obs, sched, asm, notes, res] = await Promise.all([
-        Api.getAllObservations(),
-        Api.getAllSchedules(),
-        Api.getAssessments(),
-        user.role === 'admin' ? Api.getMentorNotes() : Promise.resolve([]),
-        Api.getAllResources()
-      ]);
-      state.observations = obs;
-      state.schedules = sched;
-      state.assessments = asm;
-      state.mentorNotes = notes || [];
-      state.resources = res;
+      state.observations = data.observations || [];
+      state.schedules = data.schedules || {};
+      state.assessments = data.assessments || [];
+      state.resources = data.resources || [];
+      state.mentorNotes = user.role === 'admin' ? await Api.getMentorNotes() : [];
     }
   } catch (err) {
     console.error('Data load error:', err);

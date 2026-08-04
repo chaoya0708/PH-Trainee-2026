@@ -488,7 +488,29 @@ const Api = (() => {
       });
     },
 
-    // ---- Resources ----
+
+    
+    async getInitData(role, traineeId) {
+      if (CONFIG.DEMO_MODE) {
+        if (role === 'trainee') {
+          return {
+            observations: (lsGet(LS_OBS) || []).filter(o => o.traineeId === traineeId),
+            schedules: { [traineeId]: (lsGet(LS_SCHED) || {})[traineeId] || {} },
+            assessments: lsGet(LS_ASSESS) || [],
+            resources: lsGet(LS_RESOURCES) || []
+          };
+        } else {
+          return {
+            observations: lsGet(LS_OBS) || [],
+            schedules: lsGet(LS_SCHED) || {},
+            assessments: lsGet(LS_ASSESS) || [],
+            resources: lsGet(LS_RESOURCES) || []
+          };
+        }
+      }
+      return callScript({ action: 'getInitData', role, traineeId });
+    },
+
     async getAllResources() {
       if (CONFIG.DEMO_MODE) return lsGet(LS_RESOURCES);
       return callScriptGet('getAllResources');
