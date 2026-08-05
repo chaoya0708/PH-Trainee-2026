@@ -321,10 +321,17 @@ function updateObservation(params) {
 
 function submitFeedback(data) {
   const sheet = getOrCreateSheet(SHEETS.OBSERVATIONS, OBS_HEADERS);
-  const rowIdx = findRowIndex(sheet, 'id', data.obsId);
+  const sheetData = sheet.getDataRange().getValues();
+  let rowIdx = -1;
+  for (let i = 1; i < sheetData.length; i++) {
+    if (String(sheetData[i][0]) === String(data.obsId)) {
+      rowIdx = i + 1;
+      break;
+    }
+  }
   if (rowIdx < 0) return { error: 'Observation not found' };
-  const headers = sheet.getRange(1, 1, 1, OBS_HEADERS.length).getValues()[0];
-  const col = h => headers.indexOf(h) + 1;
+
+  const col = h => OBS_HEADERS.indexOf(h) + 1;
   sheet.getRange(rowIdx, col('status')).setValue('reviewed');
   sheet.getRange(rowIdx, col('mentorComment')).setValue(data.mentorComment || '');
   sheet.getRange(rowIdx, col('mentorName')).setValue(data.mentorName || '');
