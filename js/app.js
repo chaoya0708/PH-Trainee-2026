@@ -1785,15 +1785,24 @@ function renderMilestones() {
   const excludedDepts = traineeObj ? (traineeObj.excludedDepartments || []) : [];
 
   const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excludedDepts.includes(d.id)).map(dept => {
-      const deptObs = state.observations.filter(o => o.traineeId === viewId && o.department === dept.id);
-      const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === dept.id);
+      const targetDept = CONFIG.DEPARTMENTS[dept.id] || {};
+      const matchDept = (deptStr) => {
+        if (!deptStr) return false;
+        if (deptStr === dept.id) return true;
+        if (targetDept.name && deptStr === targetDept.name) return true;
+        if (targetDept.nameZh && deptStr === targetDept.nameZh) return true;
+        if (targetDept.shortZh && deptStr === targetDept.shortZh) return true;
+        return false;
+      };
+
+      const deptObs = state.observations.filter(o => o.traineeId === viewId && matchDept(o.department));
+      const assessment = (state.assessments || []).find(a => a.traineeId === viewId && matchDept(a.department));
       
       const c1 = deptObs.length > 0;
-      const c2 = deptObs.length > 0 && deptObs.every(o => o.status === 'reviewed');
+      const c2 = deptObs.some(o => o.status && o.status.trim().toLowerCase() === 'reviewed');
       const c3 = !!assessment;
-      const c4 = assessment && (assessment.grade === 'A' || assessment.grade === 'B');
+      const c4 = assessment && ['A+', 'A', 'B'].includes((assessment.grade || '').trim().toUpperCase());
       
-      // We calculate percentage based on these new criteria
       let doneCount = 0;
       if (c1) doneCount++;
       if (c2) doneCount++;
