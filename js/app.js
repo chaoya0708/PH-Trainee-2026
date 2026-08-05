@@ -2685,7 +2685,7 @@ function buildFeedItem(obs, user) {
 
   // Existing mentor feedback block
   let feedbackBlock = '';
-  const isMentorFeedbackVisible = user && (user.role === 'admin' || (user.role === 'trainee' && user.id === obs.traineeId));
+  const isMentorFeedbackVisible = user && (user.role === 'trainee' && user.id === obs.traineeId);
   if (obs.mentorComment && isMentorFeedbackVisible) {
     feedbackBlock = `
       <div class="comment-bubble">

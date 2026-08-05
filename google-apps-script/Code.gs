@@ -307,12 +307,15 @@ function updateObservation(params) {
   
   for (let i = 1; i < data.length; i++) {
     if (data[i][0] === params.id) {
-      if (updateData.date) sheet.getRange(i + 1, 4).setValue(updateData.date);
-      if (updateData.department) sheet.getRange(i + 1, 5).setValue(updateData.department);
-      if (updateData.keyObservation !== undefined) sheet.getRange(i + 1, 6).setValue(updateData.keyObservation);
-      if (updateData.actionableIdea !== undefined) sheet.getRange(i + 1, 7).setValue(updateData.actionableIdea);
-      if (updateData.attachmentUrl !== undefined) sheet.getRange(i + 1, 8).setValue(updateData.attachmentUrl);
-      if (updateData.targetWeek !== undefined) sheet.getRange(i + 1, 15).setValue(updateData.targetWeek);
+      let rowData = data[i];
+      if (updateData.date) rowData[3] = updateData.date;
+      if (updateData.department) rowData[4] = updateData.department;
+      if (updateData.keyObservation !== undefined) rowData[5] = updateData.keyObservation;
+      if (updateData.actionableIdea !== undefined) rowData[6] = updateData.actionableIdea;
+      if (updateData.attachmentUrl !== undefined) rowData[7] = updateData.attachmentUrl;
+      if (updateData.targetWeek !== undefined) rowData[14] = updateData.targetWeek;
+      
+      sheet.getRange(i + 1, 1, 1, rowData.length).setValues([rowData]);
       return { success: true };
     }
   }
@@ -323,20 +326,24 @@ function submitFeedback(data) {
   const sheet = getOrCreateSheet(SHEETS.OBSERVATIONS, OBS_HEADERS);
   const sheetData = sheet.getDataRange().getValues();
   let rowIdx = -1;
+  let rowData = [];
   for (let i = 1; i < sheetData.length; i++) {
     if (String(sheetData[i][0]) === String(data.obsId)) {
       rowIdx = i + 1;
+      rowData = sheetData[i];
       break;
     }
   }
   if (rowIdx < 0) return { error: 'Observation not found' };
 
-  const col = h => OBS_HEADERS.indexOf(h) + 1;
-  sheet.getRange(rowIdx, col('status')).setValue('reviewed');
-  sheet.getRange(rowIdx, col('mentorComment')).setValue(data.mentorComment || '');
-  sheet.getRange(rowIdx, col('mentorName')).setValue(data.mentorName || '');
-  sheet.getRange(rowIdx, col('feedbackAt')).setValue(new Date().toISOString());
-  sheet.getRange(rowIdx, col('rating')).setValue(data.rating || 0);
+  const col = h => OBS_HEADERS.indexOf(h);
+  rowData[col('status')] = 'reviewed';
+  rowData[col('mentorComment')] = data.mentorComment || '';
+  rowData[col('mentorName')] = data.mentorName || '';
+  rowData[col('feedbackAt')] = getTaipeiTime();
+  rowData[col('rating')] = data.rating || 0;
+  
+  sheet.getRange(rowIdx, 1, 1, rowData.length).setValues([rowData]);
   return { success: true };
 }
 
@@ -372,9 +379,9 @@ function updateSchedule(data) {
     const sheetRow = existing + 2;
     sheet.getRange(sheetRow, 3).setValue(data.dept);
     sheet.getRange(sheetRow, 4).setValue(data.objective);
-    sheet.getRange(sheetRow, 5).setValue(new Date().toISOString());
+    sheet.getRange(sheetRow, 5).setValue(getTaipeiTime());
   } else {
-    sheet.appendRow([data.traineeId, data.date, data.dept, data.objective, new Date().toISOString()]);
+    sheet.appendRow([data.traineeId, data.date, data.dept, data.objective, getTaipeiTime()]);
   }
   return { success: true };
 }
@@ -391,7 +398,7 @@ function getGuestComments(traineeId) {
 
 function submitGuestComment(data) {
   const id = 'gc-' + new Date().getTime();
-  getOrCreateSheet(SHEETS.GUEST_COMMENTS, GC_HEADERS).appendRow([id, data.obsId, data.comment, new Date().toISOString()]);
+  getOrCreateSheet(SHEETS.GUEST_COMMENTS, GC_HEADERS).appendRow([id, data.obsId, data.comment, getTaipeiTime()]);
   return { success: true, id };
 }
 
@@ -459,16 +466,19 @@ function updateAssessment(params) {
   
   for (let i = 1; i < data.length; i++) {
     if (data[i][0] === params.id) {
-      if (updateData.department) sheet.getRange(i + 1, 3).setValue(updateData.department);
-      if (updateData.grade) sheet.getRange(i + 1, 4).setValue(updateData.grade);
-      if (updateData.competency1 !== undefined) sheet.getRange(i + 1, 5).setValue(updateData.competency1);
-      if (updateData.competency2 !== undefined) sheet.getRange(i + 1, 6).setValue(updateData.competency2);
-      if (updateData.competency3 !== undefined) sheet.getRange(i + 1, 7).setValue(updateData.competency3);
-      if (updateData.competency4 !== undefined) sheet.getRange(i + 1, 8).setValue(updateData.competency4);
-      if (updateData.competency5 !== undefined) sheet.getRange(i + 1, 9).setValue(updateData.competency5);
-      if (updateData.comments !== undefined) sheet.getRange(i + 1, 10).setValue(updateData.comments);
-      if (updateData.assessor !== undefined) sheet.getRange(i + 1, 11).setValue(updateData.assessor);
-      if (updateData.attachmentUrl !== undefined) sheet.getRange(i + 1, 14).setValue(updateData.attachmentUrl);
+      let rowData = data[i];
+      if (updateData.department) rowData[2] = updateData.department;
+      if (updateData.grade) rowData[3] = updateData.grade;
+      if (updateData.competency1 !== undefined) rowData[4] = updateData.competency1;
+      if (updateData.competency2 !== undefined) rowData[5] = updateData.competency2;
+      if (updateData.competency3 !== undefined) rowData[6] = updateData.competency3;
+      if (updateData.competency4 !== undefined) rowData[7] = updateData.competency4;
+      if (updateData.competency5 !== undefined) rowData[8] = updateData.competency5;
+      if (updateData.comments !== undefined) rowData[9] = updateData.comments;
+      if (updateData.assessor !== undefined) rowData[10] = updateData.assessor;
+      if (updateData.attachmentUrl !== undefined) rowData[13] = updateData.attachmentUrl;
+      
+      sheet.getRange(i + 1, 1, 1, rowData.length).setValues([rowData]);
       return { success: true };
     }
   }
