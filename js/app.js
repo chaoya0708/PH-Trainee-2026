@@ -1098,6 +1098,9 @@ function renderAnalytics() {
       <div class="analytics-metric-card">
         <span class="analytics-metric-label">${t('kpiAvgRating')}</span>
         <div class="analytics-metric-value" style="color:var(--warning);">${avgRating}</div>
+        <div style="font-size:10px; color:var(--text-muted); margin-top:4px;">
+          ${state.activeLanguage === 'zh' ? '(學生每週自評星星平均)' : '(Avg of weekly self-appraisal)'}
+        </div>
       </div>
       <div class="analytics-metric-card">
         <span class="analytics-metric-label">${t('kpiProgramProgress')}</span>
