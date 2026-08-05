@@ -1581,7 +1581,10 @@ window.submitObsForm = async function(e) {
     }
     const attachmentUrl = attachmentUrls.join(',');
 
-    const nowIsoStr = new Date().toISOString();
+    const now = new Date();
+    const tzOffset = now.getTimezoneOffset() * 60000;
+    const localIso = (new Date(now.getTime() - tzOffset)).toISOString().slice(0, -1) + '+08:00';
+    const nowIsoStr = localIso;
     
     // If selectedDate exists, use it but append current time so we don't get 00:00
     let finalDate = nowIsoStr;
@@ -2712,15 +2715,16 @@ function buildFeedItem(obs, user) {
   // Action area
   let actionHtml = '';
 
-  if (user.role === 'admin' && !isReviewed) {
+  if (user.role === 'admin') {
+    const btnText = isReviewed ? (state.activeLanguage === 'zh' ? '更新回饋' : 'Update Feedback') : t('submitFeedbackBtn');
     actionHtml = `
       <div class="review-box">
-        <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">${t('submitFeedbackBtn')}</p>
+        <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">${btnText}</p>
         <div class="form-group" style="margin-bottom:8px; margin-top:8px;">
-          <textarea class="form-control" id="feedback-${obs.id}" rows="2" placeholder="${t('feedbackLabel')}..."></textarea>
+          <textarea class="form-control" id="feedback-${obs.id}" rows="2" placeholder="${t('feedbackLabel')}...">${isReviewed ? (obs.mentorComment || '') : ''}</textarea>
         </div>
         <button class="btn btn-primary btn-sm" onclick="window.submitFeedback('${obs.id}')">
-          ${t('submitFeedbackBtn')}
+          ${btnText}
         </button>
       </div>
     `;
