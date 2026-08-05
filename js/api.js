@@ -175,7 +175,7 @@ const Api = (() => {
       ]);
       return obs.map(o => ({
         ...o,
-        guestComments: (gcomments || []).filter(g => g.obsId === o.id)
+        guestComments: (Array.isArray(gcomments) ? gcomments : []).filter(g => g.obsId === o.id)
       }));
     },
 
