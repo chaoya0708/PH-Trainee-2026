@@ -235,6 +235,8 @@ function submitObservation(params) {
   const sheet = getOrCreateSheet(SHEETS.OBSERVATIONS, OBS_HEADERS);
   let attachmentUrl = params.attachmentUrl || "";
   
+  const obsId = params.id || ('obs-' + new Date().getTime());
+  
   if (params.fileData && params.fileData.base64) {
     let diagnosticInfo = "開始執行;";
     try {
@@ -279,11 +281,11 @@ function submitObservation(params) {
   }
 
   sheet.appendRow([
-    params.id, params.traineeId, params.traineeName, params.date,
+    obsId, params.traineeId, params.traineeName, params.date,
     params.department, params.keyObservation, params.actionableIdea || "",
     attachmentUrl, params.submittedAt, 'pending', '', '', '', 0, params.targetWeek || ''
   ]);
-  return { success: true };
+  return { success: true, id: obsId };
 }
 
 function deleteObservation(params) {
