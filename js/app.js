@@ -31,6 +31,16 @@ const state = {
 const $ = id => document.getElementById(id);
 const t = key => window.VimeiI18n.t(key);
 
+// ── Helpers ────────────────────────────────────────────────────────
+window.stripBase64Images = function(html) {
+  if (!html) return html;
+  return html.replace(/<img[^>]*src="data:image[^>]+>/gi, `
+    <div style="padding: 10px; background: #fee2e2; color: #b91c1c; border-radius: 6px; font-size: 12px; margin: 10px 0; border: 1px dashed #b91c1c;">
+      <i class="fi fi-rr-picture"></i> [圖片過大已被隱藏，請統一使用下方的附件功能上傳照片 / Image hidden. Please use the attachment button for photos]
+    </div>
+  `);
+};
+
 // ── Motivational Slogans ──
 function initLoginSlogans() {
   const sloganEl = $('loginSloganText');
@@ -1585,7 +1595,7 @@ window.submitObsForm = async function(e) {
       traineeName:    user.name,
       date:           finalDate,
       department:     $('obsDept').value,
-      keyObservation: window.obsQuill.root.innerHTML,
+      keyObservation: window.stripBase64Images ? window.stripBase64Images(window.obsQuill.root.innerHTML) : window.obsQuill.root.innerHTML,
       actionableIdea: '',
       attachmentUrl:  attachmentUrl,
       selfRating:     parseInt($('obsSelfRating') ? $('obsSelfRating').value : 0, 10),
@@ -2759,7 +2769,7 @@ function buildFeedItem(obs, user) {
       </div>
 
       <div style="margin-bottom:12px;">
-        <div class="obs-block"><h5>${t('lblKeyObs')}</h5><div class="quill-content">${obs.keyObservation}</div></div>
+        <div class="obs-block"><h5>${t('lblKeyObs')}</h5><div class="quill-content">${window.stripBase64Images ? window.stripBase64Images(obs.keyObservation) : obs.keyObservation}</div></div>
       </div>
 
       ${obs.attachmentUrl ? `

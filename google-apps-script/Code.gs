@@ -62,9 +62,32 @@ function doGet(e) {
 }
 
 function doPost(e) {
+  let data;
   try {
-    const data = JSON.parse(e.postData.contents);
-    const action = data.action;
+    data = JSON.parse(e.postData.contents);
+  } catch (err) {
+    return corsResponse({ error: 'Invalid JSON' });
+  }
+
+  const action = data.action;
+  const isReadAction = [
+    'getAllObservations', 'getObservations', 'getAllSchedules', 'getSchedules',
+    'getAllGuestComments', 'getGuestComments', 'getAssessments', 'getAllResources',
+    'getInitData'
+  ].includes(action);
+
+  let lock = null;
+  if (!isReadAction) {
+    lock = LockService.getScriptLock();
+    try {
+      // 鎖定最高 15 秒，避免同時多人寫入造成行號錯亂 (Race Condition)
+      lock.waitLock(15000);
+    } catch (err) {
+      return corsResponse({ error: '系統目前較為忙碌，請稍後再試。 (System is busy, please try again later)' });
+    }
+  }
+
+  try {
     let result;
     if      (action === 'submitObservation')          result = submitObservation(data);
     else if (action === 'submitFeedback')             result = submitFeedback(data);
@@ -79,11 +102,42 @@ function doPost(e) {
     else if (action === 'uploadFile')                 result = uploadFile(data);
     else if (action === 'submitResource')             result = submitResource(data);
     else if (action === 'deleteResource')             result = deleteResource(data);
+    // Add get actions for POST requests (CORS fix)
+    else if (action === 'getAllObservations')         result = getAllObservations();
+    else if (action === 'getObservations')            result = getObservations(data.traineeId);
+    else if (action === 'getAllSchedules')            result = getAllSchedules();
+    else if (action === 'getSchedules')               result = getSchedulesForTrainee(data.traineeId);
+    else if (action === 'getAllGuestComments')        result = getAllGuestComments();
+    else if (action === 'getGuestComments')           result = getGuestComments(data.traineeId);
+    else if (action === 'getAssessments')             result = getAssessments();
+    else if (action === 'getAllResources')            result = getAllResources();
+    else if (action === 'getInitData') {
+      const role = data.role;
+      const tId = data.traineeId;
+      if (role === 'trainee') {
+        result = {
+          observations: getObservations(tId),
+          schedules: getSchedulesForTrainee(tId),
+          assessments: getAssessments(),
+          resources: getAllResources()
+        };
+      } else {
+        result = {
+          observations: getAllObservations(),
+          schedules: getAllSchedules(),
+          assessments: getAssessments(),
+          resources: getAllResources()
+        };
+      }
+    }
     else result = { error: 'Unknown action: ' + action };
     
     return corsResponse(result);
   } catch (err) {
     return corsResponse({ error: err.message });
+  } finally {
+    // 釋放鎖，讓其他請求可以繼續
+    if (lock) lock.releaseLock();
   }
 }
 

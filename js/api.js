@@ -123,16 +123,17 @@ const Api = (() => {
       body: JSON.stringify(params),
       headers: { 'Content-Type': 'text/plain' } // avoids CORS preflight
     });
-    return res.json();
+    const data = await res.json();
+    if (data && data.error) {
+      throw new Error(data.error);
+    }
+    return data;
   }
 
   async function callScriptGet(action, params = {}) {
-    const url = new URL(CONFIG.APPS_SCRIPT_URL);
-    url.searchParams.set('action', action);
-    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-    url.searchParams.set('t', Date.now()); // Cache-buster
-    const res = await fetch(url.toString());
-    return res.json();
+    // 為了避免 Safari / iOS 等瀏覽器的跨網域追蹤阻擋 (CORS Redirect Issue)，
+    // 將原本的 GET 請求全部改由 POST 處理。
+    return callScript({ action, ...params });
   }
 
   // =============================================================
