@@ -2309,6 +2309,7 @@ function renderReview() {
           <h3 style="font-size:16px;font-family:var(--font-title);">${t('assessSectionTitle')}</h3>
           <p style="font-size:11px;color:var(--text-secondary);margin-top:2px;">${t('assessSectionDesc')}</p>
         </div>
+        <form id="assessForm" onsubmit="event.preventDefault();">
         <div class="grid-2">
           <div class="form-group">
             <label>${t('lblTraineeToAssess')}</label>
@@ -2392,8 +2393,9 @@ function renderReview() {
           <input type="text" class="form-control" id="assessSigner" placeholder="${state.activeLanguage === 'zh' ? '請輸入考評主管姓名...' : 'Enter assessor name...'}">
         </div>
         <div style="display:flex;justify-content:flex-end;margin-top:14px;">
-          <button class="btn btn-primary" onclick="window.submitStationAssessment()">${t('btnSubmitAssess')}</button>
+          <button type="button" class="btn btn-primary" onclick="window.submitStationAssessment()">${t('btnSubmitAssess')}</button>
         </div>
+        </form>
       </div>
     `;
   }
