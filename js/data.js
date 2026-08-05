@@ -25,9 +25,9 @@ function calculateMilestoneProgress(observations, traineeId, deptId) {
   let score = 0;
 
   const c1 = deptObs.length > 0;
-  const c2 = deptObs.some(o => o.status === 'reviewed');
+  const c2 = deptObs.some(o => o.status && o.status.trim().toLowerCase() === 'reviewed');
   const c3 = !!assessment;
-  const c4 = assessment && ['A+', 'A', 'B'].includes(assessment.grade);
+  const c4 = assessment && ['A+', 'A', 'B'].includes((assessment.grade || '').trim().toUpperCase());
 
   if (c1) score += 25;
   if (c2) score += 25;
