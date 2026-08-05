@@ -283,7 +283,7 @@ function submitObservation(params) {
   sheet.appendRow([
     obsId, params.traineeId, params.traineeName, params.date,
     params.department, params.keyObservation, params.actionableIdea || "",
-    attachmentUrl, getTaipeiTime(), 'pending', '', '', '', 0, params.targetWeek || ''
+    attachmentUrl, getTaipeiTime(), 'pending', '', '', '', params.selfRating || 0, params.targetWeek || ''
   ]);
   return { success: true, id: obsId };
 }

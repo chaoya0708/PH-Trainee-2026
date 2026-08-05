@@ -1501,13 +1501,16 @@ function renderForm() {
 
         <!-- 3. Self-Appraisal Feature -->
         <div class="form-group" style="background: var(--bg-card); padding: 16px; border-radius: 8px; border: none; margin-bottom: 20px;">
-          <label style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">${state.activeLanguage === 'zh' ? '本週表現自評 (Self-Appraisal)' : 'Self-Appraisal (Rating)'}</label>
-          <div style="display:flex;gap:10px;" id="selfAppraisalStars">
-            ${[1,2,3,4,5].map(v => `<i class="fi fi-rs-star star-btn" data-val="${v}" style="font-size:28px;cursor:pointer;color:#d1d5db;transition:all 0.2s;" onclick="window.setSelfRating(${v})"></i>`).join('')}
+          <label style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">${state.activeLanguage === 'zh' ? '本週表現自評 (Self-Appraisal)' : 'Self-Appraisal (Rating)'} <span style="color:var(--danger);">*</span></label>
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div style="display:flex;gap:10px;" id="selfAppraisalStars">
+              ${[1,2,3,4,5].map(v => `<i class="fi fi-rs-star star-btn" data-val="${v}" style="font-size:28px;cursor:pointer;color:#d1d5db;transition:all 0.2s;" onclick="window.setSelfRating(event, ${v})"></i>`).join('')}
+            </div>
+            <div id="obsSelfRatingText"></div>
           </div>
           <input type="hidden" id="obsSelfRating" value="0">
           <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">
-            ${state.activeLanguage === 'zh' ? '請為自己這週的表現打分數，幫助導師了解您的學習狀態。' : 'Rate your own performance this week to align with your mentor.'}
+            ${state.activeLanguage === 'zh' ? '請為自己這週的表現打分數，幫助導師了解您的學習狀態。提示：點擊星星左半邊可給 0.5 分。' : 'Rate your own performance this week to align with your mentor. Hint: click the left half for a 0.5 rating.'}
           </div>
         </div>
 
@@ -1534,19 +1537,40 @@ function renderForm() {
   });
 }
 
-window.setSelfRating = function(val) {
+window.setSelfRating = function(e, starIndex) {
+  const rect = e.target.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const isHalf = x < (rect.width / 2);
+  const val = isHalf ? starIndex - 0.5 : starIndex;
+  
   const ratingInput = document.getElementById('obsSelfRating');
   if(ratingInput) ratingInput.value = val;
+
+  const textElem = document.getElementById('obsSelfRatingText');
+  if(textElem) textElem.innerHTML = `<span style="font-size:18px; font-weight:800; color:#f59e0b;">${val}</span> <span style="color:var(--text-muted); font-size:12px;">/ 5</span>`;
+  
   const stars = document.querySelectorAll('#selfAppraisalStars .star-btn');
   stars.forEach(s => {
-    if (parseInt(s.dataset.val) <= val) {
-      s.classList.remove('fi-rs-star');
-      s.classList.add('fi-ss-star');
+    const sVal = parseInt(s.dataset.val);
+    s.classList.remove('fi-rs-star');
+    s.classList.add('fi-ss-star'); // always use solid star to allow gradient mask
+    
+    if (sVal <= val) {
+      s.style.background = 'none';
+      s.style.webkitBackgroundClip = 'border-box';
+      s.style.webkitTextFillColor = 'initial';
       s.style.color = '#f59e0b';
       s.style.transform = 'scale(1.1)';
+    } else if (sVal - 0.5 === val) {
+      s.style.background = 'linear-gradient(90deg, #f59e0b 50%, #d1d5db 50%)';
+      s.style.webkitBackgroundClip = 'text';
+      s.style.webkitTextFillColor = 'transparent';
+      s.style.color = 'transparent';
+      s.style.transform = 'scale(1.1)';
     } else {
-      s.classList.remove('fi-ss-star');
-      s.classList.add('fi-rs-star');
+      s.style.background = 'none';
+      s.style.webkitBackgroundClip = 'border-box';
+      s.style.webkitTextFillColor = 'initial';
       s.style.color = '#d1d5db';
       s.style.transform = 'scale(1)';
     }
@@ -1555,6 +1579,13 @@ window.setSelfRating = function(val) {
 
 window.submitObsForm = async function(e) {
   e.preventDefault();
+  
+  const selfRating = parseFloat($('obsSelfRating') ? $('obsSelfRating').value : 0);
+  if (selfRating === 0) {
+    alert(state.activeLanguage === 'zh' ? '請點擊星星，為本週表現進行自評 (Self-Appraisal)！' : 'Please click the stars to rate your self-appraisal!');
+    return;
+  }
+
   const user = Auth.getCurrentUser();
   showLoading();
   
@@ -1586,7 +1617,6 @@ window.submitObsForm = async function(e) {
     const localIso = (new Date(now.getTime() - tzOffset)).toISOString().slice(0, -1) + '+08:00';
     const nowIsoStr = localIso;
     
-    // If selectedDate exists, use it but append current time so we don't get 00:00
     let finalDate = nowIsoStr;
     if (state.selectedDate) {
       const now = new Date();
@@ -1601,7 +1631,7 @@ window.submitObsForm = async function(e) {
       keyObservation: window.stripBase64Images ? window.stripBase64Images(window.obsQuill.root.innerHTML) : window.obsQuill.root.innerHTML,
       actionableIdea: '',
       attachmentUrl:  attachmentUrl,
-      selfRating:     parseInt($('obsSelfRating') ? $('obsSelfRating').value : 0, 10),
+      selfRating:     selfRating,
       targetWeek:     $('obsTargetWeek') ? $('obsTargetWeek').value : ''
     };
 
@@ -2759,7 +2789,7 @@ function buildFeedItem(obs, user) {
             <p>
               ${obs.targetWeek ? obs.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(obs.submittedAt || obs.date)} · <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
               <span style="font-size:11px;color:var(--text-muted);">${t('lblSubmittedAt')}: ${formatTaipeiTime(obs.submittedAt || obs.date, state.activeLanguage)}</span>
-              ${obs.selfRating ? `<br><span style="font-size:12px;color:#f59e0b;font-weight:700;margin-top:4px;display:inline-block;">${state.activeLanguage === 'zh' ? '自我評分' : 'Self-Appraisal'}: ${obs.selfRating} / 5 <i class="fi fi-ss-star"></i></span>` : ''}
+              ${obs.rating ? `<br><span style="font-size:12px;color:#f59e0b;font-weight:700;margin-top:4px;display:inline-block;">${state.activeLanguage === 'zh' ? '本週自我評分' : 'Weekly Self-Appraisal'}: ${obs.rating} / 5 <i class="fi fi-ss-star"></i></span>` : ''}
             </p>
           </div>
         </div>
@@ -3027,10 +3057,13 @@ window.submitFeedback = async function(obsId) {
   const comment = ($('feedback-' + obsId) || {}).value || '';
   if (!comment.trim()) { showToast(t('feedbackLabel') + ' is required', 'error'); return; }
 
+  const obs = state.observations.find(o => o.id === obsId);
+  const existingRating = obs ? (obs.rating || 0) : 0;
+
   const user = Auth.getCurrentUser();
   showLoading();
   try {
-    await Api.submitFeedback(obsId, comment, user.name, 0);
+    await Api.submitFeedback(obsId, comment, user.name, existingRating);
     state.observations = await Api.getAllObservations();
     showToast(t('feedbackSuccess'), 'success');
     renderCurrentTab();
