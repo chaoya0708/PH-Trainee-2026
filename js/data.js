@@ -14,12 +14,25 @@
  *   4. At least one observation has rating >= 4 AND status === 'reviewed'
  */
 function calculateMilestoneProgress(observations, traineeId, deptId) {
+  const targetDept = (window.CONFIG && window.CONFIG.DEPARTMENTS) 
+    ? (window.CONFIG.DEPARTMENTS[deptId] || {}) 
+    : {};
+
+  const matchDept = (deptStr) => {
+    if (!deptStr) return false;
+    if (deptStr === deptId) return true;
+    if (targetDept.name && deptStr === targetDept.name) return true;
+    if (targetDept.nameZh && deptStr === targetDept.nameZh) return true;
+    if (targetDept.shortZh && deptStr === targetDept.shortZh) return true;
+    return false;
+  };
+
   const deptObs = observations.filter(
-    o => o.traineeId === traineeId && o.department === deptId
+    o => o.traineeId === traineeId && matchDept(o.department)
   );
   
   const assessment = (window.state && window.state.assessments) 
-    ? window.state.assessments.find(a => a.traineeId === traineeId && a.department === deptId) 
+    ? window.state.assessments.find(a => a.traineeId === traineeId && matchDept(a.department)) 
     : null;
 
   let score = 0;
