@@ -3254,7 +3254,11 @@ window.filterResources = function(category) {
         <span class="status-badge status-reviewed">${res.category}</span>
         ${user.role === 'admin' ? `<button class="icon-btn" style="color:var(--danger);" onclick="window.deleteResource('${res.id}')"><i class="fi fi-rr-trash"></i></button>` : ''}
       </div>
-      <h3 style="margin-bottom:8px; font-size:16px;">${res.title}</h3>
+      <h3 style="margin-bottom:8px; font-size:16px;">
+        ${res.title === '食品QAQC_結訓考核簡報 (3人共同完成) / CMF-QAQC Final Assessment Presentation' 
+          ? (state.activeLanguage === 'zh' ? '食品QAQC_結訓考核簡報 (3人共同完成)' : 'CMF-QAQC Final Assessment Presentation') 
+          : res.title}
+      </h3>
       <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px; flex-grow:1;">
         Uploaded by ${res.uploadedBy} on ${new Date(res.uploadedAt).toLocaleDateString()}
       </div>
