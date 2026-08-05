@@ -1198,3 +1198,37 @@ textarea.form-control:focus {
   color: #fed7aa;
   border: 1px solid #9a3412;
 }
+
+/* Mobile Responsive Table for Analytics */
+@media (max-width: 768px) {
+  .analytics-table, .analytics-table thead, .analytics-table tbody, .analytics-table th, .analytics-table td, .analytics-table tr {
+    display: block;
+  }
+  .analytics-table thead {
+    display: none;
+  }
+  .analytics-table tr {
+    margin-bottom: 16px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .analytics-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px;
+    gap: 8px;
+  }
+  .analytics-table td:last-child {
+    border-bottom: none;
+  }
+  .analytics-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+}

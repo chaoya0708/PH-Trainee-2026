@@ -1059,17 +1059,17 @@ function renderAnalytics() {
 
     return `
       <tr>
-        <td><strong>${tr.name}</strong></td>
-        ${user.role !== 'guest' ? `<td>${pulseBadge}</td>` : ''}
-        <td>
+        <td data-label="${t('tblHeaderName')}"><strong>${tr.name}</strong></td>
+        ${user.role !== 'guest' ? `<td data-label="Pulse Check">${pulseBadge}</td>` : ''}
+        <td data-label="${t('tblHeaderProgress')}">
           <div style="display:flex;align-items:center;gap:10px;">
             <div class="progress-bar" style="width:80px;height:8px;margin-bottom:0;"><div class="progress-fill" style="width:${progress}%;"></div></div>
             <strong>${progress}%</strong>
           </div>
         </td>
-        <td><strong style="color:var(--warning);">${trAvgRating}</strong></td>
-        <td>${traineeObs.length}</td>
-        <td><div style="display:flex;flex-wrap:wrap;gap:6px;">${deptBadges}</div></td>
+        <td data-label="${t('tblHeaderAvgRating')}"><strong style="color:var(--warning);">${trAvgRating}</strong></td>
+        <td data-label="${t('tblHeaderSubmissions')}">${traineeObs.length}</td>
+        <td data-label="${t('rotationDept')}"><div style="display:flex;flex-wrap:wrap;gap:6px;">${deptBadges}</div></td>
       </tr>
     `;
   }).join('');
