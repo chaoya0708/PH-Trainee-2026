@@ -28,7 +28,7 @@ const I18N = {
     loginWelcome:      'Welcome back,',
 
     // Sidebar tabs
-    tabDashboard:  'Dashboard & Schedule',
+    tabDashboard:  'Training Calendar',
     tabForm:       'Observation Log',
     tabMilestones: 'Milestones Tracker',
     tabJournals:   'Weekly Journals',
@@ -157,7 +157,7 @@ const I18N = {
     loginWelcome:      '歡迎回來，',
 
     // Sidebar tabs
-    tabDashboard:  '儀表板與排程',
+    tabDashboard:  '培訓行事曆',
     tabForm:       '填寫週記',
     tabMilestones: '里程碑追蹤',
     tabJournals:   '週記總覽',
