@@ -186,9 +186,9 @@ window.selectLoginRole = function(role) {
 
 window.selectLoginTrainee = function(traineeId) {
   _loginTraineeId = traineeId;
-  const tr = CONFIG.TRAINEES.find(t => t.id === traineeId);
+  const tr = CONFIG.TRAINEES.find(t => t.id === traineeId) || { name: traineeId, avatar: '👤' };
   $('loginStepTraineeName').style.display = 'none';
-  const parts = tr.name.split(' / ');
+  const parts = (tr.name || '').split(' / ');
   const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:12px; font-weight:400; opacity:0.8;">/ ${parts[1]}</span>` : tr.name;
   $('loginUserPreview').innerHTML = `
     ${tr.avatar ? `<span>${tr.avatar}</span>` : ''}
@@ -1006,7 +1006,7 @@ function renderAnalytics() {
   }
 
   const avgRating = reviewedObs.length > 0 
-    ? (reviewedObs.reduce((sum, o) => sum + o.rating, 0) / reviewedObs.length).toFixed(1) 
+    ? (reviewedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / reviewedObs.length).toFixed(1) 
     : '0.0';
 
   let totalProgressSum = 0;
@@ -1023,7 +1023,7 @@ function renderAnalytics() {
     
     const ratedObs = traineeObs.filter(o => o.rating > 0);
     const trAvgRating = ratedObs.length > 0 
-      ? (ratedObs.reduce((sum, o) => sum + o.rating, 0) / ratedObs.length).toFixed(1) 
+      ? (ratedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / ratedObs.length).toFixed(1) 
       : '0.0';
 
     // Department completion detailed badges
@@ -1169,7 +1169,7 @@ window.exportTraineeSummary = function() {
     const traineeObs = state.observations.filter(o => o.traineeId === tr.id);
     const ratedObs = traineeObs.filter(o => o.rating > 0);
     const trAvgRating = ratedObs.length > 0 
-      ? (ratedObs.reduce((sum, o) => sum + o.rating, 0) / ratedObs.length).toFixed(1) 
+      ? (ratedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / ratedObs.length).toFixed(1) 
       : '0.0';
     
     csv += `"${tr.name}",${progress}%,${trAvgRating},${traineeObs.length}`;
@@ -1659,7 +1659,7 @@ function calcOverallProgress(traineeId) {
   const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excluded.includes(d.id)).map(d => d.id);
   const sum = depts.reduce((acc, d) =>
     acc + calculateMilestoneProgress(state.observations, traineeId, d), 0);
-  return Math.round(sum / depts.length);
+  return depts.length > 0 ? Math.round(sum / depts.length) : 0;
 }
 
 function renderMilestones() {
@@ -1772,7 +1772,7 @@ function renderMilestones() {
     // 計算各站別平均成績供趨勢圖使用
     const sortedAssessments = (state.assessments || [])
       .filter(a => a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee))
-      .sort((a, b) => new Date(a.assessedAt || 0) - new Date(b.assessedAt || 0));
+      .sort((a, b) => (new Date(a.assessedAt || 0).getTime() || 0) - (new Date(b.assessedAt || 0).getTime() || 0));
 
     sortedAssessments.forEach(a => {
       const avg = (a.competency1 + a.competency2 + a.competency3 + a.competency4 + (a.competency5 || 3)) / 5;

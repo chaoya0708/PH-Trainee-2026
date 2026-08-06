@@ -41,6 +41,7 @@ function doGet(e) {
       if (role === 'trainee') {
         result = {
           observations: getObservations(tId),
+          guestComments: getGuestComments(tId),
           schedules: getSchedulesForTrainee(tId),
           assessments: getAssessments(),
           resources: getAllResources()
@@ -48,6 +49,7 @@ function doGet(e) {
       } else {
         result = {
           observations: getAllObservations(),
+          guestComments: getAllGuestComments(),
           schedules: getAllSchedules(),
           assessments: getAssessments(),
           resources: getAllResources()
@@ -117,6 +119,7 @@ function doPost(e) {
       if (role === 'trainee') {
         result = {
           observations: getObservations(tId),
+          guestComments: getGuestComments(tId),
           schedules: getSchedulesForTrainee(tId),
           assessments: getAssessments(),
           resources: getAllResources()
@@ -124,6 +127,7 @@ function doPost(e) {
       } else {
         result = {
           observations: getAllObservations(),
+          guestComments: getAllGuestComments(),
           schedules: getAllSchedules(),
           assessments: getAssessments(),
           resources: getAllResources()

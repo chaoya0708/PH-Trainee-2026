@@ -493,23 +493,106 @@ const Api = (() => {
     
     async getInitData(role, traineeId) {
       if (CONFIG.DEMO_MODE) {
+        const obs = lsGet(LS_OBS) || [];
+        const gcomments = lsGet(LS_GCOMMENT) || [];
+        const obsWithComments = obs.map(o => ({
+          ...o,
+          guestComments: gcomments.filter(g => g.obsId === o.id)
+        }));
+        
         if (role === 'trainee') {
           return {
-            observations: (lsGet(LS_OBS) || []).filter(o => o.traineeId === traineeId),
+            observations: obsWithComments.filter(o => o.traineeId === traineeId),
             schedules: { [traineeId]: (lsGet(LS_SCHED) || {})[traineeId] || {} },
             assessments: lsGet(LS_ASSESS) || [],
             resources: lsGet(LS_RESOURCES) || []
           };
         } else {
           return {
-            observations: lsGet(LS_OBS) || [],
+            observations: obsWithComments,
             schedules: lsGet(LS_SCHED) || {},
             assessments: lsGet(LS_ASSESS) || [],
             resources: lsGet(LS_RESOURCES) || []
           };
         }
       }
-      return callScriptGet('getInitData', { role, traineeId });
+      
+      const data = await callScriptGet('getInitData', { role, traineeId });
+      
+      // Normalize schedules
+      if (data.schedules) {
+        if (role === 'trainee') {
+          const normalized = {};
+          for (const dStr in data.schedules) {
+            let key = dStr;
+            const parts = dStr.match(/([a-zA-Z]{3}) (\d{1,2}) (\d{4})/);
+            if (parts) {
+              const monthMap = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
+              const yyyy = parts[3];
+              const mm = String(monthMap[parts[1]]).padStart(2, '0');
+              const dd = String(parts[2]).padStart(2, '0');
+              key = `${yyyy}-${mm}-${dd}`;
+            } else {
+              const cleanStr = dStr.replace(/\(.*?\)/g, '').trim();
+              const d = new Date(cleanStr);
+              if (!isNaN(d)) {
+                key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+              }
+            }
+            normalized[key] = data.schedules[dStr];
+          }
+          data.schedules = normalized;
+        } else {
+          const allSchedules = {};
+          for (const tId in data.schedules) {
+            const traineeData = data.schedules[tId];
+            const normalized = {};
+            for (const dStr in traineeData) {
+              let key = dStr;
+              const parts = dStr.match(/([a-zA-Z]{3}) (\d{1,2}) (\d{4})/);
+              if (parts) {
+                const monthMap = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
+                const yyyy = parts[3];
+                const mm = String(monthMap[parts[1]]).padStart(2, '0');
+                const dd = String(parts[2]).padStart(2, '0');
+                key = `${yyyy}-${mm}-${dd}`;
+              } else {
+                const cleanStr = dStr.replace(/\(.*?\)/g, '').trim();
+                const d = new Date(cleanStr);
+                if (!isNaN(d)) {
+                  key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+                }
+              }
+              normalized[key] = traineeData[dStr];
+            }
+            allSchedules[tId] = normalized;
+          }
+          data.schedules = allSchedules;
+        }
+      }
+      
+      // Normalize observations with guestComments
+      if (data.observations) {
+        const gcomments = data.guestComments || [];
+        data.observations = data.observations.map(o => ({
+          ...o,
+          guestComments: (Array.isArray(gcomments) ? gcomments : []).filter(g => g.obsId === o.id)
+        }));
+      }
+      
+      // Normalize assessments
+      if (Array.isArray(data.assessments)) {
+        data.assessments.forEach(d => {
+          if (d.visibleToTrainee === undefined) {
+            if (d[''] !== undefined) d.visibleToTrainee = (d[''] === true || d[''] === 'true' || d[''] === 'TRUE');
+            else d.visibleToTrainee = false;
+          } else {
+            d.visibleToTrainee = (d.visibleToTrainee === true || d.visibleToTrainee === 'true' || d.visibleToTrainee === 'TRUE');
+          }
+        });
+      }
+      
+      return data;
     },
 
     async getAllResources() {
