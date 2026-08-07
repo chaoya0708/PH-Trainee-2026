@@ -232,6 +232,12 @@ window.handleLogin = async function() {
     // Set default language based on role on initial login
     const targetLang = (_loginRole === 'trainee') ? 'en' : 'zh';
     localStorage.setItem('vimei_lang', targetLang);
+    
+    // Force dark mode for executive
+    if (_loginRole === 'executive') {
+      localStorage.setItem('vimei_theme', 'dark');
+    }
+
     window.location.reload();
   } else {
     if (errorEl) {
@@ -1301,6 +1307,11 @@ function setupMainEventListeners() {
         Auth.login(opt.r, opt.i, CONFIG.ADMIN_PIN);
         const targetLang = (opt.r === 'trainee') ? 'en' : 'zh';
         localStorage.setItem('vimei_lang', targetLang);
+        
+        if (opt.r === 'executive') {
+          localStorage.setItem('vimei_theme', 'dark');
+        }
+        
         location.reload();
       };
       popup.appendChild(btn);
