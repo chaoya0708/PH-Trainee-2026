@@ -14,7 +14,7 @@ const todayStr = todayObj.getFullYear() + '-' + String(todayObj.getMonth() + 1).
 const state = {
   activeTab:          sessionStorage.getItem('vimei_activeTab') || 'dashboard',
   activeLanguage:     ['en', 'zh'].includes(localStorage.getItem('vimei_lang')) ? localStorage.getItem('vimei_lang') : 'en',
-  activeTheme:        localStorage.getItem('vimei_theme') || 'light',
+  activeTheme:        Auth.getCurrentUser() ? (localStorage.getItem('vimei_theme') || 'light') : 'light',
   selectedTraineeId:  'diane',
   selectedDate:       todayStr,
   viewDate:           todayStr,
@@ -233,9 +233,11 @@ window.handleLogin = async function() {
     const targetLang = (_loginRole === 'trainee') ? 'en' : 'zh';
     localStorage.setItem('vimei_lang', targetLang);
     
-    // Force dark mode for executive
+    // Force theme based on role
     if (_loginRole === 'executive') {
       localStorage.setItem('vimei_theme', 'dark');
+    } else {
+      localStorage.setItem('vimei_theme', 'light');
     }
 
     window.location.reload();
@@ -1310,6 +1312,8 @@ function setupMainEventListeners() {
         
         if (opt.r === 'executive') {
           localStorage.setItem('vimei_theme', 'dark');
+        } else {
+          localStorage.setItem('vimei_theme', 'light');
         }
         
         location.reload();
