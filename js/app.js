@@ -1063,11 +1063,11 @@ function renderAnalytics() {
     const currentStatus = localStorage.getItem(`MA_STATUS_${tr.id}`) || 'green';
     let pulseBadge = '';
     if (currentStatus === 'green') {
-      pulseBadge = `<div style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(16,185,129,0.1);color:#10b981;white-space:nowrap;">🟢 ${state.activeLanguage === 'zh' ? '順利推進' : 'On Track'}</div>`;
+      pulseBadge = `<div style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(16,185,129,0.1);color:#10b981;box-shadow:0 0 8px rgba(16,185,129,0.4);white-space:nowrap;">🟢 ${state.activeLanguage === 'zh' ? '順利推進' : 'On Track'}</div>`;
     } else if (currentStatus === 'yellow') {
-      pulseBadge = `<div style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(245,158,11,0.1);color:#f59e0b;white-space:nowrap;">🟡 ${state.activeLanguage === 'zh' ? '遇到瓶頸' : 'Facing Blocks'}</div>`;
+      pulseBadge = `<div style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(245,158,11,0.1);color:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,0.4);white-space:nowrap;">🟡 ${state.activeLanguage === 'zh' ? '遇到瓶頸' : 'Facing Blocks'}</div>`;
     } else {
-      pulseBadge = `<div style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(239,68,68,0.1);color:#ef4444;white-space:nowrap;">🔴 ${state.activeLanguage === 'zh' ? '需要協助' : 'Need Help'}</div>`;
+      pulseBadge = `<div style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(239,68,68,0.1);color:#ef4444;box-shadow:0 0 8px rgba(239,68,68,0.4);white-space:nowrap;">🔴 ${state.activeLanguage === 'zh' ? '需要協助' : 'Need Help'}</div>`;
     }
 
     return `
