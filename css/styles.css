@@ -638,7 +638,14 @@ textarea.form-control:focus {
     display: none;
   }
   .current-user-chip {
-    display: none !important;
+    padding: 6px 12px; box-shadow: var(--shadow-sm);
+  }
+  .current-user-chip span:last-child {
+    display: inline-block;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .controls-group {
     gap: 6px;
