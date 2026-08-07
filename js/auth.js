@@ -1,8 +1,8 @@
 /**
  * VIMEI Knowledge Tracker - Authentication Module
  * =================================================
- * Handles PIN-based login and session management via sessionStorage.
- * Session is cleared automatically when the browser tab is closed.
+ * Handles PIN-based login and session management via localStorage.
+ * (Changed from sessionStorage to prevent data loss on mobile embedded browsers)
  */
 
 const Auth = {
@@ -73,7 +73,7 @@ const Auth = {
     }
 
     if (user) {
-      sessionStorage.setItem(this.SESSION_KEY, JSON.stringify(user));
+      localStorage.setItem(this.SESSION_KEY, JSON.stringify(user));
       return true;
     }
     return false;
@@ -81,13 +81,13 @@ const Auth = {
 
   /** Remove current session */
   logout() {
-    sessionStorage.removeItem(this.SESSION_KEY);
+    localStorage.removeItem(this.SESSION_KEY);
   },
 
   /** Get current logged-in user object, or null */
   getCurrentUser() {
     try {
-      const raw = sessionStorage.getItem(this.SESSION_KEY);
+      const raw = localStorage.getItem(this.SESSION_KEY);
       if (!raw) return null;
       const user = JSON.parse(raw);
       if (user.role === 'admin') {
@@ -118,7 +118,7 @@ const Auth = {
     }
   },
 
-  /** Quick check: is anyone logged in? */
+  /** Check if logged in */
   isLoggedIn() {
     return this.getCurrentUser() !== null;
   }

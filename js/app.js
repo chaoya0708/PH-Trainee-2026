@@ -288,6 +288,12 @@ window.autoSyncSchedules = async function() {
 async function enterApp() {
   await window.autoSyncSchedules();
   const user = Auth.getCurrentUser();
+  if (!user) {
+    $('loginScreen').style.display = 'flex';
+    $('mainApp').style.display = 'none';
+    hideLoading();
+    return;
+  }
 
   document.documentElement.lang = state.activeLanguage === 'zh' ? 'zh-TW' : 'en';
   if ($('langSelector')) $('langSelector').value = state.activeLanguage;
@@ -491,6 +497,7 @@ async function loadAllData() {
   showLoading();
   try {
     const user = Auth.getCurrentUser();
+    if (!user) return;
 
     const data = await Api.getInitData(user.role, user.id);
     
