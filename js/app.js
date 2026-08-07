@@ -1253,11 +1253,7 @@ function setupMainEventListeners() {
     // If not God Mode and not Admin, do nothing
     if (!forceGodMode && (!user || user.role !== 'admin')) return;
 
-    // If mobile and clicking the avatar, do not show switcher
-    // (Only allow title click to show switcher on mobile)
-    if (!forceGodMode && window.innerWidth <= 768) {
-      return;
-    }
+    // Removed mobile restriction as per user request
 
     let existing = document.getElementById('fastSwitchPopup');
     if (existing) {
