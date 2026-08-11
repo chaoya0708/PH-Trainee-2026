@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    // Mock Auth
+    window.Auth = {
+      getCurrentUser: () => ({ role: 'trainee', id: 'diane' })
+    };
+    window.showLoading = () => console.log('showLoading');
+    window.hideLoading = () => console.log('hideLoading');
+    window.renderCurrentTab = () => console.log('renderCurrentTab');
+    window.showToast = (msg) => console.log('toast:', msg);
+    
+    // We want to trace getInitData
+    window.onload = async () => {
+      try {
+        console.log("Fetching init data...");
+        const data = await Api.getInitData('trainee', 'diane');
+        console.log("Success:", Object.keys(data));
+      } catch (e) {
+        console.error("Error loading data:", e.stack);
+      }
+    };
+  </script>
+</head>
+<body></body>
+</html>

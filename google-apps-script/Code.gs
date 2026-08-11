@@ -468,7 +468,7 @@ function updateAssessment(params) {
   const data = sheet.getDataRange().getValues();
   const updateData = params.data;
   
-  for (let i = 1; i < data.length; i++) {
+  for (let i = 1; i < data.length; i++) 
     if (data[i][0] === params.id) {
       let rowData = data[i];
       if (updateData.department) rowData[2] = updateData.department;

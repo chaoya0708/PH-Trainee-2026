@@ -2914,6 +2914,14 @@ window.openEditObservation = function(id) {
   if (!obs) return;
   $('editObsId').value = obs.id;
   $('editObsDate').value = formatTaipeiDateOnly(obs.date);
+  
+  const deptSelect = $('editObsDept');
+  if (deptSelect) {
+    deptSelect.innerHTML = Object.values(CONFIG.DEPARTMENTS)
+      .map(d => `<option value="${d.id}">${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`)
+      .join('');
+    deptSelect.value = obs.department || '';
+  }
   if (!window.editObsQuill) {
     window.editObsQuill = new Quill('#editObsKeyEditor', {
       theme: 'snow',
@@ -2940,6 +2948,7 @@ window.saveEditedObservation = async function() {
   const id = $('editObsId').value;
   const data = {
     date: $('editObsDate').value,
+    department: $('editObsDept') ? $('editObsDept').value : undefined,
     keyObservation: window.editObsQuill.root.innerHTML,
     attachmentUrl: $('editObsPhoto').value.trim()
   };
