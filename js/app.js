@@ -2613,36 +2613,36 @@ function renderReview() {
             ${Object.keys(grouped).map(tId => {
               const tr = CONFIG.TRAINEES.find(t => t.id === tId);
               const tName = tr ? tr.name : tId;
-              let html = \`<div style="background:var(--bg-color); border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-bottom:8px;">
-                            <h4 style="margin:0 0 12px 0; font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--card-border); padding-bottom:8px;"><i class="fi fi-rr-user"></i> \${tName}</h4>
-                            <div style="display:flex;flex-direction:column;gap:10px;">\`;
+              let html = `<div style="background:var(--bg-color); border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-bottom:8px;">
+                            <h4 style="margin:0 0 12px 0; font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--card-border); padding-bottom:8px;"><i class="fi fi-rr-user"></i> ${tName}</h4>
+                            <div style="display:flex;flex-direction:column;gap:10px;">`;
               
               html += grouped[tId].map(a => {
                 const dept = CONFIG.DEPARTMENTS[a.department] || {};
-                return \`
-                  <div class="glass-card" style="padding:12px; border-left: 4px solid \${dept.color || 'var(--primary)'}; margin:0;">
+                return `
+                  <div class="glass-card" style="padding:12px; border-left: 4px solid ${dept.color || 'var(--primary)'}; margin:0;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                       <div>
-                        <span style="font-weight:bold; font-size:13px;">\${state.activeLanguage === 'zh' ? (dept.nameZh || dept.name) : dept.name}</span>
+                        <span style="font-weight:bold; font-size:13px;">${state.activeLanguage === 'zh' ? (dept.nameZh || dept.name) : dept.name}</span>
                       </div>
-                      <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;">\${a.grade}</span>
+                      <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;">${a.grade}</span>
                     </div>
                     <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; font-size:11px; color:var(--text-secondary);">
-                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">\${t('lblCompetency1').split(' ')[0]}: \${a.competency1}</span>
-                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">\${t('lblCompetency2').split(' ')[0]}: \${a.competency2}</span>
-                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">\${t('lblCompetency3').split(' ')[0]}: \${a.competency3}</span>
-                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">\${t('lblCompetency4').split(' ')[0]}: \${a.competency4}</span>
-                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">\${t('lblCompetency5').split(' ')[0]}: \${a.competency5}</span>
+                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency1').split(' ')[0]}: ${a.competency1}</span>
+                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency2').split(' ')[0]}: ${a.competency2}</span>
+                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency3').split(' ')[0]}: ${a.competency3}</span>
+                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency4').split(' ')[0]}: ${a.competency4}</span>
+                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency5').split(' ')[0]}: ${a.competency5}</span>
                     </div>
-                    <p style="font-size:13px; font-style:italic; background:rgba(0,0,0,0.02); padding:8px; border-radius:6px; margin-bottom:6px;">\${a.comments}</p>
+                    <p style="font-size:13px; font-style:italic; background:rgba(0,0,0,0.02); padding:8px; border-radius:6px; margin-bottom:6px;">${a.comments}</p>
                     <div style="text-align:right; font-size:11px; color:var(--text-muted);">
-                      \${a.assessor} • \${formatTaipeiTime(a.submittedAt, state.activeLanguage)}
+                      ${a.assessor} • ${formatTaipeiTime(a.submittedAt, state.activeLanguage)}
                     </div>
                   </div>
-                \`;
+                `;
               }).join('');
 
-              html += \`</div></div>\`;
+              html += `</div></div>`;
               return html;
             }).join('')}
           </div>
