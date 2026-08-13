@@ -674,10 +674,12 @@ textarea.form-control:focus {
   .calendar-view {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px; /* For scrollbar */
   }
   .calendar-header, .calendar-body {
+    min-width: 700px; /* Force horizontal scroll instead of squishing */
   }
-  .calendar-body { font-size: 10px; }
+  .calendar-body { font-size: 11px; }
   .cal-cell { padding: 6px 4px; min-height: 55px; }
   .cal-cell.week-cell { min-height: 80px; }
   .cal-dept-tag { font-size: 8px; padding: 2px 4px; }
@@ -1468,7 +1470,7 @@ textarea.form-control:focus {
 
 /* Override existing calendar-view inside premium-calendar-card */
 .premium-calendar-card .calendar-view {
-  background: transparent; box-shadow: none; border-radius: 12px; border: 1px solid #f1f5f9; overflow: hidden;
+  background: transparent; box-shadow: none; border-radius: 12px; border: 1px solid #f1f5f9; overflow: hidden; overflow-x: auto;
 }
 .premium-calendar-card .calendar-header {
   background: #f8fafc; border-bottom: 1px solid #f1f5f9;
