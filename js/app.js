@@ -1084,23 +1084,9 @@ function renderAnalytics() {
   const trainees = CONFIG.TRAINEES;
   let depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly);
 
-  // Restrict guest visibility to their own department
-  if (isGuest) {
-    depts = depts.filter(d => d.id === user.departmentId);
-  }
-
   // 1. KPI Calculations
-  let totalObs = 0;
-  let reviewedObs = [];
-
-  if (isGuest) {
-    const guestObs = state.observations.filter(o => o.department === user.departmentId);
-    totalObs = guestObs.length;
-    reviewedObs = guestObs.filter(o => o.rating > 0);
-  } else {
-    totalObs = state.observations.length;
-    reviewedObs = state.observations.filter(o => o.rating > 0);
-  }
+  let totalObs = state.observations.length;
+  let reviewedObs = state.observations.filter(o => o.rating > 0);
 
   const avgRating = reviewedObs.length > 0
     ? (reviewedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / reviewedObs.length).toFixed(1)
@@ -1116,7 +1102,6 @@ function renderAnalytics() {
   const leaderboardRows = trainees.map(tr => {
     const progress = calcOverallProgress(tr.id);
     let traineeObs = state.observations.filter(o => o.traineeId === tr.id);
-    if (isGuest) traineeObs = traineeObs.filter(o => o.department === user.departmentId);
 
     const ratedObs = traineeObs.filter(o => o.rating > 0);
     const trAvgRating = ratedObs.length > 0
@@ -1178,7 +1163,7 @@ function renderAnalytics() {
           <h3>${t('analyticsTitle')}</h3>
           <p style="color:var(--text-secondary);font-size:12px;margin-top:4px;">${t('analyticsSubTitle')}</p>
         </div>
-        ${!isGuest ? `
+        ${(user.role !== 'trainee') ? `
         <div class="btn-export-group">
           <button class="btn btn-export" onclick="exportTraineeSummary()">${t('btnExportSummary')}</button>
           <button class="btn btn-export btn-export-secondary" onclick="exportObservationLogs()">${t('btnExportLogs')}</button>
@@ -1953,8 +1938,13 @@ function renderMilestones() {
               </div>
               
               <div style="font-size:13px;line-height:1.5;border-top:1px dashed var(--card-border);padding-top:10px;">
-                <p style="font-style:italic;color:var(--text-primary);">${assessment.comments}</p>
+                ${(!isGuest || dept.id === user.departmentId) ? `
+                <div style="font-weight:600; color:var(--primary); margin-bottom:4px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">
+                  <i class="fi fi-rr-comment"></i> ${state.activeLanguage === 'zh' ? '單位評語' : 'Department Comment'}
+                </div>
+                <p style="background:rgba(0,0,0,0.02); padding:10px; border-radius:8px; color:var(--text-primary); margin-top:0; font-style:italic;">${assessment.comments}</p>
                 ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/en/translator#zh/en/${encodeURIComponent(assessment.comments)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
+                ` : `<p style="font-style:italic;color:var(--text-muted);text-align:center;padding:10px;">${state.activeLanguage === 'zh' ? '（僅該單位可見詳細評語）' : '(Comments hidden)'}</p>`}
                 ${assessment.attachmentUrl ? `
                   <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
                   ${assessment.attachmentUrl.split(',').map((part, idx) => {
@@ -2105,7 +2095,7 @@ function renderMilestones() {
               max: 5,
               ticks: { display: false, stepSize: 1 },
               pointLabels: {
-                font: { size: 16, weight: 'bold' },
+                font: { size: window.innerWidth < 768 ? 10 : 12, weight: 'bold' },
                 color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b'
               },
               grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
@@ -2610,36 +2600,51 @@ function renderReview() {
   }).sort((a, b) => (new Date(b.submittedAt || b.date).getTime() || 0) - (new Date(a.submittedAt || a.date).getTime() || 0));
 
   if (relevantAssessments.length > 0) {
+    const grouped = {};
+    relevantAssessments.forEach(a => {
+      if (!grouped[a.traineeId]) grouped[a.traineeId] = [];
+      grouped[a.traineeId].push(a);
+    });
+
     pastAssessmentsHtml = `
         <div style="margin-bottom:24px;">
           <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-secondary);"><i class="fi fi-rr-time-past"></i> ${state.activeLanguage === 'zh' ? '已送出的考核紀錄' : 'Submitted Assessments'}</h3>
           <div style="display:flex;flex-direction:column;gap:12px;">
-            ${relevantAssessments.map(a => {
-      const tr = CONFIG.TRAINEES.find(t => t.id === a.traineeId);
-      const dept = CONFIG.DEPARTMENTS[a.department] || {};
-      return `
-                <div class="glass-card" style="padding:12px; border-left: 4px solid ${dept.color || 'var(--primary)'};">
-                  <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                    <div>
-                      <span style="font-weight:bold; font-size:14px;">${tr ? tr.name : a.traineeId}</span>
-                      <span style="font-size:12px; color:var(--text-muted); margin-left:8px;">${state.activeLanguage === 'zh' ? (dept.nameZh || dept.name) : dept.name}</span>
+            ${Object.keys(grouped).map(tId => {
+              const tr = CONFIG.TRAINEES.find(t => t.id === tId);
+              const tName = tr ? tr.name : tId;
+              let html = \`<div style="background:var(--bg-color); border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-bottom:8px;">
+                            <h4 style="margin:0 0 12px 0; font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--card-border); padding-bottom:8px;"><i class="fi fi-rr-user"></i> \${tName}</h4>
+                            <div style="display:flex;flex-direction:column;gap:10px;">\`;
+              
+              html += grouped[tId].map(a => {
+                const dept = CONFIG.DEPARTMENTS[a.department] || {};
+                return \`
+                  <div class="glass-card" style="padding:12px; border-left: 4px solid \${dept.color || 'var(--primary)'}; margin:0;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                      <div>
+                        <span style="font-weight:bold; font-size:13px;">\${state.activeLanguage === 'zh' ? (dept.nameZh || dept.name) : dept.name}</span>
+                      </div>
+                      <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;">\${a.grade}</span>
                     </div>
-                    <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;">${a.grade}</span>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; font-size:11px; color:var(--text-secondary);">
+                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">\${t('lblCompetency1').split(' ')[0]}: \${a.competency1}</span>
+                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">\${t('lblCompetency2').split(' ')[0]}: \${a.competency2}</span>
+                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">\${t('lblCompetency3').split(' ')[0]}: \${a.competency3}</span>
+                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">\${t('lblCompetency4').split(' ')[0]}: \${a.competency4}</span>
+                      <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">\${t('lblCompetency5').split(' ')[0]}: \${a.competency5}</span>
+                    </div>
+                    <p style="font-size:13px; font-style:italic; background:rgba(0,0,0,0.02); padding:8px; border-radius:6px; margin-bottom:6px;">\${a.comments}</p>
+                    <div style="text-align:right; font-size:11px; color:var(--text-muted);">
+                      \${a.assessor} • \${formatTaipeiTime(a.submittedAt, state.activeLanguage)}
+                    </div>
                   </div>
-                  <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; font-size:11px; color:var(--text-secondary);">
-                    <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency1').split(' ')[0]}: ${a.competency1}</span>
-                    <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency2').split(' ')[0]}: ${a.competency2}</span>
-                    <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency3').split(' ')[0]}: ${a.competency3}</span>
-                    <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency4').split(' ')[0]}: ${a.competency4}</span>
-                    <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency5').split(' ')[0]}: ${a.competency5}</span>
-                  </div>
-                  <p style="font-size:13px; font-style:italic; background:rgba(0,0,0,0.02); padding:8px; border-radius:6px; margin-bottom:6px;">${a.comments}</p>
-                  <div style="text-align:right; font-size:11px; color:var(--text-muted);">
-                    ${a.assessor} • ${formatTaipeiTime(a.submittedAt, state.activeLanguage)}
-                  </div>
-                </div>
-              `;
-    }).join('')}
+                \`;
+              }).join('');
+
+              html += \`</div></div>\`;
+              return html;
+            }).join('')}
           </div>
         </div>
       `;
@@ -3487,7 +3492,7 @@ window.handleUploadResource = async function () {
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
-        const base64 = e.target.result;
+        const base64 = e.target.result.split(',')[1];
         // 1. Upload to Drive
         const uploadRes = await Api.uploadFile(base64, file.type, file.name, 'MA_Program_Resources');
         if (uploadRes.error) throw new Error(uploadRes.error);
