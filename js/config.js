@@ -97,7 +97,7 @@ const CONFIG = {
     yushan_packaging: { id: 'yushan_packaging', name: 'YUSHAN - Packaging', nameZh: '玉膳 - 包裝段', shortZh: '包裝段', shortEn: 'Pkg', color: '#fb923c', icon: '', pin: '3817' },
     yushan_warehouse: { id: 'yushan_warehouse', name: 'YUSHAN - Warehouse & Cold Storage', nameZh: '玉膳 - 倉儲物流與凍庫管理', shortZh: '倉儲', shortEn: 'Whse', color: '#fb923c', icon: '', pin: '7540' },
     // Other (Records)
-    holiday: { id: 'holiday', name: 'Day Off / Holiday', nameZh: '休假日 / Holiday', shortZh: '休假', shortEn: 'Off', color: '#10b981', icon: '', isRecordOnly: true }
+    holiday: { id: 'holiday', name: 'Day Off / Holiday', nameZh: '休假日 / Holiday', shortZh: '休假', shortEn: 'Off', color: '#06b6d4', icon: '', isRecordOnly: true }
   },
 
   // ----------------------------------------------------------------

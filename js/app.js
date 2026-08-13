@@ -471,6 +471,12 @@ function switchTab(tabName, reload = true) {
   state.activeTab = tabName;
   sessionStorage.setItem('vimei_activeTab', tabName);
 
+  if (tabName === 'dashboard') {
+    document.body.classList.add('figma-dashboard-active');
+  } else {
+    document.body.classList.remove('figma-dashboard-active');
+  }
+
   document.querySelectorAll('.nav-item').forEach(li => li.classList.remove('active'));
   const activeNav = $('li' + cap(tabName));
   if (activeNav) activeNav.classList.add('active');
@@ -792,7 +798,8 @@ function renderDashboard() {
     let cellContent = isOutOfMonth ? '' : `<span class="cal-date">${dateStr}</span>`;
     
     if (dept) {
-        cellContent += `<span class="cal-dept-tag" style="background:${dept.color}">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span>`;
+        let borderColor = dept.id === 'holiday' ? '#06b6d4' : 'var(--primary)';
+        cellContent += `<span class="cal-dept-tag" style="border-color: ${borderColor};">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span>`;
     }
     
     return `
@@ -807,15 +814,15 @@ function renderDashboard() {
   const calTitle = isMonthView ? monthTitleName : weekTitleName;
   
   const calToggleHtml = `
-    <div class="calendar-controls">
-        <div class="calendar-nav">
-            <button class="calendar-nav-btn" onclick="window.navigateCalendar(-1)"><i class="fi fi-rr-angle-left"></i></button>
-            <div class="calendar-title">${calTitle}</div>
-            <button class="calendar-nav-btn" onclick="window.navigateCalendar(1)"><i class="fi fi-rr-angle-right"></i></button>
+    <div class="premium-cal-controls">
+        <div class="premium-cal-nav">
+            <button class="premium-cal-btn" onclick="window.navigateCalendar(-1)"><i class="fi fi-rr-angle-left"></i></button>
+            <div class="premium-cal-title">${calTitle}</div>
+            <button class="premium-cal-btn" onclick="window.navigateCalendar(1)"><i class="fi fi-rr-angle-right"></i></button>
         </div>
-        <div class="calendar-toggle">
-            <button class="cal-toggle-btn ${isMonthView ? 'active' : ''}" onclick="window.toggleCalendarView('month')">${state.activeLanguage === 'zh' ? '月曆' : 'Month'}</button>
-            <button class="cal-toggle-btn ${!isMonthView ? 'active' : ''}" onclick="window.toggleCalendarView('week')">${state.activeLanguage === 'zh' ? '週曆' : 'Week'}</button>
+        <div class="premium-cal-toggle">
+            <button class="${isMonthView ? 'active' : ''}" onclick="window.toggleCalendarView('month')">${state.activeLanguage === 'zh' ? '月曆' : 'Month'}</button>
+            <button class="${!isMonthView ? 'active' : ''}" onclick="window.toggleCalendarView('week')">${state.activeLanguage === 'zh' ? '週曆' : 'Week'}</button>
         </div>
     </div>
   `;
@@ -884,10 +891,10 @@ function renderDashboard() {
     ${traineeSelectorHtml}
     ${pulseCheckHtml}
     
-    <div class="glass-card" style="width:100%;margin-bottom:20px;">
-      <div class="card-header" style="flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 16px; border-bottom: none; padding-bottom: 0;">
-        ${calToggleHtml}
-      </div>
+    <div class="premium-calendar-card">
+      <div class="card-header" style="display:none;"></div>
+      
+      ${calToggleHtml}
       
       <div class="calendar-view">
         <div class="calendar-header">${calHeaders}</div>
@@ -897,42 +904,106 @@ function renderDashboard() {
       ${detailHtml}
     </div>
 
-    <!-- Progress Card -->
-    <div class="glass-card" style="width:100%;">
-      <div class="card-header">
-        <h3>${t('milestoneProgress')}</h3>
-        <span style="font-size:18px;font-weight:700;color:var(--primary);">${overallPct}%</span>
-      </div>
-      <div class="progress-row">
-        ${(function(){
-          const traineeObj = CONFIG.TRAINEES.find(t => t.id === viewId);
-          const excluded = traineeObj ? (traineeObj.excludedDepartments || []) : [];
-          return Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excluded.includes(d.id)).map(d => {
-            const pct = calculateMilestoneProgress(state.observations, viewId, d.id);
-          const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === d.id);
-          const hasAssessment = !!assessment;
-          let barColor = pct === 100 ? d.color : 'var(--primary)';
-          let extraBadge = '';
+    <!-- Premium Milestone Progress Card -->
+    <div class="premium-progress-card">
+      ${(function(){
+        const traineeObj = CONFIG.TRAINEES.find(t => t.id === viewId);
+        const excluded = traineeObj ? (traineeObj.excludedDepartments || []) : [];
+        const departments = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excluded.includes(d.id));
+        
+        let completedNodes = 0;
+        const totalNodes = departments.length;
+        
+        // Group logic
+        const chimeiDepts = [];
+        const yushanDepts = [];
+        departments.forEach(d => {
+          const pct = calculateMilestoneProgress(state.observations, viewId, d.id);
+          if (pct === 100) completedNodes++;
           
-          if (hasAssessment) {
-            barColor = 'var(--warning)'; 
-            if (user.role !== 'trainee') {
-              extraBadge = `<span style="font-size:10px;background:rgba(245,158,11,0.15);color:var(--warning);padding:2px 6px;border-radius:4px;margin-left:6px;border:none;">${t('lblAssessGrade')}: ${assessment.grade}</span>`;
-            }
+          const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === d.id);
+          d._pct = pct;
+          d._hasAssessment = !!assessment;
+          d._grade = assessment ? assessment.grade : '';
+          
+          if (d.id.startsWith('cmf_')) {
+            chimeiDepts.push(d);
+          } else if (d.id.startsWith('yushan_')) {
+            yushanDepts.push(d);
+          } else {
+            chimeiDepts.push(d); // Default fallback
           }
-
+        });
+        
+        const renderRow = (d) => {
+          const statusClass = d._pct === 100 ? 'completed' : (d._pct > 0 ? 'in-progress' : 'unstarted');
+          let extraBadge = '';
+          if (d._hasAssessment && user.role !== 'trainee') {
+            extraBadge = `<div class="ppc-assess-badge">考核等第 ${d._grade}</div>`;
+          }
+          const barClass = d._pct === 100 ? 'completed' : (d._pct > 0 ? 'in-progress' : '');
+          
           return `
-            <div style="margin-bottom:12px;">
-              <div class="progress-label">
-                <span>${state.activeLanguage === 'zh' ? d.nameZh : d.name} ${extraBadge}</span>
-                <span style="color:var(--text-secondary);">${pct}%</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${barColor};"></div></div>
+            <div class="ppc-item-row">
+              <div class="ppc-status-circle ${statusClass}"></div>
+              <div class="ppc-dept-name">${state.activeLanguage === 'zh' ? (d.nameZh) : d.name}</div>
+              ${extraBadge}
+              <div class="ppc-bar-container"><div class="ppc-bar-fill ${barClass}" style="width:${d._pct}%;"></div></div>
+              <div class="ppc-pct-text">${d._pct}%</div>
             </div>
           `;
-          }).join('');
-        })()}
-      </div>
+        };
+        
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('zh-TW', { hour12: false });
+        
+        return `
+          <div class="ppc-header">
+            <div class="ppc-header-left">
+              <div class="live-tracking-badge">LIVE TRACKING</div>
+              <h2 class="ppc-title">${t('milestoneTitle')}</h2>
+              <p class="ppc-subtitle">檢視跨組織與各部門的生產製造、品管、研發考核進度</p>
+            </div>
+            <div class="ppc-header-right">
+              <div class="ppc-completed-text">
+                已完成節點<br>
+                <strong>${completedNodes} / ${totalNodes}</strong>
+              </div>
+              <div class="radial-progress-wrapper" style="background: conic-gradient(#06b6d4 ${overallPct}%, #e2e8f0 0);">
+                <div class="radial-progress-inner">
+                  <span>${overallPct}%</span>
+                  <small>OVERALL</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="ppc-group">
+            <div class="ppc-group-header">
+              <div class="ppc-group-title"><i class="fi fi-rr-building"></i> 奇美</div>
+              <div class="ppc-group-count">${chimeiDepts.length} 個節點</div>
+            </div>
+            ${chimeiDepts.map(renderRow).join('')}
+          </div>
+          
+          <div class="ppc-group">
+            <div class="ppc-group-header">
+              <div class="ppc-group-title"><i class="fi fi-rr-building"></i> 玉膳</div>
+              <div class="ppc-group-count">${yushanDepts.length} 個節點</div>
+            </div>
+            ${yushanDepts.map(renderRow).join('')}
+          </div>
+          
+          <div class="ppc-footer">
+            <div class="ppc-legend">
+              <div class="ppc-legend-item unstarted">未開始 (0%)</div>
+              <div class="ppc-legend-item in-progress">進行中</div>
+              <div class="ppc-legend-item completed">已完成</div>
+            </div>
+            <div class="ppc-timestamp">最後更新：今天 ${timeString}</div>
+          </div>
+        `;
+      })()}
     </div>
     
     ${idpHtml}
@@ -2920,12 +2991,60 @@ window.lockObservation = async function(id) {
   }
 };
 
+window.generateAdminTargetWeekOptions = function(selectedWeek) {
+  let options = '';
+  const now = new Date();
+  const currentDay = now.getDay();
+  const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay;
+  const currentMonday = new Date(now);
+  currentMonday.setDate(now.getDate() + diffToMonday);
+  
+  let foundSelected = false;
+  
+  for (let i = 0; i < 24; i++) {
+    const mon = new Date(currentMonday);
+    mon.setDate(currentMonday.getDate() - i * 7);
+    const fri = new Date(mon);
+    fri.setDate(mon.getDate() + 4);
+    
+    const monStr = `${mon.getMonth() + 1}/${mon.getDate()}`;
+    const friStr = `${fri.getMonth() + 1}/${fri.getDate()}`;
+    
+    let labelZh = `${monStr}(週一) ~ ${friStr}(週五)`;
+    let labelEn = `${monStr}(Mon) ~ ${friStr}(Fri)`;
+    if (i === 0) {
+      labelZh += ' - 本週 (This Week)';
+      labelEn += ' - This Week';
+    } else if (i === 1) {
+      labelZh += ' - 上週 (Last Week)';
+      labelEn += ' - Last Week';
+    }
+    
+    const valStr = `${mon.getFullYear()}-${String(mon.getMonth()+1).padStart(2,'0')}-${String(mon.getDate()).padStart(2,'0')}~${fri.getFullYear()}-${String(fri.getMonth()+1).padStart(2,'0')}-${String(fri.getDate()).padStart(2,'0')}`;
+    
+    if (valStr === selectedWeek) foundSelected = true;
+    
+    options += `<option value="${valStr}" ${valStr === selectedWeek ? 'selected' : ''}>${state.activeLanguage === 'zh' ? labelZh : labelEn}</option>`;
+  }
+  
+  if (selectedWeek && !foundSelected) {
+    options += `<option value="${selectedWeek}" selected>${selectedWeek} (Original)</option>`;
+  }
+  
+  return options;
+};
+
 window.openEditObservation = function(id) {
   const obs = state.observations.find(o => o.id === id);
   if (!obs) return;
   $('editObsId').value = obs.id;
   $('editObsDate').value = formatTaipeiDateOnly(obs.date);
   
+  const targetWeekSelect = $('editObsTargetWeek');
+  if (targetWeekSelect) {
+    targetWeekSelect.innerHTML = window.generateAdminTargetWeekOptions(obs.targetWeek);
+  }
+
   const deptSelect = $('editObsDept');
   if (deptSelect) {
     deptSelect.innerHTML = Object.values(CONFIG.DEPARTMENTS)
@@ -2959,6 +3078,7 @@ window.saveEditedObservation = async function() {
   const id = $('editObsId').value;
   const data = {
     date: $('editObsDate').value,
+    targetWeek: $('editObsTargetWeek') ? $('editObsTargetWeek').value : undefined,
     department: $('editObsDept') ? $('editObsDept').value : undefined,
     keyObservation: window.editObsQuill.root.innerHTML,
     attachmentUrl: $('editObsPhoto').value.trim()
@@ -3337,7 +3457,7 @@ window.filterResources = function(category) {
         <span class="status-badge status-reviewed">${res.category}</span>
         ${user.role === 'admin' ? `<button class="icon-btn" style="color:var(--danger);" onclick="window.deleteResource('${res.id}')"><i class="fi fi-rr-trash"></i></button>` : ''}
       </div>
-      <h3 style="margin-bottom:8px; font-size:16px;">
+      <h3 style="margin-bottom:8px; font-size:16px; font-weight:500; line-height:1.4;">
         ${res.title === '食品QAQC_結訓考核簡報 (3人共同完成) / CMF-QAQC Final Assessment Presentation' 
           ? (state.activeLanguage === 'zh' ? '食品QAQC_結訓考核簡報 (3人共同完成)' : 'CMF-QAQC Final Assessment Presentation') 
           : res.title}
