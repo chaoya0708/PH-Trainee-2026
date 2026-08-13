@@ -1163,11 +1163,10 @@ function renderAnalytics() {
           <h3>${t('analyticsTitle')}</h3>
           <p style="color:var(--text-secondary);font-size:12px;margin-top:4px;">${t('analyticsSubTitle')}</p>
         </div>
-        ${(user.role !== 'trainee') ? `
         <div class="btn-export-group">
           <button class="btn btn-export" onclick="exportTraineeSummary()">${t('btnExportSummary')}</button>
           <button class="btn btn-export btn-export-secondary" onclick="exportObservationLogs()">${t('btnExportLogs')}</button>
-        </div>` : ''}
+        </div>
       </div>
     </div>
 
@@ -1235,7 +1234,8 @@ function downloadCSV(csvContent, fileName) {
 }
 
 window.exportTraineeSummary = function () {
-  const trainees = CONFIG.TRAINEES;
+  const user = Auth.getCurrentUser();
+  const trainees = user.role === 'trainee' ? CONFIG.TRAINEES.filter(t => t.id === user.id) : CONFIG.TRAINEES;
   const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly);
 
   // CSV Headers
@@ -1750,6 +1750,7 @@ function calcOverallProgress(traineeId) {
 function renderMilestones() {
   try {
   const user = Auth.getCurrentUser();
+  const isGuest = user && user.role === 'guest';
   const container = $('sectionMilestones');
 
   let selectorHtml = '';
@@ -1812,9 +1813,9 @@ function renderMilestones() {
         </p>
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
           ${[1, 2, 3, 4, 5].map(i => `
-            <div style="display:flex; align-items:center; gap:10px;">
-              <span style="font-size:12px; width:100px; color:var(--text-primary);">${t('lblCompetency' + i).split(' ')[0]}</span>
-              <input type="range" id="selfScoreC${i}" min="0" max="5" step="0.5" value="${selfEval ? (selfEval['competency' + i] || 3) : 0}" oninput="document.getElementById('selfScoreValC${i}').innerText = this.value" style="flex:1;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 8px;">
+              <span style="font-size:12px; min-width:110px; max-width:110px; color:var(--text-primary); word-break:break-word; line-height:1.2;">${t('lblCompetency' + i).split(' ')[0]}</span>
+              <input type="range" id="selfScoreC${i}" min="0" max="5" step="0.5" value="${selfEval ? (selfEval['competency' + i] || 3) : 0}" oninput="document.getElementById('selfScoreValC${i}').innerText = this.value" style="flex:1; min-width:80px;">
               <span id="selfScoreValC${i}" style="font-size:12px; font-weight:bold; width:24px; text-align:right;">${selfEval ? (selfEval['competency' + i] || 3) : 0}</span>
             </div>
           `).join('')}
@@ -1939,7 +1940,7 @@ function renderMilestones() {
               </div>
               
               <div style="font-size:13px;line-height:1.5;border-top:1px dashed var(--card-border);padding-top:10px;">
-                ${(!isGuest || dept.id === user.departmentId) ? `
+                ${(!(user && user.role === 'guest') || dept.id === user.departmentId) ? `
                 <div style="font-weight:600; color:var(--primary); margin-bottom:4px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">
                   <i class="fi fi-rr-comment"></i> ${state.activeLanguage === 'zh' ? '單位評語' : 'Department Comment'}
                 </div>
