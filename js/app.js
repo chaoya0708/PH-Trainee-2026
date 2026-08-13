@@ -3539,42 +3539,32 @@ window.handleUploadResource = async function () {
 
   showLoading();
   try {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const base64 = e.target.result.split(',')[1];
-        // 1. Upload to Drive
-        const uploadRes = await Api.uploadFile(base64, file.type, file.name, 'MA_Program_Resources');
-        if (uploadRes.error) throw new Error(uploadRes.error);
+    // 1. Upload to Drive (pass File object directly instead of Base64)
+    const uploadRes = await Api.uploadFile(file, file.type, file.name, 'MA_Program_Resources');
+    if (uploadRes.error) throw new Error(uploadRes.error);
 
-        // 2. Save metadata to Sheets
-        const user = Auth.getCurrentUser();
-        const metaRes = await Api.submitResource({
-          title,
-          category,
-          url: uploadRes.url,
-          uploadedBy: user.name
-        });
-        if (metaRes.error) throw new Error(metaRes.error);
+    // 2. Save metadata to Sheets
+    const user = Auth.getCurrentUser();
+    const metaRes = await Api.submitResource({
+      title,
+      category,
+      url: uploadRes.url,
+      uploadedBy: user.name
+    });
+    if (metaRes.error) throw new Error(metaRes.error);
 
-        // Refresh
-        $('resTitle').value = '';
-        fileInput.value = '';
-        const newRes = {
-          id: metaRes.id || ('res-' + Date.now()),
-          title, category, url: uploadRes.url, uploadedBy: user.name, uploadedAt: new Date().toISOString()
-        };
-        if (!state.resources) state.resources = [];
-        state.resources.push(newRes);
-        window.filterResources('All');
-        hideLoading();
-        showToast('Resource uploaded successfully!');
-      } catch (err) {
-        hideLoading();
-        alert('Upload failed: ' + err.message);
-      }
+    // Refresh
+    $('resTitle').value = '';
+    fileInput.value = '';
+    const newRes = {
+      id: metaRes.id || ('res-' + Date.now()),
+      title, category, url: uploadRes.url, uploadedBy: user.name, uploadedAt: new Date().toISOString()
     };
-    reader.readAsDataURL(file);
+    if (!state.resources) state.resources = [];
+    state.resources.push(newRes);
+    window.filterResources('All');
+    hideLoading();
+    showToast('Resource uploaded successfully!');
   } catch (err) {
     hideLoading();
     alert('Upload failed: ' + err.message);

@@ -279,12 +279,18 @@ const Api = (() => {
 
       case 'uploadFile': {
         if (!storage) throw new Error('Storage not initialized');
-        const base64Data = data.base64.split(',')[1] || data.base64;
-        const res = await fetch(`data:${data.mimeType};base64,${base64Data}`);
-        const blob = await res.blob();
         const safeName = Date.now() + '_' + data.filename.replace(/[^a-zA-Z0-9.]/g, '_');
         const ref = storage.ref().child((data.folderName || 'uploads') + '/' + safeName);
-        await ref.put(blob);
+        
+        if (data.file) {
+          await ref.put(data.file);
+        } else {
+          const base64Data = data.base64.split(',')[1] || data.base64;
+          const res = await fetch(`data:${data.mimeType};base64,${base64Data}`);
+          const blob = await res.blob();
+          await ref.put(blob);
+        }
+        
         const url = await ref.getDownloadURL();
         return { success: true, url };
       }
@@ -612,14 +618,25 @@ const Api = (() => {
       });
     },
 
-    async uploadFile(base64, mimeType, filename, folderName) {
+    async uploadFile(base64OrFile, mimeType, filename, folderName) {
       if (CONFIG.DEMO_MODE) {
         // Return a mock URL in demo mode
         return new Promise(resolve => setTimeout(() => resolve({ success: true, url: 'https://example.com/mock-file.pdf' }), 1000));
       }
+      
+      if (base64OrFile instanceof File || base64OrFile instanceof Blob) {
+        return callScript({
+          action: 'uploadFile',
+          file: base64OrFile,
+          mimeType: mimeType || base64OrFile.type,
+          filename: filename || base64OrFile.name,
+          folderName
+        });
+      }
+      
       return callScript({
         action: 'uploadFile',
-        base64,
+        base64: base64OrFile,
         mimeType,
         filename,
         folderName
