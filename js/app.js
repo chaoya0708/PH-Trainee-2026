@@ -798,8 +798,8 @@ function renderDashboard() {
     let cellContent = isOutOfMonth ? '' : `<span class="cal-date">${dateStr}</span>`;
     
     if (dept) {
-        let borderColor = dept.id === 'holiday' ? '#06b6d4' : 'var(--primary)';
-        cellContent += `<span class="cal-dept-tag" style="border-color: ${borderColor};">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span>`;
+        let tagBg = dept.id === 'holiday' ? '#06b6d4' : 'var(--primary)';
+        cellContent += `<span class="cal-dept-tag" style="background: ${tagBg};">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span>`;
     }
     
     return `
