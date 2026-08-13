@@ -681,7 +681,7 @@ textarea.form-control:focus {
   .cal-cell { padding: 4px 2px; min-height: 45px; }
   .cal-cell.week-cell { min-height: 80px; }
   .cal-head-day { padding: 4px 0px; font-size: 10px; }
-  .cal-dept-tag { font-size: 8px; padding: 2px 4px; }
+  .cal-dept-tag { font-size: 8px; padding: 2px 4px; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
   .cal-dot { width: 6px; height: 6px; }
   .login-card { padding: 24px 16px; border-radius: 20px; margin: 10px; box-sizing: border-box; }
   .role-selector-grid { grid-template-columns: 1fr; gap: 10px; }
@@ -1634,9 +1634,9 @@ textarea.form-control:focus {
     font-size: 8px;
     padding: 2px 4px;
     margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
     line-height: 1.2;
     letter-spacing: 0;
   }
