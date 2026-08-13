@@ -124,13 +124,41 @@ const Api = (() => {
   }
 
   async function fbGet(col) {
-    const snap = await db.collection(col).get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const cacheKey = 'vimei_fb_' + col;
+    const cached = localStorage.getItem(cacheKey);
+    const fetchPromise = db.collection(col).get().then(snap => {
+      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const oldStr = localStorage.getItem(cacheKey);
+      const newStr = JSON.stringify(data);
+      if (oldStr !== newStr) {
+        localStorage.setItem(cacheKey, newStr);
+        window.dispatchEvent(new CustomEvent('fb_data_updated'));
+      }
+      return data;
+    });
+    if (cached) {
+      try { return JSON.parse(cached); } catch (e) {}
+    }
+    return await fetchPromise;
   }
 
   async function fbGetWhere(col, field, val) {
-    const snap = await db.collection(col).where(field, '==', val).get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const cacheKey = `vimei_fb_${col}_${field}_${val}`;
+    const cached = localStorage.getItem(cacheKey);
+    const fetchPromise = db.collection(col).where(field, '==', val).get().then(snap => {
+      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const oldStr = localStorage.getItem(cacheKey);
+      const newStr = JSON.stringify(data);
+      if (oldStr !== newStr) {
+        localStorage.setItem(cacheKey, newStr);
+        window.dispatchEvent(new CustomEvent('fb_data_updated'));
+      }
+      return data;
+    });
+    if (cached) {
+      try { return JSON.parse(cached); } catch (e) {}
+    }
+    return await fetchPromise;
   }
 
   async function callScript(params) {

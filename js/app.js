@@ -507,8 +507,13 @@ function renderCurrentTab() {
 // DATA LOADING
 // ══════════════════════════════════════════════════════════════════
 
-async function loadAllData() {
-  showLoading();
+window.addEventListener('fb_data_updated', () => {
+  // Silent refresh when background fetch detects changes
+  loadAllData(true);
+});
+
+async function loadAllData(isSilent = false) {
+  if (!isSilent) showLoading();
   try {
     const user = Auth.getCurrentUser();
     if (!user) return;
