@@ -684,19 +684,7 @@ textarea.form-control:focus {
   .cal-date { font-size: 9px !important; }
   .cal-dept-tag { font-size: 8px; padding: 2px 4px; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
   
-  /* Prevent Figma Dashboard styles from breaking mobile layout */
-  [data-theme="light"] body.figma-dashboard-active .cal-cell { padding: 4px 2px !important; min-height: 45px !important; }
-  [data-theme="light"] body.figma-dashboard-active .cal-date { position: static !important; font-size: 9px !important; }
-  [data-theme="light"] body.figma-dashboard-active .cal-dept-tag { 
-    display: block !important; 
-    width: 100% !important; 
-    font-size: 8px !important; 
-    padding: 2px 4px !important; 
-    margin-top: 2px !important; 
-    white-space: nowrap !important; 
-    overflow: hidden !important; 
-    text-overflow: ellipsis !important; 
-  }
+
   
   .cal-dot { width: 6px; height: 6px; }
   .login-card { padding: 24px 16px; border-radius: 20px; margin: 10px; box-sizing: border-box; }
@@ -1312,58 +1300,7 @@ textarea.form-control:focus {
   box-shadow: var(--figma-shadow-sm);
 }
 
-[data-theme="light"] body.figma-dashboard-active .cal-head-day {
-  background: #fafafa;
-  color: var(--figma-text-secondary);
-  font-weight: 500;
-  border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
-  padding: 12px;
-  font-size: 13px;
-  text-transform: uppercase;
-}
 
-[data-theme="light"] body.figma-dashboard-active .cal-cell {
-  background: #ffffff;
-  border: 0.5px solid rgba(0, 0, 0, 0.08);
-  min-height: 75px;
-  transition: all 0.2s ease;
-  position: relative;
-  padding: 30px 8px 8px 8px; /* Space for absolute date at top */
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Align tags to the left */
-}
-
-[data-theme="light"] body.figma-dashboard-active .cal-cell:hover {
-  background: #fafafa;
-}
-
-[data-theme="light"] body.figma-dashboard-active .cal-cell.active {
-  border: 2px solid var(--figma-blue) !important;
-  background: var(--figma-blue-light) !important;
-}
-
-[data-theme="light"] body.figma-dashboard-active .cal-date {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  color: var(--figma-text-secondary);
-  font-weight: 500;
-  font-size: 15px; /* Enlarged font size */
-}
-
-[data-theme="light"] body.figma-dashboard-active .cal-dept-tag {
-  border-radius: 20px;
-  padding: 4px 10px;
-  font-size: 11px;
-  font-weight: 500;
-  box-shadow: none;
-  opacity: 1;
-  display: inline-block;
-  white-space: normal;
-  line-height: 1.3;
-  margin-top: 4px;
-}
 
 [data-theme="light"] body.figma-dashboard-active .dashboard-layout {
   display: grid;
