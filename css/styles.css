@@ -683,6 +683,21 @@ textarea.form-control:focus {
   .cal-head-day { padding: 4px 1px; font-size: 8px; white-space: nowrap !important; letter-spacing: -0.5px; }
   .cal-date { font-size: 9px !important; }
   .cal-dept-tag { font-size: 8px; padding: 2px 4px; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+  
+  /* Prevent Figma Dashboard styles from breaking mobile layout */
+  [data-theme="light"] body.figma-dashboard-active .cal-cell { padding: 4px 2px !important; min-height: 45px !important; }
+  [data-theme="light"] body.figma-dashboard-active .cal-date { position: static !important; font-size: 9px !important; }
+  [data-theme="light"] body.figma-dashboard-active .cal-dept-tag { 
+    display: block !important; 
+    width: 100% !important; 
+    font-size: 8px !important; 
+    padding: 2px 4px !important; 
+    margin-top: 2px !important; 
+    white-space: nowrap !important; 
+    overflow: hidden !important; 
+    text-overflow: ellipsis !important; 
+  }
+  
   .cal-dot { width: 6px; height: 6px; }
   .login-card { padding: 24px 16px; border-radius: 20px; margin: 10px; box-sizing: border-box; }
   .role-selector-grid { grid-template-columns: 1fr; gap: 10px; }
