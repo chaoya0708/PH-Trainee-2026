@@ -680,6 +680,7 @@ textarea.form-control:focus {
   .calendar-body { font-size: 10px; }
   .cal-cell { padding: 4px 2px; min-height: 45px; }
   .cal-cell.week-cell { min-height: 80px; }
+  .cal-head-day { padding: 4px 0px; font-size: 10px; }
   .cal-dept-tag { font-size: 8px; padding: 2px 4px; }
   .cal-dot { width: 6px; height: 6px; }
   .login-card { padding: 24px 16px; border-radius: 20px; margin: 10px; box-sizing: border-box; }
@@ -1624,6 +1625,11 @@ textarea.form-control:focus {
   
   .premium-cal-title {
     font-size: 16px;
+  }
+  
+  .premium-calendar-card .cal-head-day {
+    padding: 6px 2px;
+    font-size: 10px;
   }
   
   .premium-calendar-card .cal-dept-tag {
