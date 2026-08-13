@@ -15,9 +15,17 @@ const CONFIG = {
   DEMO_MODE: false,
 
   // ----------------------------------------------------------------
-  // Google Apps Script 網址（完成 SETUP_GUIDE.md 步驟後貼入）
+  // Firebase 設定 / Firebase Config
   // ----------------------------------------------------------------
-  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxGO8qhJGBMmDueIkz-lse9c3PKsr7lGDdItToojUi-zUozIl6ogt-J-KmGkxKlzbe1Eg/exec',
+  FIREBASE_CONFIG: {
+    apiKey: "AIzaSyA-3AKaVgNFIy6nVHdmlecweVCpuV4iJHM",
+    authDomain: "ph-trainee-2026.firebaseapp.com",
+    projectId: "ph-trainee-2026",
+    storageBucket: "ph-trainee-2026.firebasestorage.app",
+    messagingSenderId: "1020060316350",
+    appId: "1:1020060316350:web:562eb34ba05755c001a4ef",
+    measurementId: "G-LC8MLWRE6G"
+  },
 
   // ----------------------------------------------------------------
   // 密碼設定 / PIN & Access Codes (請自行修改 / Please change these)
