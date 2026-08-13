@@ -12,19 +12,19 @@ const todayObj = new Date();
 const todayStr = todayObj.getFullYear() + '-' + String(todayObj.getMonth() + 1).padStart(2, '0') + '-' + String(todayObj.getDate()).padStart(2, '0');
 
 const state = {
-  activeTab:          sessionStorage.getItem('vimei_activeTab') || 'dashboard',
-  activeLanguage:     ['en', 'zh'].includes(localStorage.getItem('vimei_lang')) ? localStorage.getItem('vimei_lang') : 'en',
-  activeTheme:        Auth.getCurrentUser() ? (localStorage.getItem('vimei_theme') || 'light') : 'light',
-  selectedTraineeId:  'diane',
-  selectedDate:       todayStr,
-  viewDate:           todayStr,
-  calendarView:       'month',
-  observations:       [],
-  schedules:          {},
-  pendingRatings:     {},
+  activeTab: sessionStorage.getItem('vimei_activeTab') || 'dashboard',
+  activeLanguage: ['en', 'zh'].includes(localStorage.getItem('vimei_lang')) ? localStorage.getItem('vimei_lang') : 'en',
+  activeTheme: Auth.getCurrentUser() ? (localStorage.getItem('vimei_theme') || 'light') : 'light',
+  selectedTraineeId: 'diane',
+  selectedDate: todayStr,
+  viewDate: todayStr,
+  calendarView: 'month',
+  observations: [],
+  schedules: {},
+  pendingRatings: {},
   pendingAssessRatings: { comp1: 3, comp2: 3, comp3: 3, comp4: 3 },
-  assessments:        [],
-  editingSchedule:    false       // true when inline schedule form is open
+  assessments: [],
+  editingSchedule: false       // true when inline schedule form is open
 };
 
 // ── Convenience ────────────────────────────────────────────────────
@@ -32,7 +32,7 @@ const $ = id => document.getElementById(id);
 const t = key => window.VimeiI18n.t(key);
 
 // ── Helpers ────────────────────────────────────────────────────────
-window.stripBase64Images = function(html) {
+window.stripBase64Images = function (html) {
   if (!html) return html;
   return html.replace(/<img[^>]*src="data:image[^>]+>/gi, `
     <div style="padding: 10px; background: #fee2e2; color: #b91c1c; border-radius: 6px; font-size: 12px; margin: 10px 0; border: 1px dashed #b91c1c;">
@@ -50,10 +50,10 @@ function initLoginSlogans() {
 
 
 // Multi-file Upload List Renderers
-window.updateObsFileList = function() {
+window.updateObsFileList = function () {
   const input = document.getElementById('obsPhoto');
   const list = document.getElementById('obsFileList');
-  if(!input || !list) return;
+  if (!input || !list) return;
   list.innerHTML = '';
   Array.from(input.files).forEach((file, index) => {
     const sizeMb = (file.size / 1024 / 1024).toFixed(2);
@@ -71,10 +71,10 @@ window.updateObsFileList = function() {
   });
 };
 
-window.updateAssessFileList = function() {
+window.updateAssessFileList = function () {
   const input = document.getElementById('assessFile');
   const list = document.getElementById('assessFileList');
-  if(!input || !list) return;
+  if (!input || !list) return;
   list.innerHTML = '';
   Array.from(input.files).forEach((file, index) => {
     const sizeMb = (file.size / 1024 / 1024).toFixed(2);
@@ -112,28 +112,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 // LOGIN SCREEN
 // ══════════════════════════════════════════════════════════════════
 
-let _loginRole     = null;
+let _loginRole = null;
 let _loginTraineeId = null;
 
 function showLoginScreen() {
   $('loginScreen').style.display = 'flex';
-  $('mainApp').style.display     = 'none';
+  $('mainApp').style.display = 'none';
   renderLoginRoleStep();
 }
 
 function renderLoginRoleStep() {
-  _loginRole      = null;
+  _loginRole = null;
   _loginTraineeId = null;
 
-  $('loginStepRole').style.display        = 'flex';
-  $('loginStepAdmin').style.display       = 'none';
+  $('loginStepRole').style.display = 'flex';
+  $('loginStepAdmin').style.display = 'none';
   $('loginStepTraineeName').style.display = 'none';
-  $('loginStepTraineePin').style.display  = 'none';
-  $('loginStepGuest').style.display       = 'none';
-  $('loginStepExecutive').style.display   = 'none';
+  $('loginStepTraineePin').style.display = 'none';
+  $('loginStepGuest').style.display = 'none';
+  $('loginStepExecutive').style.display = 'none';
 }
 
-window.selectLoginRole = function(role) {
+window.selectLoginRole = function (role) {
   _loginRole = role;
   $('loginStepRole').style.display = 'none';
 
@@ -184,7 +184,7 @@ window.selectLoginRole = function(role) {
   }
 };
 
-window.selectLoginTrainee = function(traineeId) {
+window.selectLoginTrainee = function (traineeId) {
   _loginTraineeId = traineeId;
   const tr = CONFIG.TRAINEES.find(t => t.id === traineeId) || { name: traineeId, avatar: '👤' };
   $('loginStepTraineeName').style.display = 'none';
@@ -200,30 +200,30 @@ window.selectLoginTrainee = function(traineeId) {
   setTimeout(() => $('traineePinInput').focus(), 50);
 };
 
-window.backToRoleSelect   = renderLoginRoleStep;
-window.backToTraineeName  = function() {
+window.backToRoleSelect = renderLoginRoleStep;
+window.backToTraineeName = function () {
   $('loginStepTraineePin').style.display = 'none';
   $('loginStepTraineeName').style.display = 'flex';
 };
 
-window.handleLogin = async function() {
+window.handleLogin = async function () {
   let credential = '';
-  let errorEl    = null;
+  let errorEl = null;
   let identifier = _loginTraineeId || _loginRole; // default
 
   if (_loginRole === 'admin') {
     credential = $('adminPinInput').value;
-    errorEl    = $('loginError1');
+    errorEl = $('loginError1');
   } else if (_loginRole === 'trainee') {
     credential = $('traineePinInput').value;
-    errorEl    = $('loginError2');
+    errorEl = $('loginError2');
   } else if (_loginRole === 'guest') {
     credential = $('guestCodeInput').value.trim();
-    errorEl    = $('loginError3');
+    errorEl = $('loginError3');
     identifier = $('guestDeptSelect').value; // Use department as identifier for guest
   } else if (_loginRole === 'executive') {
     credential = $('executiveCodeInput').value.trim();
-    errorEl    = $('loginError4');
+    errorEl = $('loginError4');
   }
 
   const ok = Auth.login(_loginRole, identifier, credential);
@@ -232,7 +232,7 @@ window.handleLogin = async function() {
     // Set default language based on role on initial login
     const targetLang = (_loginRole === 'trainee') ? 'en' : 'zh';
     localStorage.setItem('vimei_lang', targetLang);
-    
+
     // Force theme based on role
     if (_loginRole === 'executive') {
       localStorage.setItem('vimei_theme', 'dark');
@@ -244,12 +244,12 @@ window.handleLogin = async function() {
   } else {
     if (errorEl) {
       errorEl.style.display = 'block';
-      errorEl.textContent   = t('loginError');
+      errorEl.textContent = t('loginError');
     }
   }
 };
 
-window.changeLanguageLogin = function(lang) {
+window.changeLanguageLogin = function (lang) {
   state.activeLanguage = lang;
   window._appLang = lang;
   localStorage.setItem('vimei_lang', lang);
@@ -259,7 +259,7 @@ window.changeLanguageLogin = function(lang) {
 // MAIN APP ENTRY
 // ══════════════════════════════════════════════════════════════════
 
-window.autoSyncSchedules = async function() {
+window.autoSyncSchedules = async function () {
   return; // DISABLED: Data is already in Google Sheets
   if (CONFIG.DEMO_MODE) return;
   if (localStorage.getItem('synced_schedules_v2')) return;
@@ -282,7 +282,7 @@ window.autoSyncSchedules = async function() {
       msg.innerText = `🔄 系統正在為您自動上傳新版行事曆到資料庫... (${done}/${total})`;
       try {
         await Api.updateSchedule(traineeId, date, val.dept, val.objective);
-      } catch(e) {}
+      } catch (e) { }
       done++;
     }
   }
@@ -305,7 +305,7 @@ async function enterApp() {
 
   document.documentElement.lang = state.activeLanguage === 'zh' ? 'zh-TW' : 'en';
   if ($('langSelector')) $('langSelector').value = state.activeLanguage;
-  
+
   translateDOM();
 
   // For trainees, always view their own data
@@ -319,7 +319,7 @@ async function enterApp() {
   }
 
   $('loginScreen').style.display = 'none';
-  $('mainApp').style.display     = 'flex';
+  $('mainApp').style.display = 'flex';
 
   updateTopBar(user);
   updateSidebarProfile(user);
@@ -345,34 +345,34 @@ async function enterApp() {
 // ── Top bar ───────────────────────────────────────────────────────
 function updateTopBar(user) {
   $('currentUserAvatar').innerHTML = user.avatar || '<i class="fi fi-rr-user"></i>';
-  $('currentUserName').textContent   = user.name;
+  $('currentUserName').textContent = user.name;
 
   // Show/hide nav items based on role
-  const isTrainee   = user.role === 'trainee';
-  const isMentor    = user.role === 'admin';
-  const isGuest     = user.role === 'guest';
+  const isTrainee = user.role === 'trainee';
+  const isMentor = user.role === 'admin';
+  const isGuest = user.role === 'guest';
   const isExecutive = user.role === 'executive';
 
-  $('liDashboard').style.display  = 'block'; // Show dashboard schedule to all roles
-  $('liForm').style.display       = isTrainee ? 'block' : 'none';
+  $('liDashboard').style.display = 'block'; // Show dashboard schedule to all roles
+  $('liForm').style.display = isTrainee ? 'block' : 'none';
   $('liMilestones').style.display = (isTrainee || isMentor || isExecutive || isGuest) ? 'block' : 'none';
-  $('liJournals').style.display   = (isTrainee || isMentor || isExecutive || isGuest) ? 'block' : 'none';
-  $('liReview').style.display     = (isMentor || isGuest) ? 'block' : 'none';
-  $('liInsights').style.display   = (isMentor) ? 'block' : 'none';
-  $('liAnalytics').style.display  = (isMentor || isGuest || isExecutive) ? 'block' : 'none';
+  $('liJournals').style.display = (isTrainee || isMentor || isExecutive || isGuest) ? 'block' : 'none';
+  $('liReview').style.display = (isMentor || isGuest) ? 'block' : 'none';
+  $('liInsights').style.display = (isMentor) ? 'block' : 'none';
+  $('liAnalytics').style.display = (isMentor || isGuest || isExecutive) ? 'block' : 'none';
   if ($('liResources')) $('liResources').style.display = (isTrainee || isMentor || isExecutive) ? 'block' : 'none';
 }
 
 // ── Sidebar profile ───────────────────────────────────────────────
 function updateSidebarProfile(user) {
   $('sidebarAvatar').innerHTML = user.avatar || '<i class="fi fi-rr-user"></i>';
-  $('sidebarName').textContent   = user.name;
-  $('sidebarBio').textContent    = user.bio;
+  $('sidebarName').textContent = user.name;
+  $('sidebarBio').textContent = user.bio;
 
   const roleLabels = {
-    admin:     t('roleMentorName'),
-    trainee:   t('roleTraineeName'),
-    guest:     t('roleAssessorName'),
+    admin: t('roleMentorName'),
+    trainee: t('roleTraineeName'),
+    guest: t('roleAssessorName'),
     executive: t('roleExecutiveName')
   };
   $('sidebarRole').textContent = roleLabels[user.role] || user.role;
@@ -400,10 +400,10 @@ function toggleTheme() {
 function translateSidebar() {
   const map = {
     'navDashboard': 'tabDashboard',
-    'navForm':      'tabForm',
-    'navMilestones':'tabMilestones',
-    'navJournals':  'tabJournals',
-    'navReview':    'tabReview',
+    'navForm': 'tabForm',
+    'navMilestones': 'tabMilestones',
+    'navJournals': 'tabJournals',
+    'navReview': 'tabReview',
     'navAnalytics': 'tabAnalytics',
     'navResources': 'tabResources'
   };
@@ -422,8 +422,8 @@ function updateGlobalReminder() {
   const now = new Date();
   const taipeiStr = now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' });
   const taipeiNow = new Date(taipeiStr);
-  const day = taipeiNow.getDay(); 
-  
+  const day = taipeiNow.getDay();
+
   let daysToAdd = 0;
   if (day === 3) {
     daysToAdd = 0;
@@ -437,7 +437,7 @@ function updateGlobalReminder() {
   const nextWedStrZh = ` ${taipeiNow.getMonth() + 1}/${taipeiNow.getDate()}(三)`;
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const nextWedStrEn = ` ${monthNames[taipeiNow.getMonth()]} ${taipeiNow.getDate()} (Wed)`;
-  
+
   if (state.activeLanguage === 'zh') {
     banner.innerHTML = `⚠️ 提醒：請於台北時間每週三 11:59 PM 前繳交前一週的學習心得，逾期將被標記為遲交。`;
   } else {
@@ -493,14 +493,14 @@ function switchTab(tabName, reload = true) {
 }
 
 function renderCurrentTab() {
-  if      (state.activeTab === 'dashboard')  renderDashboard();
-  else if (state.activeTab === 'form')       renderForm();
+  if (state.activeTab === 'dashboard') renderDashboard();
+  else if (state.activeTab === 'form') renderForm();
   else if (state.activeTab === 'milestones') renderMilestones();
-  else if (state.activeTab === 'journals')   renderJournals();
-  else if (state.activeTab === 'review')     renderReview();
-  else if (state.activeTab === 'analytics')  renderAnalytics();
-  else if (state.activeTab === 'insights')   renderInsights();
-  else if (state.activeTab === 'resources')  renderResources();
+  else if (state.activeTab === 'journals') renderJournals();
+  else if (state.activeTab === 'review') renderReview();
+  else if (state.activeTab === 'analytics') renderAnalytics();
+  else if (state.activeTab === 'insights') renderInsights();
+  else if (state.activeTab === 'resources') renderResources();
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -514,7 +514,7 @@ async function loadAllData() {
     if (!user) return;
 
     const data = await Api.getInitData(user.role, user.id);
-    
+
     if (user.role === 'trainee') {
       state.observations = data.observations || [];
       state.schedules = { [user.id]: data.schedules || {} };
@@ -548,7 +548,7 @@ async function loadAllData() {
 }
 
 function showLoading() { $('loadingOverlay').style.display = 'flex'; }
-function hideLoading()  { $('loadingOverlay').style.display = 'none'; }
+function hideLoading() { $('loadingOverlay').style.display = 'none'; }
 
 // ══════════════════════════════════════════════════════════════════
 // 1. DASHBOARD
@@ -559,7 +559,7 @@ function getWeekDays(dateStr) {
   const day = date.getDay(); // 0 is Sunday, 1 is Monday...
   const diff = date.getDate() - day + (day === 0 ? -6 : 1);
   const monday = new Date(date.setDate(diff));
-  
+
   const week = [];
   for (let i = 0; i < 7; i++) {
     const temp = new Date(monday);
@@ -577,23 +577,23 @@ function getCalendarMonthDays(dateStr) {
   const targetDate = new Date(dateStr);
   const year = targetDate.getFullYear();
   const month = targetDate.getMonth();
-  
+
   const firstDayOfMonth = new Date(year, month, 1);
-  let dayOfWeek = firstDayOfMonth.getDay(); 
-  
+  let dayOfWeek = firstDayOfMonth.getDay();
+
   const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
   const startDate = new Date(year, month, 1 + diff);
-  
+
   const days = [];
   for (let i = 0; i < 42; i++) {
     const temp = new Date(startDate);
     temp.setDate(startDate.getDate() + i);
-    
+
     // Stop at 5 weeks (35 days) if the entire 6th week is in the next month
     if (i === 35 && temp.getMonth() !== month) {
       break;
     }
-    
+
     const yyyy = temp.getFullYear();
     const mm = String(temp.getMonth() + 1).padStart(2, '0');
     const dd = String(temp.getDate()).padStart(2, '0');
@@ -602,12 +602,12 @@ function getCalendarMonthDays(dateStr) {
   return days;
 }
 
-window.toggleCalendarView = function(view) {
+window.toggleCalendarView = function (view) {
   state.calendarView = view;
   renderDashboard();
 };
 
-window.navigateCalendar = function(direction) {
+window.navigateCalendar = function (direction) {
   const isMonthView = state.calendarView === 'month';
   const targetDateObj = new Date(state.viewDate);
   if (isMonthView) {
@@ -622,9 +622,9 @@ window.navigateCalendar = function(direction) {
   renderDashboard();
 };
 
-window.selectViewTrainee = function(traineeId) {
+window.selectViewTrainee = function (traineeId) {
   state.selectedTraineeId = traineeId;
-  
+
   // Auto-jump to the trainee's next available schedule
   if (state.activeTab === 'dashboard' && state.schedules && state.schedules[traineeId]) {
     const dates = Object.keys(state.schedules[traineeId]).sort();
@@ -639,25 +639,25 @@ window.selectViewTrainee = function(traineeId) {
   renderCurrentTab(); // Re-render the whole view since we're switching global trainee
 };
 
-window.selectCalDate = function(dateStr) {
+window.selectCalDate = function (dateStr) {
   state.selectedDate = dateStr;
   renderDashboard();
 };
 
-window.openEditSchedule = function() {
+window.openEditSchedule = function () {
   state.editingSchedule = true;
   renderDashboard();
 };
 
-window.cancelEditSchedule = function() {
+window.cancelEditSchedule = function () {
   state.editingSchedule = false;
   renderDashboard();
 };
 
-window.saveSchedule = async function(traineeId, dateStr) {
+window.saveSchedule = async function (traineeId, dateStr) {
   const dept = document.getElementById('editDept').value;
   const objective = document.getElementById('editObj').value;
-  
+
   showLoading();
   try {
     await Api.updateSchedule(traineeId, dateStr, dept, objective);
@@ -674,7 +674,7 @@ window.saveSchedule = async function(traineeId, dateStr) {
 
 
 function renderDashboard() {
-  const user    = Auth.getCurrentUser();
+  const user = Auth.getCurrentUser();
   const container = $('sectionDashboard');
 
   if (!state.viewDate) state.viewDate = state.selectedDate;
@@ -690,23 +690,23 @@ function renderDashboard() {
         <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;">${t('viewingTrainee')}</p>
         <div class="trainee-tabs">
           ${CONFIG.TRAINEES.map(tr => {
-            const parts = tr.name.split(' / ');
-            const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:11px; opacity:0.8; margin-left:4px;">/ ${parts[1]}</span>` : tr.name;
-            return `
+      const parts = tr.name.split(' / ');
+      const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:11px; opacity:0.8; margin-left:4px;">/ ${parts[1]}</span>` : tr.name;
+      return `
             <button class="trainee-tab-btn ${state.selectedTraineeId === tr.id ? 'active' : ''}"
               onclick="window.selectViewTrainee('${tr.id}')" style="display:flex; align-items:center;">
               ${tr.avatar ? `<span style="margin-right:6px;">${tr.avatar}</span>` : ''} ${nameHtml}
             </button>
             `;
-          }).join('')}
+    }).join('')}
         </div>
       </div>
     `;
   }
 
-  const viewId  = user.role === 'trainee' ? user.id : state.selectedTraineeId;
+  const viewId = user.role === 'trainee' ? user.id : state.selectedTraineeId;
   const viewUser = CONFIG.TRAINEES.find(t => t.id === viewId) || CONFIG.ADMIN;
-  const sched   = (state.schedules[viewId]) || {};
+  const sched = (state.schedules[viewId]) || {};
 
   // Pulse Check UI (Only for trainee themselves)
   let pulseCheckHtml = '';
@@ -721,9 +721,9 @@ function renderDashboard() {
           <button class="btn ${currentStatus === 'red' ? 'btn-primary' : 'btn-outline'}" onclick="window.setPulseCheck('red')" style="flex:1;">🔴 ${state.activeLanguage === 'zh' ? '需要協助' : 'Need Help'}</button>
         </div>
         <div style="font-size:12px;color:var(--text-muted);margin-top:12px;line-height:1.6;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;border:none;">
-          ${state.activeLanguage === 'zh' 
-            ? '💡 <b>為什麼要打卡？</b> 透過「敏捷脈搏打卡 (Agile Pulse Check)」，能幫助導師即時掌握您的學習狀況。您可以<b>隨時</b>根據當下的心理與學習狀態切換燈號。若亮起黃燈或紅燈，導師將能第一時間為您排除困難！' 
-            : '💡 <b>Why do a Pulse Check?</b> The Agile Pulse Check helps your mentor understand your learning progress in real-time. You can update your status <b>at any time</b> to reflect your current situation. If you switch to yellow or red, your mentor will be alerted to provide immediate support!'}
+          ${state.activeLanguage === 'zh'
+        ? '💡 <b>為什麼要打卡？</b> 透過「敏捷脈搏打卡 (Agile Pulse Check)」，能幫助導師即時掌握您的學習狀況。您可以<b>隨時</b>根據當下的心理與學習狀態切換燈號。若亮起黃燈或紅燈，導師將能第一時間為您排除困難！'
+        : '💡 <b>Why do a Pulse Check?</b> The Agile Pulse Check helps your mentor understand your learning progress in real-time. You can update your status <b>at any time</b> to reflect your current situation. If you switch to yellow or red, your mentor will be alerted to provide immediate support!'}
         </div>
       </div>
     `;
@@ -733,8 +733,8 @@ function renderDashboard() {
   let idpHtml = '';
   if (user.role === 'trainee' || user.role === 'admin' || user.role === 'executive') {
     let idpGoals = [];
-    try { idpGoals = JSON.parse(localStorage.getItem(`MA_IDP_${viewId}`)) || []; } catch(e) {}
-    
+    try { idpGoals = JSON.parse(localStorage.getItem(`MA_IDP_${viewId}`)) || []; } catch (e) { }
+
     idpHtml = `
       <div class="glass-card" style="width:100%; margin-top:20px;">
         <div class="card-header" style="justify-content: space-between;">
@@ -744,9 +744,9 @@ function renderDashboard() {
         ${user.role === 'trainee' ? `
         <div style="background-color:rgba(37, 99, 235, 0.05); border-left:3px solid #2563eb; padding:10px 14px; margin-top:10px; margin-bottom:10px; border-radius:4px; font-size:12px; color:var(--text-secondary); line-height:1.6;">
           <strong style="color:var(--text-primary);">💡 ${state.activeLanguage === 'zh' ? '設定您的專屬目標：' : 'Set Your Personal Goals:'}</strong><br>
-          ${state.activeLanguage === 'zh' 
-            ? '這是一趟由您主導的學習旅程！請在此寫下您在培訓中最想達成的目標。建議設定 1-3 個具體且可衡量的目標（例如：「能獨立完成燒賣配餡並通過檢定」、「以中文進行5分鐘的早會報告」）。這能幫助導師與主管更有效地提供資源與指導。' 
-            : 'This is your learning journey to own! Use this space to define what you want to achieve. We recommend setting 1-3 specific, measurable goals (e.g., "Independently complete Siomai filling and pass the exam," "Deliver a 5-minute morning briefing in Chinese"). This helps mentors and supervisors provide the exact resources you need.'}
+          ${state.activeLanguage === 'zh'
+          ? '這是一趟由您主導的學習旅程！請在此寫下您在培訓中最想達成的目標。建議設定 1-3 個具體且可衡量的目標（例如：「能獨立完成燒賣配餡並通過檢定」、「以中文進行5分鐘的早會報告」）。這能幫助導師與主管更有效地提供資源與指導。'
+          : 'This is your learning journey to own! Use this space to define what you want to achieve. We recommend setting 1-3 specific, measurable goals (e.g., "Independently complete Siomai filling and pass the exam," "Deliver a 5-minute morning briefing in Chinese"). This helps mentors and supervisors provide the exact resources you need.'}
         </div>
         ` : ''}
         <ul style="list-style: none; padding: 0; margin-top: 10px;">
@@ -765,9 +765,9 @@ function renderDashboard() {
 
   const days = isMonthView ? getCalendarMonthDays(targetDateStr) : getWeekDays(targetDateStr);
   const dayNames = {
-    en: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-    zh: ['週一','週二','週三','週四','週五','週六','週日']
-  }[state.activeLanguage] || ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    zh: ['週一', '週二', '週三', '週四', '週五', '週六', '週日']
+  }[state.activeLanguage] || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const calHeaders = dayNames.map((d, index) => {
     const isWeekend = index === 5 || index === 6 ? 'weekend' : '';
@@ -775,33 +775,33 @@ function renderDashboard() {
   }).join('');
 
   const calCells = days.map((day, index) => {
-    const entry  = sched[day];
-    const dept   = entry && CONFIG.DEPARTMENTS[entry.dept];
+    const entry = sched[day];
+    const dept = entry && CONFIG.DEPARTMENTS[entry.dept];
     const active = state.selectedDate === day ? 'active' : '';
     const dayOfWeek = index % 7;
     const isWeekend = dayOfWeek === 5 || dayOfWeek === 6 ? 'weekend' : '';
-    
+
     const parsedDate = new Date(day);
     const isOutOfMonth = isMonthView && parsedDate.getMonth() !== targetDateObj.getMonth() ? 'out-of-month' : '';
-    
+
     const dateNum = parsedDate.getDate();
     let dateStr = `${dateNum}`;
-    
+
     if (!isMonthView) {
-        const monthName = parsedDate.toLocaleString(state.activeLanguage === 'zh' ? 'zh-TW' : 'en-US', { month: 'short' });
-        dateStr = state.activeLanguage === 'zh' ? `${monthName}${dateNum}日` : `${dateNum} ${monthName}`;
+      const monthName = parsedDate.toLocaleString(state.activeLanguage === 'zh' ? 'zh-TW' : 'en-US', { month: 'short' });
+      dateStr = state.activeLanguage === 'zh' ? `${monthName}${dateNum}日` : `${dateNum} ${monthName}`;
     } else if (dateNum === 1) {
-        const monthName = parsedDate.toLocaleString(state.activeLanguage === 'zh' ? 'zh-TW' : 'en-US', { month: 'short' });
-        dateStr = state.activeLanguage === 'zh' ? `${monthName}${dateNum}日` : `${dateNum} ${monthName}`;
+      const monthName = parsedDate.toLocaleString(state.activeLanguage === 'zh' ? 'zh-TW' : 'en-US', { month: 'short' });
+      dateStr = state.activeLanguage === 'zh' ? `${monthName}${dateNum}日` : `${dateNum} ${monthName}`;
     }
 
     let cellContent = isOutOfMonth ? '' : `<span class="cal-date">${dateStr}</span>`;
-    
+
     if (dept) {
-        let tagColor = dept.id === 'holiday' ? '#06b6d4' : 'var(--primary)';
-        cellContent += `<span class="cal-dept-tag" style="color: ${tagColor};">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span>`;
+      let tagColor = dept.id === 'holiday' ? '#06b6d4' : 'var(--primary)';
+      cellContent += `<span class="cal-dept-tag" style="color: ${tagColor};">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span>`;
     }
-    
+
     return `
       <div class="cal-cell ${isMonthView ? 'month-cell' : 'week-cell'} ${active} ${isWeekend} ${isOutOfMonth}" onclick="window.selectCalDate('${day}')">
         ${cellContent}
@@ -812,7 +812,7 @@ function renderDashboard() {
   const monthTitleName = targetDateObj.toLocaleString(state.activeLanguage === 'zh' ? 'zh-TW' : 'en-US', { month: 'long', year: 'numeric' });
   const weekTitleName = state.activeLanguage === 'zh' ? `排程 - ${monthTitleName}` : `Schedule - ${monthTitleName}`;
   const calTitle = isMonthView ? monthTitleName : weekTitleName;
-  
+
   const calToggleHtml = `
     <div class="premium-cal-controls">
         <div class="premium-cal-nav">
@@ -828,7 +828,7 @@ function renderDashboard() {
   `;
 
   const selectedEntry = sched[state.selectedDate];
-  const selectedDept  = (selectedEntry && CONFIG.DEPARTMENTS[selectedEntry.dept]) || { name: 'Unknown', nameZh: '未指定', icon: '', color: '#888' };
+  const selectedDept = (selectedEntry && CONFIG.DEPARTMENTS[selectedEntry.dept]) || { name: 'Unknown', nameZh: '未指定', icon: '', color: '#888' };
 
   // ── Inline schedule edit form ──
   const deptDropdown = Object.values(CONFIG.DEPARTMENTS).map(d =>
@@ -906,44 +906,44 @@ function renderDashboard() {
 
     <!-- Premium Milestone Progress Card -->
     <div class="premium-progress-card">
-      ${(function(){
-        const traineeObj = CONFIG.TRAINEES.find(t => t.id === viewId);
-        const excluded = traineeObj ? (traineeObj.excludedDepartments || []) : [];
-        const departments = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excluded.includes(d.id));
-        
-        let completedNodes = 0;
-        const totalNodes = departments.length;
-        
-        // Group logic
-        const chimeiDepts = [];
-        const yushanDepts = [];
-        departments.forEach(d => {
-          const pct = calculateMilestoneProgress(state.observations, viewId, d.id);
-          if (pct === 100) completedNodes++;
-          
-          const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === d.id);
-          d._pct = pct;
-          d._hasAssessment = !!assessment;
-          d._grade = assessment ? assessment.grade : '';
-          
-          if (d.id.startsWith('cmf_')) {
-            chimeiDepts.push(d);
-          } else if (d.id.startsWith('yushan_')) {
-            yushanDepts.push(d);
-          } else {
-            chimeiDepts.push(d); // Default fallback
-          }
-        });
-        
-        const renderRow = (d) => {
-          const statusClass = d._pct === 100 ? 'completed' : (d._pct > 0 ? 'in-progress' : 'unstarted');
-          let extraBadge = '';
-          if (d._hasAssessment && user.role !== 'trainee') {
-            extraBadge = `<div class="ppc-assess-badge">考核等第 ${d._grade}</div>`;
-          }
-          const barClass = d._pct === 100 ? 'completed' : (d._pct > 0 ? 'in-progress' : '');
-          
-          return `
+      ${(function () {
+      const traineeObj = CONFIG.TRAINEES.find(t => t.id === viewId);
+      const excluded = traineeObj ? (traineeObj.excludedDepartments || []) : [];
+      const departments = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excluded.includes(d.id));
+
+      let completedNodes = 0;
+      const totalNodes = departments.length;
+
+      // Group logic
+      const chimeiDepts = [];
+      const yushanDepts = [];
+      departments.forEach(d => {
+        const pct = calculateMilestoneProgress(state.observations, viewId, d.id);
+        if (pct === 100) completedNodes++;
+
+        const assessment = (state.assessments || []).find(a => a.traineeId === viewId && a.department === d.id);
+        d._pct = pct;
+        d._hasAssessment = !!assessment;
+        d._grade = assessment ? assessment.grade : '';
+
+        if (d.id.startsWith('cmf_')) {
+          chimeiDepts.push(d);
+        } else if (d.id.startsWith('yushan_')) {
+          yushanDepts.push(d);
+        } else {
+          chimeiDepts.push(d); // Default fallback
+        }
+      });
+
+      const renderRow = (d) => {
+        const statusClass = d._pct === 100 ? 'completed' : (d._pct > 0 ? 'in-progress' : 'unstarted');
+        let extraBadge = '';
+        if (d._hasAssessment && user.role !== 'trainee') {
+          extraBadge = `<div class="ppc-assess-badge">考核等第 ${d._grade}</div>`;
+        }
+        const barClass = d._pct === 100 ? 'completed' : (d._pct > 0 ? 'in-progress' : '');
+
+        return `
             <div class="ppc-item-row">
               <div class="ppc-status-circle ${statusClass}"></div>
               <div class="ppc-dept-name">${state.activeLanguage === 'zh' ? (d.nameZh) : d.name}</div>
@@ -952,12 +952,12 @@ function renderDashboard() {
               <div class="ppc-pct-text">${d._pct}%</div>
             </div>
           `;
-        };
-        
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('zh-TW', { hour12: false });
-        
-        return `
+      };
+
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('zh-TW', { hour12: false });
+
+      return `
           <div class="ppc-header">
             <div class="ppc-header-left">
               <div class="live-tracking-badge">LIVE TRACKING</div>
@@ -1003,16 +1003,16 @@ function renderDashboard() {
             <div class="ppc-timestamp">最後更新：今天 ${timeString}</div>
           </div>
         `;
-      })()}
+    })()}
     </div>
     
     ${idpHtml}
   `;
 }
 
-window.setPulseCheck = function(status) {
+window.setPulseCheck = function (status) {
   const user = Auth.getCurrentUser();
-  if(user.role !== 'trainee') return;
+  if (user.role !== 'trainee') return;
   localStorage.setItem(`MA_STATUS_${user.id}`, status);
   renderDashboard();
 
@@ -1023,52 +1023,52 @@ window.setPulseCheck = function(status) {
       trainee_name: user.name,
       status: statusText
     };
-    
+
     // 顯示發送中提示
     showToast(state.activeLanguage === 'zh' ? '正在發送通知中...' : 'Sending notification...', 'info');
 
     emailjs.send('service_mabpwqj', 'template_jzqq33b', templateParams)
-      .then(function(response) {
-         console.log('EmailJS SUCCESS!', response.status, response.text);
-         showToast(state.activeLanguage === 'zh' ? '已同步通知導師與主管您的狀態！' : 'Mentors have been notified of your status!', 'success');
-      }, function(error) {
-         console.error('EmailJS FAILED...', error);
-         alert('信件發送失敗！錯誤訊息：\n' + (error.text || JSON.stringify(error)) + '\n請截圖此畫面給開發人員。');
+      .then(function (response) {
+        console.log('EmailJS SUCCESS!', response.status, response.text);
+        showToast(state.activeLanguage === 'zh' ? '已同步通知導師與主管您的狀態！' : 'Mentors have been notified of your status!', 'success');
+      }, function (error) {
+        console.error('EmailJS FAILED...', error);
+        alert('信件發送失敗！錯誤訊息：\n' + (error.text || JSON.stringify(error)) + '\n請截圖此畫面給開發人員。');
       });
   }
 };
 
-window.addIdpGoal = function() {
+window.addIdpGoal = function () {
   const user = Auth.getCurrentUser();
-  if(user.role !== 'trainee') return;
+  if (user.role !== 'trainee') return;
   const goal = prompt(state.activeLanguage === 'zh' ? '請輸入新的學習目標：' : 'Enter new learning goal:');
-  if(goal && goal.trim()){
+  if (goal && goal.trim()) {
     let goals = [];
-    try { goals = JSON.parse(localStorage.getItem(`MA_IDP_${user.id}`)) || []; } catch(e) {}
+    try { goals = JSON.parse(localStorage.getItem(`MA_IDP_${user.id}`)) || []; } catch (e) { }
     goals.push({ text: goal.trim(), done: false });
     localStorage.setItem(`MA_IDP_${user.id}`, JSON.stringify(goals));
     renderDashboard();
   }
 };
 
-window.toggleIdpGoal = function(index) {
+window.toggleIdpGoal = function (index) {
   const user = Auth.getCurrentUser();
-  if(user.role !== 'trainee') return;
+  if (user.role !== 'trainee') return;
   let goals = [];
-  try { goals = JSON.parse(localStorage.getItem(`MA_IDP_${user.id}`)) || []; } catch(e) {}
-  if(goals[index]) {
+  try { goals = JSON.parse(localStorage.getItem(`MA_IDP_${user.id}`)) || []; } catch (e) { }
+  if (goals[index]) {
     goals[index].done = !goals[index].done;
     localStorage.setItem(`MA_IDP_${user.id}`, JSON.stringify(goals));
     renderDashboard();
   }
 };
 
-window.deleteIdpGoal = function(index) {
+window.deleteIdpGoal = function (index) {
   const user = Auth.getCurrentUser();
-  if(user.role !== 'trainee') return;
-  if(confirm(state.activeLanguage === 'zh' ? '確定要刪除這個目標嗎？' : 'Delete this goal?')) {
+  if (user.role !== 'trainee') return;
+  if (confirm(state.activeLanguage === 'zh' ? '確定要刪除這個目標嗎？' : 'Delete this goal?')) {
     let goals = [];
-    try { goals = JSON.parse(localStorage.getItem(`MA_IDP_${user.id}`)) || []; } catch(e) {}
+    try { goals = JSON.parse(localStorage.getItem(`MA_IDP_${user.id}`)) || []; } catch (e) { }
     goals.splice(index, 1);
     localStorage.setItem(`MA_IDP_${user.id}`, JSON.stringify(goals));
     renderDashboard();
@@ -1083,7 +1083,7 @@ function renderAnalytics() {
   const isGuest = user.role === 'guest';
   const trainees = CONFIG.TRAINEES;
   let depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly);
-  
+
   // Restrict guest visibility to their own department
   if (isGuest) {
     depts = depts.filter(d => d.id === user.departmentId);
@@ -1092,7 +1092,7 @@ function renderAnalytics() {
   // 1. KPI Calculations
   let totalObs = 0;
   let reviewedObs = [];
-  
+
   if (isGuest) {
     const guestObs = state.observations.filter(o => o.department === user.departmentId);
     totalObs = guestObs.length;
@@ -1102,8 +1102,8 @@ function renderAnalytics() {
     reviewedObs = state.observations.filter(o => o.rating > 0);
   }
 
-  const avgRating = reviewedObs.length > 0 
-    ? (reviewedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / reviewedObs.length).toFixed(1) 
+  const avgRating = reviewedObs.length > 0
+    ? (reviewedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / reviewedObs.length).toFixed(1)
     : '0.0';
 
   let totalProgressSum = 0;
@@ -1117,10 +1117,10 @@ function renderAnalytics() {
     const progress = calcOverallProgress(tr.id);
     let traineeObs = state.observations.filter(o => o.traineeId === tr.id);
     if (isGuest) traineeObs = traineeObs.filter(o => o.department === user.departmentId);
-    
+
     const ratedObs = traineeObs.filter(o => o.rating > 0);
-    const trAvgRating = ratedObs.length > 0 
-      ? (ratedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / ratedObs.length).toFixed(1) 
+    const trAvgRating = ratedObs.length > 0
+      ? (ratedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / ratedObs.length).toFixed(1)
       : '0.0';
 
     // Department completion detailed badges
@@ -1129,7 +1129,7 @@ function renderAnalytics() {
     const deptBadges = trDepts.map(d => {
       const pct = calculateMilestoneProgress(state.observations, tr.id, d.id);
       const assessment = (state.assessments || []).find(a => a.traineeId === tr.id && a.department === d.id);
-      
+
       const deptName = state.activeLanguage === 'zh' ? (d.shortZh || d.nameZh) : (d.shortEn || d.name);
       let badgeStyle = `background:rgba(255,255,255,0.03);color:var(--text-muted);`;
       let text = `${deptName}: ${pct}%`;
@@ -1209,8 +1209,8 @@ function renderAnalytics() {
     ${user.role !== 'guest' ? `
     <div style="background-color:rgba(37, 99, 235, 0.05); border-left:3px solid #2563eb; padding:10px 14px; margin-top:20px; border-radius:4px; font-size:12px; color:var(--text-secondary); line-height:1.6;">
       <strong style="color:var(--text-primary);">💡 ${state.activeLanguage === 'zh' ? 'Pulse Check (敏捷脈搏打卡) 用意說明：' : 'Purpose of Pulse Check:'}</strong><br>
-      ${state.activeLanguage === 'zh' 
-        ? '此欄位顯示學生<b>隨時</b>自行回報的當下心理與學習狀態。綠色代表「順利推進」，黃色代表「遇到瓶頸」，紅色代表「需要協助」。導師與主管可藉此即時察覺學生的困難，並在第一時間介入輔導與協助。' 
+      ${state.activeLanguage === 'zh'
+        ? '此欄位顯示學生<b>隨時</b>自行回報的當下心理與學習狀態。綠色代表「順利推進」，黃色代表「遇到瓶頸」，紅色代表「需要協助」。導師與主管可藉此即時察覺學生的困難，並在第一時間介入輔導與協助。'
         : 'Displays the real-time, self-reported psychological and learning status of the trainees. Mentors and executives can use this to immediately identify bottlenecks and provide timely support as soon as they arise.'}
     </div>
     ` : ''}
@@ -1249,10 +1249,10 @@ function downloadCSV(csvContent, fileName) {
   document.body.removeChild(link);
 }
 
-window.exportTraineeSummary = function() {
+window.exportTraineeSummary = function () {
   const trainees = CONFIG.TRAINEES;
   const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly);
-  
+
   // CSV Headers
   let csv = "Trainee Name,Milestone Completion %,Average Star Rating,Total Logs Submitted";
   depts.forEach(d => {
@@ -1265,12 +1265,12 @@ window.exportTraineeSummary = function() {
     const progress = calcOverallProgress(tr.id);
     const traineeObs = state.observations.filter(o => o.traineeId === tr.id);
     const ratedObs = traineeObs.filter(o => o.rating > 0);
-    const trAvgRating = ratedObs.length > 0 
-      ? (ratedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / ratedObs.length).toFixed(1) 
+    const trAvgRating = ratedObs.length > 0
+      ? (ratedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / ratedObs.length).toFixed(1)
       : '0.0';
-    
+
     csv += `"${tr.name}",${progress}%,${trAvgRating},${traineeObs.length}`;
-    
+
     depts.forEach(d => {
       const pct = calculateMilestoneProgress(state.observations, tr.id, d.id);
       const assessment = (state.assessments || []).find(a => a.traineeId === tr.id && a.department === d.id);
@@ -1284,15 +1284,15 @@ window.exportTraineeSummary = function() {
   showToast("Summary CSV Downloaded Successfully!", "success");
 };
 
-window.exportObservationLogs = function() {
+window.exportObservationLogs = function () {
   const obsList = state.observations;
-  
+
   let csv = "Observation ID,Trainee ID,Trainee Name,Date,Department Key,Department Name,Key Observation,Actionable Idea,Photo/Report URL,Submitted At,Status,Mentor Name,Mentor Feedback,Feedback At,Performance Rating\n";
 
   obsList.forEach(obs => {
     const dept = CONFIG.DEPARTMENTS[obs.department] || {};
     const deptName = dept.name || obs.department;
-    
+
     // Clean strings of double quotes and line breaks
     const cleanStr = str => {
       if (!str) return '';
@@ -1300,20 +1300,20 @@ window.exportObservationLogs = function() {
     };
 
     csv += `"${cleanStr(obs.id)}",` +
-           `"${cleanStr(obs.traineeId)}",` +
-           `"${cleanStr(obs.traineeName)}",` +
-           `"${cleanStr(formatTaipeiDateOnly(obs.date))}",` +
-           `"${cleanStr(obs.department)}",` +
-           `"${cleanStr(deptName)}",` +
-           `"${cleanStr(obs.keyObservation)}",` +
-           `"${cleanStr(obs.actionableIdea)}",` +
-           `"${cleanStr(obs.attachmentUrl)}",` +
-           `"${cleanStr(obs.submittedAt)}",` +
-           `"${cleanStr(obs.status)}",` +
-           `"${cleanStr(obs.mentorName)}",` +
-           `"${cleanStr((Auth.getCurrentUser() && Auth.getCurrentUser().role === 'admin') ? obs.mentorComment : '')}",` +
-           `"${cleanStr(obs.feedbackAt)}",` +
-           `${obs.rating || 0}\n`;
+      `"${cleanStr(obs.traineeId)}",` +
+      `"${cleanStr(obs.traineeName)}",` +
+      `"${cleanStr(formatTaipeiDateOnly(obs.date))}",` +
+      `"${cleanStr(obs.department)}",` +
+      `"${cleanStr(deptName)}",` +
+      `"${cleanStr(obs.keyObservation)}",` +
+      `"${cleanStr(obs.actionableIdea)}",` +
+      `"${cleanStr(obs.attachmentUrl)}",` +
+      `"${cleanStr(obs.submittedAt)}",` +
+      `"${cleanStr(obs.status)}",` +
+      `"${cleanStr(obs.mentorName)}",` +
+      `"${cleanStr((Auth.getCurrentUser() && Auth.getCurrentUser().role === 'admin') ? obs.mentorComment : '')}",` +
+      `"${cleanStr(obs.feedbackAt)}",` +
+      `${obs.rating || 0}\n`;
   });
 
   downloadCSV(csv, "Trainee_Field_Observation_Logs.csv");
@@ -1322,7 +1322,7 @@ window.exportObservationLogs = function() {
 
 function setupMainEventListeners() {
   // Nav links
-  [['navDashboard','dashboard'],['navForm','form'],['navMilestones','milestones'],['navJournals','journals'],['navReview','review'],['navAnalytics','analytics']]
+  [['navDashboard', 'dashboard'], ['navForm', 'form'], ['navMilestones', 'milestones'], ['navJournals', 'journals'], ['navReview', 'review'], ['navAnalytics', 'analytics']]
     .forEach(([id, tab]) => {
       const el = $(id);
       if (el) el.addEventListener('click', e => { e.preventDefault(); switchTab(tab); });
@@ -1337,9 +1337,9 @@ function setupMainEventListeners() {
   if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
   // Quick switch account (Admin Only or God Mode)
-  window.logoutAndSwitch = function(event, forceGodMode = false) {
+  window.logoutAndSwitch = function (event, forceGodMode = false) {
     const user = Auth.getCurrentUser();
-    
+
     // If not God Mode and not Admin, do nothing
     if (!forceGodMode && (!user || user.role !== 'admin')) return;
 
@@ -1391,29 +1391,29 @@ function setupMainEventListeners() {
         Auth.login(opt.r, opt.i, CONFIG.ADMIN_PIN);
         const targetLang = (opt.r === 'trainee') ? 'en' : 'zh';
         localStorage.setItem('vimei_lang', targetLang);
-        
+
         if (opt.r === 'executive') {
           localStorage.setItem('vimei_theme', 'dark');
         } else {
           localStorage.setItem('vimei_theme', 'light');
         }
-        
+
         location.reload();
       };
       popup.appendChild(btn);
     });
 
     document.body.appendChild(popup);
-    
+
     // Position
     const rect = (event && event.currentTarget) ? event.currentTarget.getBoundingClientRect() : null;
     if (rect) {
       if (rect.top > window.innerHeight / 2) {
-         popup.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
-         popup.style.left = rect.left + 'px';
+        popup.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+        popup.style.left = rect.left + 'px';
       } else {
-         popup.style.top = (rect.bottom + 8) + 'px';
-         popup.style.right = (window.innerWidth - rect.right) + 'px';
+        popup.style.top = (rect.bottom + 8) + 'px';
+        popup.style.right = (window.innerWidth - rect.right) + 'px';
       }
     } else {
       popup.style.top = '60px';
@@ -1421,12 +1421,12 @@ function setupMainEventListeners() {
     }
 
     setTimeout(() => {
-       document.addEventListener('click', function closePopup(e) {
-         if (popup && document.body.contains(popup) && !popup.contains(e.target)) {
-           popup.remove();
-           document.removeEventListener('click', closePopup);
-         }
-       });
+      document.addEventListener('click', function closePopup(e) {
+        if (popup && document.body.contains(popup) && !popup.contains(e.target)) {
+          popup.remove();
+          document.removeEventListener('click', closePopup);
+        }
+      });
     }, 50);
   };
 
@@ -1454,7 +1454,7 @@ function setupMainEventListeners() {
     title.addEventListener('click', godModeHandler);
   }
 
-  window.fastSwitchRole = function(role, id) {
+  window.fastSwitchRole = function (role, id) {
     Auth.login(role, id, CONFIG.ADMIN_PIN);
     location.reload();
   };
@@ -1468,8 +1468,8 @@ function setupMainEventListeners() {
 
   // Mobile sidebar
   const mobileToggle = document.querySelector('.mobile-menu-toggle');
-  const sidebar      = document.querySelector('.sidebar');
-  const overlay      = document.querySelector('.sidebar-overlay');
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.querySelector('.sidebar-overlay');
   if (mobileToggle) mobileToggle.addEventListener('click', () => {
     sidebar.classList.toggle('mobile-open');
     overlay.classList.toggle('active');
@@ -1488,13 +1488,13 @@ function setupMainEventListeners() {
 // ══════════════════════════════════════════════════════════════════
 
 function renderForm() {
-  const user      = Auth.getCurrentUser();
+  const user = Auth.getCurrentUser();
   if (user.role !== 'trainee') return;
 
   const container = $('sectionForm');
-  const sched     = (state.schedules[user.id] || {})[state.selectedDate];
+  const sched = (state.schedules[user.id] || {})[state.selectedDate];
   const presetDept = sched ? sched.dept : 'yushan_prep';
-  
+
   const traineeUser = Auth.getCurrentUser();
   const excludedDepts = traineeUser && traineeUser.excludedDepartments ? traineeUser.excludedDepartments : [];
 
@@ -1505,8 +1505,8 @@ function renderForm() {
   const now = new Date();
   const taipeiStr = now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' });
   const taipeiNow = new Date(taipeiStr);
-  const day = taipeiNow.getDay(); 
-  
+  const day = taipeiNow.getDay();
+
   let daysToAdd = 0;
   if (day === 3) {
     daysToAdd = 0;
@@ -1531,16 +1531,16 @@ function renderForm() {
     const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay;
     const currentMonday = new Date(now);
     currentMonday.setDate(now.getDate() + diffToMonday);
-    
+
     for (let i = 0; i < 4; i++) {
       const mon = new Date(currentMonday);
       mon.setDate(currentMonday.getDate() - i * 7);
       const fri = new Date(mon);
       fri.setDate(mon.getDate() + 4);
-      
+
       const monStr = `${mon.getMonth() + 1}/${mon.getDate()}`;
       const friStr = `${fri.getMonth() + 1}/${fri.getDate()}`;
-      
+
       let labelZh = `${monStr}(週一) ~ ${friStr}(週五)`;
       let labelEn = `${monStr}(Mon) ~ ${friStr}(Fri)`;
       if (i === 0) {
@@ -1550,8 +1550,8 @@ function renderForm() {
         labelZh += ' - 上週 (Last Week)';
         labelEn += ' - Last Week';
       }
-      
-      const valStr = `${mon.getFullYear()}-${String(mon.getMonth()+1).padStart(2,'0')}-${String(mon.getDate()).padStart(2,'0')}~${fri.getFullYear()}-${String(fri.getMonth()+1).padStart(2,'0')}-${String(fri.getDate()).padStart(2,'0')}`;
+
+      const valStr = `${mon.getFullYear()}-${String(mon.getMonth() + 1).padStart(2, '0')}-${String(mon.getDate()).padStart(2, '0')}~${fri.getFullYear()}-${String(fri.getMonth() + 1).padStart(2, '0')}-${String(fri.getDate()).padStart(2, '0')}`;
       options += `<option value="${valStr}">${state.activeLanguage === 'zh' ? labelZh : labelEn}</option>`;
     }
     return options;
@@ -1596,9 +1596,9 @@ function renderForm() {
           <div id="obsFileList" style="display:flex; flex-direction:column; gap:8px;"></div>
           
           <div style="font-size:12px;color:#ea580c;font-weight:600;margin-top:12px;line-height:1.5;background:var(--bg-card);padding:12px;border-radius:6px;border:none;">
-            ${state.activeLanguage === 'zh' 
-              ? '⚠️ <b>上傳須知：</b><br>1. 建議將報告轉為 <b>PDF</b> 檔。<br>2. 檔案大小請控制在 20MB 以內。<br>3. 系統將自動把檔案上傳至中央資料夾。' 
-              : '⚠️ <b>Upload Instructions:</b><br>1. PDF format is recommended.<br>2. File size must be under 20MB.<br>3. The file will be automatically uploaded to the central directory.'}
+            ${state.activeLanguage === 'zh'
+      ? '⚠️ <b>上傳須知：</b><br>1. 建議將報告轉為 <b>PDF</b> 檔。<br>2. 檔案大小請控制在 20MB 以內。<br>3. 系統將自動把檔案上傳至中央資料夾。'
+      : '⚠️ <b>Upload Instructions:</b><br>1. PDF format is recommended.<br>2. File size must be under 20MB.<br>3. The file will be automatically uploaded to the central directory.'}
           </div>
         </div>
 
@@ -1607,7 +1607,7 @@ function renderForm() {
           <label style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">${state.activeLanguage === 'zh' ? '本週表現自評 (Self-Appraisal)' : 'Self-Appraisal (Rating)'} <span style="color:var(--danger);">*</span></label>
           <div style="display:flex; align-items:center; gap:16px;">
             <div style="display:flex;gap:10px;" id="selfAppraisalStars">
-              ${[1,2,3,4,5].map(v => `<i class="fi fi-rs-star star-btn" data-val="${v}" style="font-size:28px;cursor:pointer;color:#d1d5db;transition:all 0.2s;" onclick="window.setSelfRating(event, ${v})"></i>`).join('')}
+              ${[1, 2, 3, 4, 5].map(v => `<i class="fi fi-rs-star star-btn" data-val="${v}" style="font-size:28px;cursor:pointer;color:#d1d5db;transition:all 0.2s;" onclick="window.setSelfRating(event, ${v})"></i>`).join('')}
             </div>
             <div id="obsSelfRatingText"></div>
           </div>
@@ -1627,37 +1627,37 @@ function renderForm() {
   if (window.obsQuill) {
     window.obsQuill = null;
   }
-  
+
   window.obsQuill = new Quill('#obsKeyEditor', {
     theme: 'snow',
     placeholder: t('phKeyObs'),
     modules: {
       toolbar: [
         ['bold', 'italic', 'underline'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }]
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }]
       ]
     }
   });
 }
 
-window.setSelfRating = function(e, starIndex) {
+window.setSelfRating = function (e, starIndex) {
   const rect = e.target.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const isHalf = x < (rect.width / 2);
   const val = isHalf ? starIndex - 0.5 : starIndex;
-  
+
   const ratingInput = document.getElementById('obsSelfRating');
-  if(ratingInput) ratingInput.value = val;
+  if (ratingInput) ratingInput.value = val;
 
   const textElem = document.getElementById('obsSelfRatingText');
-  if(textElem) textElem.innerHTML = `<span style="font-size:18px; font-weight:800; color:#f59e0b;">${val}</span> <span style="color:var(--text-muted); font-size:12px;">/ 5</span>`;
-  
+  if (textElem) textElem.innerHTML = `<span style="font-size:18px; font-weight:800; color:#f59e0b;">${val}</span> <span style="color:var(--text-muted); font-size:12px;">/ 5</span>`;
+
   const stars = document.querySelectorAll('#selfAppraisalStars .star-btn');
   stars.forEach(s => {
     const sVal = parseInt(s.dataset.val);
     s.classList.remove('fi-rs-star');
     s.classList.add('fi-ss-star'); // always use solid star to allow gradient mask
-    
+
     if (sVal <= val) {
       s.style.background = 'none';
       s.style.webkitBackgroundClip = 'border-box';
@@ -1680,9 +1680,9 @@ window.setSelfRating = function(e, starIndex) {
   });
 };
 
-window.submitObsForm = async function(e) {
+window.submitObsForm = async function (e) {
   e.preventDefault();
-  
+
   const selfRating = parseFloat($('obsSelfRating') ? $('obsSelfRating').value : 0);
   if (selfRating === 0) {
     alert(state.activeLanguage === 'zh' ? '請點擊星星，為本週表現進行自評 (Self-Appraisal)！' : 'Please click the stars to rate your self-appraisal!');
@@ -1691,7 +1691,7 @@ window.submitObsForm = async function(e) {
 
   const user = Auth.getCurrentUser();
   showLoading();
-  
+
   try {
     let attachmentUrls = [];
     const fileInput = $('obsPhoto');
@@ -1719,7 +1719,7 @@ window.submitObsForm = async function(e) {
     const tzOffset = now.getTimezoneOffset() * 60000;
     const localIso = (new Date(now.getTime() - tzOffset)).toISOString().slice(0, -1) + '+08:00';
     const nowIsoStr = localIso;
-    
+
     let finalDate = nowIsoStr;
     if (state.selectedDate) {
       const now = new Date();
@@ -1727,22 +1727,22 @@ window.submitObsForm = async function(e) {
     }
 
     const data = {
-      traineeId:      user.id,
-      traineeName:    user.name,
-      date:           finalDate,
-      department:     $('obsDept').value,
+      traineeId: user.id,
+      traineeName: user.name,
+      date: finalDate,
+      department: $('obsDept').value,
       keyObservation: window.stripBase64Images ? window.stripBase64Images(window.obsQuill.root.innerHTML) : window.obsQuill.root.innerHTML,
       actionableIdea: '',
-      attachmentUrl:  attachmentUrl,
-      selfRating:     selfRating,
-      targetWeek:     $('obsTargetWeek') ? $('obsTargetWeek').value : ''
+      attachmentUrl: attachmentUrl,
+      selfRating: selfRating,
+      targetWeek: $('obsTargetWeek') ? $('obsTargetWeek').value : ''
     };
 
     await Api.submitObservation(data);
     state.observations = await Api.getObservationsForTrainee(user.id);
     showToast(t('submitSuccess'), 'success');
     switchTab('dashboard');
-  } catch(err) {
+  } catch (err) {
     showToast('Submit failed: ' + err.message, 'error');
   } finally {
     hideLoading();
@@ -1763,7 +1763,7 @@ function calcOverallProgress(traineeId) {
 }
 
 function renderMilestones() {
-  const user      = Auth.getCurrentUser();
+  const user = Auth.getCurrentUser();
   const container = $('sectionMilestones');
 
   let selectorHtml = '';
@@ -1773,21 +1773,21 @@ function renderMilestones() {
         <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;">${t('viewingTrainee')}</p>
         <div class="trainee-tabs">
           ${CONFIG.TRAINEES.map(tr => {
-            const parts = tr.name.split(' / ');
-            const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:11px; opacity:0.8; margin-left:4px;">/ ${parts[1]}</span>` : tr.name;
-            return `
+      const parts = tr.name.split(' / ');
+      const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:11px; opacity:0.8; margin-left:4px;">/ ${parts[1]}</span>` : tr.name;
+      return `
             <button class="trainee-tab-btn ${state.selectedTraineeId === tr.id ? 'active' : ''}"
               onclick="window.selectViewTrainee('${tr.id}')" style="display:flex; align-items:center;">
               ${tr.avatar ? `<span style="margin-right:6px;">${tr.avatar}</span>` : ''} ${nameHtml}
             </button>
             `;
-          }).join('')}
+    }).join('')}
         </div>
       </div>
     `;
   }
 
-  const viewId  = user.role === 'trainee' ? user.id : state.selectedTraineeId;
+  const viewId = user.role === 'trainee' ? user.id : state.selectedTraineeId;
   const overall = calcOverallProgress(viewId);
 
   // Get Self Assessment for current month
@@ -1801,7 +1801,7 @@ function renderMilestones() {
   let assessYear = taipeiNow.getFullYear();
   if (taipeiNow.getDate() >= 30) {
     assessMonth++;
-    if(assessMonth > 12) { assessMonth = 1; assessYear++; }
+    if (assessMonth > 12) { assessMonth = 1; assessYear++; }
   }
   const next30Str = `${assessMonth}/30`;
   const selfAssessReminderZh = `⚠️ 提醒：請於(${next30Str}) 11:59 PM 前完成本月份的自我能力覺察評分。`;
@@ -1825,7 +1825,7 @@ function renderMilestones() {
           ${state.activeLanguage === 'zh' ? '請為自己目前的五大核心職能進行評分 (0-5分)，此自評將與主管評分疊加，幫助您看見認知落差並促進反思。' : 'Please rate your core competencies (0-5). Your self-assessment will be overlaid with your supervisor\'s scores to visualize any perception gaps.'}
         </p>
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
-          ${[1,2,3,4,5].map(i => `
+          ${[1, 2, 3, 4, 5].map(i => `
             <div style="display:flex; align-items:center; gap:10px;">
               <span style="font-size:12px; width:100px; color:var(--text-primary);">${t('lblCompetency' + i).split(' ')[0]}</span>
               <input type="range" id="selfScoreC${i}" min="0" max="5" step="0.5" value="${selfEval ? (selfEval['competency' + i] || 3) : 0}" oninput="document.getElementById('selfScoreValC${i}').innerText = this.value" style="flex:1;">
@@ -1857,13 +1857,13 @@ function renderMilestones() {
   if (count > 0) {
     chartsToRender.push({
       id: 'globalRadarChart',
-      data: [(sumC1/count).toFixed(1), (sumC2/count).toFixed(1), (sumC3/count).toFixed(1), (sumC4/count).toFixed(1), (sumC5/count).toFixed(1)],
+      data: [(sumC1 / count).toFixed(1), (sumC2 / count).toFixed(1), (sumC3 / count).toFixed(1), (sumC4 / count).toFixed(1), (sumC5 / count).toFixed(1)],
       selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
       labels: [
-        t('lblCompetency1').split(' ')[0], 
-        t('lblCompetency2').split(' ')[0], 
-        t('lblCompetency3').split(' ')[0], 
-        t('lblCompetency4').split(' ')[0], 
+        t('lblCompetency1').split(' ')[0],
+        t('lblCompetency2').split(' ')[0],
+        t('lblCompetency3').split(' ')[0],
+        t('lblCompetency4').split(' ')[0],
         t('lblCompetency5').split(' ')[0]
       ],
       color: '#0ea5e9' // 使用一個主色系
@@ -1885,62 +1885,62 @@ function renderMilestones() {
   const excludedDepts = traineeObj ? (traineeObj.excludedDepartments || []) : [];
 
   const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excludedDepts.includes(d.id)).map(dept => {
-      const targetDept = CONFIG.DEPARTMENTS[dept.id] || {};
-      const matchDept = (deptStr) => {
-        if (!deptStr) return false;
-        if (deptStr === dept.id) return true;
-        if (targetDept.name && deptStr === targetDept.name) return true;
-        if (targetDept.nameZh && deptStr === targetDept.nameZh) return true;
-        if (targetDept.shortZh && deptStr === targetDept.shortZh) return true;
-        return false;
-      };
+    const targetDept = CONFIG.DEPARTMENTS[dept.id] || {};
+    const matchDept = (deptStr) => {
+      if (!deptStr) return false;
+      if (deptStr === dept.id) return true;
+      if (targetDept.name && deptStr === targetDept.name) return true;
+      if (targetDept.nameZh && deptStr === targetDept.nameZh) return true;
+      if (targetDept.shortZh && deptStr === targetDept.shortZh) return true;
+      return false;
+    };
 
-      const deptObs = state.observations.filter(o => o.traineeId === viewId && matchDept(o.department));
-      const assessment = (state.assessments || []).find(a => a.traineeId === viewId && matchDept(a.department));
-      
-      const c1 = deptObs.length > 0;
-      const c2 = deptObs.some(o => o.status && o.status.trim().toLowerCase() === 'reviewed');
-      const c3 = !!assessment;
-      const c4 = assessment && ['A+', 'A', 'B'].includes((assessment.grade || '').trim().toUpperCase());
-      
-      let doneCount = 0;
-      if (c1) doneCount++;
-      if (c2) doneCount++;
-      if (c3) doneCount++;
-      if (c4) doneCount++;
-      const pct = (doneCount / 4) * 100;
+    const deptObs = state.observations.filter(o => o.traineeId === viewId && matchDept(o.department));
+    const assessment = (state.assessments || []).find(a => a.traineeId === viewId && matchDept(a.department));
 
-      const ci = (done, label) => `
+    const c1 = deptObs.length > 0;
+    const c2 = deptObs.some(o => o.status && o.status.trim().toLowerCase() === 'reviewed');
+    const c3 = !!assessment;
+    const c4 = assessment && ['A+', 'A', 'B'].includes((assessment.grade || '').trim().toUpperCase());
+
+    let doneCount = 0;
+    if (c1) doneCount++;
+    if (c2) doneCount++;
+    if (c3) doneCount++;
+    if (c4) doneCount++;
+    const pct = (doneCount / 4) * 100;
+
+    const ci = (done, label) => `
         <li class="criteria-item ${done ? 'done' : ''}">
           <i class="${done ? 'fi fi-rr-check-circle' : 'fi fi-rr-circle'}" style="font-size:11px;"></i>
           ${label}
         </li>`;
 
-      let assessmentHtml = '';
-      if (assessment) {
-        if (user.role === 'trainee' && !assessment.visibleToTrainee) {
-          assessmentHtml = `
+    let assessmentHtml = '';
+    if (assessment) {
+      if (user.role === 'trainee' && !assessment.visibleToTrainee) {
+        assessmentHtml = `
             <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:none;border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
               ${state.activeLanguage === 'zh' ? '✅ 主管考核已送出 (不公開)' : '✅ Assessment Submitted (Private)'}
             </div>
           `;
-        } else {
-          const chartId = 'radar-' + dept.id;
-          chartsToRender.push({
-            id: chartId,
-            data: [assessment.competency1, assessment.competency2, assessment.competency3, assessment.competency4, assessment.competency5 || 3],
-            selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
-            labels: [
-              t('lblCompetency1').split(' ')[0], 
-              t('lblCompetency2').split(' ')[0], 
-              t('lblCompetency3').split(' ')[0], 
-              t('lblCompetency4').split(' ')[0], 
-              t('lblCompetency5').split(' ')[0]
-            ],
-            color: dept.color
-          });
+      } else {
+        const chartId = 'radar-' + dept.id;
+        chartsToRender.push({
+          id: chartId,
+          data: [assessment.competency1, assessment.competency2, assessment.competency3, assessment.competency4, assessment.competency5 || 3],
+          selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
+          labels: [
+            t('lblCompetency1').split(' ')[0],
+            t('lblCompetency2').split(' ')[0],
+            t('lblCompetency3').split(' ')[0],
+            t('lblCompetency4').split(' ')[0],
+            t('lblCompetency5').split(' ')[0]
+          ],
+          color: dept.color
+        });
 
-          assessmentHtml = `
+        assessmentHtml = `
             <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:none;border-radius:10px;position:relative;">
               ${!assessment.visibleToTrainee && user.role === 'admin' ? `<div style=\"position:absolute; top:-8px; right:12px; background:rgba(239,68,68,0.15); color:var(--danger); border:1px solid rgba(239,68,68,0.3); font-size:10px; padding:2px 6px; border-radius:4px; font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,0.1); z-index:2;"><i class="fi fi-rr-eye-crossed"></i> ${state.activeLanguage === 'zh' ? '學生不可見 (Hidden)' : 'Hidden from Trainee'}</div>` : ''}
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
@@ -1958,31 +1958,31 @@ function renderMilestones() {
                 ${assessment.attachmentUrl ? `
                   <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
                   ${assessment.attachmentUrl.split(',').map((part, idx) => {
-                    const [url, mimeType, filename] = part.split('|');
-                    const isImage = mimeType ? mimeType.startsWith('image/') : false;
-                    const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '檢視附件 (View Attachment)' : 'View Attachment');
-                    
-                    if (isImage) {
-                      let thumbUrl = url;
-                      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-                      if (idMatch && idMatch[1]) {
-                        thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
-                      }
-                      return `
+          const [url, mimeType, filename] = part.split('|');
+          const isImage = mimeType ? mimeType.startsWith('image/') : false;
+          const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '檢視附件 (View Attachment)' : 'View Attachment');
+
+          if (isImage) {
+            let thumbUrl = url;
+            const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (idMatch && idMatch[1]) {
+              thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
+            }
+            return `
                         <div onclick="window.openLightbox('${url}')" style="cursor:pointer; position:relative; width:64px; height:64px; border-radius:8px; overflow:hidden; border:2px solid var(--border-color); box-shadow:0 2px 4px rgba(0,0,0,0.05);" title="${name}">
                           <div style="width:100%; height:100%; background-image:url('${thumbUrl}'); background-size:cover; background-position:center; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
                           <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); color:#fff; font-size:9px; text-align:center; padding:2px;">🖼️預覽</div>
                         </div>
                       `;
-                    } else {
-                      return `
+          } else {
+            return `
                         <a href="${url}" target="_blank" class="btn btn-outline" style="font-size:12px; padding:6px 12px; border-radius:8px; color:var(--text-primary); border-color:var(--border-color); background:var(--bg-card); display:flex; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,0.02); max-width:250px;">
                           <i class="fi fi-rr-document" style="font-size:16px; margin-right:8px; color:#ef4444;"></i>
                           <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</span>
                         </a>
                       `;
-                    }
-                  }).join('')}
+          }
+        }).join('')}
                   </div>
                 ` : ''}
                 <p style="font-size:11px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
@@ -2004,16 +2004,16 @@ function renderMilestones() {
               ` : ''}
             </div>
           `;
-        }
-      } else {
-        assessmentHtml = `
+      }
+    } else {
+      assessmentHtml = `
           <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:none;border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
             ${t('lblAwaitingAssessment')}
           </div>
         `;
-      }
+    }
 
-      return `
+    return `
         <div class="dept-milestone-card">
           <div class="dept-milestone-header">
             <div class="dept-milestone-title" style="color:${dept.color}">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</div>
@@ -2029,9 +2029,9 @@ function renderMilestones() {
           ${assessmentHtml}
         </div>
       `;
-    }).join('');
+  }).join('');
 
-    container.innerHTML = `
+  container.innerHTML = `
       ${selectorHtml}
       <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
         <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; justify-content: center;">
@@ -2065,158 +2065,158 @@ function renderMilestones() {
       <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">${deptCards}</div>
     `;
 
-    // Render charts
-    chartsToRender.forEach(chartConfig => {
-      const ctx = document.getElementById(chartConfig.id);
-      if (ctx) {
-        const datasets = [{
-          label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
-          data: chartConfig.data,
-          backgroundColor: 'rgba(249, 115, 22, 0.2)',
-          borderColor: '#f97316',
-          pointBackgroundColor: '#ea580c',
-          borderWidth: 1.5,
+  // Render charts
+  chartsToRender.forEach(chartConfig => {
+    const ctx = document.getElementById(chartConfig.id);
+    if (ctx) {
+      const datasets = [{
+        label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
+        data: chartConfig.data,
+        backgroundColor: 'rgba(249, 115, 22, 0.2)',
+        borderColor: '#f97316',
+        pointBackgroundColor: '#ea580c',
+        borderWidth: 1.5,
+        pointRadius: 2
+      }];
+
+      if (chartConfig.selfData) {
+        datasets.push({
+          label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
+          data: chartConfig.selfData,
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          borderColor: '#10b981',
+          borderDash: [5, 5],
+          pointBackgroundColor: '#10b981',
+          borderWidth: 2,
           pointRadius: 2
-        }];
-
-        if (chartConfig.selfData) {
-          datasets.push({
-            label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
-            data: chartConfig.selfData,
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            borderColor: '#10b981',
-            borderDash: [5, 5],
-            pointBackgroundColor: '#10b981',
-            borderWidth: 2,
-            pointRadius: 2
-          });
-        }
-
-        new Chart(ctx, {
-          type: 'radar',
-          data: {
-            labels: chartConfig.labels,
-            datasets: datasets
-          },
-          options: {
-            scales: {
-              r: {
-                min: 0,
-                max: 5,
-                ticks: { display: false, stepSize: 1 },
-                pointLabels: { 
-                  font: { size: 16, weight: 'bold' }, 
-                  color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' 
-                },
-                grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
-                angleLines: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }
-              }
-            },
-            plugins: {
-              legend: { display: false }
-            },
-            maintainAspectRatio: false
-          }
         });
       }
-    });
 
-    // Render Trend Line Chart if it exists
-    const trendCtx = document.getElementById('trendLineChart');
-    if (trendCtx) {
-      // Group assessments by month (YYYY-MM)
-      const monthlyData = {};
-      
-      const traineeAssessments = (state.assessments || []).filter(a => a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee || a.department.startsWith('self_eval')));
-      
-      traineeAssessments.forEach(a => {
-        let dateStr = a.submittedAt;
-        if (!dateStr) {
-          // fallback if submittedAt is missing, try to extract from self_eval_YYYY-MM
-          if (a.department.startsWith('self_eval_')) {
-            dateStr = a.department.replace('self_eval_', '') + '-01T00:00:00Z';
-          } else {
-            return;
-          }
-        }
-        const month = dateStr.substring(0, 7); // '2026-07'
-        if (!monthlyData[month]) {
-          monthlyData[month] = { supSum: 0, supCount: 0, selfSum: 0, selfCount: 0 };
-        }
-        
-        const avgScore = ((a.competency1 || 0) + (a.competency2 || 0) + (a.competency3 || 0) + (a.competency4 || 0) + (a.competency5 || 0)) / 5;
-        
-        if (a.department.startsWith('self_eval')) {
-          monthlyData[month].selfSum += avgScore;
-          monthlyData[month].selfCount += 1;
-        } else {
-          monthlyData[month].supSum += avgScore;
-          monthlyData[month].supCount += 1;
-        }
-      });
-      
-      const sortedMonths = Object.keys(monthlyData).sort();
-      const labels = sortedMonths;
-      const supData = sortedMonths.map(m => monthlyData[m].supCount > 0 ? (monthlyData[m].supSum / monthlyData[m].supCount).toFixed(1) : null);
-      const selfData = sortedMonths.map(m => monthlyData[m].selfCount > 0 ? (monthlyData[m].selfSum / monthlyData[m].selfCount).toFixed(1) : null);
-      
-      new Chart(trendCtx, {
-        type: 'line',
+      new Chart(ctx, {
+        type: 'radar',
         data: {
-          labels: labels,
-          datasets: [
-            {
-              label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
-              data: supData,
-              borderColor: '#f97316',
-              backgroundColor: 'rgba(249, 115, 22, 0.1)',
-              borderWidth: 2,
-              pointBackgroundColor: '#ea580c',
-              tension: 0.3,
-              fill: true,
-              spanGaps: true
-            },
-            {
-              label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
-              data: selfData,
-              borderColor: '#10b981',
-              backgroundColor: 'transparent',
-              borderWidth: 2,
-              borderDash: [5, 5],
-              pointBackgroundColor: '#10b981',
-              tension: 0.3,
-              spanGaps: true
-            }
-          ]
+          labels: chartConfig.labels,
+          datasets: datasets
         },
         options: {
           scales: {
-            y: {
-              min: 0, max: 5,
-              grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
-              ticks: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' }
-            },
-            x: {
-              grid: { display: false },
-              ticks: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' }
+            r: {
+              min: 0,
+              max: 5,
+              ticks: { display: false, stepSize: 1 },
+              pointLabels: {
+                font: { size: 16, weight: 'bold' },
+                color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b'
+              },
+              grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
+              angleLines: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }
             }
           },
           plugins: {
-            legend: { 
-              display: true,
-              position: 'bottom',
-              labels: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b', boxWidth: 12 }
-            }
+            legend: { display: false }
           },
           maintainAspectRatio: false
         }
       });
     }
+  });
+
+  // Render Trend Line Chart if it exists
+  const trendCtx = document.getElementById('trendLineChart');
+  if (trendCtx) {
+    // Group assessments by month (YYYY-MM)
+    const monthlyData = {};
+
+    const traineeAssessments = (state.assessments || []).filter(a => a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee || a.department.startsWith('self_eval')));
+
+    traineeAssessments.forEach(a => {
+      let dateStr = a.submittedAt;
+      if (!dateStr) {
+        // fallback if submittedAt is missing, try to extract from self_eval_YYYY-MM
+        if (a.department.startsWith('self_eval_')) {
+          dateStr = a.department.replace('self_eval_', '') + '-01T00:00:00Z';
+        } else {
+          return;
+        }
+      }
+      const month = dateStr.substring(0, 7); // '2026-07'
+      if (!monthlyData[month]) {
+        monthlyData[month] = { supSum: 0, supCount: 0, selfSum: 0, selfCount: 0 };
+      }
+
+      const avgScore = ((a.competency1 || 0) + (a.competency2 || 0) + (a.competency3 || 0) + (a.competency4 || 0) + (a.competency5 || 0)) / 5;
+
+      if (a.department.startsWith('self_eval')) {
+        monthlyData[month].selfSum += avgScore;
+        monthlyData[month].selfCount += 1;
+      } else {
+        monthlyData[month].supSum += avgScore;
+        monthlyData[month].supCount += 1;
+      }
+    });
+
+    const sortedMonths = Object.keys(monthlyData).sort();
+    const labels = sortedMonths;
+    const supData = sortedMonths.map(m => monthlyData[m].supCount > 0 ? (monthlyData[m].supSum / monthlyData[m].supCount).toFixed(1) : null);
+    const selfData = sortedMonths.map(m => monthlyData[m].selfCount > 0 ? (monthlyData[m].selfSum / monthlyData[m].selfCount).toFixed(1) : null);
+
+    new Chart(trendCtx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
+            data: supData,
+            borderColor: '#f97316',
+            backgroundColor: 'rgba(249, 115, 22, 0.1)',
+            borderWidth: 2,
+            pointBackgroundColor: '#ea580c',
+            tension: 0.3,
+            fill: true,
+            spanGaps: true
+          },
+          {
+            label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
+            data: selfData,
+            borderColor: '#10b981',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            pointBackgroundColor: '#10b981',
+            tension: 0.3,
+            spanGaps: true
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            min: 0, max: 5,
+            grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+            ticks: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b', boxWidth: 12 }
+          }
+        },
+        maintainAspectRatio: false
+      }
+    });
+  }
 }
 
 window.renderMilestonesView = renderMilestones;
 
-window.saveSelfAssessment = async function() {
+window.saveSelfAssessment = async function () {
   const c1 = parseFloat(document.getElementById('selfScoreC1').value);
   const c2 = parseFloat(document.getElementById('selfScoreC2').value);
   const c3 = parseFloat(document.getElementById('selfScoreC3').value);
@@ -2224,14 +2224,14 @@ window.saveSelfAssessment = async function() {
   const c5 = parseFloat(document.getElementById('selfScoreC5').value);
   const user = Auth.getCurrentUser();
   if (!user || user.role !== 'trainee') return;
-  
+
   const now = new Date();
   const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   const currentSelfEvalId = `self_eval_${currentMonthStr}`;
-  
+
   const existing = (state.assessments || []).find(a => a.traineeId === user.id && a.department === currentSelfEvalId);
   const comments = state.activeLanguage === 'zh' ? '學生自我評估紀錄' : 'Trainee Self Assessment';
-  
+
   if (existing) {
     const res = await window.db.updateAssessment(existing.id, {
       competency1: c1, competency2: c2, competency3: c3, competency4: c4, competency5: c5
@@ -2251,7 +2251,7 @@ window.saveSelfAssessment = async function() {
     );
     if (res && (res.success || res.status === 'success')) {
       alert(state.activeLanguage === 'zh' ? '自評已儲存！' : 'Self-assessment saved!');
-      window.location.reload(); 
+      window.location.reload();
     }
   }
 };
@@ -2266,7 +2266,7 @@ let _filterJournalDept = 'all';
 function renderJournals() {
   const user = Auth.getCurrentUser();
   const container = $('sectionJournals');
-  
+
   if (!state.activeJournalTraineeId) {
     state.activeJournalTraineeId = CONFIG.TRAINEES[0].id;
   }
@@ -2283,11 +2283,11 @@ function renderJournals() {
     tabsHtml = `
       <div style="display:flex; gap:10px; margin-bottom:20px; overflow-x:auto;">
         ${CONFIG.TRAINEES.map(tr => {
-          const parts = tr.name.split(' / ');
-          const nameHtml = parts.length > 1 
-            ? `<span>${parts[0]}</span><span style="font-size:11px; font-weight:400; opacity:0.85; margin-top:4px;">${parts[1]}</span>`
-            : `<span>${tr.name}</span>`;
-          return `
+      const parts = tr.name.split(' / ');
+      const nameHtml = parts.length > 1
+        ? `<span>${parts[0]}</span><span style="font-size:11px; font-weight:400; opacity:0.85; margin-top:4px;">${parts[1]}</span>`
+        : `<span>${tr.name}</span>`;
+      return `
           <button class="btn ${state.activeJournalTraineeId === tr.id ? 'btn-primary' : 'btn-outline'}" 
                   onclick="state.activeJournalTraineeId='${tr.id}'; window.renderJournals();"
                   style="flex:1; display:flex; flex-direction:column; align-items:center; border-radius:12px; padding:12px 8px; font-size:15px; font-weight:700; line-height:1.2; min-width:140px;">
@@ -2295,7 +2295,7 @@ function renderJournals() {
             ${nameHtml}
           </button>
           `;
-        }).join('')}
+    }).join('')}
       </div>
     `;
   }
@@ -2319,13 +2319,13 @@ function renderJournals() {
 
   // Filter observations
   let obs = [...state.observations].sort((a, b) => (new Date(b.submittedAt || b.date).getTime() || 0) - (new Date(a.submittedAt || a.date).getTime() || 0));
-  
+
   if (user.role === 'trainee') {
     obs = obs.filter(o => o.traineeId === user.id);
   } else {
     obs = obs.filter(o => o.traineeId === state.activeJournalTraineeId);
   }
-  
+
   if (_filterJournalDept !== 'all') obs = obs.filter(o => o.department === _filterJournalDept);
 
   let feedHtml = '';
@@ -2352,26 +2352,26 @@ function renderJournals() {
       const deptObs = grouped[deptId];
       const dept = CONFIG.DEPARTMENTS[deptId] || { name: deptId, color: '#ccc' };
       const deptName = state.activeLanguage === 'zh' ? (dept.nameZh || dept.name) : dept.name;
-      
+
       feedHtml += `<div class="glass-card" style="margin-bottom: 24px; padding: 20px;">`;
       feedHtml += `<h3 style="margin-top: 0; margin-bottom: 16px; color: ${dept.color}; display: flex; align-items: center; gap: 8px;"><i class="fi fi-rr-folder"></i> ${deptName} <span style="font-size: 12px; background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 12px; color: var(--text-secondary);">${deptObs.length} ${state.activeLanguage === 'zh' ? '篇週記' : 'Journals'}</span></h3>`;
-      
+
       // Stamp Card UI (Slots)
       feedHtml += `<div style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color);">`;
-      
+
       // Sort oldest to newest for the timeline feel
       const timelineObs = [...deptObs].sort((a, b) => (new Date(a.submittedAt || a.date).getTime() || 0) - (new Date(b.submittedAt || b.date).getTime() || 0));
-      
+
       timelineObs.forEach((o, idx) => {
         const isReviewed = o.status === 'reviewed';
         const statusIcon = isReviewed ? (state.activeLanguage === 'zh' ? '✅ 已確認' : '✅ Reviewed') : (state.activeLanguage === 'zh' ? '⏳ 待確認' : '⏳ Pending');
         const targetWeek = o.targetWeek ? o.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(o.submittedAt || o.date);
         const canEvaluate = user.role === 'admin' || user.role === 'guest';
-        
+
         const scrollBtnText = canEvaluate ? (state.activeLanguage === 'zh' ? '往下評分' : 'Grade') : (state.activeLanguage === 'zh' ? '往下查看' : 'View Details');
         const fullBtnText = canEvaluate ? (state.activeLanguage === 'zh' ? '閱讀與評分' : 'Read & Grade') : (state.activeLanguage === 'zh' ? '閱讀全文' : 'Read Full Post');
         const openFileText = state.activeLanguage === 'zh' ? '開啟週記' : 'Open Journal';
-        
+
         feedHtml += `
           <div style="min-width: 240px; flex-shrink: 0; border: ${isReviewed ? '1px solid var(--slot-border-reviewed)' : '1px dashed var(--slot-border-pending)'}; border-radius: 12px; padding: 16px; background: ${isReviewed ? 'var(--bg-highlight)' : 'transparent'}; display: flex; flex-direction: column; justify-content: space-between; box-shadow: ${isReviewed ? '0 2px 4px rgba(0,0,0,0.02)' : 'none'};">
             <div>
@@ -2390,9 +2390,9 @@ function renderJournals() {
           </div>
         `;
       });
-      
+
       feedHtml += `</div>`; // End of slots
-      
+
       // Render the actual feed items below the slots
       feedHtml += `<div style="display: flex; flex-direction: column; gap: 16px;">`;
       deptObs.forEach(o => {
@@ -2413,17 +2413,17 @@ function renderJournals() {
   `;
 }
 
-window.setFilterDeptForJournals = function(val) { _filterJournalDept = val; renderJournals(); };
+window.setFilterDeptForJournals = function (val) { _filterJournalDept = val; renderJournals(); };
 
 // ══════════════════════════════════════════════════════════════════
 // 4. REVIEW & FEEDBACK (Assessments)
 // ══════════════════════════════════════════════════════════════════
 
 let _filterTrainee = 'all';
-let _filterDept    = 'all';
+let _filterDept = 'all';
 
 function renderReview() {
-  const user      = Auth.getCurrentUser();
+  const user = Auth.getCurrentUser();
   const container = $('sectionReview');
 
   // Enforce guest department filter
@@ -2484,31 +2484,31 @@ function renderReview() {
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency1')}</label>
               <div class="rating-stars" id="assessStars-comp1" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp1',${n})"></i>`).join('')}
+                ${[1, 2, 3, 4, 5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp1',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency2')}</label>
               <div class="rating-stars" id="assessStars-comp2" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp2',${n})"></i>`).join('')}
+                ${[1, 2, 3, 4, 5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp2',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency3')}</label>
               <div class="rating-stars" id="assessStars-comp3" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp3',${n})"></i>`).join('')}
+                ${[1, 2, 3, 4, 5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp3',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency4')}</label>
               <div class="rating-stars" id="assessStars-comp4" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp4',${n})"></i>`).join('')}
+                ${[1, 2, 3, 4, 5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp4',${n})"></i>`).join('')}
               </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label style="font-size:11px;color:var(--text-secondary);">${t('lblCompetency5')}</label>
               <div class="rating-stars" id="assessStars-comp5" style="margin-top:4px;font-size:18px;">
-                ${[1,2,3,4,5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp5',${n})"></i>`).join('')}
+                ${[1, 2, 3, 4, 5].map(n => `<i class="${n <= 3 ? 'fi fi-ss-star active' : 'fi fi-rs-star'}" onclick="window.setAssessRating('comp5',${n})"></i>`).join('')}
               </div>
             </div>
           </div>
@@ -2555,7 +2555,7 @@ function renderReview() {
       const ex = t.excludedDepartments || [];
       totalExpected += Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !ex.includes(d.id)).length;
     });
-    
+
     // Ignore self_eval when counting pending assessments
     const assessmentCount = (state.assessments || []).filter(a => !a.department.startsWith('self_eval')).length;
     let pendingAssessCount = totalExpected - assessmentCount;
@@ -2574,7 +2574,7 @@ function renderReview() {
         </div>
       `;
     }
-    
+
     if (pendingAssessCount > 0) {
       smartNudgeHtml += `
         <div class="smart-nudge-item alert" onclick="window.switchTab('milestones')" style="cursor:pointer;">
@@ -2602,27 +2602,27 @@ function renderReview() {
   }
 
 
-    // Render Past Assessments
-    let pastAssessmentsHtml = '';
-    const relevantAssessments = (state.assessments || []).filter(a => {
-      if (isGuest) return a.department === user.departmentId;
-      return true;
-    }).sort((a, b) => (new Date(b.submittedAt || b.date).getTime() || 0) - (new Date(a.submittedAt || a.date).getTime() || 0));
+  // Render Past Assessments
+  let pastAssessmentsHtml = '';
+  const relevantAssessments = (state.assessments || []).filter(a => {
+    if (isGuest) return a.department === user.departmentId;
+    return true;
+  }).sort((a, b) => (new Date(b.submittedAt || b.date).getTime() || 0) - (new Date(a.submittedAt || a.date).getTime() || 0));
 
-    if (relevantAssessments.length > 0) {
-      pastAssessmentsHtml = `
+  if (relevantAssessments.length > 0) {
+    pastAssessmentsHtml = `
         <div style="margin-bottom:24px;">
-          <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-secondary);"><i class="fi fi-rr-time-past"></i> ${state.activeLanguage==='zh'?'已送出的考核紀錄':'Submitted Assessments'}</h3>
+          <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-secondary);"><i class="fi fi-rr-time-past"></i> ${state.activeLanguage === 'zh' ? '已送出的考核紀錄' : 'Submitted Assessments'}</h3>
           <div style="display:flex;flex-direction:column;gap:12px;">
             ${relevantAssessments.map(a => {
-              const tr = CONFIG.TRAINEES.find(t => t.id === a.traineeId);
-              const dept = CONFIG.DEPARTMENTS[a.department] || {};
-              return `
+      const tr = CONFIG.TRAINEES.find(t => t.id === a.traineeId);
+      const dept = CONFIG.DEPARTMENTS[a.department] || {};
+      return `
                 <div class="glass-card" style="padding:12px; border-left: 4px solid ${dept.color || 'var(--primary)'};">
                   <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                     <div>
                       <span style="font-weight:bold; font-size:14px;">${tr ? tr.name : a.traineeId}</span>
-                      <span style="font-size:12px; color:var(--text-muted); margin-left:8px;">${state.activeLanguage==='zh'?(dept.nameZh || dept.name):dept.name}</span>
+                      <span style="font-size:12px; color:var(--text-muted); margin-left:8px;">${state.activeLanguage === 'zh' ? (dept.nameZh || dept.name) : dept.name}</span>
                     </div>
                     <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;">${a.grade}</span>
                   </div>
@@ -2639,11 +2639,11 @@ function renderReview() {
                   </div>
                 </div>
               `;
-            }).join('')}
+    }).join('')}
           </div>
         </div>
       `;
-    }
+  }
 
   container.innerHTML = `
     ${smartNudgeHtml}
@@ -2656,7 +2656,7 @@ function renderReview() {
   `;
 }
 
-window.setAssessRating = function(compKey, stars) {
+window.setAssessRating = function (compKey, stars) {
   if (!state.pendingAssessRatings) {
     state.pendingAssessRatings = { comp1: 3, comp2: 3, comp3: 3, comp4: 3, comp5: 3 };
   }
@@ -2668,7 +2668,7 @@ window.setAssessRating = function(compKey, stars) {
   });
 };
 
-window.submitStationAssessment = async function() {
+window.submitStationAssessment = async function () {
   const traineeId = $('assessTraineeId').value;
   const dept = $('assessDept').value;
   const grade = $('assessGrade').value;
@@ -2725,7 +2725,7 @@ window.submitStationAssessment = async function() {
       $('assessComments').value = '';
       if ($('assessFile')) $('assessFile').value = '';
       state.assessments = await Api.getAssessments();
-      
+
       // Select the trainee that was just assessed and switch to Milestones tab
       state.selectedTraineeId = traineeId;
       switchTab('milestones');
@@ -2739,7 +2739,7 @@ window.submitStationAssessment = async function() {
   }
 }
 
-window.openLightbox = function(url) {
+window.openLightbox = function (url) {
   let imgUrl = url;
   const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if (idMatch && idMatch[1]) {
@@ -2752,7 +2752,7 @@ window.openLightbox = function(url) {
   }
 };
 
-window.toggleAssessmentVisibility = async function(id, visible) {
+window.toggleAssessmentVisibility = async function (id, visible) {
   showLoading();
   try {
     const res = await Api.updateAssessmentVisibility(id, visible);
@@ -2774,14 +2774,14 @@ function formatTaipeiTime(isoString, lang) {
   if (!isoString) return '';
   const date = new Date(isoString);
   if (isNaN(date.getTime())) return isoString;
-  const options = { 
-    timeZone: 'Asia/Taipei', 
-    year: 'numeric', 
-    month: '2-digit', 
-    day: '2-digit', 
-    hour: '2-digit', 
-    minute: '2-digit', 
-    hour12: false 
+  const options = {
+    timeZone: 'Asia/Taipei',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
   };
   return date.toLocaleString(lang === 'zh' ? 'zh-TW' : 'en-US', options);
 }
@@ -2800,19 +2800,19 @@ function formatTaipeiDateOnly(isoString) {
 
 function buildFeedItem(obs, user) {
   const traineeConf = CONFIG.TRAINEES.find(t => t.id === obs.traineeId) || {};
-  const dept        = CONFIG.DEPARTMENTS[obs.department] || {};
-  
+  const dept = CONFIG.DEPARTMENTS[obs.department] || {};
+
   let isLateStr = '';
   if (obs.targetWeek) {
     const parts = obs.targetWeek.split('~');
     if (parts.length === 2) {
       const weekEndStr = parts[1]; // e.g. "2026-07-24"
       // weekEnd is Friday 00:00:00 Taipei time
-      const weekEnd = new Date(weekEndStr + 'T00:00:00+08:00'); 
+      const weekEnd = new Date(weekEndStr + 'T00:00:00+08:00');
       // Deadline is Wednesday 23:59:59 Taipei Time (Friday 00:00 + 5 days + 23h59m59s)
       const offsetMs = (5 * 24 + 23) * 60 * 60 * 1000 + 59 * 60 * 1000 + 59 * 1000 + 999;
       const deadline = new Date(weekEnd.getTime() + offsetMs);
-      
+
       const submitted = new Date(obs.submittedAt || obs.date);
       if (submitted > deadline) {
         isLateStr = `<span class="badge" style="background-color:#ef4444;margin-left:8px;">${state.activeLanguage === 'zh' ? '遲交 (Late)' : 'Late'}</span>`;
@@ -2820,8 +2820,8 @@ function buildFeedItem(obs, user) {
     }
   }
 
-  const isReviewed  = obs.status === 'reviewed';
-  const badge       = (isReviewed
+  const isReviewed = obs.status === 'reviewed';
+  const badge = (isReviewed
     ? `<span class="badge badge-reviewed">✓ ${t('statusReviewed')}</span>`
     : `<span class="badge badge-pending">⏳ ${t('statusPending')}</span>`) + isLateStr;
 
@@ -2925,30 +2925,30 @@ function buildFeedItem(obs, user) {
           <h5>${state.activeLanguage === 'zh' ? '照片或報告檔案連結 (Attachments)' : 'Attachment Link'}</h5>
           <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
             ${obs.attachmentUrl.split(',').map((part, idx) => {
-              const [url, mimeType, filename] = part.split('|');
-              const isImage = mimeType ? mimeType.startsWith('image/') : false;
-              const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '點擊檢視附件內容' : 'View Attachment');
-              
-              if (isImage) {
-                let thumbUrl = url;
-                const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-                if (idMatch && idMatch[1]) {
-                  thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
-                }
-                return `
+    const [url, mimeType, filename] = part.split('|');
+    const isImage = mimeType ? mimeType.startsWith('image/') : false;
+    const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '點擊檢視附件內容' : 'View Attachment');
+
+    if (isImage) {
+      let thumbUrl = url;
+      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (idMatch && idMatch[1]) {
+        thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
+      }
+      return `
                   <div onclick="window.openLightbox('${url}')" style="cursor:pointer; position:relative; width:80px; height:80px; border-radius:8px; overflow:hidden; border:2px solid var(--border-color); box-shadow:0 2px 4px rgba(0,0,0,0.05);" title="${name}">
                     <div style="width:100%; height:100%; background-image:url('${thumbUrl}'); background-size:cover; background-position:center; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
                     <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); color:#fff; font-size:9px; text-align:center; padding:2px;">🖼️預覽</div>
                   </div>
                 `;
-              } else {
-                return `
+    } else {
+      return `
                   <button onclick="window.open('${url}', '_blank')" class="btn btn-outline" style="color:var(--text-primary); background:var(--bg-card); border-color:var(--border-color); padding: 8px 16px; font-size: 13px; border-width: 1px; font-weight: 500; display:flex; align-items:center; gap:8px;">
                     <i class="fi fi-rr-document" style="color:#ef4444; font-size:16px;"></i> ${name}
                   </button>
                 `;
-              }
-            }).join('')}
+    }
+  }).join('')}
           </div>
         </div>` : ''}
 
@@ -2957,59 +2957,59 @@ function buildFeedItem(obs, user) {
       ${actionHtml}
       
       <div style="display:flex; gap:8px; margin-top:12px; border-top:1px solid var(--border-color); padding-top:12px;">
-        ${((user.role === 'trainee' && obs.traineeId === user.id && !isReviewed) || user.role === 'admin') 
-          ? `<button class="btn btn-secondary" onclick="openEditObservation('${obs.id}')" style="flex:1;"><i class="fi fi-rr-pencil"></i> ${state.activeLanguage === 'zh' ? '編輯' : 'Edit'}</button>` 
-          : ''}
-        ${(user.role === 'admin' && !isReviewed) 
-          ? `<button class="btn btn-secondary" onclick="lockObservation('${obs.id}')" style="flex:1; color:#ea580c; border-color:#ea580c;"><i class="fi fi-rr-lock"></i> ${state.activeLanguage === 'zh' ? '鎖定' : 'Lock'}</button>` 
-          : ''}
-        ${(user.role === 'admin') 
-          ? `<button class="btn btn-secondary" onclick="deleteObservation('${obs.id}')" style="flex:1; color:#dc2626; border-color:#dc2626;"><i class="fi fi-rr-trash"></i> ${state.activeLanguage === 'zh' ? '刪除' : 'Delete'}</button>` 
-          : ''}
+        ${((user.role === 'trainee' && obs.traineeId === user.id && !isReviewed) || user.role === 'admin')
+      ? `<button class="btn btn-secondary" onclick="openEditObservation('${obs.id}')" style="flex:1;"><i class="fi fi-rr-pencil"></i> ${state.activeLanguage === 'zh' ? '編輯' : 'Edit'}</button>`
+      : ''}
+        ${(user.role === 'admin' && !isReviewed)
+      ? `<button class="btn btn-secondary" onclick="lockObservation('${obs.id}')" style="flex:1; color:#ea580c; border-color:#ea580c;"><i class="fi fi-rr-lock"></i> ${state.activeLanguage === 'zh' ? '鎖定' : 'Lock'}</button>`
+      : ''}
+        ${(user.role === 'admin')
+      ? `<button class="btn btn-secondary" onclick="deleteObservation('${obs.id}')" style="flex:1; color:#dc2626; border-color:#dc2626;"><i class="fi fi-rr-trash"></i> ${state.activeLanguage === 'zh' ? '刪除' : 'Delete'}</button>`
+      : ''}
       </div>
     </div>
   `;
 }
 
-window.setFilterTrainee = function(val) { _filterTrainee = val; renderReview(); };
+window.setFilterTrainee = function (val) { _filterTrainee = val; renderReview(); };
 
-window.lockObservation = async function(id) {
+window.lockObservation = async function (id) {
   if (!confirm(state.activeLanguage === 'zh' ? '確定要鎖定這篇週記嗎？鎖定後學生將無法修改。' : 'Are you sure you want to lock this? The trainee will no longer be able to edit it.')) return;
   const obs = state.observations.find(o => o.id === id);
   if (!obs) return;
-  
+
   showLoading();
   try {
     await Api.submitFeedback(id, obs.mentorComment || '', obs.mentorName || Auth.getCurrentUser().name, obs.rating || 0);
     state.observations = await Api.getAllObservations();
     showToast(state.activeLanguage === 'zh' ? '已鎖定' : 'Locked', 'success');
     renderCurrentTab();
-  } catch(err) {
+  } catch (err) {
     showToast('Error: ' + err.message, 'error');
   } finally {
     hideLoading();
   }
 };
 
-window.generateAdminTargetWeekOptions = function(selectedWeek) {
+window.generateAdminTargetWeekOptions = function (selectedWeek) {
   let options = '';
   const now = new Date();
   const currentDay = now.getDay();
   const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay;
   const currentMonday = new Date(now);
   currentMonday.setDate(now.getDate() + diffToMonday);
-  
+
   let foundSelected = false;
-  
+
   for (let i = 0; i < 24; i++) {
     const mon = new Date(currentMonday);
     mon.setDate(currentMonday.getDate() - i * 7);
     const fri = new Date(mon);
     fri.setDate(mon.getDate() + 4);
-    
+
     const monStr = `${mon.getMonth() + 1}/${mon.getDate()}`;
     const friStr = `${fri.getMonth() + 1}/${fri.getDate()}`;
-    
+
     let labelZh = `${monStr}(週一) ~ ${friStr}(週五)`;
     let labelEn = `${monStr}(Mon) ~ ${friStr}(Fri)`;
     if (i === 0) {
@@ -3019,27 +3019,27 @@ window.generateAdminTargetWeekOptions = function(selectedWeek) {
       labelZh += ' - 上週 (Last Week)';
       labelEn += ' - Last Week';
     }
-    
-    const valStr = `${mon.getFullYear()}-${String(mon.getMonth()+1).padStart(2,'0')}-${String(mon.getDate()).padStart(2,'0')}~${fri.getFullYear()}-${String(fri.getMonth()+1).padStart(2,'0')}-${String(fri.getDate()).padStart(2,'0')}`;
-    
+
+    const valStr = `${mon.getFullYear()}-${String(mon.getMonth() + 1).padStart(2, '0')}-${String(mon.getDate()).padStart(2, '0')}~${fri.getFullYear()}-${String(fri.getMonth() + 1).padStart(2, '0')}-${String(fri.getDate()).padStart(2, '0')}`;
+
     if (valStr === selectedWeek) foundSelected = true;
-    
+
     options += `<option value="${valStr}" ${valStr === selectedWeek ? 'selected' : ''}>${state.activeLanguage === 'zh' ? labelZh : labelEn}</option>`;
   }
-  
+
   if (selectedWeek && !foundSelected) {
     options += `<option value="${selectedWeek}" selected>${selectedWeek} (Original)</option>`;
   }
-  
+
   return options;
 };
 
-window.openEditObservation = function(id) {
+window.openEditObservation = function (id) {
   const obs = state.observations.find(o => o.id === id);
   if (!obs) return;
   $('editObsId').value = obs.id;
   $('editObsDate').value = formatTaipeiDateOnly(obs.date);
-  
+
   const targetWeekSelect = $('editObsTargetWeek');
   if (targetWeekSelect) {
     targetWeekSelect.innerHTML = window.generateAdminTargetWeekOptions(obs.targetWeek);
@@ -3058,12 +3058,12 @@ window.openEditObservation = function(id) {
       modules: {
         toolbar: [
           ['bold', 'italic', 'underline'],
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }]
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }]
         ]
       }
     });
   }
-  
+
   let content = obs.keyObservation || '';
   if (!content.includes('<p>') && !content.includes('<br>')) {
     content = content.replace(/\n/g, '<br>');
@@ -3074,7 +3074,7 @@ window.openEditObservation = function(id) {
   $('editObsModal').style.display = 'flex';
 };
 
-window.saveEditedObservation = async function() {
+window.saveEditedObservation = async function () {
   const id = $('editObsId').value;
   const data = {
     date: $('editObsDate').value,
@@ -3083,7 +3083,7 @@ window.saveEditedObservation = async function() {
     keyObservation: window.editObsQuill.root.innerHTML,
     attachmentUrl: $('editObsPhoto').value.trim()
   };
-  
+
   showLoading();
   $('editObsModal').style.display = 'none';
   try {
@@ -3095,14 +3095,14 @@ window.saveEditedObservation = async function() {
     } else {
       showToast('Update failed.', 'error');
     }
-  } catch(err) {
+  } catch (err) {
     showToast('Error: ' + err.message, 'error');
   } finally {
     hideLoading();
   }
 };
 
-window.deleteObservation = async function(id) {
+window.deleteObservation = async function (id) {
   if (!confirm(state.activeLanguage === 'zh' ? '確定要刪除這筆週記嗎？此操作無法復原。' : 'Are you sure you want to delete this observation? This cannot be undone.')) {
     return;
   }
@@ -3116,21 +3116,21 @@ window.deleteObservation = async function(id) {
     } else {
       showToast('Delete failed.', 'error');
     }
-  } catch(err) {
+  } catch (err) {
     showToast('Error: ' + err.message, 'error');
   } finally {
     hideLoading();
   }
 };
 
-window.openEditAssessment = function(id) {
+window.openEditAssessment = function (id) {
   const asm = state.assessments.find(a => a.id === id);
   if (!asm) return;
   $('editAssessId').value = asm.id;
-  
-  const user = Auth.getCurrentUser() || {role: 'trainee'};
+
+  const user = Auth.getCurrentUser() || { role: 'trainee' };
   const isGuest = user.role === 'guest';
-  
+
   // Populate Dept dropdown
   const deptSelect = $('editAssessDept');
   if (isGuest) {
@@ -3138,12 +3138,12 @@ window.openEditAssessment = function(id) {
     deptSelect.innerHTML = `<option value="${user.departmentId}" selected>${state.activeLanguage === 'zh' ? (d.nameZh || d.name) : d.name}</option>`;
     deptSelect.disabled = true;
   } else {
-    deptSelect.innerHTML = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d => 
+    deptSelect.innerHTML = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly).map(d =>
       `<option value="${d.id}" ${asm.department === d.id ? 'selected' : ''}>${state.activeLanguage === 'zh' ? d.nameZh : d.name}</option>`
     ).join('');
     deptSelect.disabled = false;
   }
-  
+
   $('editAssessGrade').value = asm.grade;
   $('editAssessSigner').value = asm.assessor;
   $('editAssessComp1').value = asm.competency1;
@@ -3153,11 +3153,11 @@ window.openEditAssessment = function(id) {
   $('editAssessComp5').value = asm.competency5 || 3;
   $('editAssessComments').value = asm.comments;
   $('editAssessFile').value = asm.attachmentUrl || '';
-  
+
   $('editAssessModal').style.display = 'flex';
 };
 
-window.saveEditedAssessment = async function() {
+window.saveEditedAssessment = async function () {
   const id = $('editAssessId').value;
   const data = {
     department: $('editAssessDept').value,
@@ -3171,7 +3171,7 @@ window.saveEditedAssessment = async function() {
     comments: $('editAssessComments').value.trim(),
     attachmentUrl: $('editAssessFile').value.trim()
   };
-  
+
   showLoading();
   $('editAssessModal').style.display = 'none';
   try {
@@ -3183,14 +3183,14 @@ window.saveEditedAssessment = async function() {
     } else {
       showToast('Update failed.', 'error');
     }
-  } catch(err) {
+  } catch (err) {
     showToast('Error: ' + err.message, 'error');
   } finally {
     hideLoading();
   }
 };
 
-window.deleteAssessment = async function(id) {
+window.deleteAssessment = async function (id) {
   if (!confirm(state.activeLanguage === 'zh' ? '確定要刪除這筆考核嗎？此操作無法復原。' : 'Are you sure you want to delete this assessment? This cannot be undone.')) {
     return;
   }
@@ -3204,7 +3204,7 @@ window.deleteAssessment = async function(id) {
     } else {
       showToast('Delete failed.', 'error');
     }
-  } catch(err) {
+  } catch (err) {
     showToast('Error: ' + err.message, 'error');
   } finally {
     hideLoading();
@@ -3212,9 +3212,9 @@ window.deleteAssessment = async function(id) {
 };
 
 
-window.setFilterDept    = function(val) { _filterDept    = val; renderReview(); };
+window.setFilterDept = function (val) { _filterDept = val; renderReview(); };
 
-window.setRating = function(obsId, stars) {
+window.setRating = function (obsId, stars) {
   state.pendingRatings[obsId] = stars;
   const container = $('stars-' + obsId);
   if (!container) return;
@@ -3223,7 +3223,7 @@ window.setRating = function(obsId, stars) {
   });
 };
 
-window.submitFeedback = async function(obsId) {
+window.submitFeedback = async function (obsId) {
   const comment = ($('feedback-' + obsId) || {}).value || '';
   if (!comment.trim()) { showToast(t('feedbackLabel') + ' is required', 'error'); return; }
 
@@ -3237,14 +3237,14 @@ window.submitFeedback = async function(obsId) {
     state.observations = await Api.getAllObservations();
     showToast(t('feedbackSuccess'), 'success');
     renderCurrentTab();
-  } catch(err) {
+  } catch (err) {
     showToast('Error: ' + err.message, 'error');
   } finally {
     hideLoading();
   }
 };
 
-window.submitGuestComment = async function(obsId) {
+window.submitGuestComment = async function (obsId) {
   const comment = ($('gcomment-' + obsId) || {}).value?.trim();
   if (!comment) return;
 
@@ -3254,7 +3254,7 @@ window.submitGuestComment = async function(obsId) {
     state.observations = await Api.getAllObservations();
     showToast(t('guestSuccess'), 'success');
     renderCurrentTab();
-  } catch(err) {
+  } catch (err) {
     showToast('Error: ' + err.message, 'error');
   } finally {
     hideLoading();
@@ -3289,7 +3289,7 @@ function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 // MENTOR INSIGHTS
 // ══════════════════════════════════════════════════════════════════
 
-window.toggleNoteTag = function(tag) {
+window.toggleNoteTag = function (tag) {
   if (!state.selectedNoteTags) state.selectedNoteTags = [];
   const idx = state.selectedNoteTags.indexOf(tag);
   if (idx > -1) state.selectedNoteTags.splice(idx, 1);
@@ -3297,7 +3297,7 @@ window.toggleNoteTag = function(tag) {
   renderInsights();
 };
 
-window.submitMentorNote = async function() {
+window.submitMentorNote = async function () {
   const content = $('insightContent').value;
   if (!content.trim()) {
     showToast('Please enter note content.', 'error');
@@ -3305,7 +3305,7 @@ window.submitMentorNote = async function() {
   }
   const traineeId = $('insightTrainee').value;
   const tags = state.selectedNoteTags || [];
-  
+
   showLoading();
   try {
     const res = await Api.submitMentorNote(traineeId, content, tags);
@@ -3317,14 +3317,14 @@ window.submitMentorNote = async function() {
     } else {
       showToast('Failed to save note.', 'error');
     }
-  } catch(e) {
+  } catch (e) {
     showToast('Error: ' + e.message, 'error');
   } finally {
     hideLoading();
   }
 };
 
-window.deleteMentorNote = async function(id) {
+window.deleteMentorNote = async function (id) {
   if (!confirm('Are you sure you want to delete this note?')) return;
   showLoading();
   try {
@@ -3341,36 +3341,36 @@ window.deleteMentorNote = async function(id) {
 function renderInsights() {
   const container = $('insightsContainer');
   if (!container) return;
-  
+
   const user = Auth.getCurrentUser();
   if (user.role !== 'admin') {
     container.innerHTML = `<div class="empty-state">Access Denied.</div>`;
     return;
   }
 
-  const tags = state.activeLanguage === 'zh' 
+  const tags = state.activeLanguage === 'zh'
     ? ['邏輯清晰', '批判性思考', '主動發現問題', '表達待加強', '需增加實作', '團隊協作佳']
     : ['Clear Logic', 'Critical Thinking', 'Proactive', 'Needs Better Expression', 'Needs Hands-on', 'Good Teamwork'];
-    
+
   if (!state.selectedNoteTags) state.selectedNoteTags = [];
-  
+
   let traineesHtml = `<option value="general">${state.activeLanguage === 'zh' ? '總體觀察 (General)' : 'General Observation'}</option>`;
   Object.values(CONFIG.TRAINEES).forEach(tr => {
     traineesHtml += `<option value="${tr.id}">${tr.name}</option>`;
   });
-  
+
   const tagsHtml = tags.map(tag => {
     const isSelected = state.selectedNoteTags.includes(tag);
     return `<button class="btn ${isSelected ? 'btn-primary' : 'btn-outline'} btn-sm" style="border-radius:20px; padding:4px 12px; font-size:11px;" onclick="window.toggleNoteTag('${tag}')">${tag}</button>`;
   }).join('');
-  
+
   // Render feed
   let feedHtml = '';
   if (!state.mentorNotes || state.mentorNotes.length === 0) {
-    feedHtml = `<div class="empty-state" style="margin-top:20px;"><i class="fi fi-rr-box"></i><p>${state.activeLanguage==='zh'?'尚無觀察紀錄':'No insights recorded yet.'}</p></div>`;
+    feedHtml = `<div class="empty-state" style="margin-top:20px;"><i class="fi fi-rr-box"></i><p>${state.activeLanguage === 'zh' ? '尚無觀察紀錄' : 'No insights recorded yet.'}</p></div>`;
   } else {
     feedHtml = state.mentorNotes.map(n => {
-      const tName = n.traineeId === 'general' ? (state.activeLanguage==='zh'?'總體觀察':'General') : (CONFIG.TRAINEES.find(t=>t.id===n.traineeId)?.name || n.traineeId);
+      const tName = n.traineeId === 'general' ? (state.activeLanguage === 'zh' ? '總體觀察' : 'General') : (CONFIG.TRAINEES.find(t => t.id === n.traineeId)?.name || n.traineeId);
       const tagBadges = (n.tags || []).map(t => `<span style="background:var(--primary);color:#fff;font-size:10px;padding:2px 8px;border-radius:12px;margin-right:6px;">${t}</span>`).join('');
       return `
         <div class="glass-card" style="margin-bottom:16px; padding:16px; position:relative;">
@@ -3388,7 +3388,7 @@ function renderInsights() {
 
   container.innerHTML = `
     <div class="glass-card" style="margin-bottom: 24px; padding: 20px;">
-      <h3 style="font-size:14px; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i class="fi fi-rr-edit"></i> ${state.activeLanguage==='zh'?'新增觀察紀錄':'New Insight Note'}</h3>
+      <h3 style="font-size:14px; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i class="fi fi-rr-edit"></i> ${state.activeLanguage === 'zh' ? '新增觀察紀錄' : 'New Insight Note'}</h3>
       <div class="form-group">
         <select id="insightTrainee" class="form-control">${traineesHtml}</select>
       </div>
@@ -3404,7 +3404,7 @@ function renderInsights() {
     </div>
     
     <div style="margin-top:30px;">
-      <h3 style="font-size:16px; margin-bottom:16px; display:flex; align-items:center; gap:8px;"><i class="fi fi-rr-time-past"></i> ${state.activeLanguage==='zh'?'歷史紀錄':'History'}</h3>
+      <h3 style="font-size:16px; margin-bottom:16px; display:flex; align-items:center; gap:8px;"><i class="fi fi-rr-time-past"></i> ${state.activeLanguage === 'zh' ? '歷史紀錄' : 'History'}</h3>
       ${feedHtml}
     </div>
   `;
@@ -3413,24 +3413,24 @@ function renderInsights() {
 // ══════════════════════════════════════════════════════════════════
 // RESOURCES PAGE
 // ══════════════════════════════════════════════════════════════════
-window.renderResources = async function() {
+window.renderResources = async function () {
   const user = Auth.getCurrentUser();
   if (user.role === 'admin') {
     $('resourceUploadArea').style.display = 'block';
   } else {
     $('resourceUploadArea').style.display = 'none';
   }
-  
+
   if (!state.resources) {
     showLoading();
     state.resources = await Api.getAllResources();
     hideLoading();
   }
-  
+
   window.filterResources('All');
 };
 
-window.filterResources = function(category) {
+window.filterResources = function (category) {
   // Update button active states
   const buttons = document.querySelectorAll('.filter-tabs button');
   buttons.forEach(btn => {
@@ -3443,7 +3443,7 @@ window.filterResources = function(category) {
 
   const list = state.resources || [];
   const filtered = category === 'All' ? list : list.filter(r => r.category === category);
-  
+
   const container = $('resourcesList');
   if (filtered.length === 0) {
     container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px;">No resources found.</div>';
@@ -3458,9 +3458,9 @@ window.filterResources = function(category) {
         ${user.role === 'admin' ? `<button class="icon-btn" style="color:var(--danger);" onclick="window.deleteResource('${res.id}')"><i class="fi fi-rr-trash"></i></button>` : ''}
       </div>
       <h3 style="margin-bottom:8px; font-size:16px; font-weight:500; line-height:1.4;">
-        ${res.title === '食品QAQC_結訓考核簡報 (3人共同完成) / CMF-QAQC Final Assessment Presentation' 
-          ? (state.activeLanguage === 'zh' ? '食品QAQC_結訓考核簡報 (3人共同完成)' : 'CMF-QAQC Final Assessment Presentation') 
-          : res.title}
+        ${res.title === '食品QAQC_結訓考核簡報 (3人共同完成) / CMF-QAQC Final Assessment Presentation'
+      ? (state.activeLanguage === 'zh' ? '食品QAQC_結訓考核簡報 (3人共同完成)' : 'CMF-QAQC Final Assessment Presentation')
+      : res.title}
       </h3>
       <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px; flex-grow:1;">
         Uploaded by ${res.uploadedBy} on ${new Date(res.uploadedAt).toLocaleDateString()}
@@ -3472,7 +3472,7 @@ window.filterResources = function(category) {
   `).join('');
 };
 
-window.handleUploadResource = async function() {
+window.handleUploadResource = async function () {
   const title = $('resTitle').value.trim();
   const category = $('resCategory').value;
   const fileInput = $('resFile');
@@ -3489,9 +3489,9 @@ window.handleUploadResource = async function() {
       try {
         const base64 = e.target.result;
         // 1. Upload to Drive
-        const uploadRes = await Api.uploadFile(base64, file.type, file.name, 'MA_Program_Resources'); 
+        const uploadRes = await Api.uploadFile(base64, file.type, file.name, 'MA_Program_Resources');
         if (uploadRes.error) throw new Error(uploadRes.error);
-        
+
         // 2. Save metadata to Sheets
         const user = Auth.getCurrentUser();
         const metaRes = await Api.submitResource({
@@ -3521,7 +3521,7 @@ window.handleUploadResource = async function() {
   }
 };
 
-window.deleteResource = async function(id) {
+window.deleteResource = async function (id) {
   if (!confirm('Are you sure you want to delete this resource?')) return;
   showLoading();
   try {
