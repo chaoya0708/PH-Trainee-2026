@@ -1748,6 +1748,7 @@ function calcOverallProgress(traineeId) {
 }
 
 function renderMilestones() {
+  try {
   const user = Auth.getCurrentUser();
   const container = $('sectionMilestones');
 
@@ -2201,6 +2202,10 @@ function renderMilestones() {
         maintainAspectRatio: false
       }
     });
+  }
+  } catch (err) {
+    console.error(err);
+    document.getElementById('sectionMilestones').innerHTML = `<div style="padding:20px;color:red;font-weight:bold;">Error rendering milestones: ${err.message}<br><pre>${err.stack}</pre></div>`;
   }
 }
 
