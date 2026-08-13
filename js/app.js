@@ -2729,7 +2729,26 @@ window.submitStationAssessment = async function () {
       showToast(t('assessSuccess'), 'success');
       $('assessComments').value = '';
       if ($('assessFile')) $('assessFile').value = '';
-      state.assessments = await Api.getAssessments();
+      const newAsm = {
+        id: res.id || res.record?.id,
+        traineeId,
+        department: dept,
+        grade,
+        competency1: Number(comp1),
+        competency2: Number(comp2),
+        competency3: Number(comp3),
+        competency4: Number(comp4),
+        competency5: Number(comp5),
+        comments,
+        assessor,
+        attachmentUrl,
+        visibleToTrainee: false,
+        submittedAt: new Date().toISOString()
+      };
+      if (!state.assessments) state.assessments = [];
+      const existingIdx = state.assessments.findIndex(a => a.traineeId === traineeId && a.department === dept);
+      if (existingIdx >= 0) state.assessments[existingIdx] = newAsm;
+      else state.assessments.push(newAsm);
 
       // Select the trainee that was just assessed and switch to Milestones tab
       state.selectedTraineeId = traineeId;
@@ -2763,7 +2782,8 @@ window.toggleAssessmentVisibility = async function (id, visible) {
     const res = await Api.updateAssessmentVisibility(id, visible);
     if (res.success) {
       showToast(state.activeLanguage === 'zh' ? '設定已更新' : 'Settings updated', 'success');
-      state.assessments = await Api.getAssessments();
+      const asm = state.assessments.find(a => a.id === id);
+      if (asm) asm.visibleToTrainee = visible;
       renderMilestones();
     } else {
       showToast('Failed to update visibility.', 'error');
@@ -2986,7 +3006,11 @@ window.lockObservation = async function (id) {
   showLoading();
   try {
     await Api.submitFeedback(id, obs.mentorComment || '', obs.mentorName || Auth.getCurrentUser().name, obs.rating || 0);
-    state.observations = await Api.getAllObservations();
+    const idx = state.observations.findIndex(o => o.id === id);
+    if (idx !== -1) {
+      state.observations[idx].status = 'reviewed';
+      state.observations[idx].feedbackAt = new Date().toISOString();
+    }
     showToast(state.activeLanguage === 'zh' ? '已鎖定' : 'Locked', 'success');
     renderCurrentTab();
   } catch (err) {
@@ -3095,7 +3119,8 @@ window.saveEditedObservation = async function () {
     const res = await Api.updateObservation(id, data);
     if (res.success) {
       showToast(state.activeLanguage === 'zh' ? '更新成功' : 'Update successful', 'success');
-      state.observations = await Api.getAllObservations();
+      const idx = state.observations.findIndex(o => o.id === id);
+      if (idx !== -1) state.observations[idx] = { ...state.observations[idx], ...data };
       renderCurrentTab();
     } else {
       showToast('Update failed.', 'error');
@@ -3116,7 +3141,7 @@ window.deleteObservation = async function (id) {
     const res = await Api.deleteObservation(id);
     if (res.success) {
       showToast(state.activeLanguage === 'zh' ? '刪除成功' : 'Deleted successfully', 'success');
-      state.observations = await Api.getAllObservations();
+      state.observations = state.observations.filter(o => o.id !== id);
       renderCurrentTab();
     } else {
       showToast('Delete failed.', 'error');
@@ -3183,7 +3208,8 @@ window.saveEditedAssessment = async function () {
     const res = await Api.updateAssessment(id, data);
     if (res.success) {
       showToast(state.activeLanguage === 'zh' ? '更新成功' : 'Update successful', 'success');
-      state.assessments = await Api.getAssessments();
+      const idx = state.assessments.findIndex(a => a.id === id);
+      if (idx !== -1) state.assessments[idx] = { ...state.assessments[idx], ...data };
       renderMilestones();
     } else {
       showToast('Update failed.', 'error');
@@ -3204,7 +3230,7 @@ window.deleteAssessment = async function (id) {
     const res = await Api.deleteAssessment(id);
     if (res.success) {
       showToast(state.activeLanguage === 'zh' ? '刪除成功' : 'Deleted successfully', 'success');
-      state.assessments = await Api.getAssessments();
+      state.assessments = state.assessments.filter(a => a.id !== id);
       renderMilestones();
     } else {
       showToast('Delete failed.', 'error');
@@ -3239,7 +3265,14 @@ window.submitFeedback = async function (obsId) {
   showLoading();
   try {
     await Api.submitFeedback(obsId, comment, user.name, existingRating);
-    state.observations = await Api.getAllObservations();
+    const idx = state.observations.findIndex(o => o.id === obsId);
+    if (idx !== -1) {
+      state.observations[idx].mentorComment = comment;
+      state.observations[idx].mentorName = user.name;
+      state.observations[idx].rating = existingRating;
+      state.observations[idx].status = 'reviewed';
+      state.observations[idx].feedbackAt = new Date().toISOString();
+    }
     showToast(t('feedbackSuccess'), 'success');
     renderCurrentTab();
   } catch (err) {
@@ -3256,7 +3289,18 @@ window.submitGuestComment = async function (obsId) {
   showLoading();
   try {
     await Api.submitGuestComment(obsId, comment);
-    state.observations = await Api.getAllObservations();
+    const user = Auth.getCurrentUser();
+    const idx = state.observations.findIndex(o => o.id === obsId);
+    if (idx !== -1) {
+      if (!state.observations[idx].guestComments) state.observations[idx].guestComments = [];
+      state.observations[idx].guestComments.push({
+        id: 'gc-' + Date.now(),
+        obsId,
+        comment,
+        department: user.departmentId || user.role,
+        createdAt: new Date().toISOString()
+      });
+    }
     showToast(t('guestSuccess'), 'success');
     renderCurrentTab();
   } catch (err) {
@@ -3510,7 +3554,12 @@ window.handleUploadResource = async function () {
         // Refresh
         $('resTitle').value = '';
         fileInput.value = '';
-        state.resources = await Api.getAllResources();
+        const newRes = {
+          id: metaRes.id || ('res-' + Date.now()),
+          title, category, url: uploadRes.url, uploadedBy: user.name, uploadedAt: new Date().toISOString()
+        };
+        if (!state.resources) state.resources = [];
+        state.resources.push(newRes);
         window.filterResources('All');
         hideLoading();
         showToast('Resource uploaded successfully!');
@@ -3531,8 +3580,8 @@ window.deleteResource = async function (id) {
   showLoading();
   try {
     await Api.deleteResource(id);
-    state.resources = await Api.getAllResources();
-    window.filterResources('All');
+      state.resources = (state.resources || []).filter(r => r.id !== id);
+      window.filterResources('All');
     showToast('Resource deleted.');
   } catch (err) {
     alert('Delete failed: ' + err.message);
