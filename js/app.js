@@ -3524,11 +3524,8 @@ window.handleUploadResource = async function () {
   if (!fileInput.files.length) return alert('Please select a file');
 
   const file = fileInput.files[0];
-  alert('【系統診斷】您已成功載入最新版上傳程式！\n檔案名稱：' + file.name + '\n檔案大小：' + (file.size / 1024 / 1024).toFixed(2) + ' MB\n請按「確定」繼續上傳。如果按下確定後畫面卡死，代表是 Firebase 底層傳輸問題。');
 
   showLoading();
-  // Give the browser 100ms to paint the loading spinner before any Firebase operations block the thread
-  await new Promise(r => setTimeout(r, 100));
 
   try {
     // 1. Upload to Drive (pass File object directly instead of Base64)
