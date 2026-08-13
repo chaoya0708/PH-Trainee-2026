@@ -518,7 +518,8 @@ async function loadAllData(isSilent = false) {
     const user = Auth.getCurrentUser();
     if (!user) return;
 
-    const data = await Api.getInitData(user.role, user.id);
+    const forceFetch = !isSilent;
+    const data = await Api.getInitData(user.role, user.id, forceFetch);
 
     if (user.role === 'trainee') {
       state.observations = data.observations || [];

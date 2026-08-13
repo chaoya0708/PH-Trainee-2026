@@ -123,9 +123,14 @@ const Api = (() => {
     storage = firebase.storage();
   }
 
-  async function fbGet(col) {
+  async function fbGet(col, forceFetch = true) {
     const cacheKey = 'vimei_fb_' + col;
     const cached = localStorage.getItem(cacheKey);
+    
+    if (!forceFetch && cached) {
+      try { return JSON.parse(cached); } catch (e) {}
+    }
+
     const fetchPromise = db.collection(col).get().then(snap => {
       const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       const oldStr = localStorage.getItem(cacheKey);
@@ -136,15 +141,21 @@ const Api = (() => {
       }
       return data;
     });
+    
     if (cached) {
       try { return JSON.parse(cached); } catch (e) {}
     }
     return await fetchPromise;
   }
 
-  async function fbGetWhere(col, field, val) {
+  async function fbGetWhere(col, field, val, forceFetch = true) {
     const cacheKey = `vimei_fb_${col}_${field}_${val}`;
     const cached = localStorage.getItem(cacheKey);
+
+    if (!forceFetch && cached) {
+      try { return JSON.parse(cached); } catch (e) {}
+    }
+
     const fetchPromise = db.collection(col).where(field, '==', val).get().then(snap => {
       const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       const oldStr = localStorage.getItem(cacheKey);
@@ -155,6 +166,7 @@ const Api = (() => {
       }
       return data;
     });
+
     if (cached) {
       try { return JSON.parse(cached); } catch (e) {}
     }
@@ -167,14 +179,14 @@ const Api = (() => {
     const nowStrIso = nowIso();
 
     switch (action) {
-      case 'getAllObservations': return await fbGet('observations');
-      case 'getObservations': return await fbGetWhere('observations', 'traineeId', data.traineeId);
+      case 'getAllObservations': return await fbGet('observations', data.forceFetch);
+      case 'getObservations': return await fbGetWhere('observations', 'traineeId', data.traineeId, data.forceFetch);
       
-      case 'getAllGuestComments': return await fbGet('guest_comments');
+      case 'getAllGuestComments': return await fbGet('guest_comments', data.forceFetch);
       case 'getGuestComments': {
-        const obs = await fbGetWhere('observations', 'traineeId', data.traineeId);
+        const obs = await fbGetWhere('observations', 'traineeId', data.traineeId, data.forceFetch);
         const obsIds = obs.map(o => o.id);
-        const allComments = await fbGet('guest_comments');
+        const allComments = await fbGet('guest_comments', data.forceFetch);
         return allComments.filter(c => obsIds.includes(c.obsId));
       }
 
@@ -224,7 +236,7 @@ const Api = (() => {
       }
 
       case 'getAllSchedules': {
-        const scheds = await fbGet('schedules');
+        const scheds = await fbGet('schedules', data.forceFetch);
         const result = {};
         for (const s of scheds) {
           if (!result[s.traineeId]) result[s.traineeId] = {};
@@ -234,7 +246,7 @@ const Api = (() => {
       }
       
       case 'getSchedules': {
-        const scheds = await fbGetWhere('schedules', 'traineeId', data.traineeId);
+        const scheds = await fbGetWhere('schedules', 'traineeId', data.traineeId, data.forceFetch);
         const result = {};
         for (const s of scheds) {
           result[s.date] = { dept: s.dept, objective: s.objective };
@@ -255,7 +267,7 @@ const Api = (() => {
         return { success: true };
       }
 
-      case 'getMentorNotes': return await fbGet('mentor_notes');
+      case 'getMentorNotes': return await fbGet('mentor_notes', data.forceFetch);
 
       case 'submitMentorNote': {
         const docRef = await db.collection('mentor_notes').add({ traineeId: data.traineeId, content: data.content, tags: data.tags, createdAt: nowStrIso });
@@ -267,7 +279,7 @@ const Api = (() => {
         return { success: true };
       }
 
-      case 'getAssessments': return await fbGet('assessments');
+      case 'getAssessments': return await fbGet('assessments', data.forceFetch);
 
       case 'submitAssessment': {
         const docRef = await db.collection('assessments').add({
@@ -293,7 +305,7 @@ const Api = (() => {
         return { success: true };
       }
 
-      case 'getAllResources': return await fbGet('resources');
+      case 'getAllResources': return await fbGet('resources', data.forceFetch);
 
       case 'submitResource': {
         const docRef = await db.collection('resources').add({ title: data.title, category: data.category, url: data.url, uploadedBy: data.uploadedBy, createdAt: nowStrIso });
@@ -337,12 +349,13 @@ const Api = (() => {
       }
 
       case 'getInitData': {
+        const ff = data.forceFetch !== false;
         const [obs, gcomments, scheds, assess, res] = await Promise.all([
-          data.role === 'trainee' ? callScript({ action: 'getObservations', traineeId: data.traineeId }) : callScript({ action: 'getAllObservations' }),
-          data.role === 'trainee' ? callScript({ action: 'getGuestComments', traineeId: data.traineeId }) : callScript({ action: 'getAllGuestComments' }),
-          data.role === 'trainee' ? callScript({ action: 'getSchedules', traineeId: data.traineeId }) : callScript({ action: 'getAllSchedules' }),
-          callScript({ action: 'getAssessments' }),
-          callScript({ action: 'getAllResources' })
+          data.role === 'trainee' ? callScript({ action: 'getObservations', traineeId: data.traineeId, forceFetch: ff }) : callScript({ action: 'getAllObservations', forceFetch: ff }),
+          data.role === 'trainee' ? callScript({ action: 'getGuestComments', traineeId: data.traineeId, forceFetch: ff }) : callScript({ action: 'getAllGuestComments', forceFetch: ff }),
+          data.role === 'trainee' ? callScript({ action: 'getSchedules', traineeId: data.traineeId, forceFetch: ff }) : callScript({ action: 'getAllSchedules', forceFetch: ff }),
+          callScript({ action: 'getAssessments', forceFetch: ff }),
+          callScript({ action: 'getAllResources', forceFetch: ff })
         ]);
         return {
           observations: obs,
@@ -725,7 +738,7 @@ const Api = (() => {
 
 
     
-    async getInitData(role, traineeId) {
+    async getInitData(role, traineeId, forceFetch = true) {
       if (CONFIG.DEMO_MODE) {
         const obs = lsGet(LS_OBS) || [];
         const gcomments = lsGet(LS_GCOMMENT) || [];
@@ -751,7 +764,7 @@ const Api = (() => {
         }
       }
       
-      const data = await callScriptGet('getInitData', { role, traineeId });
+      const data = await callScriptGet('getInitData', { role, traineeId, forceFetch });
       
       // Normalize schedules
       if (data.schedules) {
