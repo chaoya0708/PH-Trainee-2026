@@ -302,7 +302,7 @@ const Api = (() => {
         return {
           observations: obs,
           guestComments: gcomments,
-          schedules: data.role === 'trainee' ? { [data.traineeId]: scheds } : scheds,
+          schedules: scheds,
           assessments: assess,
           resources: res
         };
