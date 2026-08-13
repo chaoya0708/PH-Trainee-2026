@@ -621,28 +621,9 @@ const Api = (() => {
     },
 
     async uploadFile(base64OrFile, mimeType, filename, folderName) {
-      if (CONFIG.DEMO_MODE) {
-        // Return a mock URL in demo mode
-        return new Promise(resolve => setTimeout(() => resolve({ success: true, url: 'https://example.com/mock-file.pdf' }), 1000));
-      }
-      
-      if (base64OrFile instanceof File || base64OrFile instanceof Blob) {
-        return callScript({
-          action: 'uploadFile',
-          file: base64OrFile,
-          mimeType: mimeType || base64OrFile.type,
-          filename: filename || base64OrFile.name,
-          folderName
-        });
-      }
-      
-      return callScript({
-        action: 'uploadFile',
-        base64: base64OrFile,
-        mimeType,
-        filename,
-        folderName
-      });
+      // TEMPORARY DIAGNOSTIC MOCK:
+      // Return a fake URL after 2 seconds to test if Firebase SDK is the cause of the freeze.
+      return new Promise(resolve => setTimeout(() => resolve({ success: true, url: 'https://example.com/mock-diagnostic.pdf' }), 2000));
     },
 
     async updateAssessment(id, data) {
