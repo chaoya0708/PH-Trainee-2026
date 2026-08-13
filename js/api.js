@@ -283,7 +283,9 @@ const Api = (() => {
         const ref = storage.ref().child((data.folderName || 'uploads') + '/' + safeName);
         
         if (data.file) {
-          await ref.put(data.file);
+          // Convert to ArrayBuffer to bypass Firebase's synchronous FileReader bug on some devices
+          const buffer = await data.file.arrayBuffer();
+          await ref.put(buffer, { contentType: data.mimeType || data.file.type || 'application/octet-stream' });
         } else {
           const base64Data = data.base64.split(',')[1] || data.base64;
           const res = await fetch(`data:${data.mimeType};base64,${base64Data}`);
