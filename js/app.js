@@ -548,7 +548,18 @@ async function loadAllData() {
 }
 
 function showLoading() { $('loadingOverlay').style.display = 'flex'; }
-function hideLoading() { $('loadingOverlay').style.display = 'none'; }
+function hideLoading() { 
+  $('loadingOverlay').style.display = 'none'; 
+  const txt = $('loadingText');
+  if (txt) txt.innerText = '';
+}
+
+window.addEventListener('upload_progress', (e) => {
+  const txt = $('loadingText');
+  if (txt) {
+    txt.innerText = '上傳中... ' + e.detail + '%';
+  }
+});
 
 // ══════════════════════════════════════════════════════════════════
 // 1. DASHBOARD

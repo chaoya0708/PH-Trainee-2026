@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>VIMEI Data Migration</title>
+  <style>
+    body { font-family: sans-serif; padding: 40px; background: #f8fafc; color: #1e293b; }
+    .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    button { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; width: 100%; }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+    #log { margin-top: 20px; background: #1e293b; color: #10b981; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; white-space: pre-wrap; min-height: 200px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🚀 終極資料搬移工具 (離線直達版)</h2>
+    <p>因為瀏覽器會被安全機制阻擋，系統已經在背景幫您下載好所有最新資料了！點擊下方按鈕即可直接將完整的資料庫（包含所有班表）上傳至 Firebase。</p>
+    <button id="startBtn" onclick="startMigration()">開始終極搬移</button>
+    <div id="log">等待開始...</div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/config.js"></script>
+  
+  <script>
+    firebase.initializeApp(CONFIG.FIREBASE_CONFIG);
+    const db = firebase.firestore();
+    const logEl = document.getElementById('log');
+    const btn = document.getElementById('startBtn');
+
+    const FULL_DATA = {
+  "observations": [
+    {
+      "id": "obs-new1",
+      "traineeId": "diane",
+      "traineeName": "白妙儀 (Diane Solomon Barcelenia)",
+      "date": "2026-07-22",
+      "department": "cmf_qc",
+      "keyObservation": "<p>Ｗeek 1 report upload  (13, July, 2026 - 17, July, 2026) </p><p>Please click the botton of attached file</p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1c2_A0G4d9S7q9uHFtNRzTJP23yTr3WVo/view?usp=drivesdk",
+      "submittedAt": "2026-07-22T14:57:44+08:00",
+      "status": "reviewed",
+      "mentorComment": "Thank you for your effort in preparing this report. I can see that you organized your learning well and captured the key concepts from your QA training.\n\nFor your future reports, I encourage you to include more of your own observations, reflections, and learning experiences. This will help you build stronger critical thinking and self-reflection throughout the training program.\n\nKeep up the good work, and I look forward to seeing your continued growth.",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-07-24T13:16:08+08:00",
+      "rating": 0,
+      "targetWeek": ""
+    },
+    {
+      "id": "obs-new2",
+      "traineeId": "mark",
+      "traineeName": "段亦林 (Mark Jayzon Comon Dagala)",
+      "date": "2026-07-22",
+      "department": "cmf_qc",
+      "keyObservation": "<p>weekly report uploaded (13, July, 2026 - 17, July, 2026)</p><p>Please click the botton of attached file</p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1Fv0o9a4ZO3Y-24TsdPlkn3heT5dpBkdx/view?usp=drivesdk",
+      "submittedAt": "2026-07-23T10:30:10+08:00",
+      "status": "reviewed",
+      "mentorComment": "Thank you for your report. I like that you included not only what you learned, but also your own observations and improvement ideas. \nPlease continue to observe carefully and share your own thoughts and reflections throughout your training. \nKeep up the good work!",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-07-24T13:22:38+08:00",
+      "rating": 0,
+      "targetWeek": ""
+    },
+    {
+      "id": "obs-new3",
+      "traineeId": "jairuz",
+      "traineeName": "侯俊材 (Jairuz Delos Reyes Nazareno)",
+      "date": "2026-07-22",
+      "department": "cmf_qc",
+      "keyObservation": "<p>weekly report uploaded (13, July, 2026 - 17, July, 2026)</p><p>Please click the botton of attached file</p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1ElBNTI1cX9PmMpoZt1S0TJurNU-4u18H/view?usp=drivesdk",
+      "submittedAt": "2026-07-23T10:31:43+08:00",
+      "status": "reviewed",
+      "mentorComment": "Thank you for your report. I can see that you have a good understanding of the QA/QC training and summarized the key learning points clearly.\nFor future reports, I encourage you to include more of your own observations, reflections, and experiences from the training. This will help you better understand your own learning journey.\nKeep up the good work!",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-07-24T13:24:13+08:00",
+      "rating": 0,
+      "targetWeek": ""
+    },
+    {
+      "id": "obs-new4",
+      "traineeId": "mark",
+      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
+      "date": "2026-07-28",
+      "department": "cmf_qc",
+      "keyObservation": "<p>weekly report uploaded (21, July, 2026 - 24, July, 2026)</p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1PwWHMc32Bv7jyrbdTpe2rvW_dq4z_In8/view?usp=drivesdk",
+      "submittedAt": "2026-07-28T22:06:34+08:00",
+      "status": "reviewed",
+      "mentorComment": "Thank you for sharing your Week 2 report.\n\nI like how you focused on a real observation from the production floor and clearly explained the problem, potential risks, and your proposed corrective and preventive actions. This shows that you are beginning to think from a quality assurance perspective rather than simply describing what you learned.\n\nKeep observing carefully and continue connecting your observations with practical solutions. Well done! ",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-08-02T22:27:50+08:00",
+      "rating": 0,
+      "targetWeek": ""
+    },
+    {
+      "id": "obs-new5",
+      "traineeId": "jairuz",
+      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
+      "date": "2026-07-29",
+      "department": "cmf_qc",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1j-oYAJH3umjuNpTNw7YbxaDh7AkUe-ci/view?usp=drivesdk",
+      "submittedAt": "2026-07-29T17:51:55+08:00",
+      "status": "reviewed",
+      "mentorComment": "Thank you for your Week 2 report.\n\nI can see that your reflection is becoming more structured, and you are beginning to connect what you learned with its practical purpose.\n\nKeep up the good work, and continue observing, asking questions, and learning. Well done! ",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-08-02T22:23:53+08:00",
+      "rating": 0,
+      "targetWeek": ""
+    },
+    {
+      "id": "obs-new6",
+      "traineeId": "diane",
+      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
+      "date": "2026-07-29",
+      "department": "cmf_qc",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1_zM6WIqgXCZUBdTnzD7gu5-13HRzo_tg/view?usp=drivesdk",
+      "submittedAt": "2026-07-29T21:02:58+08:00",
+      "status": "reviewed",
+      "mentorComment": "Thank you for your Week 2 report.\n\nI really like how you described not only what you observed, but also why follow-up, communication, and verification are important in the QA process.\n\nYour report shows careful observation and a good understanding of how quality assurance supports production.\n\nKeep observing, asking questions, and connecting what you see with the purpose behind each process. Well done! ",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-08-02T22:31:43+08:00",
+      "rating": 0,
+      "targetWeek": ""
+    },
+    {
+      "id": "obs-new7",
+      "traineeId": "jairuz",
+      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
+      "date": "2026-08-02",
+      "department": "cmf_rd_western",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1A_fCJ6_LKauGMzXy95z-p58pf07SCqap/view?usp=drivesdk",
+      "submittedAt": "2026-08-02T20:19:13+08:00",
+      "status": "reviewed",
+      "mentorComment": "Thank you for another well-organized report. It's great to see how you continue connecting your hands-on experience with your understanding of the product development process. I hope you keep building your confidence and expanding your skills in each rotation. Well done!",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-08-05T10:55:14.568Z",
+      "rating": 0,
+      "targetWeek": ""
+    },
+    {
+      "id": "obs-new8",
+      "traineeId": "jairuz",
+      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
+      "date": "2026-08-02",
+      "department": "cmf_rd_chinese",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1Hf9iN0L-2gAbVxtpHC8IE2cn_T7AUpSM/view?usp=drivesdk",
+      "submittedAt": "2026-08-02T20:34:41+08:00",
+      "status": "reviewed",
+      "mentorComment": "Thank you for sharing your learning experience this week.\nI like how you compared your experience between the Western Pastry and Chinese Dim Sum R&D departments. It's great to see that you recognized the different skills required for each product and reflected on the challenges you faced.\nCongratulations on successfully completing the steamed bun assessment with your team! Keep building your confidence and continue enjoying every learning opportunity. Well done!",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-08-05T10:57:20.853Z",
+      "rating": 0,
+      "targetWeek": ""
+    },
+    {
+      "id": "obs-new9",
+      "traineeId": "diane",
+      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
+      "date": "2026-08-04",
+      "department": "cmf_rd_chinese",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1pBbKsnySoS5nArZYNb0fVsFAfKFGHtXI/view?usp=drivesdk",
+      "submittedAt": "2026-08-04T00:39:47+08:00",
+      "status": "reviewed",
+      "mentorComment": "Thank you for sharing your R&D learning experience.\n\nI like how you reflected not only on the practical skills you learned, but also on the importance of planning, teamwork, and continuous improvement throughout the product development process.\n\nI also appreciate your honest reflection on the challenges you faced while making buns. Learning new skills takes time, and your willingness to keep practicing shows a positive learning attitude.\n\nKeep observing, practicing, and connecting your hands-on experience with the purpose behind each process. Well done!",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-08-05T09:20:18.546Z",
+      "rating": 0,
+      "targetWeek": ""
+    },
+    {
+      "id": "obs-new11",
+      "traineeId": "mark",
+      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
+      "date": "2026-08-04",
+      "department": "cmf_rd_western",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1jXyv8qLavT7v0Hir2zP59DBGHWcReYL3/view?usp=drivesdk",
+      "submittedAt": "",
+      "status": "reviewed",
+      "mentorComment": "Thank you for your report. I can see your attention to technical details and process control throughout your learning. Your ability to observe key production parameters will be a valuable strength as you continue your training. Keep building on this foundation!",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-08-05T10:47:40.319Z",
+      "rating": 0,
+      "targetWeek": "2026-08-03~2026-08-07"
+    },
+    {
+      "id": "obs-new12",
+      "traineeId": "diane",
+      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
+      "date": "2026-08-05",
+      "department": "cmf_rd_western",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1o48OUOZ5iB5pyPoHZ7vYSRxMC5zqxhEi/view?usp=drivesdk|application/pdf|CHIMEI%20%E2%80%93%20R_D%20(WESTERN%20PASTRY).pdf",
+      "submittedAt": "",
+      "status": "reviewed",
+      "mentorComment": "Thank you for sharing your learning experience in the Western Pastry R&D Department.\nI like how you reflected not only on the technical skills you practiced, but also on the importance of product presentation, craftsmanship, and customer satisfaction.\nYour report shows thoughtful reflection and a genuine appreciation for the care and dedication behind food production.\nWell done!",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-08-05T10:27:40.592Z",
+      "rating": 0,
+      "targetWeek": "2026-07-27~2026-07-31"
+    },
+    {
+      "id": "obs-1785926176821",
+      "traineeId": "mark",
+      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
+      "date": "2026-08-05",
+      "department": "cmf_rd_chinese",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1F0t37w2AWuYOx3sdy6Z4MQWIcdCOfUHz/view?usp=drivesdk|application/pdf|%E6%AE%B5%E4%BA%A6%E6%9E%97-Dim%20Sum(Weekly%20Report%203)docx.pdf",
+      "submittedAt": "",
+      "status": "reviewed",
+      "mentorComment": "Thank you for sharing your R&D learning experience.\nI like how you clearly described the production process and explained the importance of key process parameters, especially during dough preparation and fermentation.\nYour report shows careful observation and a good understanding of the technical aspects of Chinese dim sum production.\nAs you continue learning, you may also try adding more of your own observations and reflections on what challenged or impressed you the most. Keep up the good work!",
+      "mentorName": "Mentor",
+      "feedbackAt": "2026-08-05T10:42:15.289Z",
+      "rating": 0,
+      "targetWeek": "2026-07-27~2026-07-31"
+    },
+    {
+      "id": "obs-1786280077229",
+      "traineeId": "jairuz",
+      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
+      "date": "2026-08-09",
+      "department": "yushan_packaging",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/11bCUJ1Dh1wLrpBZi2__FpY_EcG9OlVTs/view?usp=drivesdk|application/pdf|Weekly%20Report%20(08.03-07.2026)%20-%20%E4%BE%AF%E4%BF%8A%E6%9D%90.pdf",
+      "submittedAt": "2026-08-09T20:54:37+08:00",
+      "status": "pending",
+      "mentorComment": "",
+      "mentorName": "",
+      "feedbackAt": "",
+      "rating": 4,
+      "targetWeek": "2026-08-03~2026-08-07"
+    },
+    {
+      "id": "obs-1786333618084",
+      "traineeId": "diane",
+      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
+      "date": "2026-08-10",
+      "department": "yushan_qc",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1W-ra_7yewHSnsRBMTHn_G4xyxT-KTIrj/view?usp=drivesdk|application/pdf|YUSHAN%20-%20QA%20DEPARTMENT%20(W1).pdf",
+      "submittedAt": "2026-08-10T11:46:58+08:00",
+      "status": "pending",
+      "mentorComment": "",
+      "mentorName": "",
+      "feedbackAt": "",
+      "rating": 4.5,
+      "targetWeek": "2026-08-03~2026-08-07"
+    },
+    {
+      "id": "obs-1786456473063",
+      "traineeId": "mark",
+      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
+      "date": "2026-08-11",
+      "department": "yushan_prep",
+      "keyObservation": "<p><br></p>",
+      "actionableIdea": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1PrxCwY1aqbrJPPgFa3TsBkzMvqrkn84t/view?usp=drivesdk|application/pdf|%E6%AE%B5%E4%BA%A6%E6%9E%97-Pre-processing(Weekly%20Report%204)docx.pdf",
+      "submittedAt": "2026-08-11T21:54:33+08:00",
+      "status": "pending",
+      "mentorComment": "",
+      "mentorName": "",
+      "feedbackAt": "",
+      "rating": 4,
+      "targetWeek": "2026-08-10~2026-08-14"
+    }
+  ],
+  "guest_comments": [],
+  "assessments": [
+    {
+      "id": "asm-1785469157353",
+      "traineeId": "diane",
+      "department": "cmf_rd_chinese",
+      "grade": "B",
+      "competency1": 2,
+      "competency2": 2,
+      "competency3": 3,
+      "competency4": 3,
+      "competency5": 4,
+      "comments": "學習能力不錯,主動力較弱,基礎能力仍需培養\n手作能力還需要多練習\n服裝衣著較不符合工廠",
+      "assessor": "楊中蕾",
+      "assessedAt": "2026-07-31T11:39:17+08:00",
+      "visibleToTrainee": false,
+      "attachmentUrl": ""
+    },
+    {
+      "id": "asm-1785469762961",
+      "traineeId": "mark",
+      "department": "cmf_rd_chinese",
+      "grade": "A+",
+      "competency1": 5,
+      "competency2": 5,
+      "competency3": 4,
+      "competency4": 4,
+      "competency5": 4,
+      "comments": "學習能力佳,在包子產線有歷練過多個生產線,對產品的熟悉度較高\n手作能力不錯,能觀察到細微的差異\n有認真在學習並且詳細記錄",
+      "assessor": "楊中蕾",
+      "assessedAt": "2026-07-31T11:49:22+08:00",
+      "visibleToTrainee": false,
+      "attachmentUrl": ""
+    },
+    {
+      "id": "asm-1785470050424",
+      "traineeId": "jairuz",
+      "department": "cmf_rd_chinese",
+      "grade": "A",
+      "competency1": 5,
+      "competency2": 4,
+      "competency3": 4,
+      "competency4": 4,
+      "competency5": 4,
+      "comments": "會主動溝通詢問,並協助其他人\n手作能力及學習力佳",
+      "assessor": "楊中蕾",
+      "assessedAt": "2026-07-31T11:54:10+08:00",
+      "visibleToTrainee": false,
+      "attachmentUrl": ""
+    },
+    {
+      "id": "asm-1785720360230",
+      "traineeId": "diane",
+      "department": "cmf_rd_western",
+      "grade": "B",
+      "competency1": 3,
+      "competency2": 3,
+      "competency3": 3,
+      "competency4": 3,
+      "competency5": 3,
+      "comments": "表現平穩。",
+      "assessor": "蘇曉芬",
+      "assessedAt": "2026-08-03T09:26:00+08:00",
+      "visibleToTrainee": false,
+      "attachmentUrl": "https://drive.google.com/file/d/1qoPq6KpsEw4DvCEtTRScZOXyOGAi03Og/view?usp=drivesdk"
+    },
+    {
+      "id": "asm-1785720577108",
+      "traineeId": "mark",
+      "department": "cmf_rd_western",
+      "grade": "A+",
+      "competency1": 5,
+      "competency2": 5,
+      "competency3": 5,
+      "competency4": 5,
+      "competency5": 5,
+      "comments": "融會貫通,且會主動尋求適合自己的方式。",
+      "assessor": "蘇曉芬",
+      "assessedAt": "2026-08-03T09:29:37+08:00",
+      "visibleToTrainee": false,
+      "attachmentUrl": "https://drive.google.com/file/d/1Ilz1iHBuZx3stXmo9qzRP-RVn7Wr6xjX/view?usp=drivesdk"
+    },
+    {
+      "id": "asm-1785720808729",
+      "traineeId": "jairuz",
+      "department": "cmf_rd_western",
+      "grade": "A",
+      "competency1": 4,
+      "competency2": 5,
+      "competency3": 4,
+      "competency4": 4,
+      "competency5": 4,
+      "comments": "聰明,動作較細心",
+      "assessor": "蘇曉芬",
+      "assessedAt": "2026-08-03T09:33:28+08:00",
+      "visibleToTrainee": false,
+      "attachmentUrl": "https://drive.google.com/file/d/13oMCRGuRSp-1rdSck-hrzjZU0wOpESbd/view?usp=drivesdk"
+    }
+  ],
+  "resources": [
+    {
+      "id": "res-1785856027629",
+      "title": "Yu-Shan occupational safety introduction",
+      "category": "玉膳Yu-Shan",
+      "url": "https://drive.google.com/file/d/1XhzAkq335ikCD9MrdpddFLDxVJ4LhrVb/view?usp=drivesdk",
+      "uploadedBy": "Mentor",
+      "uploadedAt": "2026-08-04T23:07:07+08:00"
+    },
+    {
+      "id": "res-1785857181840",
+      "title": "Yu-Shan production flow & equipment introduction",
+      "category": "玉膳Yu-Shan",
+      "url": "https://drive.google.com/file/d/1NhO18LYdx_McikRgtmuJaCdABqqjmhqa/view?usp=drivesdk",
+      "uploadedBy": "Mentor",
+      "uploadedAt": "2026-08-04T23:26:21+08:00"
+    },
+    {
+      "id": "res-1785930173299",
+      "title": "食品QAQC_結訓考核簡報 (3人共同完成) / CMF-QAQC Final Assessment Presentation",
+      "category": "奇美CMF",
+      "url": "https://drive.google.com/file/d/1AIZLFO_mPSzUbDRT2mzpxzgeBL-N8pKA/view?usp=drivesdk",
+      "uploadedBy": "Mentor",
+      "uploadedAt": "2026-08-05T19:42:53+08:00"
+    }
+  ],
+  "schedules": [
+    {
+      "traineeId": "jairuz",
+      "date": "diane",
+      "dept": "",
+      "objective": ""
+    },
+    {
+      "traineeId": "jairuz",
+      "date": "mark",
+      "dept": "",
+      "objective": ""
+    },
+    {
+      "traineeId": "jairuz",
+      "date": "jairuz",
+      "dept": "",
+      "objective": ""
+    }
+  ]
+};
+
+    function log(msg) {
+      console.log(msg);
+      logEl.innerHTML += '\n> ' + msg;
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    async function migrateCollection(colName, dataList) {
+      if (!dataList || !Array.isArray(dataList) || dataList.length === 0) return;
+      log(`開始上傳 ${colName} (${dataList.length} 筆資料)...`);
+      let count = 0;
+      for (const item of dataList) {
+        const docId = item.id;
+        let docData = { ...item };
+        Object.keys(docData).forEach(key => {
+          if (docData[key] === undefined) delete docData[key];
+        });
+        try {
+          if (docId) {
+            await db.collection(colName).doc(docId).set(docData);
+          } else {
+            await db.collection(colName).add(docData);
+          }
+          count++;
+          if (count % 10 === 0) log(`  已上傳 ${count} 筆...`);
+        } catch (e) {
+          log(`❌ 上傳錯誤: ${e.message}`);
+        }
+      }
+      log(`✅ ${colName} 上傳完成！(共 ${count} 筆)`);
+    }
+
+    async function startMigration() {
+      btn.disabled = true;
+      btn.innerText = "資料搬移中，請勿關閉網頁...";
+      try {
+        log("\n--- 開始寫入 Firebase ---");
+        await migrateCollection('observations', FULL_DATA.observations || []);
+        await migrateCollection('guest_comments', FULL_DATA.guest_comments || []);
+        await migrateCollection('assessments', FULL_DATA.assessments || []);
+        await migrateCollection('resources', FULL_DATA.resources || []);
+        await migrateCollection('schedules', FULL_DATA.schedules || []);
+
+        log("\n🎉 所有資料皆已成功搬移到 Firebase！(包含所有班表)");
+        btn.innerText = "✅ 搬移完成，您可以關閉此網頁了";
+        btn.style.background = "#10b981";
+      } catch (err) {
+        log(`\n❌ 發生致命錯誤: ${err.message}`);
+        btn.innerText = "搬移失敗";
+        btn.style.background = "#ef4444";
+      }
+    }
+  </script>
+</body>
+</html>

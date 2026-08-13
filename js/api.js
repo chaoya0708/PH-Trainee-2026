@@ -283,9 +283,20 @@ const Api = (() => {
         const ref = storage.ref().child((data.folderName || 'uploads') + '/' + safeName);
         
         if (data.file) {
-          // Convert to ArrayBuffer to bypass Firebase's synchronous FileReader bug on some devices
-          const buffer = await data.file.arrayBuffer();
-          await ref.put(buffer, { contentType: data.mimeType || data.file.type || 'application/octet-stream' });
+          return new Promise((resolve, reject) => {
+            const uploadTask = ref.put(data.file);
+            uploadTask.on('state_changed',
+              (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                window.dispatchEvent(new CustomEvent('upload_progress', { detail: progress.toFixed(0) }));
+              },
+              (error) => reject(error),
+              async () => {
+                const url = await uploadTask.snapshot.ref.getDownloadURL();
+                resolve({ success: true, url });
+              }
+            );
+          });
         } else {
           const base64Data = data.base64.split(',')[1] || data.base64;
           const res = await fetch(`data:${data.mimeType};base64,${base64Data}`);
@@ -621,9 +632,27 @@ const Api = (() => {
     },
 
     async uploadFile(base64OrFile, mimeType, filename, folderName) {
-      // TEMPORARY DIAGNOSTIC MOCK:
-      // Return a fake URL after 2 seconds to test if Firebase SDK is the cause of the freeze.
-      return new Promise(resolve => setTimeout(() => resolve({ success: true, url: 'https://example.com/mock-diagnostic.pdf' }), 2000));
+      if (CONFIG.DEMO_MODE) {
+        return new Promise(resolve => setTimeout(() => resolve({ success: true, url: 'https://example.com/mock-file.pdf' }), 1000));
+      }
+      
+      if (base64OrFile instanceof File || base64OrFile instanceof Blob) {
+        return callScript({
+          action: 'uploadFile',
+          file: base64OrFile,
+          mimeType: mimeType || base64OrFile.type,
+          filename: filename || base64OrFile.name,
+          folderName
+        });
+      }
+      
+      return callScript({
+        action: 'uploadFile',
+        base64: base64OrFile,
+        mimeType,
+        filename,
+        folderName
+      });
     },
 
     async updateAssessment(id, data) {
