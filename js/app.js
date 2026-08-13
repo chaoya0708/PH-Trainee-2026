@@ -3541,6 +3541,9 @@ window.handleUploadResource = async function () {
   if (!fileInput.files.length) return alert('Please select a file');
 
   const file = fileInput.files[0];
+  if (file.size > 10 * 1024 * 1024) {
+    return alert('檔案過大！為避免佔用太多空間，請上傳小於 10MB 的檔案。\n(File is too large. Max allowed size is 10MB.)');
+  }
 
   showLoading();
 

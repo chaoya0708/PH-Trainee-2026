@@ -125,8 +125,16 @@ const Api = (() => {
 
   async function fbGet(col, forceFetch = true) {
     const cacheKey = 'vimei_fb_' + col;
+    const timeKey = cacheKey + '_time';
     const cached = localStorage.getItem(cacheKey);
+    const cachedTime = localStorage.getItem(timeKey);
+    const now = Date.now();
     
+    // If cache is less than 5 minutes old, don't force fetch
+    if (forceFetch && cachedTime && (now - parseInt(cachedTime) < 5 * 60 * 1000)) {
+      forceFetch = false;
+    }
+
     if (!forceFetch && cached) {
       try { return JSON.parse(cached); } catch (e) {}
     }
@@ -137,6 +145,7 @@ const Api = (() => {
       const newStr = JSON.stringify(data);
       if (oldStr !== newStr) {
         localStorage.setItem(cacheKey, newStr);
+        localStorage.setItem(timeKey, now.toString());
         window.dispatchEvent(new CustomEvent('fb_data_updated'));
       }
       return data;
@@ -150,7 +159,14 @@ const Api = (() => {
 
   async function fbGetWhere(col, field, val, forceFetch = true) {
     const cacheKey = `vimei_fb_${col}_${field}_${val}`;
+    const timeKey = cacheKey + '_time';
     const cached = localStorage.getItem(cacheKey);
+    const cachedTime = localStorage.getItem(timeKey);
+    const now = Date.now();
+
+    if (forceFetch && cachedTime && (now - parseInt(cachedTime) < 5 * 60 * 1000)) {
+      forceFetch = false;
+    }
 
     if (!forceFetch && cached) {
       try { return JSON.parse(cached); } catch (e) {}
@@ -162,6 +178,7 @@ const Api = (() => {
       const newStr = JSON.stringify(data);
       if (oldStr !== newStr) {
         localStorage.setItem(cacheKey, newStr);
+        localStorage.setItem(timeKey, now.toString());
         window.dispatchEvent(new CustomEvent('fb_data_updated'));
       }
       return data;
