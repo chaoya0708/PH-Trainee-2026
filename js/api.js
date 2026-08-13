@@ -268,7 +268,7 @@ const Api = (() => {
       case 'getAllResources': return await fbGet('resources');
 
       case 'submitResource': {
-        const docRef = await db.collection('resources').add({ ...data.data, createdAt: nowStrIso });
+        const docRef = await db.collection('resources').add({ title: data.title, category: data.category, url: data.url, uploadedBy: data.uploadedBy, createdAt: nowStrIso });
         return { success: true, id: docRef.id };
       }
 
