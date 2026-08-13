@@ -1591,3 +1591,49 @@ textarea.form-control:focus {
 [data-theme="dark"] .premium-calendar-card .cal-dept-tag {
   color: var(--text-primary);
 }
+
+/* Mobile Responsive Optimizations for Premium Components */
+@media (max-width: 768px) {
+  .premium-calendar-card,
+  .premium-progress-card {
+    padding: 16px;
+    border-radius: 16px;
+    gap: 16px;
+  }
+  
+  .ppc-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .ppc-header-right {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 8px;
+  }
+  
+  .premium-cal-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .premium-cal-nav {
+    justify-content: space-between;
+  }
+  
+  .premium-cal-title {
+    font-size: 16px;
+  }
+  
+  .premium-calendar-card .cal-dept-tag {
+    font-size: 9px;
+    padding: 2px 4px;
+    margin-top: 2px;
+  }
+  
+  .ppc-legend {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
