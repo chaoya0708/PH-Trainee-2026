@@ -280,10 +280,8 @@ const Api = (() => {
       case 'uploadFile': {
         if (!storage) throw new Error('Storage not initialized');
         const base64Data = data.base64.split(',')[1] || data.base64;
-        const binary = atob(base64Data);
-        const array = [];
-        for(let i = 0; i < binary.length; i++) array.push(binary.charCodeAt(i));
-        const blob = new Blob([new Uint8Array(array)], {type: data.mimeType});
+        const res = await fetch(`data:${data.mimeType};base64,${base64Data}`);
+        const blob = await res.blob();
         const safeName = Date.now() + '_' + data.filename.replace(/[^a-zA-Z0-9.]/g, '_');
         const ref = storage.ref().child((data.folderName || 'uploads') + '/' + safeName);
         await ref.put(blob);
