@@ -554,8 +554,8 @@ async function loadAllData(isSilent = false) {
 }
 
 function showLoading() { $('loadingOverlay').style.display = 'flex'; }
-function hideLoading() { 
-  $('loadingOverlay').style.display = 'none'; 
+function hideLoading() {
+  $('loadingOverlay').style.display = 'none';
   const txt = $('loadingText');
   if (txt) txt.innerText = '';
 }
@@ -1760,55 +1760,55 @@ function calcOverallProgress(traineeId) {
 
 function renderMilestones() {
   try {
-  const user = Auth.getCurrentUser();
-  const isGuest = user && user.role === 'guest';
-  const container = $('sectionMilestones');
+    const user = Auth.getCurrentUser();
+    const isGuest = user && user.role === 'guest';
+    const container = $('sectionMilestones');
 
-  let selectorHtml = '';
-  if (user.role === 'admin' || user.role === 'executive' || user.role === 'guest') {
-    selectorHtml = `
+    let selectorHtml = '';
+    if (user.role === 'admin' || user.role === 'executive' || user.role === 'guest') {
+      selectorHtml = `
       <div class="glass-card">
         <p style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;">${t('viewingTrainee')}</p>
         <div class="trainee-tabs">
           ${CONFIG.TRAINEES.map(tr => {
-      const parts = tr.name.split(' / ');
-      const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:11px; opacity:0.8; margin-left:4px;">/ ${parts[1]}</span>` : tr.name;
-      return `
+        const parts = tr.name.split(' / ');
+        const nameHtml = parts.length > 1 ? `${parts[0]} <span style="font-size:11px; opacity:0.8; margin-left:4px;">/ ${parts[1]}</span>` : tr.name;
+        return `
             <button class="trainee-tab-btn ${state.selectedTraineeId === tr.id ? 'active' : ''}"
               onclick="window.selectViewTrainee('${tr.id}')" style="display:flex; align-items:center;">
               ${tr.avatar ? `<span style="margin-right:6px;">${tr.avatar}</span>` : ''} ${nameHtml}
             </button>
             `;
-    }).join('')}
+      }).join('')}
         </div>
       </div>
     `;
-  }
+    }
 
-  const viewId = user.role === 'trainee' ? user.id : state.selectedTraineeId;
-  const overall = calcOverallProgress(viewId);
+    const viewId = user.role === 'trainee' ? user.id : state.selectedTraineeId;
+    const overall = calcOverallProgress(viewId);
 
-  // Get Self Assessment for current month
-  const now = new Date();
-  const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const currentSelfEvalId = `self_eval_${currentMonthStr}`;
-  const selfEval = (state.assessments || []).find(a => a.traineeId === viewId && a.department === currentSelfEvalId);
+    // Get Self Assessment for current month
+    const now = new Date();
+    const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const currentSelfEvalId = `self_eval_${currentMonthStr}`;
+    const selfEval = (state.assessments || []).find(a => a.traineeId === viewId && a.department === currentSelfEvalId);
 
-  const taipeiNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
-  let assessMonth = taipeiNow.getMonth() + 1;
-  let assessYear = taipeiNow.getFullYear();
-  if (taipeiNow.getDate() >= 30) {
-    assessMonth++;
-    if (assessMonth > 12) { assessMonth = 1; assessYear++; }
-  }
-  const next30Str = `${assessMonth}/30`;
-  const selfAssessReminderZh = `⚠️ 提醒：請於(${next30Str}) 11:59 PM 前完成本月份的自我能力覺察評分。`;
-  const selfAssessReminderEn = `⚠️ Reminder: Please complete your self-assessment by (${next30Str}) 11:59 PM.`;
-  const selfAssessBanner = state.activeLanguage === 'zh' ? selfAssessReminderZh : selfAssessReminderEn;
+    const taipeiNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+    let assessMonth = taipeiNow.getMonth() + 1;
+    let assessYear = taipeiNow.getFullYear();
+    if (taipeiNow.getDate() >= 30) {
+      assessMonth++;
+      if (assessMonth > 12) { assessMonth = 1; assessYear++; }
+    }
+    const next30Str = `${assessMonth}/30`;
+    const selfAssessReminderZh = `⚠️ 提醒：請於(${next30Str}) 11:59 PM 前完成本月份的自我能力覺察評分。`;
+    const selfAssessReminderEn = `⚠️ Reminder: Please complete your self-assessment by (${next30Str}) 11:59 PM.`;
+    const selfAssessBanner = state.activeLanguage === 'zh' ? selfAssessReminderZh : selfAssessReminderEn;
 
-  let selfAssessmentHtml = '';
-  if (user.role === 'trainee') {
-    selfAssessmentHtml = `
+    let selfAssessmentHtml = '';
+    if (user.role === 'trainee') {
+      selfAssessmentHtml = `
       <div class="glass-card" style="margin-bottom: 20px;">
         <h3 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; justify-content:space-between;">
           <span>${state.activeLanguage === 'zh' ? '🎯 自我能力覺察 (Self-Assessment)' : '🎯 Self-Assessment (Radar)'}</span>
@@ -1833,112 +1833,112 @@ function renderMilestones() {
         </div>
       </div>
     `;
-  }
-
-
-  // 計算所有已考評部門的核心職能平均分數 (Exclude self_eval)
-  let sumC1 = 0, sumC2 = 0, sumC3 = 0, sumC4 = 0, sumC5 = 0;
-  let count = 0;
-  (state.assessments || []).forEach(a => {
-    if (a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee)) {
-      sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
-      sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
-      count++;
     }
-  });
 
-  const chartsToRender = [];
-  let trendLabels = [];
-  let trendData = [];
 
-  // 若有資料，則新增全域雷達圖設定與趨勢圖資料
-  if (count > 0) {
-    chartsToRender.push({
-      id: 'globalRadarChart',
-      data: [(sumC1 / count).toFixed(1), (sumC2 / count).toFixed(1), (sumC3 / count).toFixed(1), (sumC4 / count).toFixed(1), (sumC5 / count).toFixed(1)],
-      selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
-      labels: [
-        t('lblCompetency1').split(' ')[0],
-        t('lblCompetency2').split(' ')[0],
-        t('lblCompetency3').split(' ')[0],
-        t('lblCompetency4').split(' ')[0],
-        t('lblCompetency5').split(' ')[0]
-      ],
-      color: '#0ea5e9' // 使用一個主色系
+    // 計算所有已考評部門的核心職能平均分數 (Exclude self_eval)
+    let sumC1 = 0, sumC2 = 0, sumC3 = 0, sumC4 = 0, sumC5 = 0;
+    let count = 0;
+    (state.assessments || []).forEach(a => {
+      if (a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee)) {
+        sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
+        sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
+        count++;
+      }
     });
 
-    // 計算各站別平均成績供趨勢圖使用
-    const sortedAssessments = (state.assessments || [])
-      .filter(a => a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee))
-      .sort((a, b) => (new Date(a.assessedAt || 0).getTime() || 0) - (new Date(b.assessedAt || 0).getTime() || 0));
+    const chartsToRender = [];
+    let trendLabels = [];
+    let trendData = [];
 
-    sortedAssessments.forEach(a => {
-      const avg = (a.competency1 + a.competency2 + a.competency3 + a.competency4 + (a.competency5 || 3)) / 5;
-      const deptName = state.activeLanguage === 'zh' ? CONFIG.DEPARTMENTS[a.department]?.nameZh : CONFIG.DEPARTMENTS[a.department]?.name;
-      trendLabels.push(deptName || a.department);
-      trendData.push(avg.toFixed(1));
-    });
-  }
-  const traineeObj = CONFIG.TRAINEES.find(t => t.id === viewId);
-  const excludedDepts = traineeObj ? (traineeObj.excludedDepartments || []) : [];
+    // 若有資料，則新增全域雷達圖設定與趨勢圖資料
+    if (count > 0) {
+      chartsToRender.push({
+        id: 'globalRadarChart',
+        data: [(sumC1 / count).toFixed(1), (sumC2 / count).toFixed(1), (sumC3 / count).toFixed(1), (sumC4 / count).toFixed(1), (sumC5 / count).toFixed(1)],
+        selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
+        labels: [
+          t('lblCompetency1').split(' ')[0],
+          t('lblCompetency2').split(' ')[0],
+          t('lblCompetency3').split(' ')[0],
+          t('lblCompetency4').split(' ')[0],
+          t('lblCompetency5').split(' ')[0]
+        ],
+        color: '#0ea5e9' // 使用一個主色系
+      });
 
-  const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excludedDepts.includes(d.id)).map(dept => {
-    const targetDept = CONFIG.DEPARTMENTS[dept.id] || {};
-    const matchDept = (deptStr) => {
-      if (!deptStr) return false;
-      if (deptStr === dept.id) return true;
-      if (targetDept.name && deptStr === targetDept.name) return true;
-      if (targetDept.nameZh && deptStr === targetDept.nameZh) return true;
-      if (targetDept.shortZh && deptStr === targetDept.shortZh) return true;
-      return false;
-    };
+      // 計算各站別平均成績供趨勢圖使用
+      const sortedAssessments = (state.assessments || [])
+        .filter(a => a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee))
+        .sort((a, b) => (new Date(a.assessedAt || 0).getTime() || 0) - (new Date(b.assessedAt || 0).getTime() || 0));
 
-    const deptObs = state.observations.filter(o => o.traineeId === viewId && matchDept(o.department));
-    const assessment = (state.assessments || []).find(a => a.traineeId === viewId && matchDept(a.department));
+      sortedAssessments.forEach(a => {
+        const avg = (a.competency1 + a.competency2 + a.competency3 + a.competency4 + (a.competency5 || 3)) / 5;
+        const deptName = state.activeLanguage === 'zh' ? CONFIG.DEPARTMENTS[a.department]?.nameZh : CONFIG.DEPARTMENTS[a.department]?.name;
+        trendLabels.push(deptName || a.department);
+        trendData.push(avg.toFixed(1));
+      });
+    }
+    const traineeObj = CONFIG.TRAINEES.find(t => t.id === viewId);
+    const excludedDepts = traineeObj ? (traineeObj.excludedDepartments || []) : [];
 
-    const c1 = deptObs.length > 0;
-    const c2 = deptObs.some(o => o.status && o.status.trim().toLowerCase() === 'reviewed');
-    const c3 = !!assessment;
-    const c4 = assessment && ['A+', 'A', 'B'].includes((assessment.grade || '').trim().toUpperCase());
+    const deptCards = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly && !excludedDepts.includes(d.id)).map(dept => {
+      const targetDept = CONFIG.DEPARTMENTS[dept.id] || {};
+      const matchDept = (deptStr) => {
+        if (!deptStr) return false;
+        if (deptStr === dept.id) return true;
+        if (targetDept.name && deptStr === targetDept.name) return true;
+        if (targetDept.nameZh && deptStr === targetDept.nameZh) return true;
+        if (targetDept.shortZh && deptStr === targetDept.shortZh) return true;
+        return false;
+      };
 
-    let doneCount = 0;
-    if (c1) doneCount++;
-    if (c2) doneCount++;
-    if (c3) doneCount++;
-    if (c4) doneCount++;
-    const pct = (doneCount / 4) * 100;
+      const deptObs = state.observations.filter(o => o.traineeId === viewId && matchDept(o.department));
+      const assessment = (state.assessments || []).find(a => a.traineeId === viewId && matchDept(a.department));
 
-    const ci = (done, label) => `
+      const c1 = deptObs.length > 0;
+      const c2 = deptObs.some(o => o.status && o.status.trim().toLowerCase() === 'reviewed');
+      const c3 = !!assessment;
+      const c4 = assessment && ['A+', 'A', 'B'].includes((assessment.grade || '').trim().toUpperCase());
+
+      let doneCount = 0;
+      if (c1) doneCount++;
+      if (c2) doneCount++;
+      if (c3) doneCount++;
+      if (c4) doneCount++;
+      const pct = (doneCount / 4) * 100;
+
+      const ci = (done, label) => `
         <li class="criteria-item ${done ? 'done' : ''}">
           <i class="${done ? 'fi fi-rr-check-circle' : 'fi fi-rr-circle'}" style="font-size:11px;"></i>
           ${label}
         </li>`;
 
-    let assessmentHtml = '';
-    if (assessment) {
-      if (user.role === 'trainee' && !assessment.visibleToTrainee) {
-        assessmentHtml = `
+      let assessmentHtml = '';
+      if (assessment) {
+        if (user.role === 'trainee' && !assessment.visibleToTrainee) {
+          assessmentHtml = `
             <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:none;border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
               ${state.activeLanguage === 'zh' ? '✅ 主管考核已送出 (不公開)' : '✅ Assessment Submitted (Private)'}
             </div>
           `;
-      } else {
-        const chartId = 'radar-' + dept.id;
-        chartsToRender.push({
-          id: chartId,
-          data: [assessment.competency1, assessment.competency2, assessment.competency3, assessment.competency4, assessment.competency5 || 3],
-          selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
-          labels: [
-            t('lblCompetency1').split(' ')[0],
-            t('lblCompetency2').split(' ')[0],
-            t('lblCompetency3').split(' ')[0],
-            t('lblCompetency4').split(' ')[0],
-            t('lblCompetency5').split(' ')[0]
-          ],
-          color: dept.color
-        });
+        } else {
+          const chartId = 'radar-' + dept.id;
+          chartsToRender.push({
+            id: chartId,
+            data: [assessment.competency1, assessment.competency2, assessment.competency3, assessment.competency4, assessment.competency5 || 3],
+            selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
+            labels: [
+              t('lblCompetency1').split(' ')[0],
+              t('lblCompetency2').split(' ')[0],
+              t('lblCompetency3').split(' ')[0],
+              t('lblCompetency4').split(' ')[0],
+              t('lblCompetency5').split(' ')[0]
+            ],
+            color: dept.color
+          });
 
-        assessmentHtml = `
+          assessmentHtml = `
             <div class="assessment-card" style="margin-top:14px;padding:12px;background:rgba(234,88,12,0.04);border:none;border-radius:10px;position:relative;">
               ${!assessment.visibleToTrainee && user.role === 'admin' ? `<div style=\"position:absolute; top:-8px; right:12px; background:rgba(239,68,68,0.15); color:var(--danger); border:1px solid rgba(239,68,68,0.3); font-size:10px; padding:2px 6px; border-radius:4px; font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,0.1); z-index:2;"><i class="fi fi-rr-eye-crossed"></i> ${state.activeLanguage === 'zh' ? '學生不可見 (Hidden)' : 'Hidden from Trainee'}</div>` : ''}
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
@@ -1961,31 +1961,31 @@ function renderMilestones() {
                 ${assessment.attachmentUrl ? `
                   <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
                   ${assessment.attachmentUrl.split(',').map((part, idx) => {
-          const [url, mimeType, filename] = part.split('|');
-          const isImage = mimeType ? mimeType.startsWith('image/') : false;
-          const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '檢視附件 (View Attachment)' : 'View Attachment');
+            const [url, mimeType, filename] = part.split('|');
+            const isImage = mimeType ? mimeType.startsWith('image/') : false;
+            const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '檢視附件 (View Attachment)' : 'View Attachment');
 
-          if (isImage) {
-            let thumbUrl = url;
-            const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-            if (idMatch && idMatch[1]) {
-              thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
-            }
-            return `
+            if (isImage) {
+              let thumbUrl = url;
+              const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+              if (idMatch && idMatch[1]) {
+                thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
+              }
+              return `
                         <div onclick="window.openLightbox('${url}')" style="cursor:pointer; position:relative; width:64px; height:64px; border-radius:8px; overflow:hidden; border:2px solid var(--border-color); box-shadow:0 2px 4px rgba(0,0,0,0.05);" title="${name}">
                           <div style="width:100%; height:100%; background-image:url('${thumbUrl}'); background-size:cover; background-position:center; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
                           <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); color:#fff; font-size:9px; text-align:center; padding:2px;">🖼️預覽</div>
                         </div>
                       `;
-          } else {
-            return `
+            } else {
+              return `
                         <a href="${url}" target="_blank" class="btn btn-outline" style="font-size:12px; padding:6px 12px; border-radius:8px; color:var(--text-primary); border-color:var(--border-color); background:var(--bg-card); display:flex; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,0.02); max-width:250px;">
                           <i class="fi fi-rr-document" style="font-size:16px; margin-right:8px; color:#ef4444;"></i>
                           <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</span>
                         </a>
                       `;
-          }
-        }).join('')}
+            }
+          }).join('')}
                   </div>
                 ` : ''}
                 <p style="font-size:11px;color:var(--text-muted);text-align:right;margin-top:6px;">— ${t('lblAssessedBy')}: ${assessment.assessor}</p>
@@ -2007,16 +2007,16 @@ function renderMilestones() {
               ` : ''}
             </div>
           `;
-      }
-    } else {
-      assessmentHtml = `
+        }
+      } else {
+        assessmentHtml = `
           <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(0,0,0,0.02);border:none;border-radius:10px;text-align:center;font-size:11px;color:var(--text-muted);">
             ${t('lblAwaitingAssessment')}
           </div>
         `;
-    }
+      }
 
-    return `
+      return `
         <div class="dept-milestone-card">
           <div class="dept-milestone-header">
             <div class="dept-milestone-title" style="color:${dept.color}">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</div>
@@ -2032,9 +2032,9 @@ function renderMilestones() {
           ${assessmentHtml}
         </div>
       `;
-  }).join('');
+    }).join('');
 
-  container.innerHTML = `
+    container.innerHTML = `
       ${selectorHtml}
       <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
         <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; justify-content: center;">
@@ -2068,153 +2068,153 @@ function renderMilestones() {
       <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">${deptCards}</div>
     `;
 
-  // Render charts
-  chartsToRender.forEach(chartConfig => {
-    const ctx = document.getElementById(chartConfig.id);
-    if (ctx) {
-      const datasets = [{
-        label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
-        data: chartConfig.data,
-        backgroundColor: 'rgba(249, 115, 22, 0.2)',
-        borderColor: '#f97316',
-        pointBackgroundColor: '#ea580c',
-        borderWidth: 1.5,
-        pointRadius: 2
-      }];
-
-      if (chartConfig.selfData) {
-        datasets.push({
-          label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
-          data: chartConfig.selfData,
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-          borderColor: '#10b981',
-          borderDash: [5, 5],
-          pointBackgroundColor: '#10b981',
-          borderWidth: 2,
+    // Render charts
+    chartsToRender.forEach(chartConfig => {
+      const ctx = document.getElementById(chartConfig.id);
+      if (ctx) {
+        const datasets = [{
+          label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
+          data: chartConfig.data,
+          backgroundColor: 'rgba(249, 115, 22, 0.2)',
+          borderColor: '#f97316',
+          pointBackgroundColor: '#ea580c',
+          borderWidth: 1.5,
           pointRadius: 2
+        }];
+
+        if (chartConfig.selfData) {
+          datasets.push({
+            label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
+            data: chartConfig.selfData,
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderColor: '#10b981',
+            borderDash: [5, 5],
+            pointBackgroundColor: '#10b981',
+            borderWidth: 2,
+            pointRadius: 2
+          });
+        }
+
+        new Chart(ctx, {
+          type: 'radar',
+          data: {
+            labels: chartConfig.labels,
+            datasets: datasets
+          },
+          options: {
+            scales: {
+              r: {
+                min: 0,
+                max: 5,
+                ticks: { display: false, stepSize: 1 },
+                pointLabels: {
+                  font: { size: window.innerWidth < 768 ? 10 : 12, weight: 'bold' },
+                  color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b'
+                },
+                grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
+                angleLines: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }
+              }
+            },
+            plugins: {
+              legend: { display: false }
+            },
+            maintainAspectRatio: false
+          }
         });
       }
+    });
 
-      new Chart(ctx, {
-        type: 'radar',
+    // Render Trend Line Chart if it exists
+    const trendCtx = document.getElementById('trendLineChart');
+    if (trendCtx) {
+      // Group assessments by month (YYYY-MM)
+      const monthlyData = {};
+
+      const traineeAssessments = (state.assessments || []).filter(a => a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee || a.department.startsWith('self_eval')));
+
+      traineeAssessments.forEach(a => {
+        let dateStr = a.submittedAt;
+        if (!dateStr) {
+          // fallback if submittedAt is missing, try to extract from self_eval_YYYY-MM
+          if (a.department.startsWith('self_eval_')) {
+            dateStr = a.department.replace('self_eval_', '') + '-01T00:00:00Z';
+          } else {
+            return;
+          }
+        }
+        const month = dateStr.substring(0, 7); // '2026-07'
+        if (!monthlyData[month]) {
+          monthlyData[month] = { supSum: 0, supCount: 0, selfSum: 0, selfCount: 0 };
+        }
+
+        const avgScore = ((a.competency1 || 0) + (a.competency2 || 0) + (a.competency3 || 0) + (a.competency4 || 0) + (a.competency5 || 0)) / 5;
+
+        if (a.department.startsWith('self_eval')) {
+          monthlyData[month].selfSum += avgScore;
+          monthlyData[month].selfCount += 1;
+        } else {
+          monthlyData[month].supSum += avgScore;
+          monthlyData[month].supCount += 1;
+        }
+      });
+
+      const sortedMonths = Object.keys(monthlyData).sort();
+      const labels = sortedMonths;
+      const supData = sortedMonths.map(m => monthlyData[m].supCount > 0 ? (monthlyData[m].supSum / monthlyData[m].supCount).toFixed(1) : null);
+      const selfData = sortedMonths.map(m => monthlyData[m].selfCount > 0 ? (monthlyData[m].selfSum / monthlyData[m].selfCount).toFixed(1) : null);
+
+      new Chart(trendCtx, {
+        type: 'line',
         data: {
-          labels: chartConfig.labels,
-          datasets: datasets
+          labels: labels,
+          datasets: [
+            {
+              label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
+              data: supData,
+              borderColor: '#f97316',
+              backgroundColor: 'rgba(249, 115, 22, 0.1)',
+              borderWidth: 2,
+              pointBackgroundColor: '#ea580c',
+              tension: 0.3,
+              fill: true,
+              spanGaps: true
+            },
+            {
+              label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
+              data: selfData,
+              borderColor: '#10b981',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              pointBackgroundColor: '#10b981',
+              tension: 0.3,
+              spanGaps: true
+            }
+          ]
         },
         options: {
           scales: {
-            r: {
-              min: 0,
-              max: 5,
-              ticks: { display: false, stepSize: 1 },
-              pointLabels: {
-                font: { size: window.innerWidth < 768 ? 10 : 12, weight: 'bold' },
-                color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b'
-              },
-              grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
-              angleLines: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }
+            y: {
+              min: 0, max: 5,
+              grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+              ticks: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' }
             }
           },
           plugins: {
-            legend: { display: false }
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b', boxWidth: 12 }
+            }
           },
           maintainAspectRatio: false
         }
       });
     }
-  });
-
-  // Render Trend Line Chart if it exists
-  const trendCtx = document.getElementById('trendLineChart');
-  if (trendCtx) {
-    // Group assessments by month (YYYY-MM)
-    const monthlyData = {};
-
-    const traineeAssessments = (state.assessments || []).filter(a => a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee || a.department.startsWith('self_eval')));
-
-    traineeAssessments.forEach(a => {
-      let dateStr = a.submittedAt;
-      if (!dateStr) {
-        // fallback if submittedAt is missing, try to extract from self_eval_YYYY-MM
-        if (a.department.startsWith('self_eval_')) {
-          dateStr = a.department.replace('self_eval_', '') + '-01T00:00:00Z';
-        } else {
-          return;
-        }
-      }
-      const month = dateStr.substring(0, 7); // '2026-07'
-      if (!monthlyData[month]) {
-        monthlyData[month] = { supSum: 0, supCount: 0, selfSum: 0, selfCount: 0 };
-      }
-
-      const avgScore = ((a.competency1 || 0) + (a.competency2 || 0) + (a.competency3 || 0) + (a.competency4 || 0) + (a.competency5 || 0)) / 5;
-
-      if (a.department.startsWith('self_eval')) {
-        monthlyData[month].selfSum += avgScore;
-        monthlyData[month].selfCount += 1;
-      } else {
-        monthlyData[month].supSum += avgScore;
-        monthlyData[month].supCount += 1;
-      }
-    });
-
-    const sortedMonths = Object.keys(monthlyData).sort();
-    const labels = sortedMonths;
-    const supData = sortedMonths.map(m => monthlyData[m].supCount > 0 ? (monthlyData[m].supSum / monthlyData[m].supCount).toFixed(1) : null);
-    const selfData = sortedMonths.map(m => monthlyData[m].selfCount > 0 ? (monthlyData[m].selfSum / monthlyData[m].selfCount).toFixed(1) : null);
-
-    new Chart(trendCtx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
-            data: supData,
-            borderColor: '#f97316',
-            backgroundColor: 'rgba(249, 115, 22, 0.1)',
-            borderWidth: 2,
-            pointBackgroundColor: '#ea580c',
-            tension: 0.3,
-            fill: true,
-            spanGaps: true
-          },
-          {
-            label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
-            data: selfData,
-            borderColor: '#10b981',
-            backgroundColor: 'transparent',
-            borderWidth: 2,
-            borderDash: [5, 5],
-            pointBackgroundColor: '#10b981',
-            tension: 0.3,
-            spanGaps: true
-          }
-        ]
-      },
-      options: {
-        scales: {
-          y: {
-            min: 0, max: 5,
-            grid: { color: state.activeTheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
-            ticks: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' }
-          },
-          x: {
-            grid: { display: false },
-            ticks: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b' }
-          }
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: 'bottom',
-            labels: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b', boxWidth: 12 }
-          }
-        },
-        maintainAspectRatio: false
-      }
-    });
-  }
   } catch (err) {
     console.error(err);
     document.getElementById('sectionMilestones').innerHTML = `<div style="padding:20px;color:red;font-weight:bold;">Error rendering milestones: ${err.message}<br><pre>${err.stack}</pre></div>`;
@@ -2628,15 +2628,15 @@ function renderReview() {
           <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-secondary);"><i class="fi fi-rr-time-past"></i> ${state.activeLanguage === 'zh' ? '已送出的考核紀錄' : 'Submitted Assessments'}</h3>
           <div style="display:flex;flex-direction:column;gap:12px;">
             ${Object.keys(grouped).map(tId => {
-              const tr = CONFIG.TRAINEES.find(t => t.id === tId);
-              const tName = tr ? tr.name : tId;
-              let html = `<div style="background:var(--bg-color); border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-bottom:8px;">
+      const tr = CONFIG.TRAINEES.find(t => t.id === tId);
+      const tName = tr ? tr.name : tId;
+      let html = `<div style="background:var(--bg-color); border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-bottom:8px;">
                             <h4 style="margin:0 0 12px 0; font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--card-border); padding-bottom:8px;"><i class="fi fi-rr-user"></i> ${tName}</h4>
                             <div style="display:flex;flex-direction:column;gap:10px;">`;
-              
-              html += grouped[tId].map(a => {
-                const dept = CONFIG.DEPARTMENTS[a.department] || {};
-                return `
+
+      html += grouped[tId].map(a => {
+        const dept = CONFIG.DEPARTMENTS[a.department] || {};
+        return `
                   <div class="glass-card" style="padding:12px; border-left: 4px solid ${dept.color || 'var(--primary)'}; margin:0;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                       <div>
@@ -2657,11 +2657,11 @@ function renderReview() {
                     </div>
                   </div>
                 `;
-              }).join('');
+      }).join('');
 
-              html += `</div></div>`;
-              return html;
-            }).join('')}
+      html += `</div></div>`;
+      return html;
+    }).join('')}
           </div>
         </div>
       `;
@@ -2956,6 +2956,17 @@ function buildFeedItem(obs, user) {
         <div class="obs-block"><h5>${t('lblKeyObs')}</h5><div class="quill-content">${window.stripBase64Images ? window.stripBase64Images(obs.keyObservation) : obs.keyObservation}</div></div>
       </div>
 
+      ${obs.officialTranslation ? `
+        <div style="margin-bottom:12px;">
+          <div class="obs-block" style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; padding: 12px 16px; border-radius: 8px;">
+            <h5 style="color: #10b981; margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fi fi-rr-language" style="margin-right: 6px;"></i>${state.activeLanguage === 'zh' ? '週記中文翻譯' : 'Translated Journal'}
+            </h5>
+            <div class="quill-content" style="margin-top: 8px;">${window.stripBase64Images ? window.stripBase64Images(obs.officialTranslation) : obs.officialTranslation}</div>
+          </div>
+        </div>
+      ` : ''}
+
       ${obs.attachmentUrl ? `
         <div class="obs-block">
           <h5>${state.activeLanguage === 'zh' ? '照片或報告檔案連結 (Attachments)' : 'Attachment Link'}</h5>
@@ -3110,6 +3121,30 @@ window.openEditObservation = function (id) {
   }
   window.editObsQuill.root.innerHTML = content;
 
+  // Handle translation field (admin only)
+  const currentUser = Auth.getCurrentUser();
+  if (currentUser && currentUser.role === 'admin') {
+    $('editObsTranslationGroup').style.display = 'block';
+    if (!window.editObsTranslationQuill) {
+      window.editObsTranslationQuill = new Quill('#editObsTranslationEditor', {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }]
+          ]
+        }
+      });
+    }
+    let transContent = obs.officialTranslation || '';
+    if (!transContent.includes('<p>') && !transContent.includes('<br>')) {
+      transContent = transContent.replace(/\n/g, '<br>');
+    }
+    window.editObsTranslationQuill.root.innerHTML = transContent;
+  } else {
+    $('editObsTranslationGroup').style.display = 'none';
+  }
+
   $('editObsPhoto').value = obs.attachmentUrl || '';
   $('editObsModal').style.display = 'flex';
 };
@@ -3123,6 +3158,11 @@ window.saveEditedObservation = async function () {
     keyObservation: window.editObsQuill.root.innerHTML,
     attachmentUrl: $('editObsPhoto').value.trim()
   };
+
+  const currentUser = Auth.getCurrentUser();
+  if (currentUser && currentUser.role === 'admin' && window.editObsTranslationQuill) {
+    data.officialTranslation = window.editObsTranslationQuill.root.innerHTML;
+  }
 
   showLoading();
   $('editObsModal').style.display = 'none';
@@ -3585,8 +3625,8 @@ window.deleteResource = async function (id) {
   showLoading();
   try {
     await Api.deleteResource(id);
-      state.resources = (state.resources || []).filter(r => r.id !== id);
-      window.filterResources('All');
+    state.resources = (state.resources || []).filter(r => r.id !== id);
+    window.filterResources('All');
     showToast('Resource deleted.');
   } catch (err) {
     alert('Delete failed: ' + err.message);
