@@ -2988,7 +2988,7 @@ function buildFeedItem(obs, user) {
           </div>
         </div>` : ''}
 
-      ${obs.officialTranslation ? `
+      ${obs.officialTranslation && user.role !== 'trainee' ? `
         <div style="margin-bottom:12px;">
           <div class="obs-block" style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; padding: 12px 16px; border-radius: 8px;">
             <h5 style="color: #10b981; margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
