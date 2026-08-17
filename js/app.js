@@ -2956,17 +2956,6 @@ function buildFeedItem(obs, user) {
         <div class="obs-block"><h5>${t('lblKeyObs')}</h5><div class="quill-content">${window.stripBase64Images ? window.stripBase64Images(obs.keyObservation) : obs.keyObservation}</div></div>
       </div>
 
-      ${obs.officialTranslation ? `
-        <div style="margin-bottom:12px;">
-          <div class="obs-block" style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; padding: 12px 16px; border-radius: 8px;">
-            <h5 style="color: #10b981; margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
-              <i class="fi fi-rr-language" style="margin-right: 6px;"></i>${state.activeLanguage === 'zh' ? '週記中文翻譯' : 'Translated Journal'}
-            </h5>
-            <div class="quill-content" style="margin-top: 8px;">${window.stripBase64Images ? window.stripBase64Images(obs.officialTranslation) : obs.officialTranslation}</div>
-          </div>
-        </div>
-      ` : ''}
-
       ${obs.attachmentUrl ? `
         <div class="obs-block">
           <h5>${state.activeLanguage === 'zh' ? '照片或報告檔案連結 (Attachments)' : 'Attachment Link'}</h5>
@@ -2998,6 +2987,17 @@ function buildFeedItem(obs, user) {
   }).join('')}
           </div>
         </div>` : ''}
+
+      ${obs.officialTranslation ? `
+        <div style="margin-bottom:12px;">
+          <div class="obs-block" style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; padding: 12px 16px; border-radius: 8px;">
+            <h5 style="color: #10b981; margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fi fi-rr-language" style="margin-right: 6px;"></i>${state.activeLanguage === 'zh' ? '週記中文翻譯' : 'Translated Journal'}
+            </h5>
+            <div class="quill-content" style="margin-top: 8px;">${window.stripBase64Images ? window.stripBase64Images(obs.officialTranslation) : obs.officialTranslation}</div>
+          </div>
+        </div>
+      ` : ''}
 
       ${feedbackBlock}
       ${guestBlock}
