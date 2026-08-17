@@ -3108,6 +3108,7 @@ window.openEditObservation = function (id) {
       theme: 'snow',
       modules: {
         toolbar: [
+          [{ 'header': [1, 2, 3, false] }, { 'size': ['small', false, 'large', 'huge'] }],
           ['bold', 'italic', 'underline'],
           [{ 'list': 'ordered' }, { 'list': 'bullet' }]
         ]
@@ -3130,6 +3131,7 @@ window.openEditObservation = function (id) {
         theme: 'snow',
         modules: {
           toolbar: [
+            [{ 'header': [1, 2, 3, false] }, { 'size': ['small', false, 'large', 'huge'] }],
             ['bold', 'italic', 'underline'],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }]
           ]
