@@ -190,6 +190,18 @@ const Api = (() => {
     return await fetchPromise;
   }
 
+  function invalidateCache(col) {
+    const prefix = 'vimei_fb_' + col;
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(prefix)) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(k => localStorage.removeItem(k));
+  }
+
   async function callScript(params) {
     if (!db) throw new Error('Firebase not initialized.');
     const { action, ...data } = params;
@@ -217,16 +229,19 @@ const Api = (() => {
           feedbackAt: '',
           rating: 0
         });
+        invalidateCache('observations');
         return { success: true, id: docRef.id };
       }
       
       case 'updateObservation': {
         await db.collection('observations').doc(data.id).update(data.data);
+        invalidateCache('observations');
         return { success: true };
       }
 
       case 'deleteObservation': {
         await db.collection('observations').doc(data.id).delete();
+        invalidateCache('observations');
         return { success: true };
       }
 
@@ -238,6 +253,7 @@ const Api = (() => {
           status: 'reviewed',
           feedbackAt: nowStrIso
         });
+        invalidateCache('observations');
         return { success: true };
       }
 
@@ -249,6 +265,7 @@ const Api = (() => {
           guestDept: data.guestDept,
           createdAt: nowStrIso
         });
+        invalidateCache('guest_comments');
         return { success: true, id: docRef.id };
       }
 
@@ -281,6 +298,7 @@ const Api = (() => {
         } else {
           await db.collection('schedules').doc(snap.docs[0].id).update({ dept: data.dept, objective: data.objective });
         }
+        invalidateCache('schedules');
         return { success: true };
       }
 
@@ -288,11 +306,13 @@ const Api = (() => {
 
       case 'submitMentorNote': {
         const docRef = await db.collection('mentor_notes').add({ traineeId: data.traineeId, content: data.content, tags: data.tags, createdAt: nowStrIso });
+        invalidateCache('mentor_notes');
         return { success: true, id: docRef.id };
       }
 
       case 'deleteMentorNote': {
         await db.collection('mentor_notes').doc(data.id).delete();
+        invalidateCache('mentor_notes');
         return { success: true };
       }
 
@@ -304,33 +324,39 @@ const Api = (() => {
           ratings: data.ratings, comment: data.comment, targetWeek: data.targetWeek || '', attachmentUrl: data.attachmentUrl || '',
           visibleToTrainee: false, createdAt: nowStrIso
         });
+        invalidateCache('assessments');
         return { success: true, id: docRef.id };
       }
 
       case 'updateAssessment': {
         await db.collection('assessments').doc(data.id).update(data.data);
+        invalidateCache('assessments');
         return { success: true };
       }
 
       case 'deleteAssessment': {
         await db.collection('assessments').doc(data.id).delete();
+        invalidateCache('assessments');
         return { success: true };
       }
 
       case 'updateAssessmentVisibility': {
         await db.collection('assessments').doc(data.id).update({ visibleToTrainee: data.visible });
+        invalidateCache('assessments');
         return { success: true };
       }
 
       case 'getAllResources': return await fbGet('resources', data.forceFetch);
 
       case 'submitResource': {
-        const docRef = await db.collection('resources').add({ title: data.title, category: data.category, url: data.url, uploadedBy: data.uploadedBy, createdAt: nowStrIso });
+        const docRef = await db.collection('resources').add({ ...data, createdAt: nowStrIso });
+        invalidateCache('resources');
         return { success: true, id: docRef.id };
       }
 
       case 'deleteResource': {
         await db.collection('resources').doc(data.id).delete();
+        invalidateCache('resources');
         return { success: true };
       }
 
