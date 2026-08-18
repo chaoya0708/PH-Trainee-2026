@@ -507,9 +507,13 @@ function renderCurrentTab() {
 // DATA LOADING
 // ══════════════════════════════════════════════════════════════════
 
+let fbDataUpdateTimer = null;
 window.addEventListener('fb_data_updated', () => {
-  // Silent refresh when background fetch detects changes
-  loadAllData(true);
+  if (fbDataUpdateTimer) clearTimeout(fbDataUpdateTimer);
+  fbDataUpdateTimer = setTimeout(() => {
+    // Silent refresh when background fetch detects changes
+    loadAllData(true);
+  }, 500);
 });
 
 async function loadAllData(isSilent = false) {
