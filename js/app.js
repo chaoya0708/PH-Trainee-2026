@@ -2851,7 +2851,11 @@ function buildFeedItem(obs, user) {
 
       const submitted = new Date(obs.submittedAt || obs.date);
       if (submitted > deadline) {
-        isLateStr = `<span class="badge" style="background-color:#ef4444;margin-left:8px;">${state.activeLanguage === 'zh' ? '遲交 (Late)' : 'Late'}</span>`;
+        // Exemption for Mark's specific week
+        const isExempt = (obs.traineeId === 'mark' && obs.targetWeek && obs.targetWeek.includes('2026-07-13'));
+        if (!isExempt) {
+          isLateStr = `<span class="badge" style="background-color:#ef4444;margin-left:8px;">${state.activeLanguage === 'zh' ? '遲交 (Late)' : 'Late'}</span>`;
+        }
       }
     }
   }
