@@ -536,6 +536,11 @@ async function loadAllData(isSilent = false) {
       state.assessments = data.assessments || [];
       state.resources = data.resources || [];
       state.mentorNotes = user.role === 'admin' ? await Api.getMentorNotes() : [];
+      
+      // Enforce strict access control for guests (assessors)
+      if (user.role === 'guest') {
+        state.assessments = state.assessments.filter(a => a.department === user.departmentId || a.department.startsWith('self_eval'));
+      }
     }
   } catch (err) {
     console.error('Data load error:', err);
