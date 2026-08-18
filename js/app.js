@@ -235,7 +235,7 @@ window.handleLogin = async function () {
 
     // Force theme based on role
     if (_loginRole === 'executive') {
-      localStorage.setItem('vimei_theme', 'dark');
+      localStorage.setItem('vimei_theme', 'light');
     } else {
       localStorage.setItem('vimei_theme', 'light');
     }
@@ -1395,7 +1395,7 @@ function setupMainEventListeners() {
         localStorage.setItem('vimei_lang', targetLang);
 
         if (opt.r === 'executive') {
-          localStorage.setItem('vimei_theme', 'dark');
+          localStorage.setItem('vimei_theme', 'light');
         } else {
           localStorage.setItem('vimei_theme', 'light');
         }
