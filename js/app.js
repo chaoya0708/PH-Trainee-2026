@@ -1722,12 +1722,29 @@ window.submitObsForm = async function (e) {
       finalDate = `${state.selectedDate}T${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}+08:00`;
     }
 
+    let htmlContent = window.obsQuill.root.innerHTML;
+    const imgRegex = /<img[^>]*src="(data:image\/([^;]+);base64,[^"]+)"[^>]*>/gi;
+    let match;
+    const matches = [];
+    while ((match = imgRegex.exec(htmlContent)) !== null) {
+      matches.push({ fullSrc: match[1], ext: match[2] });
+    }
+
+    if (matches.length > 0) {
+      showToast(state.activeLanguage === 'zh' ? '正在上傳文章內圖片，請稍候...' : 'Uploading inline images...', 'info');
+      for (let i = 0; i < matches.length; i++) {
+        const m = matches[i];
+        const uploadRes = await Api.uploadFile(m.fullSrc, 'image/' + m.ext, 'inline_' + Date.now() + '_' + i + '.' + m.ext, 'MA_Program_Uploads');
+        if (uploadRes.success) htmlContent = htmlContent.replace(m.fullSrc, uploadRes.url);
+      }
+    }
+
     const data = {
       traineeId: user.id,
       traineeName: user.name,
       date: finalDate,
       department: $('obsDept').value,
-      keyObservation: window.stripBase64Images ? window.stripBase64Images(window.obsQuill.root.innerHTML) : window.obsQuill.root.innerHTML,
+      keyObservation: htmlContent,
       actionableIdea: '',
       attachmentUrl: attachmentUrl,
       selfRating: selfRating,
@@ -1736,6 +1753,19 @@ window.submitObsForm = async function (e) {
 
     await Api.submitObservation(data);
     state.observations = await Api.getObservationsForTrainee(user.id);
+    
+    // Reset Form
+    window.obsQuill.root.innerHTML = '';
+    if ($('obsPhoto')) $('obsPhoto').value = '';
+    if ($('obsFileList')) $('obsFileList').innerHTML = '';
+    if ($('obsSelfRating')) $('obsSelfRating').value = 0;
+    if ($('obsSelfRatingText')) $('obsSelfRatingText').innerHTML = '';
+    document.querySelectorAll('#selfAppraisalStars .star-btn').forEach(s => {
+      s.classList.remove('fi-ss-star');
+      s.classList.add('fi-rs-star');
+      s.style = 'font-size:28px;cursor:pointer;color:#d1d5db;transition:all 0.2s;';
+    });
+
     showToast(t('submitSuccess'), 'success');
     switchTab('dashboard');
   } catch (err) {

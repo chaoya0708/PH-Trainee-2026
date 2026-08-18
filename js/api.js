@@ -335,34 +335,49 @@ const Api = (() => {
       }
 
       case 'uploadFile': {
-        if (!storage) throw new Error('Storage not initialized');
-        const safeName = Date.now() + '_' + data.filename.replace(/[^a-zA-Z0-9.]/g, '_');
-        const ref = storage.ref().child((data.folderName || 'uploads') + '/' + safeName);
+        const gasUrl = 'https://script.google.com/macros/s/AKfycbxGO8qhJGBMmDueIkz-lse9c3PKsr7lGDdItToojUi-zUozIl6ogt-J-KmGkxKlzbe1Eg/exec';
+        let base64String = data.base64;
         
         if (data.file) {
-          return new Promise((resolve, reject) => {
-            const uploadTask = ref.put(data.file);
-            uploadTask.on('state_changed',
-              (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                window.dispatchEvent(new CustomEvent('upload_progress', { detail: progress.toFixed(0) }));
-              },
-              (error) => reject(error),
-              async () => {
-                const url = await uploadTask.snapshot.ref.getDownloadURL();
-                resolve({ success: true, url });
-              }
-            );
+          base64String = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(data.file);
           });
-        } else {
-          const base64Data = data.base64.split(',')[1] || data.base64;
-          const res = await fetch(`data:${data.mimeType};base64,${base64Data}`);
-          const blob = await res.blob();
-          await ref.put(blob);
         }
         
-        const url = await ref.getDownloadURL();
-        return { success: true, url };
+        window.dispatchEvent(new CustomEvent('upload_progress', { detail: '10' }));
+        const payload = JSON.stringify({
+          action: 'uploadFile',
+          base64: base64String,
+          mimeType: data.mimeType || (data.file ? data.file.type : 'application/octet-stream'),
+          filename: data.filename || (data.file ? data.file.name : 'upload.bin'),
+          folderName: data.folderName || 'MA_Program_Uploads'
+        });
+        window.dispatchEvent(new CustomEvent('upload_progress', { detail: '50' }));
+        
+        const res = await fetch(gasUrl, {
+          method: 'POST',
+          body: payload,
+          headers: { 'Content-Type': 'text/plain' }
+        });
+        window.dispatchEvent(new CustomEvent('upload_progress', { detail: '90' }));
+        
+        const text = await res.text();
+        let jsonRes;
+        try {
+          jsonRes = JSON.parse(text);
+        } catch(e) {
+          throw new Error('Invalid JSON from server');
+        }
+        
+        if (jsonRes.success) {
+          window.dispatchEvent(new CustomEvent('upload_progress', { detail: '100' }));
+          return { success: true, url: jsonRes.url };
+        } else {
+          throw new Error(jsonRes.error || 'Upload failed');
+        }
       }
 
       case 'getInitData': {
