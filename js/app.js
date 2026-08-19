@@ -1112,10 +1112,10 @@ function renderAnalytics() {
 
   // 1. KPI Calculations
   let totalObs = state.observations.length;
-  let reviewedObs = state.observations.filter(o => o.rating > 0);
+  let reviewedObs = state.observations.filter(o => (o.selfRating != null ? o.selfRating : o.rating) > 0);
 
   const avgRating = reviewedObs.length > 0
-    ? (reviewedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / reviewedObs.length).toFixed(1)
+    ? (reviewedObs.reduce((sum, o) => sum + (Number(o.selfRating != null ? o.selfRating : o.rating) || 0), 0) / reviewedObs.length).toFixed(1)
     : '0.0';
 
   let totalProgressSum = 0;
@@ -1129,9 +1129,9 @@ function renderAnalytics() {
     const progress = calcOverallProgress(tr.id);
     let traineeObs = state.observations.filter(o => o.traineeId === tr.id);
 
-    const ratedObs = traineeObs.filter(o => o.rating > 0);
+    const ratedObs = traineeObs.filter(o => (o.selfRating != null ? o.selfRating : o.rating) > 0);
     const trAvgRating = ratedObs.length > 0
-      ? (ratedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / ratedObs.length).toFixed(1)
+      ? (ratedObs.reduce((sum, o) => sum + (Number(o.selfRating != null ? o.selfRating : o.rating) || 0), 0) / ratedObs.length).toFixed(1)
       : '0.0';
 
     // Department completion detailed badges
@@ -1275,9 +1275,9 @@ window.exportTraineeSummary = function () {
   trainees.forEach(tr => {
     const progress = calcOverallProgress(tr.id);
     const traineeObs = state.observations.filter(o => o.traineeId === tr.id);
-    const ratedObs = traineeObs.filter(o => o.rating > 0);
+    const ratedObs = traineeObs.filter(o => (o.selfRating != null ? o.selfRating : o.rating) > 0);
     const trAvgRating = ratedObs.length > 0
-      ? (ratedObs.reduce((sum, o) => sum + (Number(o.rating) || 0), 0) / ratedObs.length).toFixed(1)
+      ? (ratedObs.reduce((sum, o) => sum + (Number(o.selfRating != null ? o.selfRating : o.rating) || 0), 0) / ratedObs.length).toFixed(1)
       : '0.0';
 
     csv += `"${tr.name}",${progress}%,${trAvgRating},${traineeObs.length}`;
@@ -1324,7 +1324,7 @@ window.exportObservationLogs = function () {
       `"${cleanStr(obs.mentorName)}",` +
       `"${cleanStr((Auth.getCurrentUser() && Auth.getCurrentUser().role === 'admin') ? obs.mentorComment : '')}",` +
       `"${cleanStr(obs.feedbackAt)}",` +
-      `${obs.rating || 0}\n`;
+      `${(obs.selfRating || obs.rating) || 0}\n`;
   });
 
   downloadCSV(csv, "Trainee_Field_Observation_Logs.csv");
@@ -2980,7 +2980,7 @@ function buildFeedItem(obs, user) {
             <p>
               ${obs.targetWeek ? obs.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(obs.submittedAt || obs.date)} · <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
               <span style="font-size:11px;color:var(--text-muted);">${t('lblSubmittedAt')}: ${formatTaipeiTime(obs.submittedAt || obs.date, state.activeLanguage)}</span>
-              ${obs.rating ? `<br><span style="font-size:12px;color:#f59e0b;font-weight:700;margin-top:4px;display:inline-block;">${state.activeLanguage === 'zh' ? '本週自我評分' : 'Weekly Self-Appraisal'}: ${obs.rating} / 5 <i class="fi fi-ss-star"></i></span>` : ''}
+              <br><span style="font-size:12px;color:#f59e0b;font-weight:700;margin-top:4px;display:inline-block;">${state.activeLanguage === 'zh' ? '本週自我評分' : 'Weekly Self-Appraisal'}: ${obs.selfRating != null ? obs.selfRating : (obs.rating || 0)} / 5 ⭐</span>
             </p>
           </div>
         </div>
