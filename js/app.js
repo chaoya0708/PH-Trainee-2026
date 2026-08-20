@@ -2980,7 +2980,7 @@ function buildFeedItem(obs, user) {
             <p>
               ${obs.targetWeek ? obs.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(obs.submittedAt || obs.date)} · <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
               <span style="font-size:11px;color:var(--text-muted);">${t('lblSubmittedAt')}: ${formatTaipeiTime(obs.submittedAt || obs.date, state.activeLanguage)}</span>
-              <br><span style="font-size:12px;color:#f59e0b;font-weight:700;margin-top:4px;display:inline-block;">${state.activeLanguage === 'zh' ? '本週自我評分' : 'Weekly Self-Appraisal'}: ${obs.selfRating != null ? obs.selfRating : (obs.rating || 0)} / 5 ⭐</span>
+              <br><span style="font-size:12px;color:#f59e0b;font-weight:700;margin-top:4px;display:inline-block;">${state.activeLanguage === 'zh' ? '本週自我評分' : 'Weekly Self-Appraisal'}: ${obs.selfRating != null ? obs.selfRating : (obs.rating || 0)} / 5 ★</span>
             </p>
           </div>
         </div>

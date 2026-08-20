@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+  const gasUrl = 'https://script.google.com/macros/s/AKfycbxGO8qhJGBMmDueIkz-lse9c3PKsr7lGDdItToojUi-zUozIl6ogt-J-KmGkxKlzbe1Eg/exec';
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', gasUrl, true);
+  xhr.setRequestHeader('Content-Type', 'text/plain');
+  xhr.onload = () => console.log('Loaded:', xhr.responseText);
+  xhr.onerror = () => console.log('Error:', xhr.status);
+  xhr.send(JSON.stringify({
+    action: 'uploadFile',
+    base64: 'SGVsbG8=',
+    mimeType: 'text/plain',
+    filename: 'test_xhr.txt',
+    folderName: 'MA_Program_Uploads'
+  }));
+</script>
+</body>
+</html>

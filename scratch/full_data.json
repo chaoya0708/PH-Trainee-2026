@@ -1,404 +1,1064 @@
 {
   "observations": [
     {
-      "id": "obs-new1",
+      "submittedAt": "2026-08-18T17:31:22+08:00",
+      "mentorComment": "",
+      "officialTranslation": "<h3>玉膳 - 品管學習週記 (8/10 - 8/14)</h3><p><u>備註：學生本週週記內容有涵蓋圖表說明，可點選上方橢圓按鈕查看PDF原檔。</u></p><p><br></p><p>在品質保證（QA）部門輪調的第二週，我持續熟悉工廠的品質管理系統、檢驗程序及 QA 日常作業。由於生產活動會依照產品排程有所調整，有時現場可參與的生產作業較為有限，因此我利用這些時間觀察 QA 的工作流程、閱讀與品質相關的資料，並整理自己的學習重點、觀察事項及問題，準備與導師進一步討論。</p><p><br></p><p>透過這樣的方式，我能更深入了解公司的作業程序，同時找出自己身為 QA 人員，在知識與技能方面仍可持續加強的部分。</p><p>本週，我被安排協助進行進料原物料的檢驗與確認，確保原物料在投入生產使用之前符合相關要求。</p><p><br></p><p>雖然我先前已經在另一間工廠累積過 QA 的學習經驗，但我也了解到，每間工廠都有各自的作業要求與程序，因此仍需要重新熟悉這座工廠所採用的進料檢驗流程、必要的檢驗項目、待檢物料的位置與處理方式，以及檢驗結果的紀錄程序。</p><p><br></p><p>在進料原物料檢驗的過程中，我觀察到每一項原物料在允收之前，都必須依照既定規格進行仔細的評估與確認。</p><p>檢驗內容包括確認原物料的產品狀況、溫度要求、有效期限、標示資訊、包裝完整性，以及公司針對不同原物料所規定的其他相關要求。</p><p>此外，正確的文件紀錄也是檢驗工作中的重要環節，以確保原物料具有完整的追溯性，並留下正確的檢驗紀錄，作為後續查詢及確認的依據。</p><p>透過這次經驗，我更加了解系統化進料檢驗的重要性，以及 QA 在問題進入生產流程之前所扮演的預防角色。</p><p><br></p><p>我了解到，如果能在原物料進料階段及早發現異常，就能降低後續生產過程可能產生的風險、維持產品品質的一致性，並保障消費者安全。</p><p>我也學習到，有效的 QA 工作並不只是具備檢驗能力而已，同時還需要注意細節、正確完成文件紀錄、清楚溝通，以及與不同團隊進行協調合作。</p><p><br></p><p>透過觀察 QA 團隊如何管理進料原物料及處理品質相關問題，我進一步培養了自己對現場狀況的判斷能力，也更加理解品質相關的判定必須建立在既定標準與客觀檢驗結果之上。</p><p>整體而言，這次學習活動加深了我對進料原物料管制及其在整體品質管理系統中重要性的理解。</p><p><br></p><p>這也讓我能夠將過去累積的 QA 經驗運用在新的工廠環境中，同時學習適應不同的作業制度，並持續提升自己在檢驗、文件紀錄、問題處理及品質保證實務方面的能力。</p>",
       "traineeId": "diane",
-      "traineeName": "白妙儀 (Diane Solomon Barcelenia)",
-      "date": "2026-07-22",
-      "department": "cmf_qc",
-      "keyObservation": "<p>Ｗeek 1 report upload  (13, July, 2026 - 17, July, 2026) </p><p>Please click the botton of attached file</p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1c2_A0G4d9S7q9uHFtNRzTJP23yTr3WVo/view?usp=drivesdk",
-      "submittedAt": "2026-07-22T14:57:44+08:00",
-      "status": "reviewed",
-      "mentorComment": "Thank you for your effort in preparing this report. I can see that you organized your learning well and captured the key concepts from your QA training.\n\nFor your future reports, I encourage you to include more of your own observations, reflections, and learning experiences. This will help you build stronger critical thinking and self-reflection throughout the training program.\n\nKeep up the good work, and I look forward to seeing your continued growth.",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-07-24T13:16:08+08:00",
+      "status": "pending",
       "rating": 0,
-      "targetWeek": ""
+      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
+      "targetWeek": "2026-08-10~2026-08-14",
+      "mentorName": "",
+      "selfRating": 4.5,
+      "department": "yushan_qc",
+      "feedbackAt": "",
+      "actionableIdea": "",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "attachmentUrl": "https://drive.google.com/file/d/1dNQt0-iPekg6GptpGd1hbeE9Ba6QpB2p/view?usp=drivesdk|application/pdf|YUSHAN%20-%20QA%20DEPARTMENT%20(W2).pdf",
+      "date": "2026-08-18"
     },
     {
-      "id": "obs-new2",
-      "traineeId": "mark",
-      "traineeName": "段亦林 (Mark Jayzon Comon Dagala)",
-      "date": "2026-07-22",
-      "department": "cmf_qc",
-      "keyObservation": "<p>weekly report uploaded (13, July, 2026 - 17, July, 2026)</p><p>Please click the botton of attached file</p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1Fv0o9a4ZO3Y-24TsdPlkn3heT5dpBkdx/view?usp=drivesdk",
-      "submittedAt": "2026-07-23T10:30:10+08:00",
-      "status": "reviewed",
-      "mentorComment": "Thank you for your report. I like that you included not only what you learned, but also your own observations and improvement ideas. \nPlease continue to observe carefully and share your own thoughts and reflections throughout your training. \nKeep up the good work!",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-07-24T13:22:38+08:00",
+      "targetWeek": "2026-08-10~2026-08-14",
+      "selfRating": 3,
+      "mentorName": "",
+      "status": "pending",
       "rating": 0,
-      "targetWeek": ""
-    },
-    {
-      "id": "obs-new3",
-      "traineeId": "jairuz",
-      "traineeName": "侯俊材 (Jairuz Delos Reyes Nazareno)",
-      "date": "2026-07-22",
-      "department": "cmf_qc",
-      "keyObservation": "<p>weekly report uploaded (13, July, 2026 - 17, July, 2026)</p><p>Please click the botton of attached file</p>",
+      "department": "yushan_prep",
+      "feedbackAt": "",
+      "date": "2026-08-18",
+      "mentorComment": "",
+      "keyObservation": "<p><br></p>",
       "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1ElBNTI1cX9PmMpoZt1S0TJurNU-4u18H/view?usp=drivesdk",
-      "submittedAt": "2026-07-23T10:31:43+08:00",
-      "status": "reviewed",
-      "mentorComment": "Thank you for your report. I can see that you have a good understanding of the QA/QC training and summarized the key learning points clearly.\nFor future reports, I encourage you to include more of your own observations, reflections, and experiences from the training. This will help you better understand your own learning journey.\nKeep up the good work!",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-07-24T13:24:13+08:00",
-      "rating": 0,
-      "targetWeek": ""
-    },
-    {
-      "id": "obs-new4",
-      "traineeId": "mark",
+      "attachmentUrl": "https://drive.google.com/file/d/1VZpNqf75tV03Ardfty7jw1fTJlc8dJq-/view?usp=drivesdk|application/pdf|%E6%AE%B5%E4%BA%A6%E6%9E%97-Pre-processing(Weekly%20Report%202)docx.pdf",
+      "officialTranslation": "<p><br></p>",
       "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
-      "date": "2026-07-28",
-      "department": "cmf_qc",
-      "keyObservation": "<p>weekly report uploaded (21, July, 2026 - 24, July, 2026)</p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1PwWHMc32Bv7jyrbdTpe2rvW_dq4z_In8/view?usp=drivesdk",
-      "submittedAt": "2026-07-28T22:06:34+08:00",
-      "status": "reviewed",
-      "mentorComment": "Thank you for sharing your Week 2 report.\n\nI like how you focused on a real observation from the production floor and clearly explained the problem, potential risks, and your proposed corrective and preventive actions. This shows that you are beginning to think from a quality assurance perspective rather than simply describing what you learned.\n\nKeep observing carefully and continue connecting your observations with practical solutions. Well done! ",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-08-02T22:27:50+08:00",
-      "rating": 0,
-      "targetWeek": ""
-    },
-    {
-      "id": "obs-new5",
-      "traineeId": "jairuz",
-      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
-      "date": "2026-07-29",
-      "department": "cmf_qc",
-      "keyObservation": "<p><br></p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1j-oYAJH3umjuNpTNw7YbxaDh7AkUe-ci/view?usp=drivesdk",
-      "submittedAt": "2026-07-29T17:51:55+08:00",
-      "status": "reviewed",
-      "mentorComment": "Thank you for your Week 2 report.\n\nI can see that your reflection is becoming more structured, and you are beginning to connect what you learned with its practical purpose.\n\nKeep up the good work, and continue observing, asking questions, and learning. Well done! ",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-08-02T22:23:53+08:00",
-      "rating": 0,
-      "targetWeek": ""
-    },
-    {
-      "id": "obs-new6",
-      "traineeId": "diane",
-      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
-      "date": "2026-07-29",
-      "department": "cmf_qc",
-      "keyObservation": "<p><br></p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1_zM6WIqgXCZUBdTnzD7gu5-13HRzo_tg/view?usp=drivesdk",
-      "submittedAt": "2026-07-29T21:02:58+08:00",
-      "status": "reviewed",
-      "mentorComment": "Thank you for your Week 2 report.\n\nI really like how you described not only what you observed, but also why follow-up, communication, and verification are important in the QA process.\n\nYour report shows careful observation and a good understanding of how quality assurance supports production.\n\nKeep observing, asking questions, and connecting what you see with the purpose behind each process. Well done! ",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-08-02T22:31:43+08:00",
-      "rating": 0,
-      "targetWeek": ""
-    },
-    {
-      "id": "obs-new7",
-      "traineeId": "jairuz",
-      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
-      "date": "2026-08-02",
-      "department": "cmf_rd_western",
-      "keyObservation": "<p><br></p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1A_fCJ6_LKauGMzXy95z-p58pf07SCqap/view?usp=drivesdk",
-      "submittedAt": "2026-08-02T20:19:13+08:00",
-      "status": "reviewed",
-      "mentorComment": "Thank you for another well-organized report. It's great to see how you continue connecting your hands-on experience with your understanding of the product development process. I hope you keep building your confidence and expanding your skills in each rotation. Well done!",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-08-05T10:55:14.568Z",
-      "rating": 0,
-      "targetWeek": ""
-    },
-    {
-      "id": "obs-new8",
-      "traineeId": "jairuz",
-      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
-      "date": "2026-08-02",
-      "department": "cmf_rd_chinese",
-      "keyObservation": "<p><br></p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1Hf9iN0L-2gAbVxtpHC8IE2cn_T7AUpSM/view?usp=drivesdk",
-      "submittedAt": "2026-08-02T20:34:41+08:00",
-      "status": "reviewed",
-      "mentorComment": "Thank you for sharing your learning experience this week.\nI like how you compared your experience between the Western Pastry and Chinese Dim Sum R&D departments. It's great to see that you recognized the different skills required for each product and reflected on the challenges you faced.\nCongratulations on successfully completing the steamed bun assessment with your team! Keep building your confidence and continue enjoying every learning opportunity. Well done!",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-08-05T10:57:20.853Z",
-      "rating": 0,
-      "targetWeek": ""
-    },
-    {
-      "id": "obs-new9",
-      "traineeId": "diane",
-      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
-      "date": "2026-08-04",
-      "department": "cmf_rd_chinese",
-      "keyObservation": "<p><br></p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1pBbKsnySoS5nArZYNb0fVsFAfKFGHtXI/view?usp=drivesdk",
-      "submittedAt": "2026-08-04T00:39:47+08:00",
-      "status": "reviewed",
-      "mentorComment": "Thank you for sharing your R&D learning experience.\n\nI like how you reflected not only on the practical skills you learned, but also on the importance of planning, teamwork, and continuous improvement throughout the product development process.\n\nI also appreciate your honest reflection on the challenges you faced while making buns. Learning new skills takes time, and your willingness to keep practicing shows a positive learning attitude.\n\nKeep observing, practicing, and connecting your hands-on experience with the purpose behind each process. Well done!",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-08-05T09:20:18.546Z",
-      "rating": 0,
-      "targetWeek": ""
-    },
-    {
-      "id": "obs-new11",
-      "traineeId": "mark",
-      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
-      "date": "2026-08-04",
-      "department": "cmf_rd_western",
-      "keyObservation": "<p><br></p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1jXyv8qLavT7v0Hir2zP59DBGHWcReYL3/view?usp=drivesdk",
-      "submittedAt": "",
-      "status": "reviewed",
-      "mentorComment": "Thank you for your report. I can see your attention to technical details and process control throughout your learning. Your ability to observe key production parameters will be a valuable strength as you continue your training. Keep building on this foundation!",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-08-05T10:47:40.319Z",
-      "rating": 0,
-      "targetWeek": "2026-08-03~2026-08-07"
-    },
-    {
-      "id": "obs-new12",
-      "traineeId": "diane",
-      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
-      "date": "2026-08-05",
-      "department": "cmf_rd_western",
-      "keyObservation": "<p><br></p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1o48OUOZ5iB5pyPoHZ7vYSRxMC5zqxhEi/view?usp=drivesdk|application/pdf|CHIMEI%20%E2%80%93%20R_D%20(WESTERN%20PASTRY).pdf",
-      "submittedAt": "",
-      "status": "reviewed",
-      "mentorComment": "Thank you for sharing your learning experience in the Western Pastry R&D Department.\nI like how you reflected not only on the technical skills you practiced, but also on the importance of product presentation, craftsmanship, and customer satisfaction.\nYour report shows thoughtful reflection and a genuine appreciation for the care and dedication behind food production.\nWell done!",
-      "mentorName": "Mentor",
-      "feedbackAt": "2026-08-05T10:27:40.592Z",
-      "rating": 0,
-      "targetWeek": "2026-07-27~2026-07-31"
+      "submittedAt": "2026-08-18T22:13:29+08:00",
+      "traineeId": "mark"
     },
     {
       "id": "obs-1785926176821",
       "traineeId": "mark",
-      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
-      "date": "2026-08-05",
-      "department": "cmf_rd_chinese",
-      "keyObservation": "<p><br></p>",
-      "actionableIdea": "",
       "attachmentUrl": "https://drive.google.com/file/d/1F0t37w2AWuYOx3sdy6Z4MQWIcdCOfUHz/view?usp=drivesdk|application/pdf|%E6%AE%B5%E4%BA%A6%E6%9E%97-Dim%20Sum(Weekly%20Report%203)docx.pdf",
-      "submittedAt": "",
-      "status": "reviewed",
-      "mentorComment": "Thank you for sharing your R&D learning experience.\nI like how you clearly described the production process and explained the importance of key process parameters, especially during dough preparation and fermentation.\nYour report shows careful observation and a good understanding of the technical aspects of Chinese dim sum production.\nAs you continue learning, you may also try adding more of your own observations and reflections on what challenged or impressed you the most. Keep up the good work!",
+      "targetWeek": "2026-07-27~2026-07-31",
       "mentorName": "Mentor",
-      "feedbackAt": "2026-08-05T10:42:15.289Z",
+      "submittedAt": "",
+      "date": "2026-08-05",
+      "status": "reviewed",
       "rating": 0,
-      "targetWeek": "2026-07-27~2026-07-31"
+      "mentorComment": "Thank you for sharing your R&D learning experience.\nI like how you clearly described the production process and explained the importance of key process parameters, especially during dough preparation and fermentation.\nYour report shows careful observation and a good understanding of the technical aspects of Chinese dim sum production.\nAs you continue learning, you may also try adding more of your own observations and reflections on what challenged or impressed you the most. Keep up the good work!",
+      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "actionableIdea": "",
+      "department": "cmf_rd_chinese",
+      "feedbackAt": "2026-08-05T10:42:15.289Z",
+      "officialTranslation": "<h3>奇美食品 - 中點實習週記 （7/27 - 7/31）</h3><p><br></p><p>上週，我被安排至中式點心研發部門進行輪調，並獲得了實際參與傳統中式點心製作與開發的寶貴經驗。培訓期間，部門同仁耐心教導我製作包子、饅頭及手工燒賣的完整流程。這次經驗不僅讓我了解產品的製作程序，也讓我認識到在整個生產過程中維持產品品質、一致性及食品安全的重要性。</p><p><br></p><p>其中，對我而言最有收穫的經驗之一，就是從頭到尾學習完整的包子製作流程。研發人員首先示範正確的麵糰製作方式，包括精準秤量所有原料，並依照正確方式混合，使麵糰達到適當的狀態。</p><p>他們說明，麵糰品質會大幅影響最終成品，因此必須注意麵糰的質地、延展性及含水狀態。麵糰準備完成後，他們也教導我如何將麵糰平均分割成相同份量，以確保每顆包子的尺寸及重量維持一致。</p><p><br></p><p>接著，我學習如何將麵糰擀成厚度適當且均勻的麵皮。指導人員特別強調，麵皮的中央應略厚於邊緣，以避免包餡及蒸製過程中餡料將麵皮撐破。</p><p>他們也教導我將適量餡料放置於麵皮中央，並示範正確的手部動作，進行摺褶及收口。一開始，我覺得要做出整齊且一致的摺紋相當具有挑戰性，但經過持續的指導與練習後，我的整形技巧也逐漸進步。</p><p>同時，我也了解到正確收口非常重要，可以避免產品在發酵及蒸製過程中發生餡料外漏的情況。</p><p><br></p><p>除了包子之外，我也學習了饅頭的製作方式。製作饅頭時，需要特別注意麵糰處理、整形及醒發條件，才能使最終產品具有柔軟、蓬鬆的口感。</p><p>我也學習了手工燒賣的製作，包括準備餡料、正確包製及整形，以維持一致的產品外觀。部門同仁也分享了一些提升操作速度與產品一致性的技巧，同時確保每項產品都能符合公司的品質標準。</p><p>另一項重要的學習內容是發酵過程。指導人員說明，在發酵過程中，酵母會產生二氧化碳，使麵糰膨脹，進而形成柔軟、輕盈且蓬鬆的組織。</p><p>我了解到，控制正確的溫度、濕度及發酵時間非常重要。發酵不足可能造成產品組織過於緊實；相反地，過度發酵則可能使麵糰結構變弱，並對最終產品的外觀及風味造成不良影響。</p><p>我也實際觀察了麵糰在發酵過程中的體積及質地變化，並學習有經驗的工作人員如何判斷麵糰是否已達到適合進行蒸製的狀態。</p><p>透過這次在中式點心研發部門的培訓，我了解到，要製作出高品質且穩定的中式點心，需要具備耐心、精準度、團隊合作，以及確實遵循標準作業程序。</p><p>從原料準備、麵糰製作、整形、發酵到最後的蒸製，每一個步驟都會影響最終產品的品質。</p><p><br></p><p>這次輪調不僅提升了我的實際操作能力，也增加了我製作傳統中式點心的信心，更讓我深入了解到一項產品背後所涉及的研究開發、製程控制及品質管理，以及這些工作如何共同確保產品能持續穩定地符合顧客的期待。</p>"
     },
     {
-      "id": "obs-1786280077229",
-      "traineeId": "jairuz",
       "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
+      "status": "pending",
+      "rating": 0,
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "actionableIdea": "",
+      "feedbackAt": "",
+      "department": "yushan_packaging",
       "date": "2026-08-09",
+      "selfRating": 4,
+      "mentorName": "",
+      "targetWeek": "2026-08-03~2026-08-07",
+      "submittedAt": "2026-08-09T20:54:37+08:00",
+      "mentorComment": "",
+      "officialTranslation": "<h3>玉膳- 包裝段實習週記 （week 1）</h3><p><br></p><p><span style=\"color: rgb(15, 23, 42);\">本週我開始在玉膳股份有限公司工作,並被分配到調理食品後段包裝部門。本週每天都有不同的工作內容,包括產品充填、秤重作業,以及絞肉、蔬菜泥、液態食品及凝膠食品等調理食品的裝袋作業。</span></p><p><br></p><p><span style=\"color: rgb(15, 23, 42);\">剛開始進入新的工作環境時,我有些擔心,尤其是在公司參訪時,主管給人的感覺比較嚴肅。不過,實際進入生產現場後,我發現同事們都非常親切、有耐心,也願意一步一步地教導我。與之前的西點部門相比,目前的工作量較輕,因此適應起來並不困難。</span></p><p><br></p><p><span style=\"color: rgb(15, 23, 42);\">另外,有一點讓我印象深刻的是,每次更換產品或開始新的生產批次時,都必須更換新的手套。我理解這是為了避免交叉污染,確保食品安全與產品衛生,但也讓我思考食品安全與環境永續之間如何取得平衡,因為一次性手套的使用量相當大。</span></p><p><br></p><p><span style=\"color: rgb(15, 23, 42);\"><span class=\"ql-cursor\">﻿</span>在工作文化方面,我也發現這個部門與西點部門有很大的不同。等待下一批產品包裝時會有較多空檔時間,完成生產與清潔工作後,也常會提前結束作業並等待下班。這讓我了解到,即使同樣屬於食品製造業,不同部門的工作流程與工作節奏也會有很大的差異。</span></p>",
+      "id": "obs-1786280077229",
+      "attachmentUrl": "https://drive.google.com/file/d/11bCUJ1Dh1wLrpBZi2__FpY_EcG9OlVTs/view?usp=drivesdk|application/pdf|Weekly%20Report%20(08.03-07.2026)%20-%20%E4%BE%AF%E4%BF%8A%E6%9D%90.pdf",
+      "traineeId": "jairuz"
+    },
+    {
+      "actionableIdea": "",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "officialTranslation": "<h3>玉膳 - 品管實習週記 （8/3 - 8/7）</h3><p><br></p><p>在新工廠進行品質保證（QA）部門輪調時，我一開始認為這會是一個令人期待的機會，讓我能夠體驗不同的生產環境。由於過去已經有 QA 部門的學習經驗，因此起初我認為自己應該能夠順利完成相關工作。</p><p>然而，隨著我實際參與更多生產現場的作業，我逐漸了解到，擔任 QA 人員並不只是發現問題或指出不符合規範的事項。更重要的是要了解生產流程、與不同團隊進行有效溝通，並共同促進產品品質與食品安全的持續改善。</p><p><br></p><p>在輪調的前幾天，QA 導師向我說明 QA 人員的工作職責，包括生產過程中需要監控的作業程序、標準及重要事項。由於我先前已有 QA 相關經驗，因此能夠運用之前所學的知識與實務經驗，同時適應這間工廠所採用的制度與作業程序。</p><p><br></p><p>雖然過程中仍然遇到一些挑戰，尤其是語言溝通上的障礙，但過去的經驗幫助我更容易理解每項程序背後的目的，也讓我能更快掌握相關工作。我了解到，不同工廠可能會因產品種類及營運方式的不同，而採用不同的製程與管理要求，但 QA 最核心的責任仍然相同，也就是確保食品安全、維持品質標準，並支持持續改善。</p><p><br></p><p>在生產區域巡檢過程中，我觀察到 QA 如何監控整體生產環境、員工衛生作業、設備狀況、物料處理方式，以及可能存在的污染風險。</p><p>我們檢查了生產區域的清潔狀況、物料是否正確儲存、設備及容器的狀態，以及員工是否遵守相關衛生作業程序。透過這項活動，我了解到環境巡檢是一項重要的預防性管理措施，因為及早發現小問題，有助於避免後續演變成更嚴重的品質或食品安全問題。</p><p><br></p><p>我也有機會觀察原物料、生產製程及成品的檢驗作業，其中包括確認產品資訊、有效期限、包裝狀況、儲存方式，以及是否符合產品規格。</p><p>我們也監控生產過程中的重要條件，例如原物料使用量、產品狀態及相關製程要求，以確保產品依照既定標準進行生產。</p><p>在這些活動中，我們也遇到了一些需要進一步評估並立即處理的問題。我觀察到 QA 人員及相關負責人如何調查問題發生的原因、與相關人員協調，並採取必要的矯正措施，以維持產品品質與食品安全。</p><p>這些經驗讓我了解到，QA 的監控工作並不只是針對最終成品進行檢驗，而是需要在整個生產流程中持續進行品質監控與確認。</p><p>我也參與了產品放行前的處理與成品檢驗程序，包括確認包裝狀況、標示內容、產品資訊及數量，以確保最終產品符合公司的要求。</p><p><br></p><p>此外，我也接觸到金屬檢測機的驗證程序，並學習 QA 人員如何使用經核准的測試片及已驗證的設備設定，確認金屬檢測設備是否能正常運作。透過這些經驗，我了解到，在產品正式放行之前，適當的問題調查、判斷及矯正措施都非常重要。</p><p>這次輪調中，我遇到的一項挑戰，是與部分對 QA 監控較為不自在，或對遵循某些標準有所疑慮的員工進行溝通。</p><p><br></p><p>一開始，我對於是否應該採取過於嚴格的態度感到有些不確定，因為我會在意現場員工如何看待我。我也擔心，如果自己表現得太過嚴格，或只專注於糾正他人的錯誤，未來當我成為部門中負責培訓或指導他們的人員時，可能會影響彼此之間的互動與合作關係。</p><p>雖然語言上的障礙為這次輪調帶來了一些困難，但我仍持續努力理解導師的說明，以及現場所執行的各項程序。當遇到自己無法完全理解的細節時，我會主動詢問並再次確認相關資訊，以確保自己能夠正確執行工作。</p><p><br></p><p>過去的 QA 學習經驗也成為我這次輪調的一項優勢，因為它幫助我更快理解各項檢查重點背後的目的，並讓我能夠更迅速地適應新的工作環境。</p>",
+      "rating": 0,
+      "status": "pending",
+      "attachmentUrl": "https://drive.google.com/file/d/1W-ra_7yewHSnsRBMTHn_G4xyxT-KTIrj/view?usp=drivesdk|application/pdf|YUSHAN%20-%20QA%20DEPARTMENT%20(W1).pdf",
+      "date": "2026-08-10",
+      "id": "obs-1786333618084",
+      "mentorComment": "",
+      "submittedAt": "2026-08-10T11:46:58+08:00",
+      "targetWeek": "2026-08-03~2026-08-07",
+      "selfRating": 4.5,
+      "mentorName": "",
+      "traineeId": "diane",
+      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
+      "feedbackAt": "",
+      "department": "yushan_qc"
+    },
+    {
+      "status": "pending",
+      "rating": 0,
+      "department": "yushan_prep",
+      "feedbackAt": "",
+      "traineeId": "mark",
+      "date": "2026-08-11",
+      "selfRating": 4,
+      "mentorName": "",
+      "id": "obs-1786456473063",
+      "mentorComment": "",
+      "targetWeek": "2026-08-03~2026-08-07",
+      "attachmentUrl": "https://drive.google.com/file/d/1PrxCwY1aqbrJPPgFa3TsBkzMvqrkn84t/view?usp=drivesdk|application/pdf|%E6%AE%B5%E4%BA%A6%E6%9E%97-Pre-processing(Weekly%20Report%204)docx.pdf",
+      "submittedAt": "2026-08-11T21:54:33+08:00",
+      "actionableIdea": "",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
+      "officialTranslation": "<h3>玉膳 - 前處理段實習週記 （8/3 - 8/7）</h3><p><br></p><p>上週是我在玉膳工作的第一週。剛抵達時，水哥首先歡迎我們，並介紹接下來將會輪調的各個部門。他也帶領我們參觀整棟廠房內不同的部門及工作區域。透過這次職場環境介紹，我們對工作場所更加熟悉，也初步了解各部門的工作內容，以及之後將會進行輪調與工作的區域。</p><p>完成環境介紹後，我被安排至前處理部門進行學習。當天早上，主管首先安排我清洗及整理準備提供給廚師使用的蔬菜。</p><p><br></p><p>完成這項工作後，我和導師一起前往備料區，由她開始教導我如何準備及整理每日工作所需要使用的各項食材。她向我介紹不同種類的食材，並示範這些食材在投入後續使用之前，應如何進行正確的前處理與準備。</p><p><br></p><p>部門裡的每一位同仁都對我非常親切友善。當我遇到問題時，他們也都願意提供協助與指導。因為大家的友善與支持，讓我在新的工作環境中逐漸感到更加自在。</p><p><br></p><p>在第一週的學習過程中，我也開始熟悉備料區內的環境，並逐漸能夠辨識部分工作中會使用到的食材。</p><p><br></p><p>透過這次經驗，我進一步學習了正確的食材前處理、環境與作業清潔、團隊合作，以及遵循前處理部門正確作業程序的重要性。</p>"
+    },
+    {
+      "rating": 0,
+      "status": "reviewed",
+      "feedbackAt": "2026-07-24T13:16:08+08:00",
+      "department": "cmf_qc",
+      "mentorName": "Mentor",
+      "traineeId": "diane",
+      "targetWeek": "2026-07-13~2026-07-17",
+      "attachmentUrl": "https://drive.google.com/file/d/1c2_A0G4d9S7q9uHFtNRzTJP23yTr3WVo/view?usp=drivesdk",
+      "traineeName": "白妙儀 (Diane Solomon Barcelenia)",
+      "id": "obs-new1",
+      "date": "2026-07-22",
+      "mentorComment": "Thank you for your effort in preparing this report. I can see that you organized your learning well and captured the key concepts from your QA training.\n\nFor your future reports, I encourage you to include more of your own observations, reflections, and learning experiences. This will help you build stronger critical thinking and self-reflection throughout the training program.\n\nKeep up the good work, and I look forward to seeing your continued growth.",
+      "officialTranslation": "<h3>奇美食品 - 品管實習週記 （7/13 - 7/17）</h3><h3><br></h3><h3>Mentor：游明豪課長</h3><p>第一天，我們觀看了一部食品安全意識宣導影片，目的是協助員工了解自己在公司維護食品安全方面所應負的責任。影片說明了在生產流程的每一個階段落實正確食品安全措施的重要性。</p><p>我了解到，食品安全並不只是品質保證（QA）或品質管制（QC）部門的責任，而是所有員工共同的責任。良好的個人衛生、工作環境清潔、正確的物料處理方式，以及遵守公司的相關標準，都是預防污染及維持產品安全的重要環節。</p><p>我們也了解了幾個與產品品質及食品安全相關的客訴案例。這些案例讓我了解到，日常作業中的小失誤也可能造成顧客不滿，甚至影響消費者的健康。</p><p>透過這項學習活動，我更加認識到，在維持安全、衛生的生產環境方面，紀律、團隊合作、正確的操作程序以及對細節的重視都非常重要。</p><p><br></p><h3>Mentor：胡芳瑋</h3><p>在導師的培訓課程中，我們討論了公司的 ISO／HACCP 架構，以及其在維持食品安全與產品品質方面所扮演的角色。課程內容涵蓋食品安全基本概念、危害辨識與風險評估、文件管理、稽核紀錄、追溯程序，以及 HACCP 計畫的制定。</p><p>我了解到，HACCP 是一套預防性的食品安全管理系統，用於辨識、評估及控制生產過程中可能影響食品安全的危害。導師說明了辨識潛在危害、評估風險程度、判定重要管制點（CCP）、建立適當的管制措施、執行監控、採取矯正措施、進行驗證，以及維持完整且正確紀錄的重要性。</p><p>我們也檢視了公司現行 HACCP 計畫的實際案例，並完成相關練習。透過這些活動，我更清楚地了解到，在不同的生產流程中，如何辨識危害、評估風險，以及選擇適當的管制措施。</p><p>培訓內容也包含文件管理、稽核文件及追溯方式。我了解到，正確的紀錄對於監控作業、追溯原物料與成品、調查潛在問題，以及證明符合食品安全要求都非常重要。</p><p>此外，導師也介紹了數項與食品安全相關的標準作業程序（SOP）。透過檢視這些程序，我了解到標準化作業如何支援日常營運、降低食品安全風險，並維持一致的產品品質。</p><p>整體而言，這次培訓加深了我對 ISO／HACCP 系統、風險評估、文件管理、追溯及稽核實務的理解，也提升了我對預防措施、正確紀錄及持續監控在維持食品安全與產品可靠性方面重要性的認識。</p><p><br></p><h3>Mentor：陳岱彣</h3><p>在導師的培訓過程中，我參與了與原物料驗收程序及進料檢驗相關的活動。培訓重點在於了解原物料在被接受並投入生產使用之前，是如何進行評估與確認。</p><p>實際活動包括依照規定的規格確認原物料溫度、採樣進行檢驗、執行水分測試，以及完成相關檢驗紀錄。我也協助確認包裝狀況、測量外箱尺寸、確認有效期限，並依照各項原物料的《原物料檢驗規範》進行評估。</p><p>培訓中也包含使用檢測儀器進行水分測試及 Brix（糖度）測量的實際操作。這些活動讓我了解到，檢測設備如何提供準確的結果，並作為品質判定的依據。</p><p>由於每一種原物料都有各自的檢驗標準，因此是否允收必須依據既定文件標準、實際測量結果及檢驗結果進行判定。</p><p>我也學習了檢驗判定標準、紀錄程序，以及不同原物料異常的實際案例。透過這些案例，我了解到辨識不符合規格的原物料、正確記錄檢驗結果，以及依照規定程序進行後續處理的重要性，以避免可能產生的品質與食品安全風險。</p><p>其他品質確認活動還包括檢視產品外觀標準，尤其是水餃類產品；確認已包裝冷藏包子的溫度是否符合既定要求；以及將實際產品與核准樣品進行比對，以確認包裝內容是否正確。</p><p>透過這些活動，我累積了進料檢驗的實務經驗，也更加了解適當的檢驗、正確的文件紀錄，以及嚴格遵守既定標準，如何共同確保食品安全、產品一致性及整體品質。</p><p><br></p><h2>可能遇到的挑戰與採取的行動</h2><p><br></p><p><strong>1. 理解不同的食品安全要求與標準</strong></p><p><strong>可能的挑戰：</strong></p><p>在學習 HACCP 與 SOP 的過程中，其中一項挑戰是理解不同的食品安全要求、作業程序及管制措施，實際上如何應用於生產作業中。</p><p><strong>採取的行動：</strong></p><p>我重新檢視培訓所提供的文件、公司程序及 HACCP 計畫的實際案例，以進一步了解食品安全系統如何實際執行。同時，我也向導師確認重要觀念，以確保自己能正確理解並應用相關要求。</p><p><br></p><p><strong>2. 熟悉原物料檢驗標準</strong></p><p><strong>可能的挑戰：</strong></p><p>每一種原物料都有不同的檢驗規格，包括溫度要求、外觀標準、保存期限要求及允收標準等。剛開始接觸時，需要特別仔細才能理解不同原物料之間的差異。</p><p><strong>採取的行動：</strong></p><p>在進行檢驗活動時，我參考《原物料檢驗規範》，並仔細依照既定標準進行檢查。同時，我也練習正確完成紀錄及確認程序，以提升原物料評估的準確性。</p><p><br></p><p><strong>3. 適應公司的品質標準與作業程序</strong></p><p><strong>可能的挑戰：</strong></p><p>熟悉並適應公司的品質標準及作業程序，需要持續學習，同時也必須注意許多細節。</p><p><strong>採取的行動：</strong></p><p>我持續閱讀公司的 SOP、觀察現場實際作業方式，並在被分派的工作中依照正確程序執行。同時，我也保持開放的態度接受導師的回饋與指導，以持續提升自己的理解與實務能力。</p>",
+      "keyObservation": "<p>Ｗeek 1 report upload  (13, July, 2026 - 17, July, 2026) </p><p><br></p><h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3>",
+      "submittedAt": "2026-07-22T14:57:44+08:00",
+      "actionableIdea": ""
+    },
+    {
+      "status": "reviewed",
+      "rating": 0,
+      "attachmentUrl": "https://drive.google.com/file/d/1jXyv8qLavT7v0Hir2zP59DBGHWcReYL3/view?usp=drivesdk",
+      "id": "obs-new11",
+      "officialTranslation": "<h3>奇美食品 - 西點實習週記 （7/27 - 7/31）</h3><h3><br></h3><p>上週，我被安排至西式點心研發部門進行輪調，並獲得了實際參與各類烘焙產品製作與開發的寶貴經驗。培訓期間，部門同仁耐心教導我製作鳳梨酥、蛋糕及小餅乾，同時向我說明遵循標準化配方及維持產品品質一致性的重要性。透過這次經驗，我得以觀察從原料準備到最終烘焙成品的完整製作流程。</p><p><br></p><p>其中，讓我印象最深刻的是學習製作鳳梨酥。指導人員首先示範如何正確製作外皮麵糰，包括精準秤量及混合各項原料，以達到所需要的質地。他們也說明鳳梨餡的準備方式，並特別強調維持適當餡料與外皮比例的重要性，以確保產品具有均衡的風味與良好的外觀。</p><p><br></p><p>示範完成後，我也有機會親自進行麵糰整形、包入鳳梨餡，仔細收口後再放入模具中成形。過程中，部門同仁持續給予指導，並分享許多實用技巧，協助我改善每顆鳳梨酥的一致性、外觀及品質。</p><p>我也學習了蛋糕製作，從正確準備原料及麵糊開始。部門同仁說明，精準秤量原料、使用正確的攪拌方式，以及控制適當的攪拌時間，都是製作均勻麵糊的重要因素，並能使烘烤後的蛋糕具有柔軟、濕潤且一致的組織與口感。</p><p><br></p><p>他們也教導我如何正確準備烤模，並說明控制烘烤溫度與時間的重要性，以確保蛋糕能正常膨發、均勻烘烤，同時避免產品過乾或內部未完全烤熟。</p><p>此外，我也獲得了製作小餅乾的實際經驗。我學習依照正確比例準備及混合各項原料，直到達到所需要的麵糰狀態。指導人員也教導我如何將餅乾製作成大小一致的形狀，以確保烘烤程度均勻，並維持一致的產品外觀。</p><p><br></p><p>他們也說明，烘烤溫度及時間的控制對餅乾最終的色澤、酥脆度與口感非常重要。我觀察到，即使只是原料秤量或烘烤條件上的些微差異，也可能對最終產品品質造成影響。</p><p>在西式點心研發部門培訓期間，部門同仁特別強調精準度、衛生、團隊合作及一致性的重要性。我了解到，西點製作的每一個環節——從原料準備與秤量、麵糊或麵糰攪拌、產品成形、烘烤、冷卻到品質檢查——都會直接影響最終烘焙產品的安全性、穩定性及整體品質。</p><p><br></p><p>這次經驗提升了我的烘焙實作能力。雖然因為在西式點心部門輪調的時間較短，無法學習到所有產品的製作方式，但這段期間仍讓我接觸並了解更多西點製作技術，也進一步加深了我對研發及產品開發流程的認識，以及如何透過這些流程製作出品質穩定、符合顧客期待的西式點心產品。</p><p><br></p>",
+      "mentorComment": "Thank you for your report. I can see your attention to technical details and process control throughout your learning. Your ability to observe key production parameters will be a valuable strength as you continue your training. Keep building on this foundation!",
+      "feedbackAt": "2026-08-05T10:47:40.319Z",
+      "department": "cmf_rd_western",
+      "date": "2026-08-04",
+      "submittedAt": "",
+      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
+      "actionableIdea": "",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "traineeId": "mark",
+      "targetWeek": "2026-07-27~2026-07-31",
+      "mentorName": "Mentor"
+    },
+    {
+      "id": "obs-new12",
+      "traineeId": "diane",
+      "date": "2026-08-05",
+      "status": "reviewed",
+      "rating": 0,
+      "attachmentUrl": "https://drive.google.com/file/d/1o48OUOZ5iB5pyPoHZ7vYSRxMC5zqxhEi/view?usp=drivesdk|application/pdf|CHIMEI%20%E2%80%93%20R_D%20(WESTERN%20PASTRY).pdf",
+      "officialTranslation": "<h3>奇美食品 - 西點實習週記 （7/27 - 7/31）</h3><h3><br></h3><p>在西式點心研發部門輪調期間，我在團隊的指導下，實際學習了成品處理與包裝作業流程。團隊教導我如何以正確的方式小心處理產品，使產品在進入下一階段之前，能維持應有的品質與外觀。</p><p>透過這次經驗，我更加了解正確的成品處理與包裝作業，如何協助維持產品標準，並確保最終產品符合顧客的期待。我也體會到，產品品質並不只取決於生產製作過程，產品完成之後的處理方式同樣會影響最終品質。</p><p>在團隊的指導下，我也有機會實際練習蛋糕切片。一開始因為是第一次進行這項操作，我感到有些緊張，擔心可能會損壞產品或影響產品外觀。</p><p>透過團隊的說明與正確操作方式的示範，我了解到，即使看似簡單的作業，也需要良好的控制、耐心以及對細節的重視，才能達到所要求的產品品質。</p><p>這項活動也讓我了解到，產品呈現是影響顧客滿意度的重要因素之一。一項產品即使具有良好的風味與品質，其外觀及處理方式仍然會影響顧客對產品的觀感與評價。</p><p>我也很喜歡這次在西式點心研發部門的學習經驗，因為它讓我看到食品生產不同的一面。我體會到，西式點心製作除了需要專業技術之外，也需要創意、耐心與熱情。在這次輪調期間，我品嚐到其中一項產品，也因此讓我產生興趣，希望未來能進一步學習更多西式點心製作相關的知識與技巧。</p><p>透過中式點心與西式點心研發部門的學習經驗，我體會到，對工作的熱情與產品品質之間有著密切的關係。</p><p>製作產品並不只是因為這是一項工作，而將被交付的任務完成而已；在製作過程中投入用心與專注也非常重要，因為這些投入會反映在最終產品上，並進一步影響實際食用產品的顧客體驗。</p><p>這次輪調讓我了解到，食品生產除了需要專業技術與知識之外，也需要個人對工作的投入與責任感。當製作者願意在產品中投入努力與熱情時，這些付出也能反映在產品品質上，並最終轉化為顧客所感受到的滿意度。</p><p><br></p>",
+      "department": "cmf_rd_western",
+      "feedbackAt": "2026-08-05T10:27:40.592Z",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
+      "actionableIdea": "",
+      "mentorComment": "Thank you for sharing your learning experience in the Western Pastry R&D Department.\nI like how you reflected not only on the technical skills you practiced, but also on the importance of product presentation, craftsmanship, and customer satisfaction.\nYour report shows thoughtful reflection and a genuine appreciation for the care and dedication behind food production.\nWell done!",
+      "mentorName": "Mentor",
+      "targetWeek": "2026-07-27~2026-07-31",
+      "submittedAt": ""
+    },
+    {
+      "officialTranslation": "<h3>奇美食品 - 品管實習週記 （7/13 - 7/17）</h3><p><br></p><p>上週，我被安排至品質管制部門進行輪調。進入 QC 部門的第一天，我觀看了相關培訓影片，並閱讀有關危害分析重要管制點（HACCP）系統的資料。透過這些學習活動，我更加了解食品製造過程中食品安全、品質保證以及正確品質管制作業的重要性。</p><p>我也參與了原物料及包裝材料的進料檢驗，例如紙箱等包材，以確認這些材料是否符合公司的品質標準。</p><p><br></p><p>在檢驗過程中，我觀察到，由於近期下雨、環境較為潮濕，部分包裝材料因受潮而損壞，因此不適合再投入生產使用。這次經驗讓我了解到，適當的儲存環境、仔細執行檢驗，以及即時發現品質異常，對於維持產品安全及預防品質缺陷都非常重要。</p><p>針對這項問題，我提出的改善建議是：將包裝材料存放於乾燥且通風良好，並具適當濕度控制的區域，以降低雨季期間因環境濕度造成包材受潮損壞的風險。</p><p><br></p><p>此外，我也建議將包裝材料妥善放置於棧板或貨架上，避免直接接觸地面；必要時可使用防水塑膠材質進行適當覆蓋，並定期執行檢查，以便及早發現受損的包裝材料，並在投入生產使用之前將其移除。</p><p>透過上述措施，可以降低包裝材料受潮及損壞的風險，有助於維持產品品質並確保食品安全。</p>",
+      "traineeId": "mark",
+      "attachmentUrl": "https://drive.google.com/file/d/1Fv0o9a4ZO3Y-24TsdPlkn3heT5dpBkdx/view?usp=drivesdk",
+      "department": "cmf_qc",
+      "feedbackAt": "2026-07-24T13:22:38+08:00",
+      "date": "2026-07-20",
+      "mentorName": "Mentor",
+      "targetWeek": "2026-07-13~2026-07-17",
+      "status": "reviewed",
+      "rating": 0,
+      "keyObservation": "<p>weekly report uploaded (13, July, 2026 - 17, July, 2026)</p><p><br></p><h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "actionableIdea": "",
+      "traineeName": "段亦林 (Mark Jayzon Comon Dagala)",
+      "id": "obs-new2",
+      "submittedAt": "2026-07-23T10:30:10+08:00",
+      "mentorComment": "Thank you for your report. I like that you included not only what you learned, but also your own observations and improvement ideas. \nPlease continue to observe carefully and share your own thoughts and reflections throughout your training. \nKeep up the good work!"
+    },
+    {
+      "submittedAt": "2026-07-23T10:31:43+08:00",
+      "attachmentUrl": "https://drive.google.com/file/d/1ElBNTI1cX9PmMpoZt1S0TJurNU-4u18H/view?usp=drivesdk",
+      "mentorName": "Mentor",
+      "targetWeek": "2026-08-17~2026-08-21",
+      "keyObservation": "<p>weekly report uploaded (13, July, 2026 - 17, July, 2026)</p><h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "actionableIdea": "",
+      "feedbackAt": "2026-07-24T13:24:13+08:00",
+      "department": "cmf_qc",
+      "rating": 0,
+      "status": "reviewed",
+      "traineeName": "侯俊材 (Jairuz Delos Reyes Nazareno)",
+      "officialTranslation": "<h3>奇美食品 - 品管實習週記 （7/13 - 7/17）</h3><p><br></p><p><span style=\"color: rgb(15, 23, 42);\">本週我有機會深入了解奇美食品品保(QA/QC)部門的工作內容。我們閱讀了有關&nbsp;ISO、HACCP&nbsp;以及食品相關法規的資料,並觀看了相關教育影片,了解奇美食品作為食品製造公司,如何依照國際標準及政府法規建立完善的食品安全管理制度。透過這些教材,我更加了解食品安全管理的重要性,以及品質管理在食品產業中的關鍵角色。</span></p><p><br></p><p><span style=\"color: rgb(15, 23, 42);\">此外,我們也認識了品保部門的日常工作內容。游明豪先生向我們介紹了客訴(顧客抱怨)的處理流程。我了解到,每一件客訴都必須仔細調查,找出問題發生的原因,並提出改善措施,以避免相同問題再次發生。這讓我了解到,顧客的回饋不僅能提升產品品質,也有助於公司持續改善與提升顧客滿意度。</span></p><p><br></p><p><span style=\"color: rgb(15, 23, 42);\">陳岱彣小姐則示範了原物料的驗收流程,並說明各項檢驗標準。她強調,在原物料進入生產線之前,必須經過嚴格的檢查,以確保原料符合品質與食品安全要求,避免不合格或受污染的原料流入生產製程。此外,她也介紹了倉庫中成品出貨前的檢驗流程,確認產品符合品質標準後,才能出貨給客戶。</span></p><p><br></p><p><span style=\"color: rgb(15, 23, 42);\">另外,我也學習了包裝材料的檢驗方式,包括刈包、水餃、饅頭等產品所使用的紙箱及塑膠包裝袋。檢驗時必須仔細確認包裝上的產品名稱、標示內容、製造日期、有效日期及其他印刷資訊是否正確且無印刷錯誤。即使只是小小的印刷錯誤,也可能影響產品追溯、消費者信任,甚至不符合食品法規要求,因此包裝檢驗同樣十分重要。</span></p><p><br></p><p><span style=\"color: rgb(15, 23, 42);\">透過本週的學習,我深刻體會到,品質保證並不只是檢查產品,而是貫穿整個食品製造流程,從原物料驗收、生產管理、包裝檢驗、客訴處理,到成品出貨前的最終檢查,每一個環節都缺一不可。每一項檢驗工作都是為了確保消費者能夠收到安全且高品質的食品,也讓我更加了解品保部門在食品產業中所肩負的重要責任。</span></p>",
+      "date": "2026-07-22",
+      "id": "obs-new3",
+      "mentorComment": "Thank you for your report. I can see that you have a good understanding of the QA/QC training and summarized the key learning points clearly.\nFor future reports, I encourage you to include more of your own observations, reflections, and experiences from the training. This will help you better understand your own learning journey.\nKeep up the good work!",
+      "traineeId": "jairuz"
+    },
+    {
+      "officialTranslation": "<h3>奇美食品 - 品管實習週記 （7/20 - 7/24）</h3><h3><br></h3><p>上週，我被安排至品質保證部門進行輪調。在這段期間，我透過實際監控生產流程累積了許多經驗，並了解如何確保生產過程持續符合食品安全、產品品質及良好作業規範（GMP）的要求。</p><p>我的其中一項工作是巡查生產區域、觀察設備及器具的使用狀況，並辨識可能影響產品品質與食品安全的問題。</p><p><br></p><p>在其中一次巡檢過程中，我發現一個用於製作麵糰的桶子已有破損。這項發現相當重要，因為損壞的生產器具可能成為潛在的污染來源。器具上的裂縫或破損表面可能藏有髒污、水分及微生物，使器具難以被徹底清潔與消毒。此外，破損的塑膠碎片也可能意外掉入麵糰中造成異物污染，進而影響產品品質及消費者安全。</p><p>如果這類問題沒有被即時發現並處理，也可能造成生產作業不符合食品安全標準及 HACCP 相關要求。</p><p>透過這次經驗，我了解到確實執行現場巡檢，以及發現不符合事項後立即回報的重要性。</p><p>針對這項問題，我建議立即將破損的桶子移出生產現場，並更換為乾淨、狀況良好且符合食品接觸使用要求的容器。</p><p>此外，我也建議建立例行性的設備與器具檢查機制，在使用前後確認所有生產工具及設備的狀況，以便及早發現破損或異常。</p><p>透過這些矯正與預防措施，可以維持生產環境衛生、降低污染風險、確保作業符合食品安全標準，並維持最終產品的品質。</p>",
+      "department": "cmf_qc",
+      "feedbackAt": "2026-08-02T22:27:50+08:00",
+      "mentorName": "Mentor",
+      "targetWeek": "2026-07-20~2026-07-24",
+      "mentorComment": "Thank you for sharing your Week 2 report.\n\nI like how you focused on a real observation from the production floor and clearly explained the problem, potential risks, and your proposed corrective and preventive actions. This shows that you are beginning to think from a quality assurance perspective rather than simply describing what you learned.\n\nKeep observing carefully and continue connecting your observations with practical solutions. Well done! ",
+      "id": "obs-new4",
+      "traineeId": "mark",
+      "date": "2026-07-28",
+      "attachmentUrl": "https://drive.google.com/file/d/1PwWHMc32Bv7jyrbdTpe2rvW_dq4z_In8/view?usp=drivesdk",
+      "submittedAt": "2026-07-28T22:06:34+08:00",
+      "status": "reviewed",
+      "rating": 0,
+      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
+      "keyObservation": "<p>weekly report uploaded (21, July, 2026 - 24, July, 2026)</p><h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "actionableIdea": ""
+    },
+    {
+      "mentorName": "Mentor",
+      "status": "reviewed",
+      "rating": 0,
+      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
+      "targetWeek": "2026-08-17~2026-08-21",
+      "id": "obs-new5",
+      "date": "2026-07-29",
+      "submittedAt": "2026-07-29T17:51:55+08:00",
+      "officialTranslation": "<h3>奇美食品 - 品管實習週記 （week 1）</h3><p><br></p><p>本週我繼續在品保(QA/QC)部門學習,進一步了解食品製造過程中的品質管理。林士勛先生向我們介紹了製程監控與現場巡檢的重要性,並講解製程監控、抽樣計畫、不符合品處理以及關鍵管制點(CCP)的觀念。我們也觀摩了現場巡檢、抽樣程序、蒸煮產品品評及成品異物分析,更了解品保人員如何確保產品品質與食品安全。</p><p>此外,許曉芬小姐介紹了儀器校正及供應商現場稽核。她說明工廠量測儀器校正的標準作業程序(SOP),並讓我們了解儀器校正及供應商管理對維持產品品質的重要性。</p><p>本週最後,我們根據在品保部門兩週所學的內容,完成了「無菌包裝茶飲」的 HACCP 範例計畫,並向劉俊達處長及品保團隊進行簡報。雖然簡報時很緊張,但整體過程順利,也順利回答了大家提出的問題。最後,處長也分享了許多寶貴的經驗,並再次強調品保部門在食品安全、產品品質及法規遵循上的重要性。這次經驗讓我更加了解 HACCP 的實際應用,也提升了我的簡報能力與專業知識。</p>",
+      "mentorComment": "Thank you for your Week 2 report.\n\nI can see that your reflection is becoming more structured, and you are beginning to connect what you learned with its practical purpose.\n\nKeep up the good work, and continue observing, asking questions, and learning. Well done! ",
+      "department": "cmf_qc",
+      "feedbackAt": "2026-08-02T22:23:53+08:00",
+      "traineeId": "jairuz",
+      "attachmentUrl": "https://drive.google.com/file/d/1j-oYAJH3umjuNpTNw7YbxaDh7AkUe-ci/view?usp=drivesdk",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "actionableIdea": ""
+    },
+    {
+      "submittedAt": "2026-07-29T21:02:58+08:00",
+      "officialTranslation": "<h3>奇美食品 - 品管實習週記 （7/20 - 7/24）</h3><h3><br></h3><h3>Mentor：林士勛</h3><p>本週在導師的指導下，我參與了實際生產線的監控與現場巡檢活動。每天早上開始工作時，我們會先巡查生產區域，確認現場整體狀況，並找出可能影響食品安全、產品品質或生產作業效率的問題。我們會觀察工作環境的清潔狀況、設備與物料的狀態、現場是否有不必要的物品，以及員工是否依照規定的生產作業方式執行工作。</p><p>在其中一次巡檢中，我發現部分生產設備周邊有髒污、部分物料有生鏽跡象、天花板有蜘蛛網，以及部分照明設備故障。我將這些現場狀況拍照並回報給導師。導師確認後，將相關問題反映給生產線主管，主管隨後要求負責人員清潔相關區域，並針對所發現的問題進行改善。</p><p>隔天，我們再次回到相同地點，確認改善措施是否已完成。我發現部分先前回報的問題已經獲得處理。透過這次追蹤，我了解到「發現並回報問題」只是 QA 工作的一部分，後續還必須確認相關負責人員是否已採取行動，以及問題是否確實獲得改善。這次經驗讓我認識到，在維持受控的生產環境方面，後續追蹤、清楚的溝通以及責任落實都非常重要。</p><p>我們也確認部分產品的尺寸及重量是否符合標準作業程序所規定的要求。在檢查甜包產品時，我們測量了數個樣品，發現實際重量並未穩定符合規定的規格。因此，我們重複進行數次測量，以確認偏差具有一致性，而不是單次測量誤差所造成。</p><p>確認結果後，導師將此問題回報給生產線主管。初步判斷可能與機器的餡料出料量有關，因此生產線主管進一步調整機器設定，以修正餡料的出料量。</p><p>透過這個案例，我了解到，在回報製程偏差之前，檢驗結果必須透過重複測量加以確認。準確且具有依據的檢驗結果，能協助生產團隊判斷可能的問題原因，並在更多產品受到影響之前採取適當的矯正措施。</p><p>我也觀察到品質保證部門與生產部門之間溝通的重要性。QA 人員負責提供檢驗結果、測量數據及相關紀錄證據，而生產團隊則根據這些資訊評估製程，並執行必要的調整。清楚且即時的溝通有助於避免誤解，也能讓生產現場所發生的問題更快獲得解決。</p><p>此外，我們也檢查了準備運送至其他國家或地區的出貨紙箱。在產品放行之前，我們確認紙箱狀況、產品資訊、包裝外觀，以及內容物是否完整。</p><p>我了解到，包裝檢查同樣非常重要，因為紙箱破損、資訊錯誤或內容物不完整，都可能影響產品保護、追溯管理及客戶驗收。這項活動讓我了解到，品質確認並不會在產品完成生產時就結束，而是會持續到產品正確完成包裝並準備配送為止。</p><p>我們也取得了一份關於儀器校正操作程序的文件，並閱讀其中的內容。透過這份文件，我學習了測量儀器檢查與校正的基本程序及相關要求。</p><p>閱讀儀器校正程序後，我進一步了解到，校正能夠確保檢驗結果的準確性，並確認測量設備能正常運作，以符合品質管制工作的需求。</p>",
+      "id": "obs-new6",
+      "status": "reviewed",
+      "rating": 0,
+      "date": "2026-07-29",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "actionableIdea": "",
+      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
+      "attachmentUrl": "https://drive.google.com/file/d/1_zM6WIqgXCZUBdTnzD7gu5-13HRzo_tg/view?usp=drivesdk",
+      "traineeId": "diane",
+      "department": "cmf_qc",
+      "feedbackAt": "2026-08-02T22:31:43+08:00",
+      "mentorComment": "Thank you for your Week 2 report.\n\nI really like how you described not only what you observed, but also why follow-up, communication, and verification are important in the QA process.\n\nYour report shows careful observation and a good understanding of how quality assurance supports production.\n\nKeep observing, asking questions, and connecting what you see with the purpose behind each process. Well done! ",
+      "targetWeek": "2026-07-20~2026-07-24",
+      "mentorName": "Mentor"
+    },
+    {
+      "attachmentUrl": "https://drive.google.com/file/d/1A_fCJ6_LKauGMzXy95z-p58pf07SCqap/view?usp=drivesdk",
+      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
+      "date": "2026-08-02",
+      "id": "obs-new7",
+      "department": "cmf_rd_western",
+      "feedbackAt": "2026-08-05T10:55:14.568Z",
+      "mentorName": "Mentor",
+      "targetWeek": "2026-08-17~2026-08-21",
+      "submittedAt": "2026-08-02T20:19:13+08:00",
+      "traineeId": "jairuz",
+      "rating": 0,
+      "status": "reviewed",
+      "officialTranslation": "<h3>奇美食品 - 西點研發實習週記 （week 1）</h3><p><br></p><p>本週我在西點研發部門學習,認識了新產品開發流程以及各種原料的基本知識。我協助製作鳳梨酥、花生麵包、餅乾及其他西點產品的樣品。</p><p><br></p><p>由於我之前曾在西點生產部門實習,對鳳梨酥製作流程已有一定的了解,因此這週的學習讓我感到特別有趣,也有機會接觸更多不同種類的西點並品嚐產品。</p><p><br></p><p>透過這次實習,我更加了解奇美在產品正式量產前,研發部門如何進行產品設計、測試與調整,以確保產品品質與一致性。週末時,我們接受了鳳梨酥實作考核,從手工包餡、成型、烘焙到包裝都必須獨立完成。</p><p><br></p><p>這次經驗提升了我的烘焙能力,也讓我更深入了解西點研發的工作內容。</p>",
+      "mentorComment": "Thank you for another well-organized report. It's great to see how you continue connecting your hands-on experience with your understanding of the product development process. I hope you keep building your confidence and expanding your skills in each rotation. Well done!",
+      "actionableIdea": "",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>"
+    },
+    {
+      "actionableIdea": "",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "traineeId": "jairuz",
+      "mentorComment": "Thank you for sharing your learning experience this week.\nI like how you compared your experience between the Western Pastry and Chinese Dim Sum R&D departments. It's great to see that you recognized the different skills required for each product and reflected on the challenges you faced.\nCongratulations on successfully completing the steamed bun assessment with your team! Keep building your confidence and continue enjoying every learning opportunity. Well done!",
+      "attachmentUrl": "https://drive.google.com/file/d/1Hf9iN0L-2gAbVxtpHC8IE2cn_T7AUpSM/view?usp=drivesdk",
+      "mentorName": "Mentor",
+      "rating": 0,
+      "status": "reviewed",
+      "targetWeek": "2026-08-17~2026-08-21",
+      "submittedAt": "2026-08-02T20:34:41+08:00",
+      "officialTranslation": "<h3>奇美食品 - 中點研發實習週記 （week 1）</h3><p><br></p><p>本週我也在研發中點部門學習,與西點研發相同,我們先了解了新產品開發流程,並參觀了研發廚房。</p><p><br></p><p>老師教導我們製作包子、饅頭、甜包以及燒賣等中式點心產品。我覺得中點研發比西點研發更具挑戰性,因為製作包子時需要細心地包餡與摺褶,才能做出外觀漂亮且大小均勻的產品,因此手法與細節都非常重要。</p><p><br></p><p>週末時,我們接受了包子製作考核,必須獨立完成包子的製作。幸好我們的成品表現良好,也獲得了不錯的成果。這次實習讓我提升了中式點心製作技巧,也更加了解研發中點部門的工作內容。</p>",
+      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
+      "feedbackAt": "2026-08-05T10:57:20.853Z",
+      "department": "cmf_rd_chinese",
+      "id": "obs-new8",
+      "date": "2026-08-02"
+    },
+    {
+      "submittedAt": "2026-08-04T00:39:47+08:00",
+      "traineeId": "diane",
+      "mentorComment": "Thank you for sharing your R&D learning experience.\n\nI like how you reflected not only on the practical skills you learned, but also on the importance of planning, teamwork, and continuous improvement throughout the product development process.\n\nI also appreciate your honest reflection on the challenges you faced while making buns. Learning new skills takes time, and your willingness to keep practicing shows a positive learning attitude.\n\nKeep observing, practicing, and connecting your hands-on experience with the purpose behind each process. Well done!",
+      "actionableIdea": "",
+      "officialTranslation": "<h3>奇美食品 - 中點實習週記 （7/27 - 7/31）</h3><h3><br></h3><p>在中式點心研發部門輪調期間，我更加了解新產品如何進行開發，以及如何將最初的產品構想逐步轉化為實際的食品。</p><p>首先，我們學習了從產品概念發想到工程確認的新產品開發流程。我了解到，新產品開發需要不同部門之間相互合作，才能確保最終產品同時符合顧客期待與公司的標準。</p><p>整個開發過程包含產品概念評估，並需要考量原物料、生產需求、成本、品質標準及顧客偏好等重要因素。完成初步產品開發後，會製作樣品進行評估與改善，再根據回饋持續調整，直到產品達到所期望的品質、外觀與風味。</p><p>我了解到，產品開發並不只是設計一份配方，或是讓產品變得好吃而已。要成功推出一項同時符合公司標準與顧客期待的產品，還需要完善的規劃、評估、品質管控，以及不同部門之間的團隊合作。</p><p>我們也從頭開始製作手工包子，實際體驗產品的製作流程。團隊一步一步帶領我們操作，包括準備原物料、製作麵糰、控制正確的重量與尺寸、整形，以及完成最終產品。</p><p>了解相關規格要求後，我們開始練習麵糰分割與製作。過程包括切割麵糰、使用雙手掌將麵糰壓平，再利用擀麵棍將麵皮擀成適合包餡的圓形。</p><p>在這項活動中，我體會到手工製作需要耐心、正確的技巧以及經驗。由於這是我第一次進行這項操作，因此在控制擀麵棍以及維持麵皮的圓形方面遇到一些困難。有好幾次，我將麵皮擀成橢圓形，而不是所要求的圓形。</p><p>我了解到，麵皮形狀不均勻可能會影響後續包餡，因為這會增加正確放置餡料及完整包覆餡料的難度。</p><p>另一項挑戰是學習如何用手將餡料包入麵皮。一開始，我很難掌握正確的手法及成品形狀。有些時候，因為無法做出預期的成果，我也感到有些挫折。</p><p>不過，我並沒有因此放棄，而是持續練習並調整自己的操作方式，逐漸理解正確的手部動作與技巧。雖然最後做出的產品還不完美，但這次經驗讓我學習到持續練習、保持耐心及注意細節的重要性。</p><p>我也了解到，要製作出高品質的產品，除了按照指示操作之外，更需要真正掌握每一個生產步驟背後的技巧與原理。</p><p>我覺得中式點心研發部門的工作非常有趣，因為我能實際觀察研發團隊如何開發新產品，以及如何依照客戶需求改善既有產品。我了解到，產品開發需要經過不斷的測試、調整及評估，並透過團隊合作，才能確保最終產品符合預期標準。</p><p>整體而言，這次在中式點心研發部門的輪調經驗，讓我更加理解每一項產品背後所需要投入的規劃、創意與專業技術。我也體會到，每一個最終完成的產品，其實都代表著不同人員共同投入與合作的成果，最終目的都是為了達成產品品質與顧客滿意度的要求。</p><p><br></p>",
+      "id": "obs-new9",
+      "keyObservation": "<h3>可點選下方橢圓框 ”點擊檢視附件內容“ 即可觀看學生的英文原文週記PDF檔案。</h3><p><br></p>",
+      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
+      "attachmentUrl": "https://drive.google.com/file/d/1pBbKsnySoS5nArZYNb0fVsFAfKFGHtXI/view?usp=drivesdk",
+      "mentorName": "Mentor",
+      "targetWeek": "2026-07-27~2026-07-31",
+      "status": "reviewed",
+      "rating": 0,
+      "department": "cmf_rd_chinese",
+      "feedbackAt": "2026-08-05T09:20:18.546Z",
+      "date": "2026-08-04"
+    },
+    {
+      "traineeName": "侯俊材 / Jairuz Delos Reyes Nazareno",
+      "submittedAt": "2026-08-18T19:39:41+08:00",
+      "mentorComment": "",
+      "targetWeek": "2026-08-10~2026-08-14",
+      "selfRating": 4,
+      "mentorName": "",
+      "attachmentUrl": "https://drive.google.com/file/d/1h-N718QS-rea6wSRVgxpJH1YkSje0ksd/view?usp=drivesdk|application/pdf|Weekly%20Report%20(08.10-14.2026)%20-%20%E4%BE%AF%E4%BF%8A%E6%9D%90.pdf",
+      "rating": 0,
+      "status": "pending",
+      "date": "2026-08-18T19:39:41+08:00",
+      "feedbackAt": "",
       "department": "yushan_packaging",
       "keyObservation": "<p><br></p>",
       "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/11bCUJ1Dh1wLrpBZi2__FpY_EcG9OlVTs/view?usp=drivesdk|application/pdf|Weekly%20Report%20(08.03-07.2026)%20-%20%E4%BE%AF%E4%BF%8A%E6%9D%90.pdf",
-      "submittedAt": "2026-08-09T20:54:37+08:00",
-      "status": "pending",
-      "mentorComment": "",
-      "mentorName": "",
-      "feedbackAt": "",
-      "rating": 4,
-      "targetWeek": "2026-08-03~2026-08-07"
-    },
+      "traineeId": "jairuz"
+    }
+  ],
+  "assessments": [
     {
-      "id": "obs-1786333618084",
+      "assessor": "楊中蕾",
+      "competency4": 3,
+      "grade": "B",
+      "id": "asm-1785469157353",
+      "visibleToTrainee": false,
+      "competency1": 2,
+      "comments": "學習能力不錯,主動力較弱,基礎能力仍需培養\n手作能力還需要多練習\n服裝衣著較不符合工廠",
+      "competency3": 3,
+      "competency2": 2,
       "traineeId": "diane",
-      "traineeName": "白妙儀 / Diane Solomon Barcelenia",
-      "date": "2026-08-10",
-      "department": "yushan_qc",
-      "keyObservation": "<p><br></p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1W-ra_7yewHSnsRBMTHn_G4xyxT-KTIrj/view?usp=drivesdk|application/pdf|YUSHAN%20-%20QA%20DEPARTMENT%20(W1).pdf",
-      "submittedAt": "2026-08-10T11:46:58+08:00",
-      "status": "pending",
-      "mentorComment": "",
-      "mentorName": "",
-      "feedbackAt": "",
-      "rating": 4.5,
-      "targetWeek": "2026-08-03~2026-08-07"
+      "attachmentUrl": "",
+      "assessedAt": "2026-07-31T11:39:17+08:00",
+      "competency5": 4,
+      "department": "cmf_rd_chinese"
     },
     {
-      "id": "obs-1786456473063",
+      "visibleToTrainee": false,
+      "attachmentUrl": "",
+      "competency4": 4,
+      "assessedAt": "2026-07-31T11:49:22+08:00",
+      "department": "cmf_rd_chinese",
+      "assessor": "楊中蕾",
+      "competency1": 5,
+      "competency3": 4,
+      "grade": "A+",
+      "competency2": 5,
+      "competency5": 4,
+      "comments": "學習能力佳,在包子產線有歷練過多個生產線,對產品的熟悉度較高\n手作能力不錯,能觀察到細微的差異\n有認真在學習並且詳細記錄",
+      "id": "asm-1785469762961",
+      "traineeId": "mark"
+    },
+    {
+      "competency2": 4,
+      "competency5": 4,
+      "id": "asm-1785470050424",
+      "visibleToTrainee": false,
+      "assessedAt": "2026-07-31T11:54:10+08:00",
+      "competency1": 5,
+      "competency3": 4,
+      "assessor": "楊中蕾",
+      "traineeId": "jairuz",
+      "department": "cmf_rd_chinese",
+      "attachmentUrl": "",
+      "comments": "會主動溝通詢問,並協助其他人\n手作能力及學習力佳",
+      "competency4": 4,
+      "grade": "A"
+    },
+    {
+      "attachmentUrl": "https://drive.google.com/file/d/1qoPq6KpsEw4DvCEtTRScZOXyOGAi03Og/view?usp=drivesdk",
+      "assessor": "蘇曉芬",
+      "competency4": 3,
+      "id": "asm-1785720360230",
+      "competency1": 3,
+      "assessedAt": "2026-08-03T09:26:00+08:00",
+      "comments": "表現平穩。",
+      "competency3": 3,
+      "traineeId": "diane",
+      "department": "cmf_rd_western",
+      "competency2": 3,
+      "grade": "B",
+      "competency5": 3,
+      "visibleToTrainee": false
+    },
+    {
+      "competency4": 5,
+      "comments": "融會貫通,且會主動尋求適合自己的方式。",
+      "visibleToTrainee": false,
+      "assessedAt": "2026-08-03T09:29:37+08:00",
+      "competency1": 5,
+      "department": "cmf_rd_western",
+      "competency3": 5,
       "traineeId": "mark",
-      "traineeName": "段亦林 / Mark Jayzon Comon Dagala",
-      "date": "2026-08-11",
-      "department": "yushan_prep",
-      "keyObservation": "<p><br></p>",
-      "actionableIdea": "",
-      "attachmentUrl": "https://drive.google.com/file/d/1PrxCwY1aqbrJPPgFa3TsBkzMvqrkn84t/view?usp=drivesdk|application/pdf|%E6%AE%B5%E4%BA%A6%E6%9E%97-Pre-processing(Weekly%20Report%204)docx.pdf",
-      "submittedAt": "2026-08-11T21:54:33+08:00",
-      "status": "pending",
-      "mentorComment": "",
-      "mentorName": "",
-      "feedbackAt": "",
-      "rating": 4,
-      "targetWeek": "2026-08-10~2026-08-14"
+      "attachmentUrl": "https://drive.google.com/file/d/1Ilz1iHBuZx3stXmo9qzRP-RVn7Wr6xjX/view?usp=drivesdk",
+      "assessor": "蘇曉芬",
+      "id": "asm-1785720577108",
+      "competency2": 5,
+      "competency5": 5,
+      "grade": "A+"
+    },
+    {
+      "grade": "A",
+      "competency3": 4,
+      "visibleToTrainee": false,
+      "assessor": "蘇曉芬",
+      "competency1": 4,
+      "id": "asm-1785720808729",
+      "competency5": 4,
+      "traineeId": "jairuz",
+      "competency2": 5,
+      "comments": "聰明,動作較細心",
+      "attachmentUrl": "https://drive.google.com/file/d/13oMCRGuRSp-1rdSck-hrzjZU0wOpESbd/view?usp=drivesdk",
+      "competency4": 4,
+      "department": "cmf_rd_western",
+      "assessedAt": "2026-08-03T09:33:28+08:00"
     }
   ],
   "guest_comments": [],
-  "assessments": [
-    {
-      "id": "asm-1785469157353",
-      "traineeId": "diane",
-      "department": "cmf_rd_chinese",
-      "grade": "B",
-      "competency1": 2,
-      "competency2": 2,
-      "competency3": 3,
-      "competency4": 3,
-      "competency5": 4,
-      "comments": "學習能力不錯,主動力較弱,基礎能力仍需培養\n手作能力還需要多練習\n服裝衣著較不符合工廠",
-      "assessor": "楊中蕾",
-      "assessedAt": "2026-07-31T11:39:17+08:00",
-      "visibleToTrainee": false,
-      "attachmentUrl": ""
-    },
-    {
-      "id": "asm-1785469762961",
-      "traineeId": "mark",
-      "department": "cmf_rd_chinese",
-      "grade": "A+",
-      "competency1": 5,
-      "competency2": 5,
-      "competency3": 4,
-      "competency4": 4,
-      "competency5": 4,
-      "comments": "學習能力佳,在包子產線有歷練過多個生產線,對產品的熟悉度較高\n手作能力不錯,能觀察到細微的差異\n有認真在學習並且詳細記錄",
-      "assessor": "楊中蕾",
-      "assessedAt": "2026-07-31T11:49:22+08:00",
-      "visibleToTrainee": false,
-      "attachmentUrl": ""
-    },
-    {
-      "id": "asm-1785470050424",
-      "traineeId": "jairuz",
-      "department": "cmf_rd_chinese",
-      "grade": "A",
-      "competency1": 5,
-      "competency2": 4,
-      "competency3": 4,
-      "competency4": 4,
-      "competency5": 4,
-      "comments": "會主動溝通詢問,並協助其他人\n手作能力及學習力佳",
-      "assessor": "楊中蕾",
-      "assessedAt": "2026-07-31T11:54:10+08:00",
-      "visibleToTrainee": false,
-      "attachmentUrl": ""
-    },
-    {
-      "id": "asm-1785720360230",
-      "traineeId": "diane",
-      "department": "cmf_rd_western",
-      "grade": "B",
-      "competency1": 3,
-      "competency2": 3,
-      "competency3": 3,
-      "competency4": 3,
-      "competency5": 3,
-      "comments": "表現平穩。",
-      "assessor": "蘇曉芬",
-      "assessedAt": "2026-08-03T09:26:00+08:00",
-      "visibleToTrainee": false,
-      "attachmentUrl": "https://drive.google.com/file/d/1qoPq6KpsEw4DvCEtTRScZOXyOGAi03Og/view?usp=drivesdk"
-    },
-    {
-      "id": "asm-1785720577108",
-      "traineeId": "mark",
-      "department": "cmf_rd_western",
-      "grade": "A+",
-      "competency1": 5,
-      "competency2": 5,
-      "competency3": 5,
-      "competency4": 5,
-      "competency5": 5,
-      "comments": "融會貫通,且會主動尋求適合自己的方式。",
-      "assessor": "蘇曉芬",
-      "assessedAt": "2026-08-03T09:29:37+08:00",
-      "visibleToTrainee": false,
-      "attachmentUrl": "https://drive.google.com/file/d/1Ilz1iHBuZx3stXmo9qzRP-RVn7Wr6xjX/view?usp=drivesdk"
-    },
-    {
-      "id": "asm-1785720808729",
-      "traineeId": "jairuz",
-      "department": "cmf_rd_western",
-      "grade": "A",
-      "competency1": 4,
-      "competency2": 5,
-      "competency3": 4,
-      "competency4": 4,
-      "competency5": 4,
-      "comments": "聰明,動作較細心",
-      "assessor": "蘇曉芬",
-      "assessedAt": "2026-08-03T09:33:28+08:00",
-      "visibleToTrainee": false,
-      "attachmentUrl": "https://drive.google.com/file/d/13oMCRGuRSp-1rdSck-hrzjZU0wOpESbd/view?usp=drivesdk"
-    }
-  ],
   "resources": [
     {
+      "category": "奇美CMF",
+      "createdAt": "2026-08-13T21:00:22+08:00",
+      "url": "https://example.com/mock-diagnostic.pdf",
+      "uploadedBy": "Mentor",
+      "title": "VIMEI_Dim Sum_RD20250922_v1"
+    },
+    {
+      "uploadedAt": "2026-08-04T23:07:07+08:00",
       "id": "res-1785856027629",
-      "title": "Yu-Shan occupational safety introduction",
-      "category": "玉膳Yu-Shan",
       "url": "https://drive.google.com/file/d/1XhzAkq335ikCD9MrdpddFLDxVJ4LhrVb/view?usp=drivesdk",
       "uploadedBy": "Mentor",
-      "uploadedAt": "2026-08-04T23:07:07+08:00"
-    },
-    {
-      "id": "res-1785857181840",
-      "title": "Yu-Shan production flow & equipment introduction",
       "category": "玉膳Yu-Shan",
-      "url": "https://drive.google.com/file/d/1NhO18LYdx_McikRgtmuJaCdABqqjmhqa/view?usp=drivesdk",
-      "uploadedBy": "Mentor",
-      "uploadedAt": "2026-08-04T23:26:21+08:00"
+      "title": "Yu-Shan occupational safety introduction"
     },
     {
+      "uploadedBy": "Mentor",
+      "id": "res-1785857181840",
+      "uploadedAt": "2026-08-04T23:26:21+08:00",
+      "title": "Yu-Shan production flow & equipment introduction",
+      "url": "https://drive.google.com/file/d/1NhO18LYdx_McikRgtmuJaCdABqqjmhqa/view?usp=drivesdk",
+      "category": "玉膳Yu-Shan"
+    },
+    {
+      "uploadedAt": "2026-08-05T19:42:53+08:00",
       "id": "res-1785930173299",
       "title": "食品QAQC_結訓考核簡報 (3人共同完成) / CMF-QAQC Final Assessment Presentation",
-      "category": "奇美CMF",
       "url": "https://drive.google.com/file/d/1AIZLFO_mPSzUbDRT2mzpxzgeBL-N8pKA/view?usp=drivesdk",
       "uploadedBy": "Mentor",
-      "uploadedAt": "2026-08-05T19:42:53+08:00"
+      "category": "奇美CMF"
     }
   ],
   "schedules": [
     {
       "traineeId": "jairuz",
-      "date": "diane",
-      "dept": "",
-      "objective": ""
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "dept": "yushan_qc",
+      "date": "2026-10-21"
+    },
+    {
+      "dept": "cmf_production",
+      "date": "2026-06-12",
+      "traineeId": "mark",
+      "objective": "成型蒸炊單位執行設備拆洗 / Equipment Disassembly & Cleaning"
+    },
+    {
+      "traineeId": "diane",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "dept": "yushan_qc",
+      "date": "2026-08-25"
+    },
+    {
+      "objective": "西點單位執行550成型篩選/封口 / Model 550 Forming / Inspection / Sealing",
+      "traineeId": "jairuz",
+      "date": "2026-06-08",
+      "dept": "cmf_production"
+    },
+    {
+      "date": "2026-08-24",
+      "dept": "yushan_prep",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing",
+      "traineeId": "mark"
     },
     {
       "traineeId": "jairuz",
-      "date": "mark",
-      "dept": "",
-      "objective": ""
+      "objective": "1. 儀器校正，供應商訪廠稽核 Equipment Calibration & Supplier Audits\n2. 客訴案例介紹與廠內處理流程 Customer Complaint Cases & Internal Handling Procedures\n3. 品管考核日 Assessment Day",
+      "dept": "cmf_qc",
+      "date": "2026-07-24"
+    },
+    {
+      "traineeId": "diane",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "date": "2026-08-18",
+      "dept": "yushan_qc"
     },
     {
       "traineeId": "jairuz",
-      "date": "jairuz",
-      "dept": "",
-      "objective": ""
+      "objective": "原料檢驗流程與標準\nRaw Material Inspection Procedures & Standards",
+      "dept": "cmf_qc",
+      "date": "2026-07-16"
+    },
+    {
+      "dept": "yushan_packaging",
+      "date": "2026-10-28",
+      "traineeId": "mark",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area"
+    },
+    {
+      "date": "2026-07-29",
+      "dept": "cmf_rd_chinese",
+      "objective": "研發中點 手工/工程 樣品打樣 RD(chinese)Manual & Pilot Sample Production",
+      "traineeId": "mark"
+    },
+    {
+      "traineeId": "mark",
+      "objective": "ISO/HACCP文件管理與紀錄操作\nISO/HACCP Documentation & Record Managemen",
+      "dept": "cmf_qc",
+      "date": "2026-07-13"
+    },
+    {
+      "date": "2026-09-02",
+      "dept": "yushan_warehouse",
+      "traineeId": "jairuz",
+      "objective": "玉膳(倉儲物流與凍庫管理) Warehouse & Cold Storage Management"
+    },
+    {
+      "dept": "yushan_prep",
+      "date": "2026-09-17",
+      "traineeId": "diane",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing"
+    },
+    {
+      "date": "2026-12-30",
+      "dept": "yushan_qc",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "traineeId": "mark"
+    },
+    {
+      "date": "2026-10-28",
+      "dept": "yushan_qc",
+      "traineeId": "jairuz",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC"
+    },
+    {
+      "traineeId": "mark",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing",
+      "dept": "yushan_prep",
+      "date": "2026-08-05"
+    },
+    {
+      "traineeId": "jairuz",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area",
+      "dept": "yushan_packaging",
+      "date": "2026-08-26"
+    },
+    {
+      "traineeId": "mark",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area",
+      "dept": "yushan_packaging",
+      "date": "2026-10-30"
+    },
+    {
+      "objective": "成型蒸炊單位執行設備拆洗 / Equipment Disassembly & Cleaning",
+      "traineeId": "mark",
+      "date": "2026-07-03",
+      "dept": "cmf_production"
+    },
+    {
+      "traineeId": "mark",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area",
+      "dept": "yushan_packaging",
+      "date": "2026-10-22"
+    },
+    {
+      "date": "2026-10-29",
+      "dept": "yushan_cooking",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "traineeId": "diane"
+    },
+    {
+      "date": "2026-06-15",
+      "dept": "cmf_production",
+      "objective": "調理單位執行燒賣調理配餡 / Siomai Filling Preparation",
+      "traineeId": "diane"
+    },
+    {
+      "date": "2026-07-15",
+      "dept": "cmf_qc",
+      "traineeId": "mark",
+      "objective": "ISO/HACCP文件管理與紀錄操作\nISO/HACCP Documentation & Record Managemen"
+    },
+    {
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area",
+      "traineeId": "mark",
+      "date": "2026-10-12",
+      "dept": "yushan_packaging"
+    },
+    {
+      "date": "2026-09-15",
+      "dept": "yushan_cooking",
+      "traineeId": "mark",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area"
+    },
+    {
+      "traineeId": "diane",
+      "objective": "製程監控、抽樣計畫與異常處理\nProcess Monitoring, Sampling Plans & Nonconformance Handling",
+      "dept": "cmf_qc",
+      "date": "2026-07-23"
+    },
+    {
+      "date": "2026-09-18",
+      "dept": "yushan_prep",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing",
+      "traineeId": "diane"
+    },
+    {
+      "dept": "yushan_packaging",
+      "date": "2026-11-25",
+      "traineeId": "diane",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area"
+    },
+    {
+      "date": "2026-09-03",
+      "dept": "yushan_warehouse",
+      "objective": "玉膳(倉儲物流與凍庫管理) Warehouse & Cold Storage Management",
+      "traineeId": "jairuz"
+    },
+    {
+      "traineeId": "jairuz",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing",
+      "date": "2026-11-13",
+      "dept": "yushan_prep"
+    },
+    {
+      "traineeId": "jairuz",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "date": "2026-12-24",
+      "dept": "yushan_cooking"
+    },
+    {
+      "date": "2026-11-16",
+      "dept": "yushan_packaging",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area",
+      "traineeId": "diane"
+    },
+    {
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "traineeId": "jairuz",
+      "date": "2026-12-10",
+      "dept": "yushan_cooking"
+    },
+    {
+      "traineeId": "diane",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "date": "2026-10-08",
+      "dept": "yushan_cooking"
+    },
+    {
+      "traineeId": "diane",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing",
+      "date": "2026-09-01",
+      "dept": "yushan_prep"
+    },
+    {
+      "date": "2026-09-02",
+      "dept": "yushan_prep",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing",
+      "traineeId": "diane"
+    },
+    {
+      "date": "2026-11-09",
+      "dept": "yushan_warehouse",
+      "objective": "玉膳(倉儲物流與凍庫管理) Warehouse & Cold Storage Management",
+      "traineeId": "mark"
+    },
+    {
+      "date": "2026-11-24",
+      "dept": "yushan_warehouse",
+      "objective": "玉膳(倉儲物流與凍庫管理) Warehouse & Cold Storage Management",
+      "traineeId": "mark"
+    },
+    {
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "traineeId": "jairuz",
+      "date": "2026-12-01",
+      "dept": "yushan_cooking"
+    },
+    {
+      "traineeId": "jairuz",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "date": "2026-12-09",
+      "dept": "yushan_cooking"
+    },
+    {
+      "traineeId": "mark",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "date": "2026-09-23",
+      "dept": "yushan_cooking"
+    },
+    {
+      "date": "2026-10-05",
+      "dept": "yushan_packaging",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area",
+      "traineeId": "mark"
+    },
+    {
+      "traineeId": "diane",
+      "date": "2026-07-14",
+      "dept": "cmf_qc",
+      "objective": "ISO/HACCP文件管理與紀錄操作\nISO/HACCP Documentation & Record Managemen"
+    },
+    {
+      "dept": "yushan_prep",
+      "date": "2026-09-14",
+      "traineeId": "diane",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing"
+    },
+    {
+      "dept": "yushan_qc",
+      "date": "2026-08-26",
+      "traineeId": "diane",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC"
+    },
+    {
+      "traineeId": "diane",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing",
+      "dept": "yushan_prep",
+      "date": "2026-09-07"
+    },
+    {
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "traineeId": "jairuz",
+      "date": "2026-12-07",
+      "dept": "yushan_cooking"
+    },
+    {
+      "objective": "玉膳(倉儲物流與凍庫管理) Warehouse & Cold Storage Management",
+      "traineeId": "diane",
+      "date": "2026-12-23",
+      "dept": "yushan_warehouse"
+    },
+    {
+      "date": "2026-07-21",
+      "dept": "cmf_qc",
+      "traineeId": "mark",
+      "objective": "原料檢驗流程與標準\nRaw Material Inspection Procedures & Standards"
+    },
+    {
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "traineeId": "mark",
+      "date": "2026-12-21",
+      "dept": "yushan_qc"
+    },
+    {
+      "date": "2026-12-01",
+      "dept": "yushan_qc",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "traineeId": "mark"
+    },
+    {
+      "objective": "研發中點 手工/工程 樣品打樣 RD(chinese)Manual & Pilot Sample Production",
+      "traineeId": "jairuz",
+      "date": "2026-07-29",
+      "dept": "cmf_rd_chinese"
+    },
+    {
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing",
+      "traineeId": "mark",
+      "date": "2026-08-13",
+      "dept": "yushan_prep"
+    },
+    {
+      "date": "2026-08-19",
+      "dept": "yushan_qc",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "traineeId": "diane"
+    },
+    {
+      "traineeId": "diane",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area",
+      "dept": "yushan_packaging",
+      "date": "2026-11-03"
+    },
+    {
+      "date": "2026-12-23",
+      "dept": "yushan_qc",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "traineeId": "mark"
+    },
+    {
+      "objective": "原料檢驗流程與標準\nRaw Material Inspection Procedures & Standards",
+      "traineeId": "diane",
+      "date": "2026-07-17",
+      "dept": "cmf_qc"
+    },
+    {
+      "objective": "西點單位執行550成型篩選/封口 / Model 550 Forming / Inspection / Sealing",
+      "traineeId": "jairuz",
+      "date": "2026-06-04",
+      "dept": "cmf_production"
+    },
+    {
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "traineeId": "jairuz",
+      "date": "2026-10-27",
+      "dept": "yushan_qc"
+    },
+    {
+      "date": "2026-09-16",
+      "dept": "yushan_warehouse",
+      "objective": "玉膳(倉儲物流與凍庫管理) Warehouse & Cold Storage Management",
+      "traineeId": "jairuz"
+    },
+    {
+      "traineeId": "jairuz",
+      "date": "2026-11-02",
+      "dept": "yushan_prep",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing"
+    },
+    {
+      "date": "2026-10-02",
+      "dept": "yushan_qc",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "traineeId": "jairuz"
+    },
+    {
+      "traineeId": "mark",
+      "objective": "成型蒸炊單位執行設備拆洗 / Equipment Disassembly & Cleaning",
+      "date": "2026-06-03",
+      "dept": "cmf_production"
+    },
+    {
+      "traineeId": "mark",
+      "objective": "成型蒸炊單位執行設備拆洗 / Equipment Disassembly & Cleaning",
+      "dept": "cmf_production",
+      "date": "2026-07-01"
+    },
+    {
+      "traineeId": "diane",
+      "objective": "玉膳(倉儲物流與凍庫管理) Warehouse & Cold Storage Management",
+      "dept": "yushan_warehouse",
+      "date": "2026-12-24"
+    },
+    {
+      "date": "2026-12-31",
+      "dept": "yushan_cooking",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "traineeId": "jairuz"
+    },
+    {
+      "date": "2026-12-04",
+      "dept": "yushan_qc",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "traineeId": "mark"
+    },
+    {
+      "dept": "holiday",
+      "date": "2026-10-25",
+      "traineeId": "diane",
+      "objective": "光復節 (Retrocession Day)"
+    },
+    {
+      "traineeId": "jairuz",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area",
+      "date": "2026-08-12",
+      "dept": "yushan_packaging"
+    },
+    {
+      "traineeId": "jairuz",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "dept": "yushan_qc",
+      "date": "2026-10-30"
+    },
+    {
+      "traineeId": "mark",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area",
+      "dept": "yushan_packaging",
+      "date": "2026-10-15"
+    },
+    {
+      "date": "2026-06-02",
+      "dept": "cmf_production",
+      "traineeId": "jairuz",
+      "objective": "西點單位執行550成型篩選/封口 / Model 550 Forming / Inspection / Sealing"
+    },
+    {
+      "traineeId": "mark",
+      "objective": "玉膳(倉儲物流與凍庫管理) Warehouse & Cold Storage Management",
+      "date": "2026-11-27",
+      "dept": "yushan_warehouse"
+    },
+    {
+      "traineeId": "mark",
+      "objective": "玉膳(倉儲物流與凍庫管理) Warehouse & Cold Storage Management",
+      "date": "2026-11-11",
+      "dept": "yushan_warehouse"
+    },
+    {
+      "date": "2026-08-24",
+      "dept": "yushan_packaging",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area",
+      "traineeId": "jairuz"
+    },
+    {
+      "traineeId": "jairuz",
+      "objective": "西點研發 手工/工程 樣品打樣 RD(western) Manual & Pilot Sample Production",
+      "date": "2026-07-28",
+      "dept": "cmf_rd_western"
+    },
+    {
+      "date": "2026-10-13",
+      "dept": "yushan_cooking",
+      "traineeId": "diane",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area"
+    },
+    {
+      "date": "2026-09-29",
+      "dept": "yushan_warehouse",
+      "objective": "玉膳(倉儲物流與凍庫管理) Warehouse & Cold Storage Management",
+      "traineeId": "jairuz"
+    },
+    {
+      "date": "2026-08-26",
+      "dept": "yushan_prep",
+      "traineeId": "mark",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing"
+    },
+    {
+      "objective": "調理單位執行燒賣調理配餡 / Siomai Filling Preparation",
+      "traineeId": "diane",
+      "date": "2026-06-26",
+      "dept": "cmf_production"
+    },
+    {
+      "date": "2026-11-19",
+      "dept": "yushan_prep",
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing",
+      "traineeId": "jairuz"
+    },
+    {
+      "date": "2026-09-28",
+      "dept": "holiday",
+      "objective": "教師節 (Teacher's Day)",
+      "traineeId": "diane"
+    },
+    {
+      "objective": "玉膳(調理食品：前處理段) Prepared Foods – Pre-processing",
+      "traineeId": "mark",
+      "date": "2026-08-14",
+      "dept": "yushan_prep"
+    },
+    {
+      "date": "2026-06-03",
+      "dept": "cmf_production",
+      "objective": "西點單位執行550成型篩選/封口 / Model 550 Forming / Inspection / Sealing",
+      "traineeId": "jairuz"
+    },
+    {
+      "traineeId": "jairuz",
+      "date": "2026-12-30",
+      "dept": "yushan_cooking",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area"
+    },
+    {
+      "dept": "cmf_rd_western",
+      "date": "2026-07-30",
+      "traineeId": "mark",
+      "objective": "西點研發 手工/工程 樣品打樣 RD(western) Manual & Pilot Sample Production"
+    },
+    {
+      "date": "2026-10-09",
+      "dept": "holiday",
+      "objective": "雙十節補假 (Double Tenth Day Compensated Holiday)",
+      "traineeId": "diane"
+    },
+    {
+      "date": "2026-06-08",
+      "dept": "cmf_production",
+      "objective": "成型蒸炊單位執行設備拆洗 / Equipment Disassembly & Cleaning",
+      "traineeId": "mark"
+    },
+    {
+      "dept": "yushan_packaging",
+      "date": "2026-11-26",
+      "traineeId": "diane",
+      "objective": "玉膳(調理食品：後段包裝) Prepared Foods – Packaging Area"
+    },
+    {
+      "date": "2026-12-02",
+      "dept": "yushan_qc",
+      "traineeId": "mark",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC"
+    },
+    {
+      "dept": "cmf_production",
+      "date": "2026-07-10",
+      "traineeId": "jairuz",
+      "objective": "西點單位執行550成型篩選/封口 / Model 550 Forming / Inspection / Sealing"
+    },
+    {
+      "traineeId": "jairuz",
+      "objective": "西點單位執行550成型篩選/封口 / Model 550 Forming / Inspection / Sealing",
+      "date": "2026-06-09",
+      "dept": "cmf_production"
+    },
+    {
+      "dept": "yushan_cooking",
+      "date": "2026-12-22",
+      "traineeId": "jairuz",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area"
+    },
+    {
+      "traineeId": "diane",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "date": "2026-08-13",
+      "dept": "yushan_qc"
+    },
+    {
+      "dept": "cmf_qc",
+      "date": "2026-07-24",
+      "traineeId": "mark",
+      "objective": "1. 儀器校正，供應商訪廠稽核 Equipment Calibration & Supplier Audits\n2. 客訴案例介紹與廠內處理流程 Customer Complaint Cases & Internal Handling Procedures\n3. 品管考核日 Assessment Day"
+    },
+    {
+      "date": "2026-09-04",
+      "dept": "yushan_cooking",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "traineeId": "mark"
+    },
+    {
+      "date": "2026-08-11",
+      "dept": "yushan_qc",
+      "objective": "玉膳(現場品管 QA/QC) On-site QA/QC",
+      "traineeId": "diane"
+    },
+    {
+      "traineeId": "jairuz",
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "date": "2026-12-23",
+      "dept": "yushan_cooking"
+    },
+    {
+      "objective": "西點單位執行550成型篩選/封口 / Model 550 Forming / Inspection / Sealing",
+      "traineeId": "jairuz",
+      "date": "2026-06-30",
+      "dept": "cmf_production"
+    },
+    {
+      "objective": "玉膳(調理食品：烹煮區) Prepared Foods – Cooking Area",
+      "traineeId": "diane",
+      "date": "2026-10-30",
+      "dept": "yushan_cooking"
     }
   ]
 }
