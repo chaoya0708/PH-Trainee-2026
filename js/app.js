@@ -1961,6 +1961,12 @@ function renderMilestones() {
               ${state.activeLanguage === 'zh' ? '✅ 主管考核已送出 (不公開)' : '✅ Assessment Submitted (Private)'}
             </div>
           `;
+        } else if (user.role === 'guest' && dept.id !== user.departmentId) {
+          assessmentHtml = `
+            <div class="assessment-card" style="margin-top:14px;padding:8px 12px;background:rgba(16, 185, 129, 0.04);border:none;border-radius:10px;text-align:center;font-size:11px;color:var(--text-primary); font-weight: 600;">
+              <i class="fi fi-rr-check-circle" style="color:var(--success); margin-right:4px;"></i> ${state.activeLanguage === 'zh' ? '考核已完成 (內容僅該單位可見)' : 'Assessment Completed (Private to Dept)'}
+            </div>
+          `;
         } else {
           const chartId = 'radar-' + dept.id;
           chartsToRender.push({
@@ -1990,13 +1996,11 @@ function renderMilestones() {
               </div>
               
               <div style="font-size:13px;line-height:1.5;border-top:1px dashed var(--card-border);padding-top:10px;">
-                ${(!(user && user.role === 'guest') || dept.id === user.departmentId) ? `
                 <div style="font-weight:600; color:var(--primary); margin-bottom:4px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">
                   <i class="fi fi-rr-comment"></i> ${state.activeLanguage === 'zh' ? '單位評語' : 'Department Comment'}
                 </div>
                 <p style="background:rgba(0,0,0,0.02); padding:10px; border-radius:8px; color:var(--text-primary); margin-top:0; font-style:italic;">${assessment.comments}</p>
                 ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/en/translator#zh/en/${encodeURIComponent(assessment.comments)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
-                ` : `<p style="font-style:italic;color:var(--text-muted);text-align:center;padding:10px;">${state.activeLanguage === 'zh' ? '（僅該單位可見詳細評語）' : '(Comments hidden)'}</p>`}
                 ${assessment.attachmentUrl ? `
                   <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
                   ${assessment.attachmentUrl.split(',').map((part, idx) => {
