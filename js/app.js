@@ -536,11 +536,7 @@ async function loadAllData(isSilent = false) {
       state.assessments = data.assessments || [];
       state.resources = data.resources || [];
       state.mentorNotes = user.role === 'admin' ? await Api.getMentorNotes() : [];
-      
-      // Enforce strict access control for guests (assessors)
-      if (user.role === 'guest') {
-        state.assessments = state.assessments.filter(a => a.department === user.departmentId || a.department.startsWith('self_eval'));
-      }
+      // (Removed global access control for guests to allow viewing completion status in milestones)
     }
   } catch (err) {
     console.error('Data load error:', err);
@@ -1880,6 +1876,7 @@ function renderMilestones() {
     let count = 0;
     (state.assessments || []).forEach(a => {
       if (a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee)) {
+        if (user.role === 'guest' && !a.department.startsWith('self_eval') && a.department !== user.departmentId) return;
         sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
         sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
         count++;
@@ -1909,6 +1906,7 @@ function renderMilestones() {
       // 計算各站別平均成績供趨勢圖使用
       const sortedAssessments = (state.assessments || [])
         .filter(a => a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee))
+        .filter(a => !(user.role === 'guest' && !a.department.startsWith('self_eval') && a.department !== user.departmentId))
         .sort((a, b) => (new Date(a.assessedAt || 0).getTime() || 0) - (new Date(b.assessedAt || 0).getTime() || 0));
 
       sortedAssessments.forEach(a => {
@@ -2173,7 +2171,9 @@ function renderMilestones() {
       // Group assessments by month (YYYY-MM)
       const monthlyData = {};
 
-      const traineeAssessments = (state.assessments || []).filter(a => a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee || a.department.startsWith('self_eval')));
+      const traineeAssessments = (state.assessments || [])
+        .filter(a => a.traineeId === viewId && (user.role !== 'trainee' || a.visibleToTrainee || a.department.startsWith('self_eval')))
+        .filter(a => !(user.role === 'guest' && !a.department.startsWith('self_eval') && a.department !== user.departmentId));
 
       traineeAssessments.forEach(a => {
         let dateStr = a.submittedAt;
