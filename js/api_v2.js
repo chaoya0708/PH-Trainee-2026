@@ -320,9 +320,19 @@ const Api = (() => {
 
       case 'submitAssessment': {
         const docRef = await db.collection('assessments').add({
-          traineeId: data.traineeId, assessorName: data.assessorName, department: data.department, date: data.date,
-          ratings: data.ratings, comment: data.comment, targetWeek: data.targetWeek || '', attachmentUrl: data.attachmentUrl || '',
-          visibleToTrainee: false, createdAt: nowStrIso
+          traineeId: data.traineeId || '',
+          department: data.department || '',
+          grade: data.grade || '',
+          competency1: data.competency1 || 0,
+          competency2: data.competency2 || 0,
+          competency3: data.competency3 || 0,
+          competency4: data.competency4 || 0,
+          competency5: data.competency5 || 0,
+          comments: data.comments || '',
+          assessor: data.assessor || '',
+          attachmentUrl: data.attachmentUrl || '',
+          visibleToTrainee: data.visibleToTrainee || false,
+          submittedAt: nowStrIso
         });
         invalidateCache('assessments');
         return { success: true, id: docRef.id };
