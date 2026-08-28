@@ -1861,7 +1861,9 @@ function renderMilestones() {
       monthOptionsHtml += `<option value="${monthStr}" ${selected}>${monthStr}</option>`;
     }
 
-    let selfAssessmentHtml = `
+    let selfAssessmentHtml = '';
+    if (user.role === 'trainee' || user.role === 'mentor') {
+      selfAssessmentHtml = `
       <div class="glass-card" style="margin-bottom: 20px;">
         <h3 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
           <span>
@@ -1896,7 +1898,7 @@ function renderMilestones() {
         </div>
       </div>
     `;
-
+    }
 
     // 計算所有已考評部門的核心職能平均分數 (Exclude self_eval)
     let sumC1 = 0, sumC2 = 0, sumC3 = 0, sumC4 = 0, sumC5 = 0;
