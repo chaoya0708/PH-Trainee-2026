@@ -2395,7 +2395,25 @@ window.saveSelfAssessment = async function () {
     );
     if (res && (res.success || res.status === 'success')) {
       alert(state.activeLanguage === 'zh' ? '自評已儲存！' : 'Self-assessment saved!');
-      window.location.reload();
+      
+      if (!state.assessments) state.assessments = [];
+      state.assessments.push({
+        id: res.id || Date.now().toString(),
+        traineeId: user.id,
+        department: currentSelfEvalId,
+        grade: 'N/A',
+        competency1: c1,
+        competency2: c2,
+        competency3: c3,
+        competency4: c4,
+        competency5: c5,
+        comments: comments,
+        assessor: user.name,
+        visibleToTrainee: true,
+        submittedAt: new Date().toISOString()
+      });
+      
+      window.renderMilestones();
     }
   }
 };
