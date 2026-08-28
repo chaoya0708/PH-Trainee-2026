@@ -959,7 +959,13 @@ function renderDashboard() {
         const statusClass = d._pct === 100 ? 'completed' : (d._pct > 0 ? 'in-progress' : 'unstarted');
         let extraBadge = '';
         if (d._hasAssessment && user.role !== 'trainee') {
-          extraBadge = `<div class="ppc-assess-badge">考核等第 ${d._grade}</div>`;
+          let showGrade = true;
+          if (user.role === 'guest' && d.id !== user.departmentId) {
+            showGrade = false;
+          }
+          if (showGrade) {
+            extraBadge = `<div class="ppc-assess-badge">考核等第 ${d._grade}</div>`;
+          }
         }
         const barClass = d._pct === 100 ? 'completed' : (d._pct > 0 ? 'in-progress' : '');
 
@@ -1138,7 +1144,13 @@ function renderAnalytics() {
       const deptName = state.activeLanguage === 'zh' ? (d.shortZh || d.nameZh) : (d.shortEn || d.name);
       let badgeStyle = `background:rgba(255,255,255,0.03);color:var(--text-muted);`;
       let text = `${deptName}: ${pct}%`;
-      if (assessment) {
+      
+      let hasVisibleAssessment = assessment;
+      if (assessment && user.role === 'guest' && d.id !== user.departmentId) {
+        hasVisibleAssessment = false;
+      }
+      
+      if (hasVisibleAssessment) {
         text = `${deptName}: ${pct}% (${assessment.grade})`;
         badgeStyle = `background:rgba(234,88,12,0.12);color:var(--primary);border:1px solid rgba(234,88,12,0.25);font-weight:700;`;
       } else if (pct === 100) {
@@ -1146,7 +1158,7 @@ function renderAnalytics() {
       } else if (pct > 0) {
         badgeStyle = `background:rgba(249,115,22,0.1);color:#f97316;border:1px solid rgba(249,115,22,0.2);`;
       }
-      return `<span class="analytics-dept-badge" style="${badgeStyle}" title="${state.activeLanguage === 'zh' ? d.nameZh : d.name}: ${pct}%${assessment ? ' - ' + t('lblAssessGrade') + ': ' + assessment.grade : ''}">${text}</span>`;
+      return `<span class="analytics-dept-badge" style="${badgeStyle}" title="${state.activeLanguage === 'zh' ? d.nameZh : d.name}: ${pct}%${hasVisibleAssessment ? ' - ' + t('lblAssessGrade') + ': ' + assessment.grade : ''}">${text}</span>`;
     }).join(' ');
 
     const currentStatus = localStorage.getItem(`MA_STATUS_${tr.id}`) || 'green';
@@ -3289,11 +3301,13 @@ function buildFeedItem(obs, user) {
 
       ${obs.officialTranslation && user.role !== 'trainee' ? `
         <div style="margin-bottom:12px;">
-          <div class="obs-block" style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; padding: 12px 16px; border-radius: 8px;">
-            <h5 style="color: #10b981; margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
-              <i class="fi fi-rr-language" style="margin-right: 6px;"></i>${state.activeLanguage === 'zh' ? '週記中文翻譯' : 'Translated Journal'}
-            </h5>
-            <div class="quill-content" style="margin-top: 8px;">${window.stripBase64Images ? window.stripBase64Images(obs.officialTranslation) : obs.officialTranslation}</div>
+          <button onclick="window.toggleTranslation(this)" style="width:100%; display:flex; justify-content:center; align-items:center; gap: 8px; background:var(--bg-card); border:1px solid rgba(16, 185, 129, 0.4); border-radius:8px; padding:12px 16px; cursor:pointer; color: #10b981; font-size: 15px; font-weight:700; letter-spacing: 0.5px; transition: all 0.2s;">
+            <i class="fi fi-rr-language" style="font-size:16px;"></i>
+            <span class="trans-text">${state.activeLanguage === 'zh' ? '顯示週記中文翻譯' : 'Show Translated Journal'}</span>
+            <i class="fi fi-rr-angle-down trans-icon" style="font-size:14px; margin-left:4px;"></i>
+          </button>
+          <div class="quill-content translation-content" style="margin-top: 8px; display: none; background: rgba(16, 185, 129, 0.03); border-left: 3px solid #10b981; padding: 16px; border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.6;">
+            ${window.stripBase64Images ? window.stripBase64Images(obs.officialTranslation) : obs.officialTranslation}
           </div>
         </div>
       ` : ''}
@@ -3382,6 +3396,23 @@ window.generateAdminTargetWeekOptions = function (selectedWeek) {
   }
 
   return options;
+};
+
+window.toggleTranslation = function(btn) {
+  const content = btn.nextElementSibling;
+  const span = btn.querySelector('span.trans-text');
+  const icon = btn.querySelector('i.trans-icon');
+  if (content.style.display === 'none') {
+    content.style.display = 'block';
+    span.innerText = state.activeLanguage === 'zh' ? '隱藏週記中文翻譯' : 'Hide Translated Journal';
+    icon.className = 'fi fi-rr-angle-up trans-icon';
+    btn.style.background = 'rgba(16, 185, 129, 0.05)';
+  } else {
+    content.style.display = 'none';
+    span.innerText = state.activeLanguage === 'zh' ? '顯示週記中文翻譯' : 'Show Translated Journal';
+    icon.className = 'fi fi-rr-angle-down trans-icon';
+    btn.style.background = 'var(--bg-card)';
+  }
 };
 
 window.openEditObservation = function (id) {
