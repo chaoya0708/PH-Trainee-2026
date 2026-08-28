@@ -54,10 +54,9 @@ window.updateObsFileList = function () {
   const input = document.getElementById('obsPhoto');
   const list = document.getElementById('obsFileList');
   if (!input || !list) return;
-  list.innerHTML = '';
-  Array.from(input.files).forEach((file, index) => {
+  list.innerHTML = Array.from(input.files).map((file, index) => {
     const sizeMb = (file.size / 1024 / 1024).toFixed(2);
-    list.innerHTML += `
+    return `
       <div style="display:flex; align-items:center; padding:10px 12px; background:var(--bg-body); border-radius:8px; border:1px solid var(--border-color); gap:12px;">
         <i class="fi fi-rr-document" style="color:var(--primary); font-size:18px;"></i>
         <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; color:var(--text-primary); font-weight:500;">
@@ -68,17 +67,16 @@ window.updateObsFileList = function () {
         </div>
       </div>
     `;
-  });
+  }).join('');
 };
 
 window.updateAssessFileList = function () {
   const input = document.getElementById('assessFile');
   const list = document.getElementById('assessFileList');
   if (!input || !list) return;
-  list.innerHTML = '';
-  Array.from(input.files).forEach((file, index) => {
+  list.innerHTML = Array.from(input.files).map((file, index) => {
     const sizeMb = (file.size / 1024 / 1024).toFixed(2);
-    list.innerHTML += `
+    return `
       <div style="display:flex; align-items:center; padding:10px 12px; background:var(--bg-body); border-radius:8px; border:1px solid var(--border-color); gap:12px;">
         <i class="fi fi-rr-document" style="color:var(--primary); font-size:18px;"></i>
         <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; color:var(--text-primary); font-weight:500;">
@@ -89,7 +87,7 @@ window.updateAssessFileList = function () {
         </div>
       </div>
     `;
-  });
+  }).join('');
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1593,7 +1591,7 @@ function renderForm() {
         </div>
 
         <div class="form-group">
-          <label>${state.activeLanguage === 'zh' ? '學習心得附件 (可選，支援多檔，單檔請小於20MB)' : 'Journal Attachment (Optional, Multi-file, <20MB)'}</label>
+          <label>${state.activeLanguage === 'zh' ? '學習心得附件 (可選，支援多檔)' : 'Journal Attachment (Optional, Multi-file)'}</label>
           <div id="obsFileDropZone" class="file-drop-zone" onclick="document.getElementById('obsPhoto').click()" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'; this.style.background='rgba(37,99,235,0.05)';" ondragleave="this.style.borderColor='var(--border-color)'; this.style.background='transparent';" ondrop="event.preventDefault(); this.style.borderColor='var(--border-color)'; this.style.background='transparent'; document.getElementById('obsPhoto').files = event.dataTransfer.files; window.updateObsFileList();" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;">
             <i class="fi fi-rr-cloud-upload" style="font-size:32px; color:var(--primary); margin-bottom:12px; display:block;"></i>
             <p style="margin:0; font-weight:600; color:var(--text-primary); font-size:14px;">${state.activeLanguage === 'zh' ? '點擊或拖曳多個檔案至此' : 'Click or Drag files here'}</p>
@@ -1604,8 +1602,8 @@ function renderForm() {
           
           <div style="font-size:12px;color:#ea580c;font-weight:600;margin-top:12px;line-height:1.5;background:var(--bg-card);padding:12px;border-radius:6px;border:none;">
             ${state.activeLanguage === 'zh'
-      ? '⚠️ <b>上傳須知：</b><br>1. 建議將報告轉為 <b>PDF</b> 檔。<br>2. 檔案大小請控制在 20MB 以內。<br>3. 系統將自動把檔案上傳至中央資料夾。'
-      : '⚠️ <b>Upload Instructions:</b><br>1. PDF format is recommended.<br>2. File size must be under 20MB.<br>3. The file will be automatically uploaded to the central directory.'}
+      ? '⚠️ <b>上傳須知：</b><br>1. 建議將報告轉為 <b>PDF</b> 檔。<br>2. 系統將自動把檔案上傳至中央資料夾。'
+      : '⚠️ <b>Upload Instructions:</b><br>1. PDF format is recommended.<br>2. The file will be automatically uploaded to the central directory.'}
           </div>
         </div>
 
@@ -2572,7 +2570,7 @@ function renderReview() {
           <textarea class="form-control" id="assessComments" rows="3" placeholder="請輸入本輪調站別之考核總評語... / Enter overall assessment comments..."></textarea>
         </div>
         <div class="form-group" style="margin-top:14px;">
-          <label>${state.activeLanguage === 'zh' ? '考核附件 (可選，支援多檔，單檔請小於20MB)' : 'Assessment Attachment (Optional, Multi-file, <20MB)'}</label>
+          <label>${state.activeLanguage === 'zh' ? '考核附件 (可選，支援多檔)' : 'Assessment Attachment (Optional, Multi-file)'}</label>
           <div id="assessFileDropZone" class="file-drop-zone" onclick="document.getElementById('assessFile').click()" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'; this.style.background='rgba(37,99,235,0.05)';" ondragleave="this.style.borderColor='var(--border-color)'; this.style.background='transparent';" ondrop="event.preventDefault(); this.style.borderColor='var(--border-color)'; this.style.background='transparent'; document.getElementById('assessFile').files = event.dataTransfer.files; window.updateAssessFileList();" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;">
             <i class="fi fi-rr-cloud-upload" style="font-size:32px; color:var(--primary); margin-bottom:12px; display:block;"></i>
             <p style="margin:0; font-weight:600; color:var(--text-primary); font-size:14px;">${state.activeLanguage === 'zh' ? '點擊或拖曳多個檔案至此' : 'Click or Drag files here'}</p>
@@ -2695,8 +2693,46 @@ function renderReview() {
                       <span style="background:var(--bg-highlight);padding:2px 6px;border-radius:4px;">${t('lblCompetency5').split(' ')[0]}: ${a.competency5}</span>
                     </div>
                     <p style="font-size:13px; font-style:italic; background:rgba(0,0,0,0.02); padding:8px; border-radius:6px; margin-bottom:6px;">${a.comments}</p>
-                    <div style="text-align:right; font-size:11px; color:var(--text-muted);">
-                      ${a.assessor} • ${formatTaipeiTime(a.submittedAt, state.activeLanguage)}
+                    ${a.attachmentUrl ? `
+                      <div style="margin-bottom:12px; display:flex; flex-wrap:wrap; gap:8px;">
+                      ${a.attachmentUrl.split(',').map((part, idx) => {
+                        const [url, mimeType, filename] = part.split('|');
+                        const isImage = mimeType ? mimeType.startsWith('image/') : false;
+                        const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '檢視附件 (View Attachment)' : 'View Attachment');
+
+                        if (isImage) {
+                          let thumbUrl = url;
+                          const idMatch = url.match(/\\/d\\/([a-zA-Z0-9_-]+)/);
+                          if (idMatch && idMatch[1]) {
+                            thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
+                          }
+                          return `
+                            <div onclick="window.openLightbox('${url}')" style="cursor:pointer; position:relative; width:64px; height:64px; border-radius:8px; overflow:hidden; border:2px solid var(--border-color); box-shadow:0 2px 4px rgba(0,0,0,0.05);" title="${name}">
+                              <div style="width:100%; height:100%; background-image:url('${thumbUrl}'); background-size:cover; background-position:center; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
+                              <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); color:#fff; font-size:9px; text-align:center; padding:2px;">🖼️預覽</div>
+                            </div>
+                          `;
+                        } else {
+                          return `
+                            <a href="${url}" target="_blank" class="btn btn-outline" style="font-size:12px; padding:6px 12px; border-radius:8px; color:var(--text-primary); border-color:var(--border-color); background:var(--bg-card); display:flex; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,0.02); max-width:250px;">
+                              <i class="fi fi-rr-document" style="font-size:16px; margin-right:8px; color:#ef4444;"></i>
+                              <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</span>
+                            </a>
+                          `;
+                        }
+                      }).join('')}
+                      </div>
+                    ` : ''}
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <div style="display:flex; gap:8px;">
+                        ${user.role === 'admin' ? `
+                          <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:10px;" onclick="window.openEditAssessment('${a.id}')">✏️ Edit</button>
+                          <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:10px; color:#ef4444; border-color:rgba(239,68,68,0.3);" onclick="window.deleteAssessment('${a.id}')">🗑️ Delete</button>
+                        ` : ''}
+                      </div>
+                      <div style="text-align:right; font-size:11px; color:var(--text-muted);">
+                        ${a.assessor} • ${formatTaipeiTime(a.submittedAt, state.activeLanguage)}
+                      </div>
                     </div>
                   </div>
                 `;
