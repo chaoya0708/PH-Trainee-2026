@@ -124,7 +124,7 @@ const Api = (() => {
   }
 
   async function fbGet(col, forceFetch = true) {
-    const cacheKey = 'vimei_fb_v3_' + col;
+    const cacheKey = 'vimei_fb_v4_' + col;
     const timeKey = cacheKey + '_time';
     const cached = localStorage.getItem(cacheKey);
     const cachedTime = localStorage.getItem(timeKey);
@@ -158,7 +158,7 @@ const Api = (() => {
   }
 
   async function fbGetWhere(col, field, val, forceFetch = true) {
-    const cacheKey = `vimei_fb_v3_${col}_${field}_${val}`;
+    const cacheKey = `vimei_fb_v4_${col}_${field}_${val}`;
     const timeKey = cacheKey + '_time';
     const cached = localStorage.getItem(cacheKey);
     const cachedTime = localStorage.getItem(timeKey);
@@ -191,7 +191,7 @@ const Api = (() => {
   }
 
   function invalidateCache(col) {
-    const prefix = 'vimei_fb_v3_' + col;
+    const prefix = 'vimei_fb_v4_' + col;
     const keysToRemove = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
