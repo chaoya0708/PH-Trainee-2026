@@ -1183,10 +1183,12 @@ function renderAnalytics() {
           <h3>${t('analyticsTitle')}</h3>
           <p style="color:var(--text-secondary);font-size:12px;margin-top:4px;">${t('analyticsSubTitle')}</p>
         </div>
+        ${user.role === 'admin' ? `
         <div class="btn-export-group">
           <button class="btn btn-export" onclick="exportTraineeSummary()">${t('btnExportSummary')}</button>
           <button class="btn btn-export btn-export-secondary" onclick="exportObservationLogs()">${t('btnExportLogs')}</button>
         </div>
+        ` : ''}
       </div>
     </div>
 
