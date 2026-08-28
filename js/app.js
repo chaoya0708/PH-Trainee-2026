@@ -2076,7 +2076,7 @@ function renderMilestones() {
     container.innerHTML = `
       ${selectorHtml}
       <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
-        <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; justify-content: center;">
+        <div style="flex: 0.6; min-width: 200px; display: flex; flex-direction: column; justify-content: center;">
           <div class="card-header" style="align-items:center; margin-bottom:10px;">
             <h3 style="font-size:16px; margin:0;">${t('milestoneTitle')}</h3>
             <span style="font-size:18px;font-weight:700;color:var(--primary);">${overall}%</span>
@@ -2093,9 +2093,25 @@ function renderMilestones() {
             <canvas id="globalRadarChart" style="width:100%; max-height: 220px;"></canvas>
           </div>
         </div>
-        <div style="flex: 1.5; min-width: 300px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
-          <h4 style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">${state.activeLanguage === 'zh' ? '成長趨勢軌跡 (Growth Trend)' : 'Growth Trend Line'}</h4>
-          <div style="width:100%;">
+        <div style="flex: 1.8; min-width: 280px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
+          <div style="display:flex; flex-direction:column; align-items:flex-start; width:100%; margin-bottom:10px; gap:8px;">
+            <h4 style="font-size:12px;font-weight:700;color:var(--text-secondary);margin:0;text-transform:uppercase;letter-spacing:0.5px; white-space:nowrap; margin-top:4px;">${state.activeLanguage === 'zh' ? '成長趨勢軌跡' : 'Growth Trend'}</h4>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-start; width:100%;">
+              ${['overall', 'c1', 'c2', 'c3', 'c4', 'c5'].map(dim => {
+                const isActive = (window._trendDimension || 'overall') === dim;
+                const labels = {
+                  'overall': state.activeLanguage === 'zh' ? '綜合' : 'Avg',
+                  'c1': t('lblCompetency1').split(' ')[0],
+                  'c2': t('lblCompetency2').split(' ')[0],
+                  'c3': t('lblCompetency3').split(' ')[0],
+                  'c4': t('lblCompetency4').split(' ')[0],
+                  'c5': t('lblCompetency5').split(' ')[0]
+                };
+                return `<button class="btn btn-sm" style="font-size:10px; padding:2px 8px; border-radius:12px; background:${isActive ? 'var(--primary)' : 'var(--bg-card)'}; color:${isActive ? '#fff' : 'var(--text-secondary)'}; border:1px solid ${isActive ? 'var(--primary)' : 'var(--border-color)'}; cursor:pointer;" onclick="window._trendDimension='${dim}'; window.renderMilestones();">${labels[dim]}</button>`;
+              }).join('')}
+            </div>
+          </div>
+          <div style="width:100%; position:relative; min-height: 220px;">
             <canvas id="trendLineChart" style="width:100%; max-height: 220px;"></canvas>
           </div>
         </div>
@@ -2185,17 +2201,28 @@ function renderMilestones() {
         }
         const month = dateStr.substring(0, 7); // '2026-07'
         if (!monthlyData[month]) {
-          monthlyData[month] = { supSum: 0, supCount: 0, selfSum: 0, selfCount: 0 };
+          monthlyData[month] = { supSum: 0, supCount: 0, selfSum: 0, selfCount: 0, supDepts: [], selfDepts: [] };
         }
 
-        const avgScore = ((a.competency1 || 0) + (a.competency2 || 0) + (a.competency3 || 0) + (a.competency4 || 0) + (a.competency5 || 0)) / 5;
+        const dim = window._trendDimension || 'overall';
+        let score = 0;
+        if (dim === 'c1') score = a.competency1 || 0;
+        else if (dim === 'c2') score = a.competency2 || 0;
+        else if (dim === 'c3') score = a.competency3 || 0;
+        else if (dim === 'c4') score = a.competency4 || 0;
+        else if (dim === 'c5') score = a.competency5 || 0;
+        else score = ((a.competency1 || 0) + (a.competency2 || 0) + (a.competency3 || 0) + (a.competency4 || 0) + (a.competency5 || 0)) / 5;
+
+        const deptName = state.activeLanguage === 'zh' ? (CONFIG.DEPARTMENTS[a.department]?.nameZh || a.department) : (CONFIG.DEPARTMENTS[a.department]?.name || a.department);
 
         if (a.department.startsWith('self_eval')) {
-          monthlyData[month].selfSum += avgScore;
+          monthlyData[month].selfSum += score;
           monthlyData[month].selfCount += 1;
+          if (!monthlyData[month].selfDepts.includes(deptName)) monthlyData[month].selfDepts.push(deptName);
         } else {
-          monthlyData[month].supSum += avgScore;
+          monthlyData[month].supSum += score;
           monthlyData[month].supCount += 1;
+          if (!monthlyData[month].supDepts.includes(deptName)) monthlyData[month].supDepts.push(deptName);
         }
       });
 
@@ -2213,10 +2240,16 @@ function renderMilestones() {
               label: state.activeLanguage === 'zh' ? '主管評核 (Supervisor)' : 'Supervisor Score',
               data: supData,
               borderColor: '#f97316',
-              backgroundColor: 'rgba(249, 115, 22, 0.1)',
+              backgroundColor: (context) => {
+                const ctx = context.chart.ctx;
+                const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                gradient.addColorStop(0, 'rgba(249, 115, 22, 0.3)');
+                gradient.addColorStop(1, 'rgba(249, 115, 22, 0.0)');
+                return gradient;
+              },
               borderWidth: 2,
               pointBackgroundColor: '#ea580c',
-              tension: 0.3,
+              tension: 0.4,
               fill: true,
               spanGaps: true
             },
@@ -2228,7 +2261,7 @@ function renderMilestones() {
               borderWidth: 2,
               borderDash: [5, 5],
               pointBackgroundColor: '#10b981',
-              tension: 0.3,
+              tension: 0.4,
               spanGaps: true
             }
           ]
@@ -2250,6 +2283,22 @@ function renderMilestones() {
               display: true,
               position: 'bottom',
               labels: { color: state.activeTheme === 'dark' ? '#9ca3af' : '#64748b', boxWidth: 12 }
+            },
+            tooltip: {
+              callbacks: {
+                afterBody: function(context) {
+                  const dataIndex = context[0].dataIndex;
+                  const month = labels[dataIndex];
+                  const item = monthlyData[month];
+                  if (!item) return '';
+                  const isSelf = context[0].datasetIndex === 1;
+                  const depts = isSelf ? item.selfDepts : item.supDepts;
+                  if (depts && depts.length > 0) {
+                    return '\n' + (state.activeLanguage === 'zh' ? '包含站別:' : 'Includes:') + '\n- ' + depts.join('\n- ');
+                  }
+                  return '';
+                }
+              }
             }
           },
           maintainAspectRatio: false
