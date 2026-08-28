@@ -2174,7 +2174,7 @@ function renderMilestones() {
         .filter(a => !(user.role === 'guest' && !a.department.startsWith('self_eval') && a.department !== user.departmentId));
 
       traineeAssessments.forEach(a => {
-        let dateStr = a.submittedAt;
+        let dateStr = a.submittedAt || a.assessedAt || a.date;
         if (!dateStr) {
           // fallback if submittedAt is missing, try to extract from self_eval_YYYY-MM
           if (a.department.startsWith('self_eval_')) {
