@@ -2162,7 +2162,7 @@ function renderMilestones() {
           </div>
           <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">${t('milestoneSubTitle')}</p>
         </div>
-        ${(count > 0 || selfDataToRender) ? `
+        ${((count > 0 || selfDataToRender) && user.role !== 'trainee') ? `
         <div style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
           <h4 style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px; display:flex; align-items:center; gap:8px;">
             ${state.activeLanguage === 'zh' ? '綜合職能分析 (Overall)' : 'Overall Competency'}
