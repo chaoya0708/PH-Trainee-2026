@@ -718,7 +718,7 @@ const Api = (() => {
       if (CONFIG.DEMO_MODE) {
         const list = lsGet(LS_ASSESS);
         const filtered = list.filter(a => !(a.traineeId === traineeId && a.department === department));
-        record.visibleToTrainee = false;
+        record.visibleToTrainee = department.startsWith('self_eval') ? true : false;
         filtered.push(record);
         lsSave(LS_ASSESS, filtered);
         return { success: true, record };
@@ -736,7 +736,7 @@ const Api = (() => {
         comments,
         assessor,
         attachmentUrl,
-        visibleToTrainee: false
+        visibleToTrainee: department.startsWith('self_eval') ? true : false
       });
     },
 
