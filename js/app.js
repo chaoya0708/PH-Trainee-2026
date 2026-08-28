@@ -1961,44 +1961,28 @@ function renderMilestones() {
       if (a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee)) {
         if (user.role === 'guest' && !a.department.startsWith('self_eval') && a.department !== user.departmentId) return;
         
-        let dateStr = a.submittedAt || a.assessedAt || a.date;
-        let shouldInclude = true;
-        if (user.role !== 'trainee') {
-          let targetMonth = dateStr ? dateStr.substring(0, 7) : null;
-          if (['cmf_qc', 'cmf_rd_chinese', 'cmf_rd_western'].includes(a.department)) {
-            targetMonth = '2026-07';
-          }
-          shouldInclude = (targetMonth === window.currentSelfEvalMonthStr);
-        }
-
-        if (shouldInclude) {
-          sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
-          sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
-          count++;
-          if (CONFIG.DEPARTMENTS[a.department]) {
-            let deptName = state.activeLanguage === 'zh' ? (CONFIG.DEPARTMENTS[a.department].shortZh || CONFIG.DEPARTMENTS[a.department].nameZh) : (CONFIG.DEPARTMENTS[a.department].shortEn || CONFIG.DEPARTMENTS[a.department].name);
-            if (!includedDepts.includes(deptName)) includedDepts.push(deptName);
-          }
+        sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
+        sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
+        count++;
+        if (CONFIG.DEPARTMENTS[a.department]) {
+          let deptName = state.activeLanguage === 'zh' ? (CONFIG.DEPARTMENTS[a.department].shortZh || CONFIG.DEPARTMENTS[a.department].nameZh) : (CONFIG.DEPARTMENTS[a.department].shortEn || CONFIG.DEPARTMENTS[a.department].name);
+          if (!includedDepts.includes(deptName)) includedDepts.push(deptName);
         }
       }
     });
 
     let selfDataToRender = null;
-    if (user.role === 'trainee') {
-      let selfC1 = 0, selfC2 = 0, selfC3 = 0, selfC4 = 0, selfC5 = 0;
-      let selfCount = 0;
-      (state.assessments || []).forEach(a => {
-        if (a.traineeId === viewId && a.department.startsWith('self_eval_')) {
-          selfC1 += a.competency1; selfC2 += a.competency2; selfC3 += a.competency3;
-          selfC4 += a.competency4; selfC5 += (a.competency5 || 3);
-          selfCount++;
-        }
-      });
-      if (selfCount > 0) {
-        selfDataToRender = [(selfC1/selfCount).toFixed(1), (selfC2/selfCount).toFixed(1), (selfC3/selfCount).toFixed(1), (selfC4/selfCount).toFixed(1), (selfC5/selfCount).toFixed(1)];
+    let selfC1 = 0, selfC2 = 0, selfC3 = 0, selfC4 = 0, selfC5 = 0;
+    let selfCount = 0;
+    (state.assessments || []).forEach(a => {
+      if (a.traineeId === viewId && a.department.startsWith('self_eval_')) {
+        selfC1 += a.competency1; selfC2 += a.competency2; selfC3 += a.competency3;
+        selfC4 += a.competency4; selfC5 += (a.competency5 || 3);
+        selfCount++;
       }
-    } else {
-      selfDataToRender = selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null;
+    });
+    if (selfCount > 0) {
+      selfDataToRender = [(selfC1/selfCount).toFixed(1), (selfC2/selfCount).toFixed(1), (selfC3/selfCount).toFixed(1), (selfC4/selfCount).toFixed(1), (selfC5/selfCount).toFixed(1)];
     }
 
     const chartsToRender = [];
@@ -2217,11 +2201,6 @@ function renderMilestones() {
         <div style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
           <h4 style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px; display:flex; align-items:center; gap:8px;">
             ${state.activeLanguage === 'zh' ? '綜合職能分析 (Overall)' : 'Overall Competency'}
-            ${user.role !== 'trainee' ? `
-            <select onchange="window.changeSelfEvalMonth(this.value)" style="font-size:10px; padding:2px 4px; border-radius:4px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary);">
-              ${monthOptionsHtml}
-            </select>
-            ` : ''}
           </h4>
           ${(includedDepts.length > 0 && user.role !== 'trainee') ? `<div style="font-size:11px; color:var(--primary); font-weight:600; margin-bottom:12px; text-align:center; background:var(--bg-body); padding:4px 8px; border-radius:6px; border:1px dashed var(--border-color);">
             <i class="fi fi-rr-apps" style="margin-right:4px;"></i>${state.activeLanguage === 'zh' ? '包含單位：' : 'Included:'} ${includedDepts.join(', ')}
