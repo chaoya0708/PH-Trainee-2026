@@ -1903,6 +1903,7 @@ function renderMilestones() {
     // 計算所選月份的所有已考評部門的核心職能平均分數 (Exclude self_eval)
     let sumC1 = 0, sumC2 = 0, sumC3 = 0, sumC4 = 0, sumC5 = 0;
     let count = 0;
+    let includedDepts = [];
     (state.assessments || []).forEach(a => {
       if (a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee)) {
         if (user.role === 'guest' && !a.department.startsWith('self_eval') && a.department !== user.departmentId) return;
@@ -1912,6 +1913,10 @@ function renderMilestones() {
           sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
           sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
           count++;
+          if (CONFIG.DEPARTMENTS[a.department]) {
+            let deptName = state.activeLanguage === 'zh' ? (CONFIG.DEPARTMENTS[a.department].shortZh || CONFIG.DEPARTMENTS[a.department].nameZh) : (CONFIG.DEPARTMENTS[a.department].shortEn || CONFIG.DEPARTMENTS[a.department].name);
+            if (!includedDepts.includes(deptName)) includedDepts.push(deptName);
+          }
         }
       }
     });
@@ -2136,6 +2141,9 @@ function renderMilestones() {
               ${monthOptionsHtml}
             </select>
           </h4>
+          ${includedDepts.length > 0 ? `<div style="font-size:11px; color:var(--primary); font-weight:600; margin-bottom:12px; text-align:center; background:var(--bg-body); padding:4px 8px; border-radius:6px; border:1px dashed var(--border-color);">
+            <i class="fi fi-rr-apps" style="margin-right:4px;"></i>${state.activeLanguage === 'zh' ? '包含單位：' : 'Included:'} ${includedDepts.join(', ')}
+          </div>` : ''}
           <div style="width:100%; max-width: 280px;">
             <canvas id="globalRadarChart" style="width:100%; max-height: 220px;"></canvas>
           </div>
