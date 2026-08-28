@@ -1823,29 +1823,50 @@ function renderMilestones() {
 
     // Get Self Assessment for current month
     const now = new Date();
-    const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const currentSelfEvalId = `self_eval_${currentMonthStr}`;
+    const actualCurrentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    window.currentSelfEvalMonthStr = window.currentSelfEvalMonthStr || actualCurrentMonthStr;
+    const currentSelfEvalId = `self_eval_${window.currentSelfEvalMonthStr}`;
     const selfEval = (state.assessments || []).find(a => a.traineeId === viewId && a.department === currentSelfEvalId);
 
+    const parts = window.currentSelfEvalMonthStr.split('-' );
+    let assessYear = parseInt(parts[0], 10);
+    let assessMonth = parseInt(parts[1], 10);
     const taipeiNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
-    let assessMonth = taipeiNow.getMonth() + 1;
-    let assessYear = taipeiNow.getFullYear();
-    if (taipeiNow.getDate() >= 30) {
-      assessMonth++;
-      if (assessMonth > 12) { assessMonth = 1; assessYear++; }
-    }
+    const openDate = new Date(assessYear, assessMonth - 1, 25, 0, 0, 0);
+    const isOpen = taipeiNow >= openDate;
+
     const next30Str = `${assessMonth}/30`;
-    const selfAssessReminderZh = `⚠️ 提醒：請於(${next30Str}) 11:59 PM 前完成本月份的自我能力覺察評分。`;
-    const selfAssessReminderEn = `⚠️ Reminder: Please complete your self-assessment by (${next30Str}) 11:59 PM.`;
-    const selfAssessBanner = state.activeLanguage === 'zh' ? selfAssessReminderZh : selfAssessReminderEn;
+    
+    let selfAssessBanner;
+    if (isOpen) {
+      const selfAssessReminderZh = `⚠️ 提醒：請於 (${next30Str}) 11:59 PM 前完成 ${window.currentSelfEvalMonthStr} 月份的自我能力覺察評分。`;
+      const selfAssessReminderEn = `⚠️ Reminder: Please complete your self-assessment for ${window.currentSelfEvalMonthStr} by (${next30Str}) 11:59 PM.`;
+      selfAssessBanner = state.activeLanguage === 'zh' ? selfAssessReminderZh : selfAssessReminderEn;
+    } else {
+      const selfAssessReminderZh = `⚠️ 尚未開放填寫 (${assessMonth} 月份的自評將於 ${assessMonth}/25 開放)`;
+      const selfAssessReminderEn = `⚠️ Not yet open (Self-assessment for month ${assessMonth} will open on ${assessMonth}/25)`;
+      selfAssessBanner = state.activeLanguage === 'zh' ? selfAssessReminderZh : selfAssessReminderEn;
+    }
+
+    let monthOptionsHtml = '';
+    for (let m = 7; m <= 12; m++) {
+      const monthStr = `2026-${String(m).padStart(2, '0')}`;
+      const selected = (window.currentSelfEvalMonthStr === monthStr) ? 'selected' : '';
+      monthOptionsHtml += `<option value="${monthStr}" ${selected}>${monthStr}</option>`;
+    }
 
     let selfAssessmentHtml = '';
     if (user.role === 'trainee') {
       selfAssessmentHtml = `
       <div class="glass-card" style="margin-bottom: 20px;">
-        <h3 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; justify-content:space-between;">
-          <span>${state.activeLanguage === 'zh' ? '🎯 自我能力覺察 (Self-Assessment)' : '🎯 Self-Assessment (Radar)'}</span>
-          <button class="btn btn-primary btn-sm" onclick="window.saveSelfAssessment()">
+        <h3 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <span>
+            ${state.activeLanguage === 'zh' ? '🎯 自我能力覺察 (Self-Assessment)' : '🎯 Self-Assessment (Radar)'}
+            <select id="selfEvalMonthSelect" onchange="window.changeSelfEvalMonth()" style="margin-left:10px; font-size:12px; padding:4px 8px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary);">
+              ${monthOptionsHtml}
+            </select>
+          </span>
+          <button class="btn btn-primary btn-sm" onclick="window.saveSelfAssessment()" ${isOpen ? '' : 'disabled'}>
             ${state.activeLanguage === 'zh' ? '儲存評估' : 'Save'}
           </button>
         </h3>
@@ -1855,11 +1876,11 @@ function renderMilestones() {
         <p style="font-size:11px; color:var(--text-secondary); margin-bottom:12px;">
           ${state.activeLanguage === 'zh' ? '請為自己目前的五大核心職能進行評分 (0-5分)，此自評將與主管評分疊加，幫助您看見認知落差並促進反思。' : 'Please rate your core competencies (0-5). Your self-assessment will be overlaid with your supervisor\'s scores to visualize any perception gaps.'}
         </p>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; ${isOpen ? '' : 'opacity:0.5; pointer-events:none;'}">
           ${[1, 2, 3, 4, 5].map(i => `
             <div style="display:flex; align-items:center; gap:10px; margin-bottom: 8px;">
               <span style="font-size:12px; min-width:110px; max-width:110px; color:var(--text-primary); word-break:break-word; line-height:1.2;">${t('lblCompetency' + i).split(' ')[0]}</span>
-              <input type="range" id="selfScoreC${i}" min="0" max="5" step="0.5" value="${selfEval ? (selfEval['competency' + i] || 3) : 0}" oninput="document.getElementById('selfScoreValC${i}').innerText = this.value" style="flex:1; min-width:80px;">
+              <input type="range" id="selfScoreC${i}" min="0" max="5" step="0.5" value="${selfEval ? (selfEval['competency' + i] || 3) : 0}" oninput="document.getElementById('selfScoreValC${i}').innerText = this.value" style="flex:1; min-width:80px;" ${isOpen ? '' : 'disabled'}>
               <span id="selfScoreValC${i}" style="font-size:12px; font-weight:bold; width:24px; text-align:right;">${selfEval ? (selfEval['competency' + i] || 3) : 0}</span>
             </div>
           `).join('')}
@@ -2320,7 +2341,25 @@ function renderMilestones() {
 
 window.renderMilestonesView = renderMilestones;
 
+window.changeSelfEvalMonth = function() {
+  const selectElem = document.getElementById('selfEvalMonthSelect');
+  if (selectElem) {
+    window.currentSelfEvalMonthStr = selectElem.value;
+    window.renderMilestones();
+  }
+};
+
 window.saveSelfAssessment = async function () {
+  const parts = window.currentSelfEvalMonthStr.split('-');
+  let assessYear = parseInt(parts[0], 10);
+  let assessMonth = parseInt(parts[1], 10);
+  const taipeiNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+  const openDate = new Date(assessYear, assessMonth - 1, 25, 0, 0, 0);
+  if (taipeiNow < openDate) {
+    alert(state.activeLanguage === 'zh' ? `尚未開放！${assessMonth} 月份的自評將於 ${assessMonth}/25 開放。` : `Not open yet! Month ${assessMonth} will open on ${assessMonth}/25.`);
+    return;
+  }
+
   const c1 = parseFloat(document.getElementById('selfScoreC1').value);
   const c2 = parseFloat(document.getElementById('selfScoreC2').value);
   const c3 = parseFloat(document.getElementById('selfScoreC3').value);
@@ -2330,7 +2369,8 @@ window.saveSelfAssessment = async function () {
   if (!user || user.role !== 'trainee') return;
 
   const now = new Date();
-  const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const actualCurrentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const currentMonthStr = window.currentSelfEvalMonthStr || actualCurrentMonthStr;
   const currentSelfEvalId = `self_eval_${currentMonthStr}`;
 
   const existing = (state.assessments || []).find(a => a.traineeId === user.id && a.department === currentSelfEvalId);
