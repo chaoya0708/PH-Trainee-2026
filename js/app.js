@@ -1706,24 +1706,11 @@ function renderForm() {
     placeholder: t('phKeyObs'),
     modules: {
       toolbar: [
-        [{ 'header': [1, 2, 3, 4, false] }],
         ['bold', 'italic', 'underline'],
         [{ 'list': 'ordered' }, { 'list': 'bullet' }]
       ]
     }
   });
-
-  const defaultTemplateZh = `
-<h4>🎯 Key Challenge (本週遇到的最大困難是什麼？)</h4><p><br></p>
-<h4>💡 Action & Solution (你如何解決？或是你觀察到主管怎麼解決？)</h4><p><br></p>
-<h4>🚀 Process Improvement (如果讓你來管這個單位，你有什麼流程改善建議？)</h4><p><br></p>
-  `;
-  const defaultTemplateEn = `
-<h4>🎯 Key Challenge (What was the biggest challenge you faced this week?)</h4><p><br></p>
-<h4>💡 Action & Solution (How did you solve it? Or how did you observe your supervisor solving it?)</h4><p><br></p>
-<h4>🚀 Process Improvement (If you were managing this unit, what process improvement suggestions would you have?)</h4><p><br></p>
-  `;
-  window.obsQuill.root.innerHTML = state.activeLanguage === 'zh' ? defaultTemplateZh : defaultTemplateEn;
 }
 
 window.setSelfRating = function (e, starIndex) {
