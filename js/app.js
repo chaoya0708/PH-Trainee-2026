@@ -2001,8 +2001,7 @@ function renderMilestones() {
                   <i class="fi fi-rr-comment"></i> ${state.activeLanguage === 'zh' ? '單位評語' : 'Department Comment'}
                 </div>
                 <p style="background:rgba(0,0,0,0.02); padding:10px; border-radius:8px; color:var(--text-primary); margin-top:0; font-style:italic; white-space: pre-wrap;">${assessment.comments}</p>
-                ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/en/translator#zh/en/${encodeURIComponent(assessment.comments)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
-                ${assessment.attachmentUrl ? `
+                                ${assessment.attachmentUrl ? `
                   <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
                   ${assessment.attachmentUrl.split(',').map((part, idx) => {
             const [url, mimeType, filename] = part.split('|');
@@ -3008,8 +3007,7 @@ function buildFeedItem(obs, user) {
           <span class="comment-bubble-time">${formatTaipeiTime(obs.feedbackAt, state.activeLanguage)}</span>
         </div>
         <p class="comment-bubble-text">${obs.mentorComment}</p>
-        ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/en/translator#zh/en/${encodeURIComponent(obs.mentorComment)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
-      </div>
+              </div>
     `;
   }
 
@@ -3022,8 +3020,7 @@ function buildFeedItem(obs, user) {
         <div class="comment-bubble guest-bubble">
           <div class="comment-bubble-header"><span>👀 Guest</span><span class="comment-bubble-time">${formatTaipeiTime(g.submittedAt, state.activeLanguage)}</span></div>
           <p class="comment-bubble-text">${g.comment}</p>
-          ${user && user.role === 'trainee' ? `<div style="text-align:right; margin-top:8px;"><a href="https://www.deepl.com/en/translator#zh/en/${encodeURIComponent(g.comment)}" target="_blank" style="font-size:11px; color:#fff; background:var(--primary); text-decoration:none; padding:6px 12px; border-radius:12px; display:inline-block; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fi fi-rr-language"></i> Auto-Translate (English)</a></div>` : ''}
-        </div>
+                  </div>
       `).join('')}
     `;
   }
