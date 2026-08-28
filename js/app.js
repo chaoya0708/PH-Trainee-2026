@@ -1862,7 +1862,7 @@ function renderMilestones() {
     }
 
     let selfAssessmentHtml = '';
-    if (user.role === 'trainee' || user.role === 'mentor') {
+    if (user.role === 'trainee' || user.role === 'admin') {
       selfAssessmentHtml = `
       <div class="glass-card" style="margin-bottom: 20px;">
         <h3 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
@@ -1876,7 +1876,7 @@ function renderMilestones() {
             ${!isReadOnly ? `<button class="btn btn-primary btn-sm" onclick="window.saveSelfAssessment()" ${isOpen ? '' : 'disabled'}>
               ${state.activeLanguage === 'zh' ? '儲存評估' : 'Save'}
             </button>` : ''}
-            ${(selfEval && user.role !== 'trainee') ? `<button class="btn btn-outline btn-sm" onclick="window.resetSelfAssessment()" style="margin-left: 8px; color: var(--danger); border-color: var(--danger);">
+            ${(selfEval && user.role === 'admin') ? `<button class="btn btn-outline btn-sm" onclick="window.resetSelfAssessment()" style="margin-left: 8px; color: var(--danger); border-color: var(--danger);">
               ${state.activeLanguage === 'zh' ? '歸零重填' : 'Reset'}
             </button>` : ''}
           </div>
@@ -2436,7 +2436,7 @@ window.resetSelfAssessment = async function () {
   if (!confirm(state.activeLanguage === 'zh' ? '確定要將此月自評歸零（刪除）嗎？學生將可重新填寫。' : 'Are you sure you want to reset (delete) this month\'s self-assessment? The trainee will be able to re-submit.')) return;
 
   const user = Auth.getCurrentUser();
-  if (!user || user.role === 'trainee') return;
+  if (!user || user.role !== 'admin') return;
   const viewId = state.selectedTraineeId;
 
   const currentMonthStr = window.currentSelfEvalMonthStr;
