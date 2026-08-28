@@ -1868,7 +1868,7 @@ function renderMilestones() {
         <h3 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
           <span>
             ${state.activeLanguage === 'zh' ? '🎯 自我能力覺察 (Self-Assessment)' : '🎯 Self-Assessment (Radar)'}
-            <select id="selfEvalMonthSelect" onchange="window.changeSelfEvalMonth()" style="margin-left:10px; font-size:12px; padding:4px 8px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary);">
+            <select id="selfEvalMonthSelect" onchange="window.changeSelfEvalMonth(this.value)" style="margin-left:10px; font-size:12px; padding:4px 8px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary);">
               ${monthOptionsHtml}
             </select>
           </span>
@@ -1900,15 +1900,19 @@ function renderMilestones() {
     `;
     }
 
-    // 計算所有已考評部門的核心職能平均分數 (Exclude self_eval)
+    // 計算所選月份的所有已考評部門的核心職能平均分數 (Exclude self_eval)
     let sumC1 = 0, sumC2 = 0, sumC3 = 0, sumC4 = 0, sumC5 = 0;
     let count = 0;
     (state.assessments || []).forEach(a => {
       if (a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee)) {
         if (user.role === 'guest' && !a.department.startsWith('self_eval') && a.department !== user.departmentId) return;
-        sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
-        sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
-        count++;
+        
+        let dateStr = a.submittedAt || a.assessedAt || a.date;
+        if (dateStr && dateStr.substring(0, 7) === window.currentSelfEvalMonthStr) {
+          sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
+          sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
+          count++;
+        }
       }
     });
 
@@ -1917,10 +1921,10 @@ function renderMilestones() {
     let trendData = [];
 
     // 若有資料，則新增全域雷達圖設定與趨勢圖資料
-    if (count > 0) {
+    if (count > 0 || selfEval) {
       chartsToRender.push({
         id: 'globalRadarChart',
-        data: [(sumC1 / count).toFixed(1), (sumC2 / count).toFixed(1), (sumC3 / count).toFixed(1), (sumC4 / count).toFixed(1), (sumC5 / count).toFixed(1)],
+        data: count > 0 ? [(sumC1 / count).toFixed(1), (sumC2 / count).toFixed(1), (sumC3 / count).toFixed(1), (sumC4 / count).toFixed(1), (sumC5 / count).toFixed(1)] : [0,0,0,0,0],
         selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
         labels: [
           t('lblCompetency1').split(' ')[0],
@@ -2124,9 +2128,14 @@ function renderMilestones() {
           </div>
           <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">${t('milestoneSubTitle')}</p>
         </div>
-        ${count > 0 ? `
+        ${(count > 0 || selfEval) ? `
         <div style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
-          <h4 style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">${state.activeLanguage === 'zh' ? '綜合職能分析 (Overall)' : 'Overall Competency'}</h4>
+          <h4 style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px; display:flex; align-items:center; gap:8px;">
+            ${state.activeLanguage === 'zh' ? '綜合職能分析 (Overall)' : 'Overall Competency'}
+            <select onchange="window.changeSelfEvalMonth(this.value)" style="font-size:10px; padding:2px 4px; border-radius:4px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary);">
+              ${monthOptionsHtml}
+            </select>
+          </h4>
           <div style="width:100%; max-width: 280px;">
             <canvas id="globalRadarChart" style="width:100%; max-height: 220px;"></canvas>
           </div>
@@ -2137,7 +2146,7 @@ function renderMilestones() {
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
               <div style="width:12px; height:12px; border-radius:3px; background:rgba(16,185,129,0.1); border:1px dashed #10b981;"></div>
-              <span>${state.activeLanguage === 'zh' ? '綠色虛線：學生自我覺察' : 'Green Dashed: Self-Assessment'}</span>
+              <span>${state.activeLanguage === 'zh' ? '綠色虛線：學生自我評分' : 'Green Dashed: Self-Assessment'}</span>
             </div>
           </div>
         </div>
@@ -2187,7 +2196,7 @@ function renderMilestones() {
 
         if (chartConfig.selfData) {
           datasets.push({
-            label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
+            label: state.activeLanguage === 'zh' ? '自我評分 (Self)' : 'Self-Assessment',
             data: chartConfig.selfData,
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             borderColor: '#10b981',
@@ -2300,7 +2309,7 @@ function renderMilestones() {
               spanGaps: true
             },
             {
-              label: state.activeLanguage === 'zh' ? '自我覺察 (Self)' : 'Self-Assessment',
+              label: state.activeLanguage === 'zh' ? '自我評分 (Self)' : 'Self-Assessment',
               data: selfData,
               borderColor: '#10b981',
               backgroundColor: 'transparent',
@@ -2359,12 +2368,16 @@ function renderMilestones() {
 
 window.renderMilestonesView = renderMilestones;
 
-window.changeSelfEvalMonth = function() {
-  const selectElem = document.getElementById('selfEvalMonthSelect');
-  if (selectElem) {
-    window.currentSelfEvalMonthStr = selectElem.value;
-    window.renderMilestones();
+window.changeSelfEvalMonth = function(val) {
+  if (val) {
+    window.currentSelfEvalMonthStr = val;
+  } else {
+    const selectElem = document.getElementById('selfEvalMonthSelect');
+    if (selectElem) {
+      window.currentSelfEvalMonthStr = selectElem.value;
+    }
   }
+  window.renderMilestones();
 };
 
 window.saveSelfAssessment = async function () {
