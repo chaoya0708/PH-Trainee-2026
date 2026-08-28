@@ -1838,7 +1838,13 @@ function renderMilestones() {
     const next30Str = `${assessMonth}/30`;
     
     let selfAssessBanner;
-    if (isOpen) {
+    let isReadOnly = !!selfEval;
+    
+    if (isReadOnly) {
+      const selfAssessReminderZh = `✅ 已完成 ${window.currentSelfEvalMonthStr} 月份的自我能力覺察評分。`;
+      const selfAssessReminderEn = `✅ Self-assessment for ${window.currentSelfEvalMonthStr} completed.`;
+      selfAssessBanner = state.activeLanguage === 'zh' ? selfAssessReminderZh : selfAssessReminderEn;
+    } else if (isOpen) {
       const selfAssessReminderZh = `⚠️ 提醒：請於 (${next30Str}) 11:59 PM 前完成 ${window.currentSelfEvalMonthStr} 月份的自我能力覺察評分。`;
       const selfAssessReminderEn = `⚠️ Reminder: Please complete your self-assessment for ${window.currentSelfEvalMonthStr} by (${next30Str}) 11:59 PM.`;
       selfAssessBanner = state.activeLanguage === 'zh' ? selfAssessReminderZh : selfAssessReminderEn;
@@ -1866,21 +1872,21 @@ function renderMilestones() {
               ${monthOptionsHtml}
             </select>
           </span>
-          <button class="btn btn-primary btn-sm" onclick="window.saveSelfAssessment()" ${isOpen ? '' : 'disabled'}>
+          ${!isReadOnly ? `<button class="btn btn-primary btn-sm" onclick="window.saveSelfAssessment()" ${isOpen ? '' : 'disabled'}>
             ${state.activeLanguage === 'zh' ? '儲存評估' : 'Save'}
-          </button>
+          </button>` : ''}
         </h3>
-        <div class="alert-info" style="background:rgba(245,158,11,0.15); color:var(--warning); border:none; margin-bottom:15px; border-radius:12px; padding:12px;">
+        <div class="alert-info" style="background:${isReadOnly ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)'}; color:${isReadOnly ? 'var(--success)' : 'var(--warning)'}; border:none; margin-bottom:15px; border-radius:12px; padding:12px;">
           <span style="font-weight:600;">${selfAssessBanner}</span>
         </div>
         <p style="font-size:11px; color:var(--text-secondary); margin-bottom:12px;">
           ${state.activeLanguage === 'zh' ? '請為自己目前的五大核心職能進行評分 (0-5分)，此自評將與主管評分疊加，幫助您看見認知落差並促進反思。' : 'Please rate your core competencies (0-5). Your self-assessment will be overlaid with your supervisor\'s scores to visualize any perception gaps.'}
         </p>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; ${isOpen ? '' : 'opacity:0.5; pointer-events:none;'}">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; ${(isReadOnly || !isOpen) ? 'opacity:0.6; pointer-events:none;' : ''}">
           ${[1, 2, 3, 4, 5].map(i => `
             <div style="display:flex; align-items:center; gap:10px; margin-bottom: 8px;">
               <span style="font-size:12px; min-width:110px; max-width:110px; color:var(--text-primary); word-break:break-word; line-height:1.2;">${t('lblCompetency' + i).split(' ')[0]}</span>
-              <input type="range" id="selfScoreC${i}" min="0" max="5" step="0.5" value="${selfEval ? (selfEval['competency' + i] || 3) : 0}" oninput="document.getElementById('selfScoreValC${i}').innerText = this.value" style="flex:1; min-width:80px;" ${isOpen ? '' : 'disabled'}>
+              <input type="range" id="selfScoreC${i}" min="0" max="5" step="0.5" value="${selfEval ? (selfEval['competency' + i] || 3) : 0}" oninput="document.getElementById('selfScoreValC${i}').innerText = this.value" style="flex:1; min-width:80px;" ${(isReadOnly || !isOpen) ? 'disabled' : ''}>
               <span id="selfScoreValC${i}" style="font-size:12px; font-weight:bold; width:24px; text-align:right;">${selfEval ? (selfEval['competency' + i] || 3) : 0}</span>
             </div>
           `).join('')}
