@@ -2130,6 +2130,16 @@ function renderMilestones() {
           <div style="width:100%; max-width: 280px;">
             <canvas id="globalRadarChart" style="width:100%; max-height: 220px;"></canvas>
           </div>
+          <div style="margin-top:12px; display:flex; flex-direction:column; gap:6px; font-size:11px; color:var(--text-secondary); width:100%; max-width:280px; background:var(--bg-body); padding:8px 12px; border-radius:8px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <div style="width:12px; height:12px; border-radius:3px; background:rgba(249,115,22,0.2); border:1px solid #f97316;"></div>
+              <span>${state.activeLanguage === 'zh' ? '橘色實線：主管考核 (平均)' : 'Orange Solid: Supervisor Avg'}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <div style="width:12px; height:12px; border-radius:3px; background:rgba(16,185,129,0.1); border:1px dashed #10b981;"></div>
+              <span>${state.activeLanguage === 'zh' ? '綠色虛線：學生自我覺察' : 'Green Dashed: Self-Assessment'}</span>
+            </div>
+          </div>
         </div>
         <div style="flex: 1.8; min-width: 280px; display: flex; flex-direction: column; align-items: center; border-left: 1px dashed var(--card-border); padding-left: 20px;">
           <div style="display:flex; flex-direction:column; align-items:flex-start; width:100%; margin-bottom:10px; gap:8px;">
