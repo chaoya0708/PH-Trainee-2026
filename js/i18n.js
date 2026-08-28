@@ -200,8 +200,7 @@ const I18N = {
     // Milestones
     milestoneTitle:    '里程碑進度',
     milestoneSubTitle: '各輪調單位的培訓完成追蹤器。',
-    criteria1: '持續學習中 (首篇週記)',
-    criteria2: '導師已確認週報',
+    criteria1: '已繳交週報',
     criteria3: '完成站別最終考核',
     criteria4: '順利完成此站別輪調實習',
 

@@ -1931,17 +1931,22 @@ function renderMilestones() {
       const deptObs = state.observations.filter(o => o.traineeId === viewId && matchDept(o.department));
       const assessment = (state.assessments || []).find(a => a.traineeId === viewId && matchDept(a.department));
 
-      const c1 = deptObs.length > 0;
-      const c2 = deptObs.some(o => o.status && o.status.trim().toLowerCase() === 'reviewed');
+      let targetReports = 5;
+      if (dept.id.startsWith('cmf_rd_' ) || dept.id.startsWith('cmf_production_' )) {
+        targetReports = 1;
+      } else if (dept.id === 'cmf_qc') {
+        targetReports = 2;
+      }
+      const c1 = deptObs.length >= targetReports;
       const c3 = !!assessment;
       const c4 = assessment && ['A+', 'A', 'B'].includes((assessment.grade || '').trim().toUpperCase());
 
       let doneCount = 0;
-      if (c1) doneCount++;
-      if (c2) doneCount++;
+      // Calculate fractional progress for weekly reports
+      doneCount += Math.min(deptObs.length, targetReports) / targetReports;
       if (c3) doneCount++;
       if (c4) doneCount++;
-      const pct = (doneCount / 4) * 100;
+      const pct = Math.round((doneCount / 3) * 100);
 
       const ci = (done, label) => `
         <li class="criteria-item ${done ? 'done' : ''}">
@@ -2063,8 +2068,7 @@ function renderMilestones() {
           </div>
           <div class="progress-bar" style="height:6px;"><div class="progress-fill" style="width:${pct}%;background:${dept.color};"></div></div>
           <ul class="criteria-list">
-            ${ci(c1, t('criteria1'))}
-            ${ci(c2, t('criteria2'))}
+            ${ci(c1, t('criteria1') + ` (${Math.min(deptObs.length, targetReports)}/${targetReports} ${state.activeLanguage === 'zh' ? '篇' : 'Reports'})`)}
             ${ci(c3, t('criteria3'))}
             ${ci(c4, t('criteria4'))}
           </ul>
