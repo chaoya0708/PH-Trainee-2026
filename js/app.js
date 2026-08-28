@@ -1870,9 +1870,14 @@ function renderMilestones() {
               ${monthOptionsHtml}
             </select>
           </span>
-          ${!isReadOnly ? `<button class="btn btn-primary btn-sm" onclick="window.saveSelfAssessment()" ${isOpen ? '' : 'disabled'}>
-            ${state.activeLanguage === 'zh' ? '儲存評估' : 'Save'}
-          </button>` : ''}
+          <div>
+            ${!isReadOnly ? `<button class="btn btn-primary btn-sm" onclick="window.saveSelfAssessment()" ${isOpen ? '' : 'disabled'}>
+              ${state.activeLanguage === 'zh' ? '儲存評估' : 'Save'}
+            </button>` : ''}
+            ${(selfEval && user.role !== 'trainee') ? `<button class="btn btn-outline btn-sm" onclick="window.resetSelfAssessment()" style="margin-left: 8px; color: var(--danger); border-color: var(--danger);">
+              ${state.activeLanguage === 'zh' ? '歸零重填' : 'Reset'}
+            </button>` : ''}
+          </div>
         </h3>
         <div class="alert-info" style="background:${isReadOnly ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)'}; color:${isReadOnly ? 'var(--success)' : 'var(--warning)'}; border:none; margin-bottom:15px; border-radius:12px; padding:12px;">
           <span style="font-weight:600;">${selfAssessBanner}</span>
@@ -2424,6 +2429,32 @@ window.saveSelfAssessment = async function () {
   } catch (err) {
     alert("Error saving: " + err.message + "\n" + err.stack);
     console.error("saveSelfAssessment error:", err);
+  }
+};
+
+window.resetSelfAssessment = async function () {
+  if (!confirm(state.activeLanguage === 'zh' ? '確定要將此月自評歸零（刪除）嗎？學生將可重新填寫。' : 'Are you sure you want to reset (delete) this month\'s self-assessment? The trainee will be able to re-submit.')) return;
+
+  const user = Auth.getCurrentUser();
+  if (!user || user.role === 'trainee') return;
+  const viewId = state.selectedTraineeId;
+
+  const currentMonthStr = window.currentSelfEvalMonthStr;
+  const currentSelfEvalId = `self_eval_${currentMonthStr}`;
+
+  const existing = (state.assessments || []).find(a => a.traineeId === viewId && a.department === currentSelfEvalId);
+  if (existing) {
+    try {
+      const res = await Api.deleteAssessment(existing.id);
+      if (res && (res.success || res.status === 'success')) {
+        alert(state.activeLanguage === 'zh' ? '已歸零！' : 'Reset successful!');
+        state.assessments = state.assessments.filter(a => a.id !== existing.id);
+        window.renderMilestones();
+      }
+    } catch (err) {
+      alert("Error resetting: " + err.message);
+      console.error("resetSelfAssessment error:", err);
+    }
   }
 };
 
