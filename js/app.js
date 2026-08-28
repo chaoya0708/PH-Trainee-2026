@@ -2356,6 +2356,7 @@ window.changeSelfEvalMonth = function() {
 };
 
 window.saveSelfAssessment = async function () {
+  try {
   const parts = window.currentSelfEvalMonthStr.split('-');
   let assessYear = parseInt(parts[0], 10);
   let assessMonth = parseInt(parts[1], 10);
@@ -2421,6 +2422,10 @@ window.saveSelfAssessment = async function () {
       
       window.renderMilestones();
     }
+  }
+  } catch (err) {
+    alert("Error saving: " + err.message + "\n" + err.stack);
+    console.error("saveSelfAssessment error:", err);
   }
 };
 
