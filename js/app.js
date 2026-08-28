@@ -1911,7 +1911,11 @@ function renderMilestones() {
         let dateStr = a.submittedAt || a.assessedAt || a.date;
         let shouldInclude = true;
         if (user.role !== 'trainee') {
-          shouldInclude = (dateStr && dateStr.substring(0, 7) === window.currentSelfEvalMonthStr);
+          let targetMonth = dateStr ? dateStr.substring(0, 7) : null;
+          if (['cmf_qc', 'cmf_rd_chinese', 'cmf_rd_western'].includes(a.department)) {
+            targetMonth = '2026-07';
+          }
+          shouldInclude = (targetMonth === window.currentSelfEvalMonthStr);
         }
 
         if (shouldInclude) {
@@ -2283,6 +2287,8 @@ function renderMilestones() {
         let month;
         if (a.department && a.department.startsWith('self_eval_')) {
           month = a.department.replace('self_eval_', '');
+        } else if (['cmf_qc', 'cmf_rd_chinese', 'cmf_rd_western'].includes(a.department)) {
+          month = '2026-07';
         } else {
           let dateStr = a.submittedAt || a.assessedAt || a.date;
           if (!dateStr) return;
