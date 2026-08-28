@@ -1937,6 +1937,10 @@ function renderMilestones() {
       } else if (dept.id === 'cmf_qc') {
         targetReports = 2;
       }
+      // Specific overrides for individuals
+      if (viewId === 'diane' && dept.id === 'yushan_qc') targetReports = 4;
+      if (viewId === 'mark' && dept.id === 'yushan_prep') targetReports = 4;
+      if (viewId === 'jairuz' && dept.id === 'yushan_packaging') targetReports = 4;
       const c1 = deptObs.length >= targetReports;
       const c3 = !!assessment;
       const c4 = assessment && ['A+', 'A', 'B'].includes((assessment.grade || '').trim().toUpperCase());
