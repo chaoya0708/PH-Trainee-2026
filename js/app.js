@@ -770,7 +770,8 @@ function renderDashboard() {
   // Pulse Check UI (Only for trainee themselves)
   let pulseCheckHtml = '';
   if (user.role === 'trainee') {
-    const currentStatus = localStorage.getItem(`MA_STATUS_${user.id}`) || 'green';
+    const p = (state.pulseChecks || []).find(x => x.id === user.id);
+    const currentStatus = p ? p.status : 'green';
     pulseCheckHtml = `
       <div class="glass-card" style="margin-bottom: 20px;">
         <h3 style="margin-bottom: 12px; font-size: 14px; color: var(--text-secondary); text-transform: uppercase;">${state.activeLanguage === 'zh' ? '本週脈搏打卡 (Weekly Pulse Check)' : 'Weekly Pulse Check'}</h3>
@@ -1075,11 +1076,24 @@ function renderDashboard() {
   `;
 }
 
-window.setPulseCheck = function (status) {
+window.setPulseCheck = async function (status) {
   const user = Auth.getCurrentUser();
   if (user.role !== 'trainee') return;
-  localStorage.setItem(`MA_STATUS_${user.id}`, status);
-  renderDashboard();
+  showLoading();
+  try {
+    await Api.setPulseCheck(user.id, status);
+    if (!state.pulseChecks) state.pulseChecks = [];
+    const p = state.pulseChecks.find(x => x.id === user.id);
+    if (p) p.status = status;
+    else state.pulseChecks.push({ id: user.id, status });
+    hideLoading();
+    renderDashboard();
+  } catch (e) {
+    console.error(e);
+    hideLoading();
+    showToast(state.activeLanguage === 'zh' ? '狀態更新失敗' : 'Failed to update status', 'error');
+    return;
+  }
 
   // 觸發 EmailJS 通知 (當遇到瓶頸或需要協助時)
   if ((status === 'yellow' || status === 'red') && window.emailjs) {
@@ -1200,7 +1214,8 @@ function renderAnalytics() {
       return `<span class="analytics-dept-badge" style="${badgeStyle}" title="${state.activeLanguage === 'zh' ? d.nameZh : d.name}: ${pct}%${hasVisibleAssessment ? ' - ' + t('lblAssessGrade') + ': ' + assessment.grade : ''}">${text}</span>`;
     }).join(' ');
 
-    const currentStatus = localStorage.getItem(`MA_STATUS_${tr.id}`) || 'green';
+    const p = (state.pulseChecks || []).find(x => x.id === tr.id);
+    const currentStatus = p ? p.status : 'green';
     let pulseBadge = '';
     if (currentStatus === 'green') {
       pulseBadge = `<div style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(16,185,129,0.1);color:#10b981;box-shadow:0 0 8px rgba(16,185,129,0.4);white-space:nowrap;">🟢 ${state.activeLanguage === 'zh' ? '順利推進' : 'On Track'}</div>`;

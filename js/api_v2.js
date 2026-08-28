@@ -211,6 +211,26 @@ const Api = (() => {
       case 'getAllObservations': return await fbGet('observations', data.forceFetch);
       case 'getObservations': return await fbGetWhere('observations', 'traineeId', data.traineeId, data.forceFetch);
       
+      case 'getAllPulseChecks': return await fbGet('pulse_checks', data.forceFetch);
+      case 'setPulseCheck': {
+        const docRef = db.collection('pulse_checks').doc(data.traineeId);
+        await docRef.set({
+          status: data.status,
+          updatedAt: nowStrIso
+        }, { merge: true });
+        // update cache
+        const allPulse = await fbGet('pulse_checks', false) || [];
+        const existingIdx = allPulse.findIndex(p => p.id === data.traineeId);
+        if (existingIdx > -1) {
+          allPulse[existingIdx].status = data.status;
+          allPulse[existingIdx].updatedAt = nowStrIso;
+        } else {
+          allPulse.push({ id: data.traineeId, status: data.status, updatedAt: nowStrIso });
+        }
+        lsSave('vimei_fb_v4_pulse_checks', allPulse);
+        return { success: true };
+      }
+
       case 'getAllGuestComments': return await fbGet('guest_comments', data.forceFetch);
       case 'getGuestComments': {
         const obs = await fbGetWhere('observations', 'traineeId', data.traineeId, data.forceFetch);
@@ -418,19 +438,21 @@ const Api = (() => {
 
       case 'getInitData': {
         const ff = data.forceFetch !== false;
-        const [obs, gcomments, scheds, assess, res] = await Promise.all([
+        const [obs, gcomments, scheds, assess, res, pulse] = await Promise.all([
           data.role === 'trainee' ? callScript({ action: 'getObservations', traineeId: data.traineeId, forceFetch: ff }) : callScript({ action: 'getAllObservations', forceFetch: ff }),
           data.role === 'trainee' ? callScript({ action: 'getGuestComments', traineeId: data.traineeId, forceFetch: ff }) : callScript({ action: 'getAllGuestComments', forceFetch: ff }),
           data.role === 'trainee' ? callScript({ action: 'getSchedules', traineeId: data.traineeId, forceFetch: ff }) : callScript({ action: 'getAllSchedules', forceFetch: ff }),
           callScript({ action: 'getAssessments', forceFetch: ff }),
-          callScript({ action: 'getAllResources', forceFetch: ff })
+          callScript({ action: 'getAllResources', forceFetch: ff }),
+          callScript({ action: 'getAllPulseChecks', forceFetch: ff })
         ]);
         return {
           observations: obs,
           guestComments: gcomments,
           schedules: scheds,
           assessments: assess,
-          resources: res
+          resources: res,
+          pulseChecks: pulse
         };
       }
       default: throw new Error('Unknown action: ' + action);
@@ -444,9 +466,23 @@ const Api = (() => {
   // =============================================================
   // Public API
   // =============================================================
+  // =============================================================
   return {
 
-    /** Initialize demo data if needed */
+    async getAllPulseChecks() {
+      if (CONFIG.DEMO_MODE) {
+        return [];
+      }
+      return callScriptGet('getAllPulseChecks');
+    },
+
+    async setPulseCheck(traineeId, status) {
+      if (CONFIG.DEMO_MODE) {
+        localStorage.setItem(`MA_STATUS_${traineeId}`, status);
+        return { success: true };
+      }
+      return callScript({ action: 'setPulseCheck', traineeId, status });
+    },
     init() {
       if (CONFIG.DEMO_MODE) {
         seedDemoData();
@@ -820,14 +856,16 @@ const Api = (() => {
             observations: obsWithComments.filter(o => o.traineeId === traineeId),
             schedules: { [traineeId]: (lsGet(LS_SCHED) || {})[traineeId] || {} },
             assessments: lsGet(LS_ASSESS) || [],
-            resources: lsGet(LS_RESOURCES) || []
+            resources: lsGet(LS_RESOURCES) || [],
+            pulseChecks: []
           };
         } else {
           return {
             observations: obsWithComments,
             schedules: lsGet(LS_SCHED) || {},
             assessments: lsGet(LS_ASSESS) || [],
-            resources: lsGet(LS_RESOURCES) || []
+            resources: lsGet(LS_RESOURCES) || [],
+            pulseChecks: []
           };
         }
       }
