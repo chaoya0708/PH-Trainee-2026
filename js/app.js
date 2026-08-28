@@ -1833,12 +1833,12 @@ function renderMilestones() {
     let assessMonth = parseInt(parts[1], 10);
     const taipeiNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
     const openDate = new Date(assessYear, assessMonth - 1, 25, 0, 0, 0);
-    const isOpen = taipeiNow >= openDate;
+    const isOpen = (taipeiNow >= openDate) || user.role !== 'trainee';
 
     const next30Str = `${assessMonth}/30`;
     
     let selfAssessBanner;
-    let isReadOnly = !!selfEval;
+    let isReadOnly = !!selfEval && user.role === 'trainee';
     
     if (isReadOnly) {
       const selfAssessReminderZh = `✅ 已完成 ${window.currentSelfEvalMonthStr} 月份的自我能力覺察評分。`;
@@ -1861,9 +1861,7 @@ function renderMilestones() {
       monthOptionsHtml += `<option value="${monthStr}" ${selected}>${monthStr}</option>`;
     }
 
-    let selfAssessmentHtml = '';
-    if (user.role === 'trainee') {
-      selfAssessmentHtml = `
+    let selfAssessmentHtml = `
       <div class="glass-card" style="margin-bottom: 20px;">
         <h3 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
           <span>
@@ -1893,7 +1891,6 @@ function renderMilestones() {
         </div>
       </div>
     `;
-    }
 
 
     // 計算所有已考評部門的核心職能平均分數 (Exclude self_eval)
@@ -2373,14 +2370,15 @@ window.saveSelfAssessment = async function () {
   const c4 = parseFloat(document.getElementById('selfScoreC4').value);
   const c5 = parseFloat(document.getElementById('selfScoreC5').value);
   const user = Auth.getCurrentUser();
-  if (!user || user.role !== 'trainee') return;
+  if (!user) return;
+  const viewId = user.role === 'trainee' ? user.id : state.selectedTraineeId;
 
   const now = new Date();
   const actualCurrentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   const currentMonthStr = window.currentSelfEvalMonthStr || actualCurrentMonthStr;
   const currentSelfEvalId = `self_eval_${currentMonthStr}`;
 
-  const existing = (state.assessments || []).find(a => a.traineeId === user.id && a.department === currentSelfEvalId);
+  const existing = (state.assessments || []).find(a => a.traineeId === viewId && a.department === currentSelfEvalId);
   const comments = state.activeLanguage === 'zh' ? '學生自我評估紀錄' : 'Trainee Self Assessment';
 
   if (existing) {
@@ -2398,7 +2396,7 @@ window.saveSelfAssessment = async function () {
     }
   } else {
     const res = await Api.submitAssessment(
-      user.id, currentSelfEvalId, 'N/A', c1, c2, c3, c4, c5, comments, user.name
+      viewId, currentSelfEvalId, 'N/A', c1, c2, c3, c4, c5, comments, user.name
     );
     if (res && (res.success || res.status === 'success')) {
       alert(state.activeLanguage === 'zh' ? '自評已儲存！' : 'Self-assessment saved!');
@@ -2406,7 +2404,7 @@ window.saveSelfAssessment = async function () {
       if (!state.assessments) state.assessments = [];
       state.assessments.push({
         id: res.id || Date.now().toString(),
-        traineeId: user.id,
+        traineeId: viewId,
         department: currentSelfEvalId,
         grade: 'N/A',
         competency1: c1,
