@@ -1869,7 +1869,7 @@ function renderMilestones() {
       <div class="glass-card" style="margin-bottom: 20px;">
         <h3 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
           <span>
-            ${state.activeLanguage === 'zh' ? '🎯 自我能力覺察 (Self-Assessment)' : '🎯 Self-Assessment (Radar)'}
+            ${state.activeLanguage === 'zh' ? '🎯 自我評分 (Self-Assessment)' : '🎯 Self-Assessment'}
             <select id="selfEvalMonthSelect" onchange="window.changeSelfEvalMonth(this.value)" style="margin-left:10px; font-size:12px; padding:4px 8px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary);">
               ${monthOptionsHtml}
             </select>
