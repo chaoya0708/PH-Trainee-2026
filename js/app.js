@@ -2008,7 +2008,7 @@ function renderMilestones() {
           chartsToRender.push({
             id: chartId,
             data: [assessment.competency1, assessment.competency2, assessment.competency3, assessment.competency4, assessment.competency5 || 3],
-            selfData: selfEval ? [selfEval.competency1, selfEval.competency2, selfEval.competency3, selfEval.competency4, selfEval.competency5 || 3] : null,
+            selfData: null,
             labels: [
               t('lblCompetency1').split(' ')[0],
               t('lblCompetency2').split(' ')[0],
