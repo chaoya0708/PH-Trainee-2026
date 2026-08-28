@@ -2226,16 +2226,14 @@ function renderMilestones() {
         .filter(a => !(user.role === 'guest' && !a.department.startsWith('self_eval') && a.department !== user.departmentId));
 
       traineeAssessments.forEach(a => {
-        let dateStr = a.submittedAt || a.assessedAt || a.date;
-        if (!dateStr) {
-          // fallback if submittedAt is missing, try to extract from self_eval_YYYY-MM
-          if (a.department.startsWith('self_eval_')) {
-            dateStr = a.department.replace('self_eval_', '') + '-01T00:00:00Z';
-          } else {
-            return;
-          }
+        let month;
+        if (a.department && a.department.startsWith('self_eval_')) {
+          month = a.department.replace('self_eval_', '');
+        } else {
+          let dateStr = a.submittedAt || a.assessedAt || a.date;
+          if (!dateStr) return;
+          month = dateStr.substring(0, 7);
         }
-        const month = dateStr.substring(0, 7); // '2026-07'
         if (!monthlyData[month]) {
           monthlyData[month] = { supSum: 0, supCount: 0, selfSum: 0, selfCount: 0, supDepts: [], selfDepts: [] };
         }
