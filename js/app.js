@@ -2384,7 +2384,7 @@ window.saveSelfAssessment = async function () {
   const comments = state.activeLanguage === 'zh' ? '學生自我評估紀錄' : 'Trainee Self Assessment';
 
   if (existing) {
-    const res = await window.db.updateAssessment(existing.id, {
+    const res = await Api.updateAssessment(existing.id, {
       competency1: c1, competency2: c2, competency3: c3, competency4: c4, competency5: c5
     });
     if (res && (res.success || res.status === 'success')) {
@@ -2397,7 +2397,7 @@ window.saveSelfAssessment = async function () {
       renderMilestones();
     }
   } else {
-    const res = await window.db.submitAssessment(
+    const res = await Api.submitAssessment(
       user.id, currentSelfEvalId, 'N/A', c1, c2, c3, c4, c5, comments, user.name
     );
     if (res && (res.success || res.status === 'success')) {
