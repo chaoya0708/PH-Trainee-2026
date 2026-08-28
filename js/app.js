@@ -50,21 +50,42 @@ function initLoginSlogans() {
 
 
 // Multi-file Upload List Renderers
+window._obsFiles = [];
+window._assessFiles = [];
+
 window.updateObsFileList = function () {
   const input = document.getElementById('obsPhoto');
+  if (input && input.files.length > 0) {
+    window._obsFiles = window._obsFiles.concat(Array.from(input.files));
+    input.value = '';
+  }
+  window.renderObsFileList();
+};
+
+window.removeObsFile = function (index) {
+  window._obsFiles.splice(index, 1);
+  window.renderObsFileList();
+};
+
+window.renderObsFileList = function () {
   const list = document.getElementById('obsFileList');
-  if (!input || !list) return;
-  list.innerHTML = Array.from(input.files).map((file, index) => {
+  if (!list) return;
+  list.innerHTML = window._obsFiles.map((file, index) => {
     const sizeMb = (file.size / 1024 / 1024).toFixed(2);
     return `
-      <div style="display:flex; align-items:center; padding:10px 12px; background:var(--bg-body); border-radius:8px; border:1px solid var(--border-color); gap:12px;">
-        <i class="fi fi-rr-document" style="color:var(--primary); font-size:18px;"></i>
-        <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; color:var(--text-primary); font-weight:500;">
-          ${file.name}
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; background:var(--bg-body); border-radius:8px; border:1px solid var(--border-color); gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px; flex:1; overflow:hidden;">
+          <i class="fi fi-rr-document" style="color:var(--primary); font-size:18px;"></i>
+          <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; color:var(--text-primary); font-weight:500;">
+            ${file.name}
+          </div>
+          <div style="font-size:11px; color:var(--text-muted); background:var(--bg-card); padding:2px 6px; border-radius:4px;">
+            ${sizeMb} MB
+          </div>
         </div>
-        <div style="font-size:11px; color:var(--text-muted); background:var(--bg-card); padding:2px 6px; border-radius:4px;">
-          ${sizeMb} MB
-        </div>
+        <button type="button" onclick="window.removeObsFile(${index})" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); color:#ef4444; cursor:pointer; font-size:12px; padding:4px 8px; border-radius:4px; transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.2)'" onmouseout="this.style.background='rgba(239,68,68,0.1)'">
+          <i class="fi fi-rr-trash"></i> 移除
+        </button>
       </div>
     `;
   }).join('');
@@ -72,19 +93,37 @@ window.updateObsFileList = function () {
 
 window.updateAssessFileList = function () {
   const input = document.getElementById('assessFile');
+  if (input && input.files.length > 0) {
+    window._assessFiles = window._assessFiles.concat(Array.from(input.files));
+    input.value = '';
+  }
+  window.renderAssessFileList();
+};
+
+window.removeAssessFile = function (index) {
+  window._assessFiles.splice(index, 1);
+  window.renderAssessFileList();
+};
+
+window.renderAssessFileList = function () {
   const list = document.getElementById('assessFileList');
-  if (!input || !list) return;
-  list.innerHTML = Array.from(input.files).map((file, index) => {
+  if (!list) return;
+  list.innerHTML = window._assessFiles.map((file, index) => {
     const sizeMb = (file.size / 1024 / 1024).toFixed(2);
     return `
-      <div style="display:flex; align-items:center; padding:10px 12px; background:var(--bg-body); border-radius:8px; border:1px solid var(--border-color); gap:12px;">
-        <i class="fi fi-rr-document" style="color:var(--primary); font-size:18px;"></i>
-        <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; color:var(--text-primary); font-weight:500;">
-          ${file.name}
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; background:var(--bg-body); border-radius:8px; border:1px solid var(--border-color); gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px; flex:1; overflow:hidden;">
+          <i class="fi fi-rr-document" style="color:var(--primary); font-size:18px;"></i>
+          <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; color:var(--text-primary); font-weight:500;">
+            ${file.name}
+          </div>
+          <div style="font-size:11px; color:var(--text-muted); background:var(--bg-card); padding:2px 6px; border-radius:4px;">
+            ${sizeMb} MB
+          </div>
         </div>
-        <div style="font-size:11px; color:var(--text-muted); background:var(--bg-card); padding:2px 6px; border-radius:4px;">
-          ${sizeMb} MB
-        </div>
+        <button type="button" onclick="window.removeAssessFile(${index})" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); color:#ef4444; cursor:pointer; font-size:12px; padding:4px 8px; border-radius:4px; transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.2)'" onmouseout="this.style.background='rgba(239,68,68,0.1)'">
+          <i class="fi fi-rr-trash"></i> 移除
+        </button>
       </div>
     `;
   }).join('');
@@ -1609,9 +1648,9 @@ function renderForm() {
           <div id="obsFileDropZone" class="file-drop-zone" onclick="document.getElementById('obsPhoto').click()" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'; this.style.background='rgba(37,99,235,0.05)';" ondragleave="this.style.borderColor='var(--border-color)'; this.style.background='transparent';" ondrop="event.preventDefault(); this.style.borderColor='var(--border-color)'; this.style.background='transparent'; document.getElementById('obsPhoto').files = event.dataTransfer.files; window.updateObsFileList();" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;">
             <i class="fi fi-rr-cloud-upload" style="font-size:32px; color:var(--primary); margin-bottom:12px; display:block;"></i>
             <p style="margin:0; font-weight:600; color:var(--text-primary); font-size:14px;">${state.activeLanguage === 'zh' ? '點擊或拖曳多個檔案至此' : 'Click or Drag files here'}</p>
-            <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">${state.activeLanguage === 'zh' ? '支援多檔上傳 (建議 PDF)' : 'Supports multiple files (PDF recommended)'}</p>
+            <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">${state.activeLanguage === 'zh' ? '支援多檔上傳 (不支援影片)' : 'Supports multiple files (no videos)'}</p>
           </div>
-          <input type="file" multiple class="form-control" id="obsPhoto" style="display:none;" onchange="window.updateObsFileList()">
+          <input type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif" class="form-control" id="obsPhoto" style="display:none;" onchange="window.updateObsFileList()">
           <div id="obsFileList" style="display:flex; flex-direction:column; gap:8px;"></div>
           
           <div style="font-size:12px;color:#ea580c;font-weight:600;margin-top:12px;line-height:1.5;background:var(--bg-card);padding:12px;border-radius:6px;border:none;">
@@ -1713,10 +1752,9 @@ window.submitObsForm = async function (e) {
 
   try {
     let attachmentUrls = [];
-    const fileInput = $('obsPhoto');
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      for (let i = 0; i < fileInput.files.length; i++) {
-        const file = fileInput.files[i];
+    if (window._obsFiles && window._obsFiles.length > 0) {
+      for (let i = 0; i < window._obsFiles.length; i++) {
+        const file = window._obsFiles[i];
         const folderName = 'MA_Program_Uploads';
         const uploadRes = await Api.uploadFile(file, file.type, file.name, folderName);
         if (uploadRes.success) {
@@ -1774,7 +1812,8 @@ window.submitObsForm = async function (e) {
     // Reset Form
     window.obsQuill.root.innerHTML = '';
     if ($('obsPhoto')) $('obsPhoto').value = '';
-    if ($('obsFileList')) $('obsFileList').innerHTML = '';
+    window._obsFiles = [];
+    window.renderObsFileList();
     if ($('obsSelfRating')) $('obsSelfRating').value = 0;
     if ($('obsSelfRatingText')) $('obsSelfRatingText').innerHTML = '';
     document.querySelectorAll('#selfAppraisalStars .star-btn').forEach(s => {
@@ -2804,8 +2843,9 @@ function renderReview() {
           <div id="assessFileDropZone" class="file-drop-zone" onclick="document.getElementById('assessFile').click()" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'; this.style.background='rgba(37,99,235,0.05)';" ondragleave="this.style.borderColor='var(--border-color)'; this.style.background='transparent';" ondrop="event.preventDefault(); this.style.borderColor='var(--border-color)'; this.style.background='transparent'; document.getElementById('assessFile').files = event.dataTransfer.files; window.updateAssessFileList();" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;">
             <i class="fi fi-rr-cloud-upload" style="font-size:32px; color:var(--primary); margin-bottom:12px; display:block;"></i>
             <p style="margin:0; font-weight:600; color:var(--text-primary); font-size:14px;">${state.activeLanguage === 'zh' ? '點擊或拖曳多個檔案至此' : 'Click or Drag files here'}</p>
+            <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">${state.activeLanguage === 'zh' ? '支援多檔上傳 (不支援影片)' : 'Supports multiple files (no videos)'}</p>
           </div>
-          <input type="file" multiple class="form-control" id="assessFile" style="display:none;" onchange="window.updateAssessFileList()">
+          <input type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif" class="form-control" id="assessFile" style="display:none;" onchange="window.updateAssessFileList()">
           <div id="assessFileList" style="display:flex; flex-direction:column; gap:8px;"></div>
         </div>
         <div class="form-group" style="margin-top:14px;">
@@ -3029,10 +3069,9 @@ window.submitStationAssessment = async function () {
   showLoading();
   try {
     let attachmentUrls = [];
-    const fileInput = $('assessFile');
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      for (let i = 0; i < fileInput.files.length; i++) {
-        const file = fileInput.files[i];
+    if (window._assessFiles && window._assessFiles.length > 0) {
+      for (let i = 0; i < window._assessFiles.length; i++) {
+        const file = window._assessFiles[i];
         const folderName = 'MA_Program_Assessments';
         const uploadRes = await Api.uploadFile(file, file.type, file.name, folderName);
         if (uploadRes.success) {
@@ -3049,6 +3088,8 @@ window.submitStationAssessment = async function () {
       showToast(t('assessSuccess'), 'success');
       $('assessComments').value = '';
       if ($('assessFile')) $('assessFile').value = '';
+      window._assessFiles = [];
+      window.renderAssessFileList();
       const newAsm = {
         id: res.id || res.record?.id,
         traineeId,
