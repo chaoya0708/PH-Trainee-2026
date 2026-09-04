@@ -6,7 +6,6 @@ import time
 project_id = "ph-trainee-2026"
 base_url = f"https://firestore.googleapis.com/v1/projects/{project_id}/databases/(default)/documents/schedules"
 
-# Fetch all existing schedules (handling pagination if necessary)
 existing = {}
 next_page_token = None
 
@@ -33,11 +32,9 @@ while True:
 
 print(f"Loaded {len(existing)} existing schedules.")
 
-# Read config.js
 with open('/Users/sofiacykung/Documents/antigravity_demo/MA Program/js/config.js', 'r', encoding='utf-8') as f:
     content = f.read()
 
-# Extract DEFAULT_SCHEDULES
 match = re.search(r'DEFAULT_SCHEDULES:\s*\{([\s\S]*?)\n  \}', content)
 if not match:
     print("Could not find DEFAULT_SCHEDULES")
@@ -45,7 +42,6 @@ if not match:
 
 sched_block = match.group(1)
 
-# Parse schedules
 trainees = ['diane', 'mark', 'jairuz']
 updates = []
 adds = []
@@ -55,7 +51,8 @@ for trainee in trainees:
     if t_match:
         inner = t_match.group(2)
         for line in inner.split('\n'):
-            line_match = re.search(r"'(\d{4}-\d{2}-\d{2})':\s*\{\s*dept:\s*'([^']+)',\s*objective:\s*'([^']+)'\s*\}", line)
+            # objective value can be in single or double quotes
+            line_match = re.search(r"'(\d{4}-\d{2}-\d{2})':\s*\{\s*dept:\s*'([^']+)',\s*objective:\s*['\"](.*?)['\"]\s*\}", line)
             if line_match:
                 date = line_match.group(1)
                 dept = line_match.group(2)
@@ -72,16 +69,12 @@ for trainee in trainees:
                 
                 key = (trainee, date)
                 if key in existing:
-                    # Update
-                    doc_name = existing[key]
-                    updates.append((doc_name, payload))
+                    updates.append((existing[key], payload))
                 else:
-                    # Add
                     adds.append(payload)
 
 print(f"Found {len(updates)} to update, {len(adds)} to add.")
 
-# Process updates
 for doc_name, payload in updates:
     patch_url = f"https://firestore.googleapis.com/v1/{doc_name}"
     req = urllib.request.Request(patch_url, data=json.dumps(payload).encode('utf-8'), headers={'Content-Type': 'application/json'}, method='PATCH')
@@ -90,7 +83,6 @@ for doc_name, payload in updates:
     except Exception as e:
         print(f"Error updating {doc_name}: {e}")
 
-# Process adds
 for payload in adds:
     req = urllib.request.Request(base_url, data=json.dumps(payload).encode('utf-8'), headers={'Content-Type': 'application/json'}, method='POST')
     try:
