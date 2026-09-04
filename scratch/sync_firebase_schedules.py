@@ -47,11 +47,10 @@ updates = []
 adds = []
 
 for trainee in trainees:
-    t_match = re.search(r'(' + trainee + r': \{)(.*?)(\})', sched_block, re.DOTALL)
+    t_match = re.search(r'(\s+' + trainee + r':\s*\{)(.*?)(^\s+\},?$)', content, re.MULTILINE | re.DOTALL)
     if t_match:
         inner = t_match.group(2)
         for line in inner.split('\n'):
-            # objective value can be in single or double quotes
             line_match = re.search(r"'(\d{4}-\d{2}-\d{2})':\s*\{\s*dept:\s*'([^']+)',\s*objective:\s*['\"](.*?)['\"]\s*\}", line)
             if line_match:
                 date = line_match.group(1)
@@ -75,6 +74,7 @@ for trainee in trainees:
 
 print(f"Found {len(updates)} to update, {len(adds)} to add.")
 
+# Batching to not overload stdout or timeout, but we only have 300 so it's fine sequentially
 for doc_name, payload in updates:
     patch_url = f"https://firestore.googleapis.com/v1/{doc_name}"
     req = urllib.request.Request(patch_url, data=json.dumps(payload).encode('utf-8'), headers={'Content-Type': 'application/json'}, method='PATCH')
