@@ -583,8 +583,13 @@ async function loadAllData(isSilent = false) {
       msg.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fee2e2;color:#991b1b;padding:30px;border-radius:12px;z-index:10000;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,0.2);text-align:center;border:2px solid #ef4444;max-width:400px;font-family:sans-serif;";
       msg.innerHTML = `
         <i class="fi fi-rr-triangle-warning" style="font-size:40px;display:block;margin-bottom:10px;color:#ef4444;"></i>
-        <h3 style="margin-bottom:10px;margin-top:0;">⚠️ 系統連線失效 (403 Error)</h3>
-        <p style="font-size:14px;font-weight:400;margin:0 0 20px 0;">Google Apps Script 連線遭到拒絕。<br>請管理員回到 GAS 專案重新「新增部署作業」，並將新網址更新至 <b>config.js</b> 中。</p>
+        <h3 style="margin-bottom:10px;margin-top:0;">⚠️ 系統連線失效</h3>
+        <p style="font-size:14px;font-weight:400;margin:0 0 20px 0;line-height:1.5;">
+          資料庫拒絕連線：<br>
+          <b style="color:#7f1d1d; display:block; margin-top:8px;">${err.message || err.toString()}</b>
+          <br><br>
+          <span style="font-size:12px; color:#555;">(這代表您剛才並未成功登入 Firebase 帳號，觸發了備用登入。請確認您的 Firebase 帳號已正確建立，並對網頁按下 Ctrl+F5 強制重新整理來清除舊快取。)</span>
+        </p>
         <button onclick="this.parentElement.remove()" style="padding:8px 16px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">我知道了</button>
       `;
       document.body.appendChild(msg);
