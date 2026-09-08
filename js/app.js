@@ -263,7 +263,7 @@ window.handleLogin = async function () {
     errorEl = $('loginError4');
   }
 
-  const ok = Auth.login(_loginRole, identifier, credential);
+  const ok = await Auth.login(_loginRole, identifier, credential);
 
   if (ok) {
     // Set default language based on role on initial login

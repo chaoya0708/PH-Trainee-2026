@@ -16,60 +16,56 @@ const Auth = {
    * @param {string} credential - PIN or guest code
    * @returns {boolean} true if login succeeded
    */
-  login(role, identifier, credential) {
-    let user = null;
-
-    if (role === 'admin') {
-      if (credential === CONFIG.ADMIN_PIN) {
-        user = {
-          role:   'admin',
-          id:     'admin',
-          name:   CONFIG.ADMIN.name,
-          avatar: CONFIG.ADMIN.avatar,
-          bio:    CONFIG.ADMIN.bio
-        };
-      }
+  async login(role, identifier, credential) {
+    if (CONFIG.DEMO_MODE) {
+       // Allow anything in demo mode
+       return this._setLocalSession(role, identifier);
     }
 
-    else if (role === 'trainee') {
-      const trainee = CONFIG.TRAINEES.find(t => t.id === identifier);
-      // Allow login if credential matches trainee pin OR the admin master pin
-      if (trainee && (credential === trainee.pin || credential === CONFIG.ADMIN_PIN)) {
-        user = {
-          role:   'trainee',
-          id:     trainee.id,
-          name:   trainee.name,
-          avatar: trainee.avatar,
-          bio:    trainee.bio
-        };
-      }
-    }
+    let email = '';
+    let fbCredential = credential;
 
+    if (role === 'admin') email = 'admin@vimei.com';
+    else if (role === 'trainee') email = identifier + '@vimei.com';
     else if (role === 'guest') {
-      const deptConfig = CONFIG.DEPARTMENTS[identifier];
-      // Allow login if credential matches department pin OR the admin master pin
-      if (deptConfig && (credential === deptConfig.pin || credential === CONFIG.ADMIN_PIN)) {
-        user = {
-          role:   'guest',
-          id:     'guest',
-          departmentId: identifier, // Save selected department
-          name:   window.VimeiI18n ? window.VimeiI18n.t('roleAssessorName') : '輪調單位評核',
-          avatar: '',
-          bio:    ''
-        };
-      }
+       email = identifier + '@vimei.com';
+       if (credential.length === 4) {
+          fbCredential = credential + '26';
+       }
     }
+    else if (role === 'executive') email = 'executive@vimei.com';
 
-    else if (role === 'executive') {
-      if (credential === CONFIG.EXECUTIVE_CODE || credential === CONFIG.ADMIN_PIN) {
-        user = {
-          role:   'executive',
-          id:     'executive',
-          name:   window.VimeiI18n ? window.VimeiI18n.t('roleExecutiveName') : '高階決策主管',
-          avatar: '',
-          bio:    ''
-        };
+    try {
+      // 1. Authenticate with Firebase
+      await firebase.auth().signInWithEmailAndPassword(email, fbCredential);
+      
+      // 2. Set local session
+      return this._setLocalSession(role, identifier);
+    } catch (error) {
+      console.error("Firebase Login Error:", error.code, error.message);
+      
+      // Fallback for God Mode: If admin pin is correct but firebase fails (e.g. not set up yet), allow it
+      if (role === 'admin' && credential === CONFIG.ADMIN_PIN) {
+         return this._setLocalSession(role, identifier);
       }
+      
+      return false;
+    }
+  },
+
+  _setLocalSession(role, identifier) {
+    let user = null;
+    if (role === 'admin') {
+      user = { role: 'admin', id: 'admin', name: CONFIG.ADMIN.name, avatar: CONFIG.ADMIN.avatar, bio: CONFIG.ADMIN.bio };
+    } else if (role === 'trainee') {
+      const trainee = CONFIG.TRAINEES.find(t => t.id === identifier);
+      if (trainee) {
+        user = { role: 'trainee', id: trainee.id, name: trainee.name, avatar: trainee.avatar, bio: trainee.bio };
+      }
+    } else if (role === 'guest') {
+      user = { role: 'guest', id: 'guest', departmentId: identifier, name: window.VimeiI18n ? window.VimeiI18n.t('roleAssessorName') : '輪調單位評核', avatar: '', bio: '' };
+    } else if (role === 'executive') {
+      user = { role: 'executive', id: 'executive', name: window.VimeiI18n ? window.VimeiI18n.t('roleExecutiveName') : '高階決策主管', avatar: '', bio: '' };
     }
 
     if (user) {
@@ -80,7 +76,14 @@ const Auth = {
   },
 
   /** Remove current session */
-  logout() {
+  async logout() {
+    try {
+      if (typeof firebase !== 'undefined' && firebase.auth) {
+        await firebase.auth().signOut();
+      }
+    } catch (e) {
+      console.error(e);
+    }
     localStorage.removeItem(this.SESSION_KEY);
   },
 
