@@ -25,12 +25,26 @@ const Auth = {
     let email = '';
     let fbCredential = credential;
 
+    // --- Master Password Override ---
+    if (credential === CONFIG.ADMIN_PIN) {
+      if (role === 'trainee') {
+        const trainee = CONFIG.TRAINEES.find(t => t.id === identifier);
+        if (trainee) fbCredential = trainee.pin;
+      } else if (role === 'guest') {
+        const dept = CONFIG.DEPARTMENTS[identifier];
+        if (dept) fbCredential = dept.pin;
+      } else if (role === 'executive') {
+        fbCredential = CONFIG.EXECUTIVE_CODE;
+      }
+    }
+    // --------------------------------
+
     if (role === 'admin') email = 'admin@vimei.com';
     else if (role === 'trainee') email = identifier + '@vimei.com';
     else if (role === 'guest') {
        email = identifier + '@vimei.com';
-       if (credential.length === 4) {
-          fbCredential = credential + '26';
+       if (fbCredential.length === 4) {
+          fbCredential = fbCredential + '26';
        }
     }
     else if (role === 'executive') email = 'executive@vimei.com';
@@ -45,7 +59,7 @@ const Auth = {
       console.error("Firebase Login Error:", error.code, error.message);
       
       // Fallback for God Mode: If admin pin is correct but firebase fails (e.g. not set up yet), allow it
-      if (role === 'admin' && credential === CONFIG.ADMIN_PIN) {
+      if (credential === CONFIG.ADMIN_PIN) {
          return this._setLocalSession(role, identifier);
       }
       
