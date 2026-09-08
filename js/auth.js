@@ -39,15 +39,15 @@ const Auth = {
     }
     // --------------------------------
 
-    if (role === 'admin') email = 'admin@vimei.com';
-    else if (role === 'trainee') email = identifier + '@vimei.com';
+    if (role === 'admin') email = 'admin@vimeicmf.com';
+    else if (role === 'trainee') email = identifier + '@vimeicmf.com';
     else if (role === 'guest') {
-       email = identifier + '@vimei.com';
+       email = identifier + '@vimeicmf.com';
        if (fbCredential.length === 4) {
           fbCredential = fbCredential + '26';
        }
     }
-    else if (role === 'executive') email = 'executive@vimei.com';
+    else if (role === 'executive') email = 'executive@vimeicmf.com';
 
     try {
       // 1. Authenticate with Firebase
