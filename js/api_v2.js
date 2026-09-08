@@ -444,7 +444,7 @@ const Api = (() => {
           data.role === 'trainee' ? callScript({ action: 'getSchedules', traineeId: data.traineeId, forceFetch: ff }) : callScript({ action: 'getAllSchedules', forceFetch: ff }),
           callScript({ action: 'getAssessments', forceFetch: ff }),
           callScript({ action: 'getAllResources', forceFetch: ff }),
-          callScript({ action: 'getAllPulseChecks', forceFetch: ff })
+          data.role === 'trainee' ? Promise.resolve([]) : callScript({ action: 'getAllPulseChecks', forceFetch: ff })
         ]);
         return {
           observations: obs,
