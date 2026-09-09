@@ -63,13 +63,8 @@ const Auth = {
          return this._setLocalSession(role, identifier);
       } catch (createError) {
          console.error("Firebase Create Error:", createError.code, createError.message);
-         alert("Firebase 登入與建立失敗: " + createError.message);
-         
-         // Fallback for God Mode: If admin pin is correct but firebase fails
-         if (credential === CONFIG.ADMIN_PIN) {
-            return this._setLocalSession(role, identifier);
-         }
-         return false;
+         // Return the exact error string so app.js can display it directly on the login screen
+         return "FB Auth Error: " + createError.message;
       }
     }
   },
