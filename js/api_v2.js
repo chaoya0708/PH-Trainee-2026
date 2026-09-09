@@ -112,6 +112,36 @@ const Api = (() => {
     return nowIso().replace('T', ' ').substring(0, 16);
   }
 
+  // ----- Auto Seed Firebase -----
+  async function autoSeedFirebase() {
+    if (!db) return;
+    try {
+      const snap = await db.collection('observations').limit(1).get();
+      if (snap.empty) {
+        console.log("Database is empty! Auto-seeding default data...");
+        // Seed Observations
+        const obsSeed = [
+          { traineeId: 'diane', traineeName: 'Diane', date: '2026-07-13', department: 'yushan_prep', keyObservation: 'The vegetable washing sector has a minor bottleneck...', actionableIdea: 'Propose an L-shaped crate flow...', status: 'pending', rating: 0 },
+          { traineeId: 'mark', traineeName: 'Mark', date: '2026-07-13', department: 'yushan_prep', keyObservation: 'The automatic dicer machine runs at 80% capacity...', actionableIdea: 'Introduce a gravity-assisted staging chute...', status: 'pending', rating: 0 },
+          { traineeId: 'jairuz', traineeName: 'Jairuz', date: '2026-07-13', department: 'cmf_qc', keyObservation: 'Metal detector test sticks are stored in an unlocked generic cabinet...', actionableIdea: 'Create a shadow board for test sticks...', status: 'pending', rating: 0 }
+        ];
+        for (let obs of obsSeed) {
+          await db.collection('observations').add({ ...obs, submittedAt: nowIso(), mentorComment: '', mentorName: '', feedbackAt: '' });
+        }
+        
+        // Seed Schedules
+        if (CONFIG.DEFAULT_SCHEDULES) {
+          for (let sched of CONFIG.DEFAULT_SCHEDULES) {
+             await db.collection('schedules').add(sched);
+          }
+        }
+        console.log("Seeding complete!");
+      }
+    } catch (e) {
+      console.error("Auto-seed failed:", e);
+    }
+  }
+
   // ----- Firebase Initialization -----
   let db = null;
   let storage = null;
@@ -437,6 +467,11 @@ const Api = (() => {
       }
 
       case 'getInitData': {
+        // Auto-seed if admin
+        if (data.role === 'admin' || data.role === 'executive') {
+          await autoSeedFirebase();
+        }
+
         const ff = data.forceFetch !== false;
         const [obs, gcomments, scheds, assess, res, pulse] = await Promise.all([
           data.role === 'trainee' ? callScript({ action: 'getObservations', traineeId: data.traineeId, forceFetch: ff }) : callScript({ action: 'getAllObservations', forceFetch: ff }),
