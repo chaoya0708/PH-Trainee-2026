@@ -139,7 +139,10 @@ const Api = (() => {
       try { return JSON.parse(cached); } catch (e) {}
     }
 
-    const fetchPromise = db.collection(col).get().then(snap => {
+    const fetchPromise = db.collection(col).get().catch(e => {
+      alert(`Firebase query failed for collection '${col}': ${e.message}`);
+      throw e;
+    }).then(snap => {
       const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       const oldStr = localStorage.getItem(cacheKey);
       const newStr = JSON.stringify(data);
@@ -172,7 +175,10 @@ const Api = (() => {
       try { return JSON.parse(cached); } catch (e) {}
     }
 
-    const fetchPromise = db.collection(col).where(field, '==', val).get().then(snap => {
+    const fetchPromise = db.collection(col).where(field, '==', val).get().catch(e => {
+      alert(`Firebase query failed for collection '${col}' where ${field}==${val}: ${e.message}`);
+      throw e;
+    }).then(snap => {
       const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       const oldStr = localStorage.getItem(cacheKey);
       const newStr = JSON.stringify(data);
