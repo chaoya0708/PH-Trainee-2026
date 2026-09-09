@@ -50,22 +50,31 @@ const Auth = {
     else if (role === 'executive') email = 'executive_fix@vimeicmf.com';
 
     try {
-      // 1. Authenticate with Firebase
-      await firebase.auth().signInWithEmailAndPassword(email, fbCredential);
+      // 1. 本地驗證 PIN 碼 (Local PIN Validation Only)
+      let isValid = false;
       
-      // 2. Set local session
-      return this._setLocalSession(role, identifier);
-    } catch (error) {
-      console.warn("Firebase Login failed, trying to auto-create user...", error.message);
-      try {
-         // Auto-create user if they don't exist
-         await firebase.auth().createUserWithEmailAndPassword(email, fbCredential);
-         return this._setLocalSession(role, identifier);
-      } catch (createError) {
-         console.error("Firebase Create Error:", createError.code, createError.message);
-         // Return the exact error string so app.js can display it directly on the login screen
-         return "FB Auth Error: " + createError.message;
+      if (role === 'admin') {
+        isValid = (credential === CONFIG.ADMIN_PIN || credential === '314231'); // Keep 314231 as fallback for now
+      } else if (role === 'executive') {
+        isValid = (credential === '999999'); // Simplified
+      } else if (role === 'trainee') {
+        const trainee = CONFIG.TRAINEES.find(t => t.id === identifier);
+        isValid = trainee && trainee.pin === credential;
+      } else if (role === 'guest') {
+        const dept = Object.values(CONFIG.DEPARTMENTS).find(d => d.id === identifier);
+        isValid = dept && dept.pin === credential;
       }
+
+      if (!isValid) {
+        return "Invalid PIN. 請檢查您的密碼。";
+      }
+      
+      // 2. 驗證成功，儲存本地登入狀態
+      return this._setLocalSession(role, identifier);
+      
+    } catch (err) {
+      console.error("Login Error:", err);
+      return "Auth Error: " + err.message;
     }
   },
 

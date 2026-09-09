@@ -58,7 +58,7 @@ const CONFIG = {
       id: 'diane',
       name: '白妙儀 / Diane Solomon Barcelenia',
       avatar: '<i class="fi fi-rr-user"></i>',
-      pin: '041202Gizmo',
+      pin: '041202',
       bio: '',
       excludedDepartments: ['cmf_production_rende']
     },
@@ -74,7 +74,7 @@ const CONFIG = {
       id: 'jairuz',
       name: '侯俊材 / Jairuz Delos Reyes Nazareno',
       avatar: '<i class="fi fi-rr-user"></i>',
-      pin: 'mudkip',
+      pin: '132115',
       bio: '',
       excludedDepartments: ['cmf_production_hunei']
     }
