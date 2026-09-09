@@ -1342,6 +1342,15 @@ function downloadCSV(csvContent, fileName) {
 }
 
 window.exportAdvancedExcel = function () {
+  if (typeof XLSX === 'undefined') {
+    showToast("正在載入報表引擎 (Loading Engine)...", "info");
+    const script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js";
+    script.onload = () => window.exportAdvancedExcel();
+    document.head.appendChild(script);
+    return;
+  }
+
   const traineeFilter = document.getElementById('exportFilterTrainee') ? document.getElementById('exportFilterTrainee').value : 'all';
   const dateFilter = document.getElementById('exportFilterDate') ? document.getElementById('exportFilterDate').value : 'all';
   
@@ -1434,6 +1443,15 @@ window.exportAdvancedExcel = function () {
 };
 
 window.exportTraineePDF = function() {
+  if (typeof html2pdf === 'undefined') {
+    showToast("正在載入 PDF 引擎 (Loading PDF Engine)...", "info");
+    const script = document.createElement('script');
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+    script.onload = () => window.exportTraineePDF();
+    document.head.appendChild(script);
+    return;
+  }
+
   const el = document.getElementById('analytics');
   if (!el) {
     showToast("找不到報表畫面", "error");
