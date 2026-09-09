@@ -56,16 +56,21 @@ const Auth = {
       // 2. Set local session
       return this._setLocalSession(role, identifier);
     } catch (error) {
-      console.error("Firebase Login Error:", error.code, error.message);
-      alert("Firebase 登入失敗: " + error.message);
-      
-
-      // Fallback for God Mode: If admin pin is correct but firebase fails (e.g. not set up yet), allow it
-      if (credential === CONFIG.ADMIN_PIN) {
+      console.warn("Firebase Login failed, trying to auto-create user...", error.message);
+      try {
+         // Auto-create user if they don't exist
+         await firebase.auth().createUserWithEmailAndPassword(email, fbCredential);
          return this._setLocalSession(role, identifier);
+      } catch (createError) {
+         console.error("Firebase Create Error:", createError.code, createError.message);
+         alert("Firebase 登入與建立失敗: " + createError.message);
+         
+         // Fallback for God Mode: If admin pin is correct but firebase fails
+         if (credential === CONFIG.ADMIN_PIN) {
+            return this._setLocalSession(role, identifier);
+         }
+         return false;
       }
-      
-      return false;
     }
   },
 
