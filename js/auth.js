@@ -50,6 +50,10 @@ const Auth = {
     else if (role === 'executive') email = 'executive_fix@vimeicmf.com';
 
     try {
+      if (CONFIG.DEMO_MODE) {
+         return this._setLocalSession(role, identifier);
+      }
+      
       // 1. Authenticate with Firebase
       await firebase.auth().signInWithEmailAndPassword(email, fbCredential);
       
