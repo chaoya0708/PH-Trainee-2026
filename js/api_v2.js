@@ -233,8 +233,27 @@ const Api = (() => {
   }
 
   async function callScript(params) {
-    if (!db) throw new Error('Firebase not initialized.');
     const { action, ...data } = params;
+    
+    // DEMO MODE BYPASS
+    if (CONFIG.DEMO_MODE) {
+      if (!localStorage.getItem(LS_OBS)) seedDemoData(); // Ensure data exists
+      
+      switch (action) {
+        case 'getAllObservations': return lsGet(LS_OBS);
+        case 'getObservations': return lsGet(LS_OBS).filter(o => o.traineeId === data.traineeId);
+        case 'getAllPulseChecks': return lsGet('vimei2_pulse'); // fallback key
+        case 'getAllSchedules': return lsGet(LS_SCHED);
+        case 'getSchedules': return lsGet(LS_SCHED).filter(s => s.traineeId === data.traineeId);
+        case 'getAssessments': return lsGet(LS_ASSESS);
+        case 'getAllResources': return lsGet(LS_RESOURCES);
+        case 'getAllGuestComments': return lsGet(LS_GCOMMENT);
+        case 'getGuestComments': return lsGet(LS_GCOMMENT).filter(c => c.traineeId === data.traineeId);
+        default: return [];
+      }
+    }
+
+    if (!db) throw new Error('Firebase not initialized.');
     const nowStrIso = nowIso();
 
     switch (action) {
