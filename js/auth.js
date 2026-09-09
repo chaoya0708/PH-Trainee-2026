@@ -7,7 +7,7 @@
 
 const Auth = {
 
-  SESSION_KEY: 'vimei_v2_session',
+  SESSION_KEY: 'vimei_fb_v5_session',
 
   /**
    * Attempt login and store session if successful.

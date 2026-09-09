@@ -154,7 +154,7 @@ const Api = (() => {
   }
 
   async function fbGet(col, forceFetch = true) {
-    const cacheKey = 'vimei_fb_v4_' + col;
+    const cacheKey = 'vimei_fb_v5_' + col;
     const timeKey = cacheKey + '_time';
     const cached = localStorage.getItem(cacheKey);
     const cachedTime = localStorage.getItem(timeKey);
@@ -188,7 +188,7 @@ const Api = (() => {
   }
 
   async function fbGetWhere(col, field, val, forceFetch = true) {
-    const cacheKey = `vimei_fb_v4_${col}_${field}_${val}`;
+    const cacheKey = `vimei_fb_v5_${col}_${field}_${val}`;
     const timeKey = cacheKey + '_time';
     const cached = localStorage.getItem(cacheKey);
     const cachedTime = localStorage.getItem(timeKey);
@@ -221,7 +221,7 @@ const Api = (() => {
   }
 
   function invalidateCache(col) {
-    const prefix = 'vimei_fb_v4_' + col;
+    const prefix = 'vimei_fb_v5_' + col;
     const keysToRemove = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -257,7 +257,7 @@ const Api = (() => {
         } else {
           allPulse.push({ id: data.traineeId, status: data.status, updatedAt: nowStrIso });
         }
-        lsSave('vimei_fb_v4_pulse_checks', allPulse);
+        lsSave('vimei_fb_v5_pulse_checks', allPulse);
         return { success: true };
       }
 
