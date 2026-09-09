@@ -265,7 +265,7 @@ window.handleLogin = async function () {
 
   const ok = await Auth.login(_loginRole, identifier, credential);
 
-  if (ok) {
+  if (ok === true) {
     // Set default language based on role on initial login
     const targetLang = (_loginRole === 'trainee') ? 'en' : 'zh';
     localStorage.setItem('vimei_lang', targetLang);
@@ -281,7 +281,7 @@ window.handleLogin = async function () {
   } else {
     if (errorEl) {
       errorEl.style.display = 'block';
-      errorEl.textContent = t('loginError');
+      errorEl.textContent = typeof ok === 'string' ? ok : t('loginError');
     }
   }
 };
