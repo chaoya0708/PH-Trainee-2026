@@ -1255,9 +1255,24 @@ function renderAnalytics() {
           <p style="color:var(--text-secondary);font-size:12px;margin-top:4px;">${t('analyticsSubTitle')}</p>
         </div>
         ${user.role === 'admin' ? `
-        <div class="btn-export-group">
-          <button class="btn btn-export" onclick="exportTraineeSummary()">${t('btnExportSummary')}</button>
-          <button class="btn btn-export btn-export-secondary" onclick="exportObservationLogs()">${t('btnExportLogs')}</button>
+        <div class="btn-export-group" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <select id="exportFilterTrainee" class="form-control" style="width: auto; padding: 6px 12px; font-size: 13px;">
+            <option value="all">${state.activeLanguage === 'zh' ? '全部學員' : 'All Trainees'}</option>
+            ${CONFIG.TRAINEES.map(t => `<option value="${t.id}">${t.name}</option>`).join('')}
+          </select>
+          <select id="exportFilterDate" class="form-control" style="width: auto; padding: 6px 12px; font-size: 13px;">
+            <option value="all">${state.activeLanguage === 'zh' ? '全部時間' : 'All Time'}</option>
+            <option value="7">${state.activeLanguage === 'zh' ? '過去 7 天' : 'Last 7 Days'}</option>
+            <option value="30">${state.activeLanguage === 'zh' ? '過去 30 天' : 'Last 30 Days'}</option>
+          </select>
+          <button class="btn btn-export" onclick="exportAdvancedExcel()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; padding: 8px 16px; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">
+            <i class="fi fi-rr-document"></i>
+            ${state.activeLanguage === 'zh' ? '匯出進階 Excel (.xlsx)' : 'Export Advanced Excel'}
+          </button>
+          <button class="btn btn-export" onclick="exportTraineePDF()" style="background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); border: none; padding: 8px 16px; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(244,63,94,0.3);">
+            <i class="fi fi-rr-print"></i>
+            ${state.activeLanguage === 'zh' ? '匯出學員 PDF' : 'Export Trainee PDF'}
+          </button>
         </div>
         ` : ''}
       </div>
@@ -1326,76 +1341,120 @@ function downloadCSV(csvContent, fileName) {
   document.body.removeChild(link);
 }
 
-window.exportTraineeSummary = function () {
+window.exportAdvancedExcel = function () {
+  const traineeFilter = document.getElementById('exportFilterTrainee') ? document.getElementById('exportFilterTrainee').value : 'all';
+  const dateFilter = document.getElementById('exportFilterDate') ? document.getElementById('exportFilterDate').value : 'all';
+  
+  const now = Date.now();
+  let timeLimit = 0;
+  if (dateFilter === '7') timeLimit = now - (7 * 24 * 60 * 60 * 1000);
+  if (dateFilter === '30') timeLimit = now - (30 * 24 * 60 * 60 * 1000);
+
+  const filterData = (arr) => {
+    return arr.filter(item => {
+      if (traineeFilter !== 'all' && item.traineeId !== traineeFilter) return false;
+      if (timeLimit > 0) {
+        const itemTime = item.submittedAt ? new Date(item.submittedAt).getTime() : new Date(item.date).getTime();
+        if (itemTime < timeLimit) return false;
+      }
+      return true;
+    });
+  };
+
+  const wb = XLSX.utils.book_new();
+
+  // 1. Summary Sheet
   const user = Auth.getCurrentUser();
-  const trainees = user.role === 'trainee' ? CONFIG.TRAINEES.filter(t => t.id === user.id) : CONFIG.TRAINEES;
+  const trainees = traineeFilter !== 'all' ? CONFIG.TRAINEES.filter(t => t.id === traineeFilter) : CONFIG.TRAINEES;
   const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly);
-
-  // CSV Headers
-  let csv = "Trainee Name,Milestone Completion %,Average Star Rating,Total Logs Submitted";
+  
+  const summaryHeaders = ["Trainee Name", "Milestone Completion %", "Average Star Rating", "Total Logs Submitted"];
   depts.forEach(d => {
-    csv += `,${d.name} Progress %,${d.name} Grade`;
+    summaryHeaders.push(`${d.name} Progress %`);
+    summaryHeaders.push(`${d.name} Grade`);
   });
-  csv += "\n";
-
-  // Data rows
+  
+  const summaryData = [summaryHeaders];
   trainees.forEach(tr => {
     const progress = calcOverallProgress(tr.id);
     const traineeObs = state.observations.filter(o => o.traineeId === tr.id);
     const ratedObs = traineeObs.filter(o => (o.selfRating != null ? o.selfRating : o.rating) > 0);
-    const trAvgRating = ratedObs.length > 0
-      ? (ratedObs.reduce((sum, o) => sum + (Number(o.selfRating != null ? o.selfRating : o.rating) || 0), 0) / ratedObs.length).toFixed(1)
-      : '0.0';
-
-    csv += `"${tr.name}",${progress}%,${trAvgRating},${traineeObs.length}`;
-
+    const trAvgRating = ratedObs.length > 0 ? (ratedObs.reduce((sum, o) => sum + (Number(o.selfRating != null ? o.selfRating : o.rating) || 0), 0) / ratedObs.length).toFixed(1) : '0.0';
+    
+    const row = [tr.name, `${progress}%`, trAvgRating, traineeObs.length];
     depts.forEach(d => {
       const pct = calculateMilestoneProgress(state.observations, tr.id, d.id);
       const assessment = (state.assessments || []).find(a => a.traineeId === tr.id && a.department === d.id);
-      const gradeStr = assessment ? assessment.grade : 'N/A';
-      csv += `,${pct}%,${gradeStr}`;
+      row.push(`${pct}%`);
+      row.push(assessment ? assessment.grade : 'N/A');
     });
-    csv += "\n";
+    summaryData.push(row);
   });
+  const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+  XLSX.utils.book_append_sheet(wb, wsSummary, "Summary (總表)");
 
-  downloadCSV(csv, "Trainee_Summary_Report.csv");
-  showToast("Summary CSV Downloaded Successfully!", "success");
+  // 2. Observations Sheet
+  const obsList = filterData(state.observations || []);
+  const obsHeaders = ["ID", "Trainee Name", "Date", "Department Name", "Key Observation", "Actionable Idea", "Attachment URL", "Status", "Mentor Comment", "Self/Mentor Rating"];
+  const obsData = [obsHeaders];
+  obsList.forEach(obs => {
+    const deptName = (CONFIG.DEPARTMENTS[obs.department] || {}).name || obs.department;
+    obsData.push([
+      obs.id, obs.traineeName, formatTaipeiDateOnly(obs.date), deptName, 
+      obs.keyObservation || '', obs.actionableIdea || '', obs.attachmentUrl || '', 
+      obs.status || '', obs.mentorComment || '', (obs.selfRating || obs.rating || 0)
+    ]);
+  });
+  const wsObs = XLSX.utils.aoa_to_sheet(obsData);
+  XLSX.utils.book_append_sheet(wb, wsObs, "Observations (觀察紀錄)");
+
+  // 3. Guest Comments Sheet
+  const gcomments = filterData(state.guestComments || []);
+  const gcHeaders = ["Trainee ID", "Department", "Score", "Comment", "Guest Name", "Date"];
+  const gcData = [gcHeaders];
+  gcomments.forEach(gc => {
+    const deptName = (CONFIG.DEPARTMENTS[gc.department] || {}).name || gc.department;
+    gcData.push([gc.traineeId, deptName, gc.score || 0, gc.comment || '', gc.guestName || '', gc.submittedAt || '']);
+  });
+  const wsGc = XLSX.utils.aoa_to_sheet(gcData);
+  XLSX.utils.book_append_sheet(wb, wsGc, "Guest Comments (單位評語)");
+
+  // 4. Pulse Checks Sheet
+  const pulses = filterData(state.pulseChecks || []);
+  const pulseHeaders = ["Trainee ID", "Mood Score", "Weekly Highlights", "Challenges", "Date"];
+  const pulseData = [pulseHeaders];
+  pulses.forEach(p => {
+    pulseData.push([p.traineeId, p.mood || 0, p.highlights || '', p.challenges || '', p.submittedAt || '']);
+  });
+  const wsPulse = XLSX.utils.aoa_to_sheet(pulseData);
+  XLSX.utils.book_append_sheet(wb, wsPulse, "Pulse Checks (心情打卡)");
+
+  XLSX.writeFile(wb, `VIMEI_Report_${formatTaipeiDateOnly(new Date())}.xlsx`);
+  showToast("Excel Report Downloaded!", "success");
 };
 
-window.exportObservationLogs = function () {
-  const obsList = state.observations;
-
-  let csv = "Observation ID,Trainee ID,Trainee Name,Date,Department Key,Department Name,Key Observation,Actionable Idea,Photo/Report URL,Submitted At,Status,Mentor Name,Mentor Feedback,Feedback At,Performance Rating\n";
-
-  obsList.forEach(obs => {
-    const dept = CONFIG.DEPARTMENTS[obs.department] || {};
-    const deptName = dept.name || obs.department;
-
-    // Clean strings of double quotes and line breaks
-    const cleanStr = str => {
-      if (!str) return '';
-      return str.replace(/"/g, '""').replace(/\n/g, ' ');
-    };
-
-    csv += `"${cleanStr(obs.id)}",` +
-      `"${cleanStr(obs.traineeId)}",` +
-      `"${cleanStr(obs.traineeName)}",` +
-      `"${cleanStr(formatTaipeiDateOnly(obs.date))}",` +
-      `"${cleanStr(obs.department)}",` +
-      `"${cleanStr(deptName)}",` +
-      `"${cleanStr(obs.keyObservation)}",` +
-      `"${cleanStr(obs.actionableIdea)}",` +
-      `"${cleanStr(obs.attachmentUrl)}",` +
-      `"${cleanStr(obs.submittedAt)}",` +
-      `"${cleanStr(obs.status)}",` +
-      `"${cleanStr(obs.mentorName)}",` +
-      `"${cleanStr((Auth.getCurrentUser() && Auth.getCurrentUser().role === 'admin') ? obs.mentorComment : '')}",` +
-      `"${cleanStr(obs.feedbackAt)}",` +
-      `${(obs.selfRating || obs.rating) || 0}\n`;
+window.exportTraineePDF = function() {
+  const el = document.getElementById('analytics');
+  if (!el) {
+    showToast("找不到報表畫面", "error");
+    return;
+  }
+  const traineeFilter = document.getElementById('exportFilterTrainee') ? document.getElementById('exportFilterTrainee').value : 'all';
+  const tr = CONFIG.TRAINEES.find(t => t.id === traineeFilter) || {name: 'All_Trainees'};
+  
+  showToast("Generating PDF... Please wait.", "info");
+  
+  const opt = {
+    margin:       0.5,
+    filename:     `VIMEI_Report_${tr.name.split(' ')[0]}_${formatTaipeiDateOnly(new Date())}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+  };
+  
+  html2pdf().set(opt).from(el).save().then(() => {
+    showToast("PDF Downloaded Successfully!", "success");
   });
-
-  downloadCSV(csv, "Trainee_Field_Observation_Logs.csv");
-  showToast("Observations CSV Downloaded Successfully!", "success");
 };
 
 function setupMainEventListeners() {
