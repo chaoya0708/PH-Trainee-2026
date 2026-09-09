@@ -1472,6 +1472,10 @@ window.exportTraineePDF = function() {
   
   html2pdf().set(opt).from(el).save().then(() => {
     showToast("PDF Downloaded Successfully!", "success");
+  }).catch(err => {
+    console.error("PDF Export Error:", err);
+    showToast("PDF 產生失敗: " + err.toString(), "error");
+    alert("PDF 產生失敗，請檢查瀏覽器 Console 了解詳細原因。");
   });
 };
 
