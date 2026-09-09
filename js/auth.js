@@ -56,7 +56,7 @@ const Auth = {
       if (role === 'admin') {
         isValid = (credential === CONFIG.ADMIN_PIN || credential === '314231'); // Keep 314231 as fallback for now
       } else if (role === 'executive') {
-        isValid = (credential === '999999'); // Simplified
+        isValid = (credential === 'ph2026');
       } else if (role === 'trainee') {
         const trainee = CONFIG.TRAINEES.find(t => t.id === identifier);
         isValid = trainee && trainee.pin === credential;

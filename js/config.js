@@ -85,17 +85,17 @@ const CONFIG = {
   // ----------------------------------------------------------------
   DEPARTMENTS: {
     // Chimei
-    cmf_production_hunei: { id: 'cmf_production_hunei', name: 'CHIMEI - Manufacturing (Hunei)', nameZh: '奇美 - 生產製造 (湖內)', shortZh: '生產(湖內)', shortEn: 'Mfg(H)', color: '#64748b', icon: '', pin: '472900' },
-    cmf_production_rende: { id: 'cmf_production_rende', name: 'CHIMEI - Manufacturing (Rende)', nameZh: '奇美 - 生產製造 (仁德)', shortZh: '生產(仁德)', shortEn: 'Mfg(R)', color: '#64748b', icon: '', pin: '381900' },
-    cmf_qc: { id: 'cmf_qc', name: 'CHIMEI - QA/QC', nameZh: '奇美 - 品管', shortZh: '品管', shortEn: 'QA/QC', color: '#64748b', icon: '', pin: '815300' },
-    cmf_rd_chinese: { id: 'cmf_rd_chinese', name: 'CHIMEI - R&D (Chinese Dim Sum)', nameZh: '奇美 - 研發 (中點)', shortZh: '研發中', shortEn: 'R&D(C)', color: '#64748b', icon: '', pin: '296400' },
-    cmf_rd_western: { id: 'cmf_rd_western', name: 'CHIMEI - R&D (Western Pastry)', nameZh: '奇美 - 研發 (西點)', shortZh: '研發西', shortEn: 'R&D(W)', color: '#64748b', icon: '', pin: '608100' },
+    cmf_production_hunei: { id: 'cmf_production_hunei', name: 'CHIMEI - Manufacturing (Hunei)', nameZh: '奇美 - 生產製造 (湖內)', shortZh: '生產(湖內)', shortEn: 'Mfg(H)', color: '#64748b', icon: '', pin: '472926' },
+    cmf_production_rende: { id: 'cmf_production_rende', name: 'CHIMEI - Manufacturing (Rende)', nameZh: '奇美 - 生產製造 (仁德)', shortZh: '生產(仁德)', shortEn: 'Mfg(R)', color: '#64748b', icon: '', pin: '381926' },
+    cmf_qc: { id: 'cmf_qc', name: 'CHIMEI - QA/QC', nameZh: '奇美 - 品管', shortZh: '品管', shortEn: 'QA/QC', color: '#64748b', icon: '', pin: '815326' },
+    cmf_rd_chinese: { id: 'cmf_rd_chinese', name: 'CHIMEI - R&D (Chinese Dim Sum)', nameZh: '奇美 - 研發 (中點)', shortZh: '研發中', shortEn: 'R&D(C)', color: '#64748b', icon: '', pin: '296426' },
+    cmf_rd_western: { id: 'cmf_rd_western', name: 'CHIMEI - R&D (Western Pastry)', nameZh: '奇美 - 研發 (西點)', shortZh: '研發西', shortEn: 'R&D(W)', color: '#64748b', icon: '', pin: '608126' },
     // Yushan
-    yushan_qc: { id: 'yushan_qc', name: 'YUSHAN - QA/QC', nameZh: '玉膳 - 品管', shortZh: '玉膳品管', shortEn: 'YS QA', color: '#fb923c', icon: '', pin: '539200' },
-    yushan_prep: { id: 'yushan_prep', name: 'YUSHAN - Pre-processing', nameZh: '玉膳 - 前處理段', shortZh: '前處理', shortEn: 'Prep', color: '#fb923c', icon: '', pin: '174800' },
-    yushan_cooking: { id: 'yushan_cooking', name: 'YUSHAN - Cooking', nameZh: '玉膳 - 烹煮段', shortZh: '烹煮段', shortEn: 'Cook', color: '#fb923c', icon: '', pin: '926500' },
-    yushan_packaging: { id: 'yushan_packaging', name: 'YUSHAN - Packaging', nameZh: '玉膳 - 包裝段', shortZh: '包裝段', shortEn: 'Pkg', color: '#fb923c', icon: '', pin: '381700' },
-    yushan_warehouse: { id: 'yushan_warehouse', name: 'YUSHAN - Warehouse & Cold Storage', nameZh: '玉膳 - 倉儲物流與凍庫管理', shortZh: '倉儲', shortEn: 'Whse', color: '#fb923c', icon: '', pin: '754000' },
+    yushan_qc: { id: 'yushan_qc', name: 'YUSHAN - QA/QC', nameZh: '玉膳 - 品管', shortZh: '玉膳品管', shortEn: 'YS QA', color: '#fb923c', icon: '', pin: '539226' },
+    yushan_prep: { id: 'yushan_prep', name: 'YUSHAN - Pre-processing', nameZh: '玉膳 - 前處理段', shortZh: '前處理', shortEn: 'Prep', color: '#fb923c', icon: '', pin: '174826' },
+    yushan_cooking: { id: 'yushan_cooking', name: 'YUSHAN - Cooking', nameZh: '玉膳 - 烹煮段', shortZh: '烹煮段', shortEn: 'Cook', color: '#fb923c', icon: '', pin: '926526' },
+    yushan_packaging: { id: 'yushan_packaging', name: 'YUSHAN - Packaging', nameZh: '玉膳 - 包裝段', shortZh: '包裝段', shortEn: 'Pkg', color: '#fb923c', icon: '', pin: '381726' },
+    yushan_warehouse: { id: 'yushan_warehouse', name: 'YUSHAN - Warehouse & Cold Storage', nameZh: '玉膳 - 倉儲物流與凍庫管理', shortZh: '倉儲', shortEn: 'Whse', color: '#fb923c', icon: '', pin: '754026' },
     // Other (Records)
     holiday: { id: 'holiday', name: 'Day Off / Holiday', nameZh: '休假日 / Holiday', shortZh: '休假', shortEn: 'Off', color: '#06b6d4', icon: '', isRecordOnly: true }
   },
