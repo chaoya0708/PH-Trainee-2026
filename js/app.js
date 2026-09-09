@@ -1438,7 +1438,7 @@ window.exportAdvancedExcel = function () {
   const wsPulse = XLSX.utils.aoa_to_sheet(pulseData);
   XLSX.utils.book_append_sheet(wb, wsPulse, "Pulse Checks (心情打卡)");
 
-  XLSX.writeFile(wb, `VIMEI_Report_${formatTaipeiDateOnly(new Date())}.xlsx`);
+  XLSX.writeFile(wb, `VIMEI_Report_${formatTaipeiDateOnly(new Date().toISOString())}.xlsx`);
   showToast("Excel Report Downloaded!", "success");
 };
 
@@ -1464,7 +1464,7 @@ window.exportTraineePDF = function() {
   
   const opt = {
     margin:       0.5,
-    filename:     `VIMEI_Report_${tr.name.split(' ')[0]}_${formatTaipeiDateOnly(new Date())}.pdf`,
+    filename:     `VIMEI_Report_${tr.name.split(' ')[0]}_${formatTaipeiDateOnly(new Date().toISOString())}.pdf`,
     image:        { type: 'jpeg', quality: 0.98 },
     html2canvas:  { scale: 2, useCORS: true },
     jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
