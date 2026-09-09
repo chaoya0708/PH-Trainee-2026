@@ -1452,7 +1452,7 @@ window.exportTraineePDF = function() {
     return;
   }
 
-  const el = document.getElementById('analytics');
+  const el = document.getElementById('sectionAnalytics');
   if (!el) {
     showToast("找不到報表畫面", "error");
     return;
