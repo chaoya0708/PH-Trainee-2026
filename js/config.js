@@ -12,7 +12,7 @@ const CONFIG = {
   // true  = Demo 模式（資料存在瀏覽器，用於測試）
   // false = 正式模式（資料存到 Google Sheets，需先完成 SETUP_GUIDE.md 步驟）
   // ----------------------------------------------------------------
-  DEMO_MODE: true,
+  DEMO_MODE: false,
 
   // ----------------------------------------------------------------
   // Firebase 設定 / Firebase Config
