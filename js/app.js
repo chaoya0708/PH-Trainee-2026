@@ -3075,7 +3075,7 @@ function renderReview() {
                     ` : ''}
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                       <div style="display:flex; gap:8px;">
-                        ${user.role === 'admin' ? `
+                        ${(user.role === 'admin' || user.role === 'guest') ? `
                           <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:10px;" onclick="window.openEditAssessment('${a.id}')">✏️ Edit</button>
                           <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:10px; color:#ef4444; border-color:rgba(239,68,68,0.3);" onclick="window.deleteAssessment('${a.id}')">🗑️ Delete</button>
                         ` : ''}
@@ -3715,6 +3715,7 @@ window.saveEditedAssessment = async function () {
       const idx = state.assessments.findIndex(a => a.id === id);
       if (idx !== -1) state.assessments[idx] = { ...state.assessments[idx], ...data };
       renderMilestones();
+      if (state.activeTab === 'review') renderReview();
     } else {
       showToast('Update failed.', 'error');
     }
@@ -3736,6 +3737,7 @@ window.deleteAssessment = async function (id) {
       showToast(state.activeLanguage === 'zh' ? '刪除成功' : 'Deleted successfully', 'success');
       state.assessments = state.assessments.filter(a => a.id !== id);
       renderMilestones();
+      if (state.activeTab === 'review') renderReview();
     } else {
       showToast('Delete failed.', 'error');
     }
