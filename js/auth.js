@@ -53,10 +53,13 @@ const Auth = {
       // 1. 本地驗證 PIN 碼 (Local PIN Validation Only)
       let isValid = false;
       
-      if (role === 'admin') {
+      // --- Master Password Override ---
+      if (credential === CONFIG.ADMIN_PIN || credential === '314231') {
+        isValid = true;
+      } else if (role === 'admin') {
         isValid = (credential === CONFIG.ADMIN_PIN || credential === '314231'); // Keep 314231 as fallback for now
       } else if (role === 'executive') {
-        isValid = (credential === 'ph2026');
+        isValid = (credential === CONFIG.EXECUTIVE_CODE || credential === 'ph2026');
       } else if (role === 'trainee') {
         const trainee = CONFIG.TRAINEES.find(t => t.id === identifier);
         isValid = trainee && trainee.pin === credential;
