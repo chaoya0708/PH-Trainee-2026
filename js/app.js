@@ -3282,7 +3282,13 @@ function buildFeedItem(obs, user) {
       const submitted = new Date(obs.submittedAt || obs.date);
       if (submitted > deadline) {
         // Exemption for Mark's specific week
-        const isExempt = (obs.traineeId === 'mark' && obs.targetWeek && (obs.targetWeek.includes('2026-07-13') || obs.targetWeek.includes('2026-06-01')));
+        let isExempt = (obs.traineeId === 'mark' && obs.targetWeek && (obs.targetWeek.includes('2026-07-13') || obs.targetWeek.includes('2026-06-01')));
+        
+        // Exemption for Diane and Mark's 9/11 upload
+        if ((obs.traineeId === 'diane' || obs.traineeId === 'mark') && 
+            ((obs.targetWeek && obs.targetWeek.includes('2026-09-11')) || String(obs.submittedAt || obs.date).includes('2026-09-11'))) {
+          isExempt = true;
+        }
         if (!isExempt) {
           isLateStr = `<span class="badge" style="background-color:#ef4444;margin-left:8px;">${state.activeLanguage === 'zh' ? '遲交 (Late)' : 'Late'}</span>`;
         }
