@@ -1546,8 +1546,8 @@ function setupMainEventListeners() {
       btn.style.textAlign = 'left';
       btn.style.width = '100%';
       btn.style.justifyContent = 'flex-start';
-      btn.onclick = () => {
-        Auth.login(opt.r, opt.i, CONFIG.ADMIN_PIN);
+      btn.onclick = async () => {
+        await Auth.login(opt.r, opt.i, CONFIG.ADMIN_PIN);
         const targetLang = (opt.r === 'trainee') ? 'en' : 'zh';
         localStorage.setItem('vimei_lang', targetLang);
 
@@ -1586,35 +1586,44 @@ function setupMainEventListeners() {
           document.removeEventListener('click', closePopup);
         }
       });
-    }, 50);
+    }, 200);
   };
 
   // Secret God Mode Trigger
   let godModeClicks = 0;
   let godModeTimer;
   const godModeHandler = (e) => {
+    e.stopPropagation();
     godModeClicks++;
     clearTimeout(godModeTimer);
     if (godModeClicks >= 3) {
       godModeClicks = 0;
-      const pin = prompt("Enter Master Pin");
-      if (pin === CONFIG.ADMIN_PIN) {
-        window.logoutAndSwitch(e, true);
-      }
+      
+      const targetRect = e.currentTarget ? e.currentTarget.getBoundingClientRect() : null;
+      const fakeEvent = targetRect ? { currentTarget: { getBoundingClientRect: () => targetRect } } : e;
+      
+      setTimeout(() => {
+        const pin = prompt("Enter Master Pin");
+        if (pin === CONFIG.ADMIN_PIN) {
+          window.logoutAndSwitch(fakeEvent, true);
+        }
+      }, 50);
     } else {
       godModeTimer = setTimeout(() => godModeClicks = 0, 500);
     }
   };
 
   // Attach ONLY to page title for safer tapping
-  const title = document.querySelector('.page-title');
-  if (title) {
-    title.style.cursor = 'pointer';
-    title.addEventListener('click', godModeHandler);
-  }
+  const titles = document.querySelectorAll('.page-title, .login-brand h1');
+  titles.forEach(t => {
+    if (t) {
+      t.style.cursor = 'pointer';
+      t.addEventListener('click', godModeHandler);
+    }
+  });
 
-  window.fastSwitchRole = function (role, id) {
-    Auth.login(role, id, CONFIG.ADMIN_PIN);
+  window.fastSwitchRole = async function (role, id) {
+    await Auth.login(role, id, CONFIG.ADMIN_PIN);
     location.reload();
   };
 
