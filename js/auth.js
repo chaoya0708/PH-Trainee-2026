@@ -8,6 +8,8 @@
 const Auth = {
 
   SESSION_KEY: 'vimei_fb_v5_session',
+  LAST_ACTIVITY_KEY: 'vimei_fb_v5_last_activity',
+  MAX_INACTIVITY_MS: 60 * 60 * 1000, // 1 hour (in milliseconds)
 
   /**
    * Attempt login and store session if successful.
@@ -98,6 +100,7 @@ const Auth = {
 
     if (user) {
       localStorage.setItem(this.SESSION_KEY, JSON.stringify(user));
+      localStorage.setItem(this.LAST_ACTIVITY_KEY, Date.now().toString());
       return true;
     }
     return false;
@@ -113,6 +116,7 @@ const Auth = {
       console.error(e);
     }
     localStorage.removeItem(this.SESSION_KEY);
+    localStorage.removeItem(this.LAST_ACTIVITY_KEY);
   },
 
   /** Get current logged-in user object, or null */
@@ -120,6 +124,13 @@ const Auth = {
     try {
       const raw = localStorage.getItem(this.SESSION_KEY);
       if (!raw) return null;
+      
+      const lastActivity = parseInt(localStorage.getItem(this.LAST_ACTIVITY_KEY) || '0', 10);
+      if (lastActivity > 0 && Date.now() - lastActivity > this.MAX_INACTIVITY_MS) {
+        this.logout();
+        return null;
+      }
+      
       const user = JSON.parse(raw);
       if (user.role === 'admin') {
         user.name = CONFIG.ADMIN.name;
@@ -155,3 +166,32 @@ const Auth = {
   }
 
 };
+
+// Activity tracker for auto-logout
+if (typeof window !== 'undefined') {
+  let lastUpdate = 0;
+  const updateActivity = () => {
+    if (Date.now() - lastUpdate > 60000) { // Throttle to max once per minute
+      if (localStorage.getItem(Auth.SESSION_KEY)) {
+        localStorage.setItem(Auth.LAST_ACTIVITY_KEY, Date.now().toString());
+        lastUpdate = Date.now();
+      }
+    }
+  };
+  window.addEventListener('mousemove', updateActivity, {passive: true});
+  window.addEventListener('keydown', updateActivity, {passive: true});
+  window.addEventListener('click', updateActivity, {passive: true});
+  window.addEventListener('touchstart', updateActivity, {passive: true});
+  window.addEventListener('scroll', updateActivity, {passive: true});
+  
+  // Periodically check for expiration even if tab is open but inactive
+  setInterval(() => {
+    if (localStorage.getItem(Auth.SESSION_KEY)) {
+      const lastActivity = parseInt(localStorage.getItem(Auth.LAST_ACTIVITY_KEY) || '0', 10);
+      if (lastActivity > 0 && Date.now() - lastActivity > Auth.MAX_INACTIVITY_MS) {
+        Auth.logout();
+        window.location.reload(); // Force reload to show login screen
+      }
+    }
+  }, 60000); // Check every minute
+}
