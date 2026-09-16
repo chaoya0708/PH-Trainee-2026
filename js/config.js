@@ -28,10 +28,10 @@ const CONFIG = {
   },
 
   // ----------------------------------------------------------------
-  // 密碼設定 / PIN & Access Codes (請自行修改 / Please change these)
+  // 密碼設定 / PIN & Access Codes (已轉換為 SHA-256 雜湊值)
   // ----------------------------------------------------------------
-  ADMIN_PIN: '314231',      // 計畫導師 (Mentor) 密碼
-  EXECUTIVE_CODE: 'ph2026',  // 高階決策主管 (Executive) 授權代碼
+  ADMIN_PIN_HASH: '854b5672c420cf955a18756d663ede307b624dc61cbe1ce39f4e164a55481b03',      // 計畫導師 (Mentor) 密碼的雜湊
+  EXECUTIVE_CODE_HASH: '40c110f873b68a765841be42dfbec4a52139586c32443a4c6d3838d4d0412def',  // 高階決策主管 (Executive) 授權代碼的雜湊
 
   // ----------------------------------------------------------------
   // UI 設定 / UI Settings
@@ -57,7 +57,7 @@ const CONFIG = {
       id: 'diane',
       name: '白妙儀 / Diane Solomon Barcelenia',
       avatar: '<i class="fi fi-rr-user"></i>',
-      pin: '041202Gizmo',
+      pinHash: '9890a09783859dad0f3562e94e73165d4d9bcc47c7d99292ad0c5f7230d1948d',
       bio: '',
       excludedDepartments: ['cmf_production_rende']
     },
@@ -65,7 +65,7 @@ const CONFIG = {
       id: 'mark',
       name: '段亦林 / Mark Jayzon Comon Dagala',
       avatar: '<i class="fi fi-rr-user"></i>',
-      pin: '211312',
+      pinHash: '91d9cf1b17585ecd88427055a5a6a724b22e4cbebf7435e03478d11740c98c7b',
       bio: '',
       excludedDepartments: ['cmf_production_rende']
     },
@@ -73,7 +73,7 @@ const CONFIG = {
       id: 'jairuz',
       name: '侯俊材 / Jairuz Delos Reyes Nazareno',
       avatar: '<i class="fi fi-rr-user"></i>',
-      pin: 'mudkip',
+      pinHash: 'e5317f535561d09cf9af68dc7638fc5a77e94242b4f44f94523731ce9f355154',
       bio: '',
       excludedDepartments: ['cmf_production_hunei']
     }
@@ -84,17 +84,17 @@ const CONFIG = {
   // ----------------------------------------------------------------
   DEPARTMENTS: {
     // Chimei
-    cmf_production_hunei: { id: 'cmf_production_hunei', name: 'CHIMEI - Manufacturing (Hunei)', nameZh: '奇美 - 生產製造 (湖內)', shortZh: '生產(湖內)', shortEn: 'Mfg(H)', color: '#64748b', icon: '', pin: '472926' },
-    cmf_production_rende: { id: 'cmf_production_rende', name: 'CHIMEI - Manufacturing (Rende)', nameZh: '奇美 - 生產製造 (仁德)', shortZh: '生產(仁德)', shortEn: 'Mfg(R)', color: '#64748b', icon: '', pin: '381926' },
-    cmf_qc: { id: 'cmf_qc', name: 'CHIMEI - QA/QC', nameZh: '奇美 - 品管', shortZh: '品管', shortEn: 'QA/QC', color: '#64748b', icon: '', pin: '815326' },
-    cmf_rd_chinese: { id: 'cmf_rd_chinese', name: 'CHIMEI - R&D (Chinese Dim Sum)', nameZh: '奇美 - 研發 (中點)', shortZh: '研發中', shortEn: 'R&D(C)', color: '#64748b', icon: '', pin: '296426' },
-    cmf_rd_western: { id: 'cmf_rd_western', name: 'CHIMEI - R&D (Western Pastry)', nameZh: '奇美 - 研發 (西點)', shortZh: '研發西', shortEn: 'R&D(W)', color: '#64748b', icon: '', pin: '608126' },
+    cmf_production_hunei: { id: 'cmf_production_hunei', name: 'CHIMEI - Manufacturing (Hunei)', nameZh: '奇美 - 生產製造 (湖內)', shortZh: '生產(湖內)', shortEn: 'Mfg(H)', color: '#64748b', icon: '', pinHash: '699d7536150fefa85543647ddddc1c5b7af0c350dd6c23d3c521e78125eaa24c' },
+    cmf_production_rende: { id: 'cmf_production_rende', name: 'CHIMEI - Manufacturing (Rende)', nameZh: '奇美 - 生產製造 (仁德)', shortZh: '生產(仁德)', shortEn: 'Mfg(R)', color: '#64748b', icon: '', pinHash: '1113461ef71d14eda4bc086431e77d67a0a21a98f79eaf19415ee27426e9eed2' },
+    cmf_qc: { id: 'cmf_qc', name: 'CHIMEI - QA/QC', nameZh: '奇美 - 品管', shortZh: '品管', shortEn: 'QA/QC', color: '#64748b', icon: '', pinHash: '04441c578ea918ba3a639e7dce9ce90774a180d7a69b12bd410027912992824b' },
+    cmf_rd_chinese: { id: 'cmf_rd_chinese', name: 'CHIMEI - R&D (Chinese Dim Sum)', nameZh: '奇美 - 研發 (中點)', shortZh: '研發中', shortEn: 'R&D(C)', color: '#64748b', icon: '', pinHash: 'a08470dac80b2c3f84669f0c70f8e285358ac2d22855fe1eb534c8381cb4bdd1' },
+    cmf_rd_western: { id: 'cmf_rd_western', name: 'CHIMEI - R&D (Western Pastry)', nameZh: '奇美 - 研發 (西點)', shortZh: '研發西', shortEn: 'R&D(W)', color: '#64748b', icon: '', pinHash: '15a3766941aff713b92007f25d5e96b40b6f0095dbd103f104e61528555731d9' },
     // Yushan
-    yushan_qc: { id: 'yushan_qc', name: 'YUSHAN - QA/QC', nameZh: '玉膳 - 品管', shortZh: '玉膳品管', shortEn: 'YS QA', color: '#fb923c', icon: '', pin: '539226' },
-    yushan_prep: { id: 'yushan_prep', name: 'YUSHAN - Pre-processing', nameZh: '玉膳 - 前處理段', shortZh: '前處理', shortEn: 'Prep', color: '#fb923c', icon: '', pin: '174826' },
-    yushan_cooking: { id: 'yushan_cooking', name: 'YUSHAN - Cooking', nameZh: '玉膳 - 烹煮段', shortZh: '烹煮段', shortEn: 'Cook', color: '#fb923c', icon: '', pin: '926526' },
-    yushan_packaging: { id: 'yushan_packaging', name: 'YUSHAN - Packaging', nameZh: '玉膳 - 包裝段', shortZh: '包裝段', shortEn: 'Pkg', color: '#fb923c', icon: '', pin: '381726' },
-    yushan_warehouse: { id: 'yushan_warehouse', name: 'YUSHAN - Warehouse & Cold Storage', nameZh: '玉膳 - 倉儲物流與凍庫管理', shortZh: '倉儲', shortEn: 'Whse', color: '#fb923c', icon: '', pin: '754026' },
+    yushan_qc: { id: 'yushan_qc', name: 'YUSHAN - QA/QC', nameZh: '玉膳 - 品管', shortZh: '玉膳品管', shortEn: 'YS QA', color: '#fb923c', icon: '', pinHash: '8a5fab2735e31e2765e25ad858ace56d191cfe241845eaf2c17c6eadec9e86a6' },
+    yushan_prep: { id: 'yushan_prep', name: 'YUSHAN - Pre-processing', nameZh: '玉膳 - 前處理段', shortZh: '前處理', shortEn: 'Prep', color: '#fb923c', icon: '', pinHash: '2e2b2cd8155d363e4bd4c1fcafe419239acb3a779be5a080631e5ff021817093' },
+    yushan_cooking: { id: 'yushan_cooking', name: 'YUSHAN - Cooking', nameZh: '玉膳 - 烹煮段', shortZh: '烹煮段', shortEn: 'Cook', color: '#fb923c', icon: '', pinHash: '6f674cfe4186e853c0a0f8957f7be28b7e5b7978821089c3493202a3281ca09b' },
+    yushan_packaging: { id: 'yushan_packaging', name: 'YUSHAN - Packaging', nameZh: '玉膳 - 包裝段', shortZh: '包裝段', shortEn: 'Pkg', color: '#fb923c', icon: '', pinHash: 'a6f504d6870b9cabd41d78550f58cec4c6313da91e1ab5f4de4a9c02420c0224' },
+    yushan_warehouse: { id: 'yushan_warehouse', name: 'YUSHAN - Warehouse & Cold Storage', nameZh: '玉膳 - 倉儲物流與凍庫管理', shortZh: '倉儲', shortEn: 'Whse', color: '#fb923c', icon: '', pinHash: '2beedcebd98c8351e2daad388d77ca5baaabe2a78802b495de02a58205002eeb' },
     // Other (Records)
     holiday: { id: 'holiday', name: 'Day Off / Holiday', nameZh: '休假日 / Holiday', shortZh: '休假', shortEn: 'Off', color: '#06b6d4', icon: '', isRecordOnly: true }
   },

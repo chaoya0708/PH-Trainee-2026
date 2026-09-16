@@ -11,6 +11,13 @@ const Auth = {
   LAST_ACTIVITY_KEY: 'vimei_fb_v5_last_activity',
   MAX_INACTIVITY_MS: 60 * 60 * 1000, // 1 hour (in milliseconds)
 
+  async _hash(text) {
+    const msgBuffer = new TextEncoder().encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  },
+
   /**
    * Attempt login and store session if successful.
    * @param {string} role - 'admin' | 'trainee' | 'guest'
@@ -24,50 +31,24 @@ const Auth = {
        return this._setLocalSession(role, identifier);
     }
 
-    let email = '';
-    let fbCredential = credential;
-
-    // --- Master Password Override ---
-    if (credential === CONFIG.ADMIN_PIN) {
-      if (role === 'trainee') {
-        const trainee = CONFIG.TRAINEES.find(t => t.id === identifier);
-        if (trainee) fbCredential = trainee.pin;
-      } else if (role === 'guest') {
-        const dept = CONFIG.DEPARTMENTS[identifier];
-        if (dept) fbCredential = dept.pin;
-      } else if (role === 'executive') {
-        fbCredential = CONFIG.EXECUTIVE_CODE;
-      }
-    }
-    // --------------------------------
-
-    if (role === 'admin') email = 'admin_fix@vimeicmf.com';
-    else if (role === 'trainee') email = identifier + '_fix@vimeicmf.com';
-    else if (role === 'guest') {
-       email = identifier + '_fix@vimeicmf.com';
-       if (fbCredential.length === 4) {
-          fbCredential = fbCredential + '26';
-       }
-    }
-    else if (role === 'executive') email = 'executive_fix@vimeicmf.com';
-
     try {
-      // 1. 本地驗證 PIN 碼 (Local PIN Validation Only)
+      // 1. 本地驗證 PIN 碼 (Local PIN Validation with SHA-256)
       let isValid = false;
+      const hashedCredential = await this._hash(credential);
       
       // --- Master Password Override ---
-      if (credential === CONFIG.ADMIN_PIN || credential === '314231') {
+      if (hashedCredential === CONFIG.ADMIN_PIN_HASH) {
         isValid = true;
       } else if (role === 'admin') {
-        isValid = (credential === CONFIG.ADMIN_PIN || credential === '314231'); // Keep 314231 as fallback for now
+        isValid = (hashedCredential === CONFIG.ADMIN_PIN_HASH);
       } else if (role === 'executive') {
-        isValid = (credential === CONFIG.EXECUTIVE_CODE || credential === 'ph2026');
+        isValid = (hashedCredential === CONFIG.EXECUTIVE_CODE_HASH);
       } else if (role === 'trainee') {
         const trainee = CONFIG.TRAINEES.find(t => t.id === identifier);
-        isValid = trainee && trainee.pin === credential;
+        isValid = trainee && trainee.pinHash === hashedCredential;
       } else if (role === 'guest') {
         const dept = Object.values(CONFIG.DEPARTMENTS).find(d => d.id === identifier);
-        isValid = dept && dept.pin === credential;
+        isValid = dept && dept.pinHash === hashedCredential;
       }
 
       if (!isValid) {

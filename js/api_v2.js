@@ -17,78 +17,7 @@ const Api = (() => {
   const LS_MENTOR_NOTES = 'vimei2_mentor_notes';
   const LS_RESOURCES = 'vimei2_resources';
 
-  // ----- Default demo seed data -----
-  function seedDemoData() {
-    if (!localStorage.getItem(LS_OBS)) {
-      const seed = [
-        {
-          id: 'obs-seed-1',
-          traineeId: 'diane',
-          traineeName: 'Diane',
-          date: '2026-07-13',
-          department: 'yushan_prep',
-          keyObservation: 'The vegetable washing sector has a minor bottleneck during peak hours. Workers frequently cross paths when carrying sanitized crates due to a narrow layout. The 5S signage is clear but the physical flow has not been redesigned to match it.',
-          actionableIdea: 'Propose an L-shaped crate flow in the VIMEI Philippines plant. Bilingual (English + Tagalog) floor markings would guide local staff more effectively than signage alone.',
-          attachmentUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=60',
-          submittedAt: '2026-07-13T09:15:00Z',
-          status: 'pending',
-          mentorComment: '',
-          mentorName: '',
-          feedbackAt: '',
-          rating: 0
-        },
-        {
-          id: 'obs-seed-2',
-          traineeId: 'mark',
-          traineeName: 'Mark',
-          date: '2026-07-13',
-          department: 'yushan_prep',
-          keyObservation: 'The automatic dicer machine runs at 80% capacity because the raw material feeding rate fluctuates. A lot of idle time is caused by waiting for manually trimmed vegetables from upstream.',
-          actionableIdea: 'Introduce a gravity-assisted staging chute above the feeder. Clear visual buffer threshold signage (bilingual) will help Filipino operators respond faster without needing supervisor intervention.',
-          attachmentUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=60',
-          submittedAt: '2026-07-13T10:00:00Z',
-          status: 'pending',
-          mentorComment: '',
-          mentorName: '',
-          feedbackAt: '',
-          rating: 0
-        },
-        {
-          id: 'obs-seed-3',
-          traineeId: 'jairuz',
-          traineeName: 'Jairuz',
-          date: '2026-07-13',
-          department: 'cmf_qc',
-          keyObservation: 'Metal detector test sticks are stored in an unlocked generic cabinet instead of a dedicated verification kit with controlled access. This is a potential HACCP deviation risk.',
-          actionableIdea: 'Create a shadow board for test sticks with a digital keypad lock. Only QA-certified personnel should hold the PIN. Label the board in both English and Tagalog for clarity.',
-          attachmentUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&auto=format&fit=crop&q=60',
-          submittedAt: '2026-07-13T11:30:00Z',
-          status: 'pending',
-          mentorComment: '',
-          mentorName: '',
-          feedbackAt: '',
-          rating: 0
-        }
-      ];
-      localStorage.setItem(LS_OBS, JSON.stringify(seed));
-    }
-
-    if (!localStorage.getItem(LS_SCHED)) {
-      localStorage.setItem(LS_SCHED, JSON.stringify(CONFIG.DEFAULT_SCHEDULES));
-    }
-
-    if (!localStorage.getItem(LS_GCOMMENT)) {
-      localStorage.setItem(LS_GCOMMENT, JSON.stringify([]));
-    }
-
-    if (!localStorage.getItem(LS_MENTOR_NOTES)) {
-      localStorage.setItem(LS_MENTOR_NOTES, JSON.stringify([]));
-    }
-
-    if (!localStorage.getItem(LS_RESOURCES)) {
-      localStorage.setItem(LS_RESOURCES, JSON.stringify([]));
-    }
-  }
+  // ----- Default demo seed data (REMOVED) -----
 
   // ----- Demo helpers -----
   function lsGet(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } }
@@ -112,35 +41,7 @@ const Api = (() => {
     return nowIso().replace('T', ' ').substring(0, 16);
   }
 
-  // ----- Auto Seed Firebase -----
-  async function autoSeedFirebase() {
-    if (!db) return;
-    try {
-      const snap = await db.collection('observations').limit(1).get();
-      if (snap.empty) {
-        console.log("Database is empty! Auto-seeding default data...");
-        // Seed Observations
-        const obsSeed = [
-          { traineeId: 'diane', traineeName: 'Diane', date: '2026-07-13', department: 'yushan_prep', keyObservation: 'The vegetable washing sector has a minor bottleneck...', actionableIdea: 'Propose an L-shaped crate flow...', status: 'pending', rating: 0 },
-          { traineeId: 'mark', traineeName: 'Mark', date: '2026-07-13', department: 'yushan_prep', keyObservation: 'The automatic dicer machine runs at 80% capacity...', actionableIdea: 'Introduce a gravity-assisted staging chute...', status: 'pending', rating: 0 },
-          { traineeId: 'jairuz', traineeName: 'Jairuz', date: '2026-07-13', department: 'cmf_qc', keyObservation: 'Metal detector test sticks are stored in an unlocked generic cabinet...', actionableIdea: 'Create a shadow board for test sticks...', status: 'pending', rating: 0 }
-        ];
-        for (let obs of obsSeed) {
-          await db.collection('observations').add({ ...obs, submittedAt: nowIso(), mentorComment: '', mentorName: '', feedbackAt: '' });
-        }
-        
-        // Seed Schedules
-        if (CONFIG.DEFAULT_SCHEDULES) {
-          for (let sched of CONFIG.DEFAULT_SCHEDULES) {
-             await db.collection('schedules').add(sched);
-          }
-        }
-        console.log("Seeding complete!");
-      }
-    } catch (e) {
-      console.error("Auto-seed failed:", e);
-    }
-  }
+  // ----- Auto Seed Firebase (REMOVED) -----
 
   // ----- Firebase Initialization -----
   let db = null;
@@ -237,7 +138,7 @@ const Api = (() => {
     
     // DEMO MODE BYPASS
     if (CONFIG.DEMO_MODE) {
-      if (!localStorage.getItem(LS_OBS)) seedDemoData(); // Ensure data exists
+      // Removed seedDemoData call
       
       switch (action) {
         case 'getAllObservations': return lsGet(LS_OBS);
@@ -486,10 +387,6 @@ const Api = (() => {
       }
 
       case 'getInitData': {
-        // Auto-seed if admin
-        if (data.role === 'admin' || data.role === 'executive') {
-          await autoSeedFirebase();
-        }
 
         const ff = data.forceFetch !== false;
         const [obs, gcomments, scheds, assess, res, pulse] = await Promise.all([
@@ -539,7 +436,7 @@ const Api = (() => {
     },
     init() {
       if (CONFIG.DEMO_MODE) {
-        seedDemoData();
+        // Removed seedDemoData call
         try {
           const raw = localStorage.getItem(LS_SCHED);
           if (raw && raw.includes('"cmf_rd"')) {
