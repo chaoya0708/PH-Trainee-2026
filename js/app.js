@@ -1547,7 +1547,7 @@ function setupMainEventListeners() {
       btn.style.width = '100%';
       btn.style.justifyContent = 'flex-start';
       btn.onclick = async () => {
-        await Auth.login(opt.r, opt.i, CONFIG.ADMIN_PIN);
+        Auth._setLocalSession(opt.r, opt.i);
         const targetLang = (opt.r === 'trainee') ? 'en' : 'zh';
         localStorage.setItem('vimei_lang', targetLang);
 
@@ -1602,10 +1602,19 @@ function setupMainEventListeners() {
       const targetRect = e.currentTarget ? e.currentTarget.getBoundingClientRect() : null;
       const fakeEvent = targetRect ? { currentTarget: { getBoundingClientRect: () => targetRect } } : e;
       
-      setTimeout(() => {
+      setTimeout(async () => {
         const pin = prompt("Enter Master Pin");
-        if (pin === CONFIG.ADMIN_PIN) {
-          window.logoutAndSwitch(fakeEvent, true);
+        if (pin) {
+          try {
+            const hashedPin = await Auth._hash(pin);
+            if (hashedPin === CONFIG.ADMIN_PIN_HASH) {
+              window.logoutAndSwitch(fakeEvent, true);
+            } else {
+              alert("Invalid Master Pin");
+            }
+          } catch (e) {
+            console.error(e);
+          }
         }
       }, 50);
     } else {
@@ -1623,7 +1632,7 @@ function setupMainEventListeners() {
   });
 
   window.fastSwitchRole = async function (role, id) {
-    await Auth.login(role, id, CONFIG.ADMIN_PIN);
+    Auth._setLocalSession(role, id);
     location.reload();
   };
 
