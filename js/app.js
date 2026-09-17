@@ -2318,7 +2318,7 @@ function renderMilestones() {
           <h4 style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px; display:flex; align-items:center; gap:8px;">
             ${state.activeLanguage === 'zh' ? '綜合職能分析 (Overall)' : 'Overall Competency'}
           </h4>
-          ${(includedDepts.length > 0 && user.role !== 'trainee') ? `<div style="font-size:11px; color:var(--primary); font-weight:600; margin-bottom:12px; text-align:center; background:var(--bg-body); padding:4px 8px; border-radius:6px; border:1px dashed var(--border-color);">
+          ${(includedDepts.length > 0 && user.role !== 'trainee' && user.role !== 'guest') ? `<div style="font-size:11px; color:var(--primary); font-weight:600; margin-bottom:12px; text-align:center; background:var(--bg-body); padding:4px 8px; border-radius:6px; border:1px dashed var(--border-color);">
             <i class="fi fi-rr-apps" style="margin-right:4px;"></i>${state.activeLanguage === 'zh' ? '包含單位：' : 'Included:'} ${includedDepts.join(', ')}
           </div>` : ''}
           <div style="width:100%; max-width: 280px;">
