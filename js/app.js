@@ -808,12 +808,19 @@ function renderDashboard() {
         </div>
         ${user.role === 'trainee' ? `
         <div style="background-color:rgba(37, 99, 235, 0.05); border-left:3px solid #2563eb; padding:10px 14px; margin-top:10px; margin-bottom:10px; border-radius:4px; font-size:12px; color:var(--text-secondary); line-height:1.6;">
-          <strong style="color:var(--text-primary);">💡 ${state.activeLanguage === 'zh' ? '設定您的專屬目標：' : 'Set Your Personal Goals:'}</strong><br>
+          <strong style="color:var(--text-primary);">💡 ${state.activeLanguage === 'zh' ? '設定您的個人發展目標：' : 'Set Your Individual Development Goals:'}</strong><br>
           ${state.activeLanguage === 'zh'
-          ? '這是一趟由您主導的學習旅程！請在此寫下您在培訓中最想達成的目標。建議設定 1-3 個具體且可衡量的目標（例如：「能獨立完成燒賣配餡並通過檢定」、「以中文進行5分鐘的早會報告」）。這能幫助導師與主管更有效地提供資源與指導。'
-          : 'This is your learning journey to own! Use this space to define what you want to achieve. We recommend setting 1-3 specific, measurable goals (e.g., "Independently complete Siomai filling and pass the exam," "Deliver a 5-minute morning briefing in Chinese"). This helps mentors and supervisors provide the exact resources you need.'}
+          ? '思考一下您希望在培訓計畫結束前獲得怎樣的成長。請根據您的學術背景、輪調經驗或未來的職涯發展，設定 1–3 個具體且可達成的目標。<br><br>例如：「運用我的工業工程知識分析至少兩個實際的生產流程」、「找出在製造過程中應用數位工具的實際機會」，或是「透過主動提問、確認資訊以及分享觀察，提升我的跨部門溝通能力」。<br><br>這些目標將成為您在整個培訓期間的學習、進度回顧以及未來發展的重要參考。'
+          : 'Think about how you would like to grow by the end of the Trainee Program. Set 1–3 specific and achievable goals based on your academic background, rotation experience, or future career development.<br><br>For example: “Apply my IE knowledge to analyze at least two actual production processes,” “Identify practical opportunities to use digital tools in manufacturing,” or “Improve my cross-department communication skills by actively asking questions, confirming information, and sharing my observations.”<br><br>These goals will serve as an important reference for your learning, progress review, and future development throughout the program.'}
         </div>
-        ` : ''}
+        ` : `
+        <div style="background-color:rgba(16, 185, 129, 0.05); border-left:3px solid #10b981; padding:10px 14px; margin-top:10px; margin-bottom:10px; border-radius:4px; font-size:12px; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">💡 ${state.activeLanguage === 'zh' ? '引導與協助：' : 'Guidance & Support:'}</strong><br>
+          ${state.activeLanguage === 'zh'
+          ? '作為導師或高階主管，請檢視培訓生設定的個人發展目標。在培訓期間，請根據這些目標給予他們對應的見習資源、指導與回饋，協助他們順利達成階段性學習目標。'
+          : 'As a mentor or executive, please review the individual development goals set by the trainee. Throughout the training period, you can use these goals as a reference to provide appropriate shadowing resources, guidance, and feedback to help them achieve their learning objectives.'}
+        </div>
+        `}
         <ul style="list-style: none; padding: 0; margin-top: 10px;">
           ${idpGoals.length === 0 ? `<li style="color:var(--text-muted); font-size:14px; padding:10px 0;">${state.activeLanguage === 'zh' ? '尚未設定發展目標...' : 'No goals set...'}</li>` : idpGoals.map((g, i) => `
             <li style="display:flex; align-items:center; gap:10px; padding: 10px 0; border-bottom: 1px solid var(--border-color);">
