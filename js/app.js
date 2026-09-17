@@ -2078,8 +2078,6 @@ function renderMilestones() {
     let includedDepts = [];
     (state.assessments || []).forEach(a => {
       if (a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee)) {
-        if (user.role === 'guest' && !a.department.startsWith('self_eval') && a.department !== user.departmentId) return;
-        
         sumC1 += a.competency1; sumC2 += a.competency2; sumC3 += a.competency3;
         sumC4 += a.competency4; sumC5 += (a.competency5 || 3);
         count++;
@@ -2127,7 +2125,6 @@ function renderMilestones() {
       // 計算各站別平均成績供趨勢圖使用
       const sortedAssessments = (state.assessments || [])
         .filter(a => a.traineeId === viewId && a.department !== 'self_eval' && (user.role !== 'trainee' || a.visibleToTrainee))
-        .filter(a => !(user.role === 'guest' && !a.department.startsWith('self_eval') && a.department !== user.departmentId))
         .sort((a, b) => (new Date(a.assessedAt || 0).getTime() || 0) - (new Date(b.assessedAt || 0).getTime() || 0));
 
       sortedAssessments.forEach(a => {
