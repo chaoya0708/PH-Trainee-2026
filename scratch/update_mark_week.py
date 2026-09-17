@@ -5,10 +5,12 @@ project_id = "ph-trainee-2026"
 doc_id = "fsxmkAHqzMrWmjnEAobA"
 new_week = "2026-06-01~2026-07-10"
 
-doc_url = f"https://firestore.googleapis.com/v1/projects/{project_id}/databases/(default)/documents/observations/{doc_id}?updateMask.fieldPaths=targetWeek"
+doc_url = f"https://firestore.googleapis.com/v1/projects/{project_id}/databases/(default)/documents/observations/{doc_id}?updateMask.fieldPaths=targetWeek&updateMask.fieldPaths=submittedAt&updateMask.fieldPaths=date"
 patch_data = {
     "fields": {
-        "targetWeek": {"stringValue": new_week}
+        "targetWeek": {"stringValue": new_week},
+        "submittedAt": {"stringValue": "2026-07-12T19:00:00+08:00"},
+        "date": {"stringValue": "2026-07-12T19:00:00+08:00"}
     }
 }
 patch_req = urllib.request.Request(doc_url, data=json.dumps(patch_data).encode('utf-8'), headers={'Content-Type': 'application/json'}, method='PATCH')
