@@ -2780,7 +2780,7 @@ function renderJournals() {
       timelineObs.forEach((o, idx) => {
         const isReviewed = o.status === 'reviewed';
         const statusIcon = isReviewed ? (state.activeLanguage === 'zh' ? '✅ 已確認' : '✅ Reviewed') : (state.activeLanguage === 'zh' ? '⏳ 待確認' : '⏳ Pending');
-        const targetWeek = o.targetWeek ? o.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(o.submittedAt || o.date);
+        const targetWeek = o.targetWeek ? formatTargetWeekDisplay(o.targetWeek, o.submittedAt || o.date) : formatTaipeiDateOnly(o.submittedAt || o.date);
         const canEvaluate = user.role === 'admin' || user.role === 'guest';
 
         const scrollBtnText = canEvaluate ? (state.activeLanguage === 'zh' ? '往下評分' : 'Grade') : (state.activeLanguage === 'zh' ? '往下查看' : 'View Details');
@@ -3282,6 +3282,17 @@ function formatTaipeiDateOnly(isoString) {
   return `${p.year}-${p.month}-${p.day}`;
 }
 
+function formatTargetWeekDisplay(tw, fallbackDate) {
+  if (!tw) return formatTaipeiDateOnly(fallbackDate);
+  const parts = tw.split('~').map(p => p.trim());
+  const ensureYear = (dateStr) => {
+    if (/^\d{4}[-\/]/.test(dateStr)) return dateStr;
+    const year = fallbackDate ? new Date(fallbackDate).getFullYear() : new Date().getFullYear();
+    return `${year}/${dateStr}`;
+  };
+  return parts.map(ensureYear).join(' ~ ');
+}
+
 function buildFeedItem(obs, user) {
   const traineeConf = CONFIG.TRAINEES.find(t => t.id === obs.traineeId) || {};
   const dept = CONFIG.DEPARTMENTS[obs.department] || {};
@@ -3391,7 +3402,7 @@ function buildFeedItem(obs, user) {
           <div class="feed-trainee-meta">
             <h4>${obs.traineeName}</h4>
             <p>
-              ${obs.targetWeek ? obs.targetWeek.replace('~', ' ~ ') : formatTaipeiDateOnly(obs.submittedAt || obs.date)} · <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
+              ${obs.targetWeek ? formatTargetWeekDisplay(obs.targetWeek, obs.submittedAt || obs.date) : formatTaipeiDateOnly(obs.submittedAt || obs.date)} · <span style="color:${dept.color}; font-weight: 600;">${state.activeLanguage === 'zh' ? dept.nameZh : dept.name}</span><br>
               <span style="font-size:11px;color:var(--text-muted);">${t('lblSubmittedAt')}: ${formatTaipeiTime(obs.submittedAt || obs.date, state.activeLanguage)}</span>
               <br><span style="font-size:12px;color:#f59e0b;font-weight:700;margin-top:4px;display:inline-block;">${state.activeLanguage === 'zh' ? '本週自我評分' : 'Weekly Self-Appraisal'}: ${obs.selfRating != null ? obs.selfRating : (obs.rating || 0)} / 5 ★</span>
             </p>
