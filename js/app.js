@@ -815,10 +815,10 @@ function renderDashboard() {
         </div>
         ` : `
         <div style="background-color:rgba(16, 185, 129, 0.05); border-left:3px solid #10b981; padding:10px 14px; margin-top:10px; margin-bottom:10px; border-radius:4px; font-size:12px; color:var(--text-secondary); line-height:1.6;">
-          <strong style="color:var(--text-primary);">💡 ${state.activeLanguage === 'zh' ? '引導與協助：' : 'Guidance & Support:'}</strong><br>
+          <strong style="color:var(--text-primary);">💡 ${state.activeLanguage === 'zh' ? '關於個人發展目標：' : 'About Individual Development Goals:'}</strong><br>
           ${state.activeLanguage === 'zh'
-          ? '作為導師或高階主管，請檢視培訓生設定的個人發展目標。在培訓期間，請根據這些目標給予他們對應的見習資源、指導與回饋，協助他們順利達成階段性學習目標。'
-          : 'As a mentor or executive, please review the individual development goals set by the trainee. Throughout the training period, you can use these goals as a reference to provide appropriate shadowing resources, guidance, and feedback to help them achieve their learning objectives.'}
+          ? '此欄位為培訓生所設定的學習與成長目標。我們鼓勵培訓生主動提出希望達成的具體目標。這不僅能幫助培訓生聚焦學習方向，也能讓導師與主管更了解他們的期望，進而給予相對應的協助與指導。'
+          : 'This section displays the learning and growth goals set by the trainee. We encourage trainees to actively propose specific goals they hope to achieve. This helps them focus on their learning direction and allows mentors and supervisors to better understand their expectations to provide targeted support and guidance.'}
         </div>
         `}
         <ul style="list-style: none; padding: 0; margin-top: 10px;">
