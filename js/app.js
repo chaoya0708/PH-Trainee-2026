@@ -3065,11 +3065,11 @@ function renderReview() {
         }
         const leftColor = isSelf ? 'var(--primary)' : (CONFIG.DEPARTMENTS[a.department]?.color || 'var(--primary)');
 
-        return \`
-                  <div class="glass-card" style="padding:12px; border-left: 4px solid \${leftColor}; margin:0;">
+        return `
+                  <div class="glass-card" style="padding:12px; border-left: 4px solid ${leftColor}; margin:0;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                       <div>
-                        <span style="font-weight:bold; font-size:13px;">\${deptName}</span>
+                        <span style="font-weight:bold; font-size:13px;">${deptName}</span>
                       </div>
                       <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;">${a.grade}</span>
                     </div>
