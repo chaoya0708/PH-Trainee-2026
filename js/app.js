@@ -817,8 +817,8 @@ function renderDashboard() {
         <div style="background-color:rgba(16, 185, 129, 0.05); border-left:3px solid #10b981; padding:10px 14px; margin-top:10px; margin-bottom:10px; border-radius:4px; font-size:12px; color:var(--text-secondary); line-height:1.6;">
           <strong style="color:var(--text-primary);">💡 ${state.activeLanguage === 'zh' ? '關於個人發展目標：' : 'About Individual Development Goals:'}</strong><br>
           ${state.activeLanguage === 'zh'
-          ? '此欄位為培訓生所設定的學習與成長目標。我們鼓勵培訓生主動提出希望達成的具體目標。這不僅能幫助培訓生聚焦學習方向，也能讓導師與主管更了解他們的期望，進而給予相對應的協助與指導。'
-          : 'This section displays the learning and growth goals set by the trainee. We encourage trainees to actively propose specific goals they hope to achieve. This helps them focus on their learning direction and allows mentors and supervisors to better understand their expectations to provide targeted support and guidance.'}
+        ? '此欄位為培訓生所設定的學習與成長目標。我們鼓勵培訓生主動提出希望達成的具體目標。這不僅能幫助培訓生聚焦學習方向，也能讓導師與主管更了解他們的期望，進而給予相對應的協助與指導。'
+        : 'This section displays the learning and growth goals set by the trainee. We encourage trainees to actively propose specific goals they hope to achieve. This helps them focus on their learning direction and allows mentors and supervisors to better understand their expectations to provide targeted support and guidance.'}
         </div>
         `}
         <ul style="list-style: none; padding: 0; margin-top: 10px;">
@@ -1209,12 +1209,12 @@ function renderAnalytics() {
       const deptName = state.activeLanguage === 'zh' ? (d.shortZh || d.nameZh) : (d.shortEn || d.name);
       let badgeStyle = `background:rgba(255,255,255,0.03);color:var(--text-muted);`;
       let text = `${deptName}: ${pct}%`;
-      
+
       let hasVisibleAssessment = assessment;
       if (assessment && user.role === 'guest' && d.id !== user.departmentId) {
         hasVisibleAssessment = false;
       }
-      
+
       if (hasVisibleAssessment) {
         text = `${deptName}: ${pct}% (${assessment.grade})`;
         badgeStyle = `background:rgba(234,88,12,0.12);color:var(--primary);border:1px solid rgba(234,88,12,0.25);font-weight:700;`;
@@ -1360,7 +1360,7 @@ window.exportAdvancedExcel = function () {
 
   const traineeFilter = document.getElementById('exportFilterTrainee') ? document.getElementById('exportFilterTrainee').value : 'all';
   const dateFilter = document.getElementById('exportFilterDate') ? document.getElementById('exportFilterDate').value : 'all';
-  
+
   const now = Date.now();
   let timeLimit = 0;
   if (dateFilter === '7') timeLimit = now - (7 * 24 * 60 * 60 * 1000);
@@ -1383,20 +1383,20 @@ window.exportAdvancedExcel = function () {
   const user = Auth.getCurrentUser();
   const trainees = traineeFilter !== 'all' ? CONFIG.TRAINEES.filter(t => t.id === traineeFilter) : CONFIG.TRAINEES;
   const depts = Object.values(CONFIG.DEPARTMENTS).filter(d => !d.isRecordOnly);
-  
+
   const summaryHeaders = ["Trainee Name", "Milestone Completion %", "Average Star Rating", "Total Logs Submitted"];
   depts.forEach(d => {
     summaryHeaders.push(`${d.name} Progress %`);
     summaryHeaders.push(`${d.name} Grade`);
   });
-  
+
   const summaryData = [summaryHeaders];
   trainees.forEach(tr => {
     const progress = calcOverallProgress(tr.id);
     const traineeObs = state.observations.filter(o => o.traineeId === tr.id);
     const ratedObs = traineeObs.filter(o => (o.selfRating != null ? o.selfRating : o.rating) > 0);
     const trAvgRating = ratedObs.length > 0 ? (ratedObs.reduce((sum, o) => sum + (Number(o.selfRating != null ? o.selfRating : o.rating) || 0), 0) / ratedObs.length).toFixed(1) : '0.0';
-    
+
     const row = [tr.name, `${progress}%`, trAvgRating, traineeObs.length];
     depts.forEach(d => {
       const pct = calculateMilestoneProgress(state.observations, tr.id, d.id);
@@ -1416,8 +1416,8 @@ window.exportAdvancedExcel = function () {
   obsList.forEach(obs => {
     const deptName = (CONFIG.DEPARTMENTS[obs.department] || {}).name || obs.department;
     obsData.push([
-      obs.id, obs.traineeName, formatTaipeiDateOnly(obs.date), deptName, 
-      obs.keyObservation || '', obs.actionableIdea || '', obs.attachmentUrl || '', 
+      obs.id, obs.traineeName, formatTaipeiDateOnly(obs.date), deptName,
+      obs.keyObservation || '', obs.actionableIdea || '', obs.attachmentUrl || '',
       obs.status || '', obs.mentorComment || '', (obs.selfRating || obs.rating || 0)
     ]);
   });
@@ -1449,7 +1449,7 @@ window.exportAdvancedExcel = function () {
   showToast("Excel Report Downloaded!", "success");
 };
 
-window.exportTraineePDF = function() {
+window.exportTraineePDF = function () {
   if (typeof html2pdf === 'undefined') {
     showToast("正在載入 PDF 引擎 (Loading PDF Engine)...", "info");
     const script = document.createElement('script');
@@ -1465,18 +1465,18 @@ window.exportTraineePDF = function() {
     return;
   }
   const traineeFilter = document.getElementById('exportFilterTrainee') ? document.getElementById('exportFilterTrainee').value : 'all';
-  const tr = CONFIG.TRAINEES.find(t => t.id === traineeFilter) || {name: 'All_Trainees'};
-  
+  const tr = CONFIG.TRAINEES.find(t => t.id === traineeFilter) || { name: 'All_Trainees' };
+
   showToast("Generating PDF... Please wait.", "info");
-  
+
   const opt = {
-    margin:       0.5,
-    filename:     `VIMEI_Report_${tr.name.split(' ')[0]}_${formatTaipeiDateOnly(new Date().toISOString())}.pdf`,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true },
-    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    margin: 0.5,
+    filename: `VIMEI_Report_${tr.name.split(' ')[0]}_${formatTaipeiDateOnly(new Date().toISOString())}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
   };
-  
+
   html2pdf().set(opt).from(el).save().then(() => {
     showToast("PDF Downloaded Successfully!", "success");
   }).catch(err => {
@@ -1605,10 +1605,10 @@ function setupMainEventListeners() {
     clearTimeout(godModeTimer);
     if (godModeClicks >= 3) {
       godModeClicks = 0;
-      
+
       const targetRect = e.currentTarget ? e.currentTarget.getBoundingClientRect() : null;
       const fakeEvent = targetRect ? { currentTarget: { getBoundingClientRect: () => targetRect } } : e;
-      
+
       setTimeout(async () => {
         const pin = prompt("Enter Master Pin");
         if (pin) {
@@ -1934,7 +1934,7 @@ window.submitObsForm = async function (e) {
 
     await Api.submitObservation(data);
     state.observations = await Api.getObservationsForTrainee(user.id);
-    
+
     // Reset Form
     window.obsQuill.root.innerHTML = '';
     if ($('obsPhoto')) $('obsPhoto').value = '';
@@ -2007,7 +2007,7 @@ function renderMilestones() {
     const currentSelfEvalId = `self_eval_${window.currentSelfEvalMonthStr}`;
     const selfEval = (state.assessments || []).find(a => a.traineeId === viewId && a.department === currentSelfEvalId);
 
-    const parts = window.currentSelfEvalMonthStr.split('-' );
+    const parts = window.currentSelfEvalMonthStr.split('-');
     let assessYear = parseInt(parts[0], 10);
     let assessMonth = parseInt(parts[1], 10);
     const taipeiNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
@@ -2015,10 +2015,10 @@ function renderMilestones() {
     const isOpen = (taipeiNow >= openDate) || user.role !== 'trainee';
 
     const next30Str = `${assessMonth}/30`;
-    
+
     let selfAssessBanner;
     let isReadOnly = !!selfEval && user.role === 'trainee';
-    
+
     if (isReadOnly) {
       const selfAssessReminderZh = `✅ 已完成 ${window.currentSelfEvalMonthStr} 月份的自我能力覺察評分。`;
       const selfAssessReminderEn = `✅ Self-assessment for ${window.currentSelfEvalMonthStr} completed.`;
@@ -2106,7 +2106,7 @@ function renderMilestones() {
       }
     });
     if (selfCount > 0) {
-      selfDataToRender = [(selfC1/selfCount).toFixed(1), (selfC2/selfCount).toFixed(1), (selfC3/selfCount).toFixed(1), (selfC4/selfCount).toFixed(1), (selfC5/selfCount).toFixed(1)];
+      selfDataToRender = [(selfC1 / selfCount).toFixed(1), (selfC2 / selfCount).toFixed(1), (selfC3 / selfCount).toFixed(1), (selfC4 / selfCount).toFixed(1), (selfC5 / selfCount).toFixed(1)];
     }
 
     const chartsToRender = [];
@@ -2117,7 +2117,7 @@ function renderMilestones() {
     if (count > 0 || selfDataToRender) {
       chartsToRender.push({
         id: 'globalRadarChart',
-        data: count > 0 ? [(sumC1 / count).toFixed(1), (sumC2 / count).toFixed(1), (sumC3 / count).toFixed(1), (sumC4 / count).toFixed(1), (sumC5 / count).toFixed(1)] : [0,0,0,0,0],
+        data: count > 0 ? [(sumC1 / count).toFixed(1), (sumC2 / count).toFixed(1), (sumC3 / count).toFixed(1), (sumC4 / count).toFixed(1), (sumC5 / count).toFixed(1)] : [0, 0, 0, 0, 0],
         selfData: selfDataToRender,
         labels: [
           t('lblCompetency1').split(' ')[0],
@@ -2159,7 +2159,7 @@ function renderMilestones() {
       const assessment = (state.assessments || []).find(a => a.traineeId === viewId && matchDept(a.department));
 
       let targetReports = 5;
-      if (dept.id.startsWith('cmf_rd_' ) || dept.id.startsWith('cmf_production_' )) {
+      if (dept.id.startsWith('cmf_rd_') || dept.id.startsWith('cmf_production_')) {
         targetReports = 1;
       } else if (dept.id === 'cmf_qc') {
         targetReports = 2;
@@ -2347,17 +2347,17 @@ function renderMilestones() {
             <h4 style="font-size:12px;font-weight:700;color:var(--text-secondary);margin:0;text-transform:uppercase;letter-spacing:0.5px; white-space:nowrap; margin-top:4px;">${state.activeLanguage === 'zh' ? '成長趨勢軌跡' : 'Growth Trend'}</h4>
             <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-start; width:100%;">
               ${['overall', 'c1', 'c2', 'c3', 'c4', 'c5'].map(dim => {
-                const isActive = (window._trendDimension || 'overall') === dim;
-                const labels = {
-                  'overall': state.activeLanguage === 'zh' ? '綜合' : 'Avg',
-                  'c1': t('lblCompetency1').split(' ')[0],
-                  'c2': t('lblCompetency2').split(' ')[0],
-                  'c3': t('lblCompetency3').split(' ')[0],
-                  'c4': t('lblCompetency4').split(' ')[0],
-                  'c5': t('lblCompetency5').split(' ')[0]
-                };
-                return `<button class="btn btn-sm" style="font-size:10px; padding:2px 8px; border-radius:12px; background:${isActive ? 'var(--primary)' : 'var(--bg-card)'}; color:${isActive ? '#fff' : 'var(--text-secondary)'}; border:1px solid ${isActive ? 'var(--primary)' : 'var(--border-color)'}; cursor:pointer;" onclick="window._trendDimension='${dim}'; window.renderMilestones();">${labels[dim]}</button>`;
-              }).join('')}
+      const isActive = (window._trendDimension || 'overall') === dim;
+      const labels = {
+        'overall': state.activeLanguage === 'zh' ? '綜合' : 'Avg',
+        'c1': t('lblCompetency1').split(' ')[0],
+        'c2': t('lblCompetency2').split(' ')[0],
+        'c3': t('lblCompetency3').split(' ')[0],
+        'c4': t('lblCompetency4').split(' ')[0],
+        'c5': t('lblCompetency5').split(' ')[0]
+      };
+      return `<button class="btn btn-sm" style="font-size:10px; padding:2px 8px; border-radius:12px; background:${isActive ? 'var(--primary)' : 'var(--bg-card)'}; color:${isActive ? '#fff' : 'var(--text-secondary)'}; border:1px solid ${isActive ? 'var(--primary)' : 'var(--border-color)'}; cursor:pointer;" onclick="window._trendDimension='${dim}'; window.renderMilestones();">${labels[dim]}</button>`;
+    }).join('')}
             </div>
           </div>
           <div style="width:100%; position:relative; min-height: 220px;">
@@ -2535,7 +2535,7 @@ function renderMilestones() {
             },
             tooltip: {
               callbacks: {
-                afterBody: function(context) {
+                afterBody: function (context) {
                   const dataIndex = context[0].dataIndex;
                   const month = labels[dataIndex];
                   const item = monthlyData[month];
@@ -2562,7 +2562,7 @@ function renderMilestones() {
 
 window.renderMilestonesView = renderMilestones;
 
-window.changeSelfEvalMonth = function(val) {
+window.changeSelfEvalMonth = function (val) {
   if (val) {
     window.currentSelfEvalMonthStr = val;
   } else {
@@ -2576,73 +2576,73 @@ window.changeSelfEvalMonth = function(val) {
 
 window.saveSelfAssessment = async function () {
   try {
-  const parts = window.currentSelfEvalMonthStr.split('-');
-  let assessYear = parseInt(parts[0], 10);
-  let assessMonth = parseInt(parts[1], 10);
-  const taipeiNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
-  const openDate = new Date(assessYear, assessMonth - 1, 25, 0, 0, 0);
-  if (taipeiNow < openDate) {
-    alert(state.activeLanguage === 'zh' ? `尚未開放！${assessMonth} 月份的自評將於 ${assessMonth}/25 開放。` : `Not open yet! Month ${assessMonth} will open on ${assessMonth}/25.`);
-    return;
-  }
-
-  const c1 = parseFloat(document.getElementById('selfScoreC1').value);
-  const c2 = parseFloat(document.getElementById('selfScoreC2').value);
-  const c3 = parseFloat(document.getElementById('selfScoreC3').value);
-  const c4 = parseFloat(document.getElementById('selfScoreC4').value);
-  const c5 = parseFloat(document.getElementById('selfScoreC5').value);
-  const user = Auth.getCurrentUser();
-  if (!user) return;
-  const viewId = user.role === 'trainee' ? user.id : state.selectedTraineeId;
-
-  const now = new Date();
-  const actualCurrentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const currentMonthStr = window.currentSelfEvalMonthStr || actualCurrentMonthStr;
-  const currentSelfEvalId = `self_eval_${currentMonthStr}`;
-
-  const existing = (state.assessments || []).find(a => a.traineeId === viewId && a.department === currentSelfEvalId);
-  const comments = state.activeLanguage === 'zh' ? '學生自我評估紀錄' : 'Trainee Self Assessment';
-
-  if (existing) {
-    const res = await Api.updateAssessment(existing.id, {
-      competency1: c1, competency2: c2, competency3: c3, competency4: c4, competency5: c5
-    });
-    if (res && (res.success || res.status === 'success')) {
-      alert(state.activeLanguage === 'zh' ? '自評已更新！' : 'Self-assessment updated!');
-      existing.competency1 = c1;
-      existing.competency2 = c2;
-      existing.competency3 = c3;
-      existing.competency4 = c4;
-      existing.competency5 = c5;
-      renderMilestones();
+    const parts = window.currentSelfEvalMonthStr.split('-');
+    let assessYear = parseInt(parts[0], 10);
+    let assessMonth = parseInt(parts[1], 10);
+    const taipeiNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+    const openDate = new Date(assessYear, assessMonth - 1, 25, 0, 0, 0);
+    if (taipeiNow < openDate) {
+      alert(state.activeLanguage === 'zh' ? `尚未開放！${assessMonth} 月份的自評將於 ${assessMonth}/25 開放。` : `Not open yet! Month ${assessMonth} will open on ${assessMonth}/25.`);
+      return;
     }
-  } else {
-    const res = await Api.submitAssessment(
-      viewId, currentSelfEvalId, 'N/A', c1, c2, c3, c4, c5, comments, user.name
-    );
-    if (res && (res.success || res.status === 'success')) {
-      alert(state.activeLanguage === 'zh' ? '自評已儲存！' : 'Self-assessment saved!');
-      
-      if (!state.assessments) state.assessments = [];
-      state.assessments.push({
-        id: res.id || Date.now().toString(),
-        traineeId: viewId,
-        department: currentSelfEvalId,
-        grade: 'N/A',
-        competency1: c1,
-        competency2: c2,
-        competency3: c3,
-        competency4: c4,
-        competency5: c5,
-        comments: comments,
-        assessor: user.name,
-        visibleToTrainee: true,
-        submittedAt: new Date().toISOString()
+
+    const c1 = parseFloat(document.getElementById('selfScoreC1').value);
+    const c2 = parseFloat(document.getElementById('selfScoreC2').value);
+    const c3 = parseFloat(document.getElementById('selfScoreC3').value);
+    const c4 = parseFloat(document.getElementById('selfScoreC4').value);
+    const c5 = parseFloat(document.getElementById('selfScoreC5').value);
+    const user = Auth.getCurrentUser();
+    if (!user) return;
+    const viewId = user.role === 'trainee' ? user.id : state.selectedTraineeId;
+
+    const now = new Date();
+    const actualCurrentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const currentMonthStr = window.currentSelfEvalMonthStr || actualCurrentMonthStr;
+    const currentSelfEvalId = `self_eval_${currentMonthStr}`;
+
+    const existing = (state.assessments || []).find(a => a.traineeId === viewId && a.department === currentSelfEvalId);
+    const comments = state.activeLanguage === 'zh' ? '學生自我評估紀錄' : 'Trainee Self Assessment';
+
+    if (existing) {
+      const res = await Api.updateAssessment(existing.id, {
+        competency1: c1, competency2: c2, competency3: c3, competency4: c4, competency5: c5
       });
-      
-      window.renderMilestones();
+      if (res && (res.success || res.status === 'success')) {
+        alert(state.activeLanguage === 'zh' ? '自評已更新！' : 'Self-assessment updated!');
+        existing.competency1 = c1;
+        existing.competency2 = c2;
+        existing.competency3 = c3;
+        existing.competency4 = c4;
+        existing.competency5 = c5;
+        renderMilestones();
+      }
+    } else {
+      const res = await Api.submitAssessment(
+        viewId, currentSelfEvalId, 'N/A', c1, c2, c3, c4, c5, comments, user.name
+      );
+      if (res && (res.success || res.status === 'success')) {
+        alert(state.activeLanguage === 'zh' ? '自評已儲存！' : 'Self-assessment saved!');
+
+        if (!state.assessments) state.assessments = [];
+        state.assessments.push({
+          id: res.id || Date.now().toString(),
+          traineeId: viewId,
+          department: currentSelfEvalId,
+          grade: 'N/A',
+          competency1: c1,
+          competency2: c2,
+          competency3: c3,
+          competency4: c4,
+          competency5: c5,
+          comments: comments,
+          assessor: user.name,
+          visibleToTrainee: true,
+          submittedAt: new Date().toISOString()
+        });
+
+        window.renderMilestones();
+      }
     }
-  }
   } catch (err) {
     alert("Error saving: " + err.message + "\n" + err.stack);
     console.error("saveSelfAssessment error:", err);
@@ -3023,22 +3023,27 @@ function renderReview() {
 
 
   // Render Past Assessments
-  let pastAssessmentsHtml = '';
   const relevantAssessments = (state.assessments || []).filter(a => {
+    if (a.department && a.department.startsWith('self_eval')) return false;
     if (isGuest) return a.department === user.departmentId;
     return true;
   }).sort((a, b) => (new Date(b.submittedAt || b.date).getTime() || 0) - (new Date(a.submittedAt || a.date).getTime() || 0));
 
-  if (relevantAssessments.length > 0) {
+  const relevantSelfAssessments = (state.assessments || []).filter(a => {
+    return a.department && a.department.startsWith('self_eval');
+  }).sort((a, b) => (new Date(b.submittedAt || b.date).getTime() || 0) - (new Date(a.submittedAt || a.date).getTime() || 0));
+
+  const renderAssessmentList = (list, title, titleIcon) => {
+    if (list.length === 0) return '';
     const grouped = {};
-    relevantAssessments.forEach(a => {
+    list.forEach(a => {
       if (!grouped[a.traineeId]) grouped[a.traineeId] = [];
       grouped[a.traineeId].push(a);
     });
 
-    pastAssessmentsHtml = `
+    return `
         <div style="margin-bottom:24px;">
-          <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-secondary);"><i class="fi fi-rr-time-past"></i> ${state.activeLanguage === 'zh' ? '已送出的考核紀錄' : 'Submitted Assessments'}</h3>
+          <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-secondary);"><i class="${titleIcon}"></i> ${title}</h3>
           <div style="display:flex;flex-direction:column;gap:12px;">
             ${Object.keys(grouped).map(tId => {
       const tr = CONFIG.TRAINEES.find(t => t.id === tId);
@@ -3048,12 +3053,23 @@ function renderReview() {
                             <div style="display:flex;flex-direction:column;gap:10px;">`;
 
       html += grouped[tId].map(a => {
-        const dept = CONFIG.DEPARTMENTS[a.department] || {};
-        return `
-                  <div class="glass-card" style="padding:12px; border-left: 4px solid ${dept.color || 'var(--primary)'}; margin:0;">
+        let isSelf = a.department && a.department.startsWith('self_eval');
+        let deptName = '';
+        let monthStr = '';
+        if (isSelf) {
+          monthStr = a.department.replace('self_eval_', '');
+          deptName = state.activeLanguage === 'zh' ? `自我評估 (${monthStr})` : `Self Assessment (${monthStr})`;
+        } else {
+          const dept = CONFIG.DEPARTMENTS[a.department] || {};
+          deptName = state.activeLanguage === 'zh' ? (dept.nameZh || dept.name) : dept.name;
+        }
+        const leftColor = isSelf ? 'var(--primary)' : (CONFIG.DEPARTMENTS[a.department]?.color || 'var(--primary)');
+
+        return \`
+                  <div class="glass-card" style="padding:12px; border-left: 4px solid \${leftColor}; margin:0;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                       <div>
-                        <span style="font-weight:bold; font-size:13px;">${state.activeLanguage === 'zh' ? (dept.nameZh || dept.name) : dept.name}</span>
+                        <span style="font-weight:bold; font-size:13px;">\${deptName}</span>
                       </div>
                       <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:12px;">${a.grade}</span>
                     </div>
@@ -3068,31 +3084,31 @@ function renderReview() {
                     ${a.attachmentUrl ? `
                       <div style="margin-bottom:12px; display:flex; flex-wrap:wrap; gap:8px;">
                       ${a.attachmentUrl.split(',').map((part, idx) => {
-                        const [url, mimeType, filename] = part.split('|');
-                        const isImage = mimeType ? mimeType.startsWith('image/') : false;
-                        const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '檢視附件 (View Attachment)' : 'View Attachment');
+          const [url, mimeType, filename] = part.split('|');
+          const isImage = mimeType ? mimeType.startsWith('image/') : false;
+          const name = filename ? decodeURIComponent(filename) : (state.activeLanguage === 'zh' ? '檢視附件 (View Attachment)' : 'View Attachment');
 
-                        if (isImage) {
-                          let thumbUrl = url;
-                          const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-                          if (idMatch && idMatch[1]) {
-                            thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
-                          }
-                          return `
+          if (isImage) {
+            let thumbUrl = url;
+            const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (idMatch && idMatch[1]) {
+              thumbUrl = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w400';
+            }
+            return `
                             <div onclick="window.openLightbox('${url}')" style="cursor:pointer; position:relative; width:64px; height:64px; border-radius:8px; overflow:hidden; border:2px solid var(--border-color); box-shadow:0 2px 4px rgba(0,0,0,0.05);" title="${name}">
                               <div style="width:100%; height:100%; background-image:url('${thumbUrl}'); background-size:cover; background-position:center; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
                               <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); color:#fff; font-size:9px; text-align:center; padding:2px;">🖼️預覽</div>
                             </div>
                           `;
-                        } else {
-                          return `
+          } else {
+            return `
                             <a href="${url}" target="_blank" class="btn btn-outline" style="font-size:12px; padding:6px 12px; border-radius:8px; color:var(--text-primary); border-color:var(--border-color); background:var(--bg-card); display:flex; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,0.02); max-width:250px;">
                               <i class="fi fi-rr-document" style="font-size:16px; margin-right:8px; color:#ef4444;"></i>
                               <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</span>
                             </a>
                           `;
-                        }
-                      }).join('')}
+          }
+        }).join('')}
                       </div>
                     ` : ''}
                     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -3116,7 +3132,10 @@ function renderReview() {
           </div>
         </div>
       `;
-  }
+  };
+
+  const pastAssessmentsHtml = renderAssessmentList(relevantAssessments, state.activeLanguage === 'zh' ? '已送出的單位考核' : 'Submitted Unit Assessments', 'fi fi-rr-time-past');
+  const pastSelfAssessmentsHtml = renderAssessmentList(relevantSelfAssessments, state.activeLanguage === 'zh' ? '已送出的自我評估' : 'Submitted Self Assessments', 'fi fi-rr-user');
 
   container.innerHTML = `
     ${smartNudgeHtml}
@@ -3125,6 +3144,7 @@ function renderReview() {
       <p style="font-size:12px;color:var(--text-secondary);">${t('reviewSubTitle')}</p></div>
     </div>
     ${pastAssessmentsHtml}
+    ${pastSelfAssessmentsHtml}
     ${assessFormHtml}
   `;
 }
@@ -3316,10 +3336,10 @@ function buildFeedItem(obs, user) {
       if (submitted > deadline) {
         // Exemption for Mark's specific week
         let isExempt = (obs.traineeId === 'mark' && obs.targetWeek && (obs.targetWeek.includes('2026-07-13') || obs.targetWeek.includes('2026-06-01')));
-        
+
         // Exemption for Diane and Mark's 9/11 upload
-        if ((obs.traineeId === 'diane' || obs.traineeId === 'mark') && 
-            ((obs.targetWeek && obs.targetWeek.includes('2026-09-11')) || String(obs.submittedAt || obs.date).includes('2026-09-11'))) {
+        if ((obs.traineeId === 'diane' || obs.traineeId === 'mark') &&
+          ((obs.targetWeek && obs.targetWeek.includes('2026-09-11')) || String(obs.submittedAt || obs.date).includes('2026-09-11'))) {
           isExempt = true;
         }
         if (!isExempt) {
@@ -3558,7 +3578,7 @@ window.generateAdminTargetWeekOptions = function (selectedWeek) {
   return options;
 };
 
-window.toggleTranslation = function(btn) {
+window.toggleTranslation = function (btn) {
   const content = btn.nextElementSibling;
   const span = btn.querySelector('span.trans-text');
   const icon = btn.querySelector('i.trans-icon');

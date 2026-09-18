@@ -60,14 +60,14 @@ const Api = (() => {
     const cached = localStorage.getItem(cacheKey);
     const cachedTime = localStorage.getItem(timeKey);
     const now = Date.now();
-    
+
     // If cache is less than 5 minutes old, don't force fetch
     if (forceFetch && cachedTime && (now - parseInt(cachedTime) < 5 * 60 * 1000)) {
       forceFetch = false;
     }
 
     if (!forceFetch && cached) {
-      try { return JSON.parse(cached); } catch (e) {}
+      try { return JSON.parse(cached); } catch (e) { }
     }
 
     const fetchPromise = db.collection(col).get().then(snap => {
@@ -81,9 +81,9 @@ const Api = (() => {
       }
       return data;
     });
-    
+
     if (cached) {
-      try { return JSON.parse(cached); } catch (e) {}
+      try { return JSON.parse(cached); } catch (e) { }
     }
     return await fetchPromise;
   }
@@ -100,7 +100,7 @@ const Api = (() => {
     }
 
     if (!forceFetch && cached) {
-      try { return JSON.parse(cached); } catch (e) {}
+      try { return JSON.parse(cached); } catch (e) { }
     }
 
     const fetchPromise = db.collection(col).where(field, '==', val).get().then(snap => {
@@ -116,7 +116,7 @@ const Api = (() => {
     });
 
     if (cached) {
-      try { return JSON.parse(cached); } catch (e) {}
+      try { return JSON.parse(cached); } catch (e) { }
     }
     return await fetchPromise;
   }
@@ -135,11 +135,11 @@ const Api = (() => {
 
   async function callScript(params) {
     const { action, ...data } = params;
-    
+
     // DEMO MODE BYPASS
     if (CONFIG.DEMO_MODE) {
       // Removed seedDemoData call
-      
+
       switch (action) {
         case 'getAllObservations': return lsGet(LS_OBS);
         case 'getObservations': return lsGet(LS_OBS).filter(o => o.traineeId === data.traineeId);
@@ -160,7 +160,7 @@ const Api = (() => {
     switch (action) {
       case 'getAllObservations': return await fbGet('observations', data.forceFetch);
       case 'getObservations': return await fbGetWhere('observations', 'traineeId', data.traineeId, data.forceFetch);
-      
+
       case 'getAllPulseChecks': return await fbGet('pulse_checks', data.forceFetch);
       case 'setPulseCheck': {
         const docRef = db.collection('pulse_checks').doc(data.traineeId);
@@ -202,7 +202,7 @@ const Api = (() => {
         invalidateCache('observations');
         return { success: true, id: docRef.id };
       }
-      
+
       case 'updateObservation': {
         await db.collection('observations').doc(data.id).update(data.data);
         invalidateCache('observations');
@@ -248,7 +248,7 @@ const Api = (() => {
         }
         return result;
       }
-      
+
       case 'getSchedules': {
         const scheds = await fbGetWhere('schedules', 'traineeId', data.traineeId, data.forceFetch);
         const result = {};
@@ -343,7 +343,7 @@ const Api = (() => {
       case 'uploadFile': {
         const gasUrl = 'https://script.google.com/macros/s/AKfycbxGO8qhJGBMmDueIkz-lse9c3PKsr7lGDdItToojUi-zUozIl6ogt-J-KmGkxKlzbe1Eg/exec';
         let base64String = data.base64;
-        
+
         if (data.file) {
           base64String = await new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -352,7 +352,7 @@ const Api = (() => {
             reader.readAsDataURL(data.file);
           });
         }
-        
+
         window.dispatchEvent(new CustomEvent('upload_progress', { detail: '10' }));
         const payload = JSON.stringify({
           action: 'uploadFile',
@@ -362,22 +362,22 @@ const Api = (() => {
           folderName: data.folderName || 'MA_Program_Uploads'
         });
         window.dispatchEvent(new CustomEvent('upload_progress', { detail: '50' }));
-        
+
         const res = await fetch(gasUrl, {
           method: 'POST',
           body: payload,
           headers: { 'Content-Type': 'text/plain' }
         });
         window.dispatchEvent(new CustomEvent('upload_progress', { detail: '90' }));
-        
+
         const text = await res.text();
         let jsonRes;
         try {
           jsonRes = JSON.parse(text);
-        } catch(e) {
+        } catch (e) {
           throw new Error('Invalid JSON from server');
         }
-        
+
         if (jsonRes.success) {
           window.dispatchEvent(new CustomEvent('upload_progress', { detail: '100' }));
           return { success: true, url: jsonRes.url };
@@ -731,7 +731,7 @@ const Api = (() => {
       if (CONFIG.DEMO_MODE) {
         return new Promise(resolve => setTimeout(() => resolve({ success: true, url: 'https://example.com/mock-file.pdf' }), 1000));
       }
-      
+
       if (base64OrFile instanceof File || base64OrFile instanceof Blob) {
         return callScript({
           action: 'uploadFile',
@@ -741,7 +741,7 @@ const Api = (() => {
           folderName
         });
       }
-      
+
       return callScript({
         action: 'uploadFile',
         base64: base64OrFile,
@@ -792,7 +792,7 @@ const Api = (() => {
     },
 
 
-    
+
     async getInitData(role, traineeId, forceFetch = true) {
       if (CONFIG.DEMO_MODE) {
         const obs = lsGet(LS_OBS) || [];
@@ -801,7 +801,7 @@ const Api = (() => {
           ...o,
           guestComments: gcomments.filter(g => g.obsId === o.id)
         }));
-        
+
         if (role === 'trainee') {
           return {
             observations: obsWithComments.filter(o => o.traineeId === traineeId),
@@ -820,9 +820,9 @@ const Api = (() => {
           };
         }
       }
-      
+
       const data = await callScriptGet('getInitData', { role, traineeId, forceFetch });
-      
+
       // Normalize schedules
       if (data.schedules) {
         if (role === 'trainee') {
@@ -874,7 +874,7 @@ const Api = (() => {
           data.schedules = allSchedules;
         }
       }
-      
+
       // Normalize observations with guestComments
       if (data.observations) {
         const gcomments = data.guestComments || [];
@@ -883,7 +883,7 @@ const Api = (() => {
           guestComments: (Array.isArray(gcomments) ? gcomments : []).filter(g => g.obsId === o.id)
         }));
       }
-      
+
       // Normalize assessments
       if (Array.isArray(data.assessments)) {
         data.assessments.forEach(d => {
@@ -895,7 +895,7 @@ const Api = (() => {
           }
         });
       }
-      
+
       return data;
     },
 
